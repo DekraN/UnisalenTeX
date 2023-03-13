@@ -1,0 +1,1039 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Distributed Systems}
+\label{cap:distsys}
+%************************************************\\
+
+\section{Starting Point}
+
+\subsection{SCENARIO}
+
+Nuovo paradigma dei sistemi di controllo. Tecnologia pervasiva. Dispositivi diffusi in tutto l'ambiente, che dispongono di parte fisica (Sensing, dinamica Robot mobile, generatore d'energia), che ne descrive l'evoluzione delle variabili fisiche e parte cyber (capacità di calcolo, memoria e comunicazione). Unico sistema dinamico. Comunicazione tra i sistemi. Inizio anno 2000 $\rightarrow$ 2003. Nuova teoria del controllo, dell'ottimizzazione. Ciascun sistema ha la sua legge di controllo. Non può conoscere tutti gli stati degli altri sottosistemi. Solo con alcuni vicini. Risolvere problemi di ottimizzazione distribuita. Comunicazione locale.
+
+New class of systems. A new realistic framework. New mathematical framework. We'll consider DISTRIBUTED CONTROL SYSTEMS (MULTI-AGENT SYSTEMS CYBER PHYSICAL NETWORKS) and other similar notation. We have: $N \in \N$ systems, each one ($i \in \N$) has its own "dynamics", and we'll use this kind of notation:
+
+\[ 
+	\left\{
+	\begin{aligned}
+	&\dot{x}^{[i]}(t) = f_i(x^{[i]}(t), u^{[i]}(t)) \\
+	&x^{[i]}(t+1) = h_i(x^{[i]}(t), u^{[i]}(t))
+	\end{aligned} 
+	\right.
+\]
+
+The dynamic could be for example a RANSAC computation. Discrete algorithm. Each dynamic depends only on the state of the system. Could be some Transition function to model an algorithm. Other assumptions: each system has some $\{$-) LOCAL MEMORY; -) \underline{LOCAL COMPUTATION CAPABILITY}; -) LOCAL COMMNICATION CAPABILITY$\}$; the first two are quite immediate. Each system has a memory and a processor. Possibility to communicate. Local, why? This system will be able to communicate just with a subset of all the systems. Too many messages to exchange. Limit them. This number, $n \in \N$ will be a big number $\iff (n\gg 1)\ \lor\ (n\tendsto{}+\infty)$ from a mathematical point of view. Doesn't make sense to allow global communication capability. Number of neighbors (agent I can communicate with); One-to-one communication. The typical scheme we well have for system $i$ is: SYSTEM $i \supseteq \{CYBER\ LAYER \supseteq (Memory,\ computation,\ communication),\ PHYSICAL\ LAYER \supseteq (Sensing\ attuation,\ Dynamic\ of\ Robot,\ quadrotor,\ etc)\}$;
+
+System with some dynamic modeled by ODE, FDT. But we are missing the model of communication. How can we model communication, interation among the systems? How can we model this from a mathematical point of view? Binary matrices, graphs. A graphs is a $\{$\underline{COMMUNICATION GRAPH}$\}$ tuple. First element is a set of elements called vertices. Edges $\implies$ pair of vertices. Let's formally introduce it:
+$G=(I,E);\ I=\{1,\ \dots,\ N\}$. We'll associate vertices to identify. System identifiers. $E = \{set\ of\ edges\} \subset I\times I = \{pair\ of\ vertices\}$. Say that a node $i$ can communicate with node $j$.	 Some notion of graph. Analysis and design. We'll combine graph's theory and algebraic elements associated with graphs for developing distributed control laws. Il generico elemento di $E$ dice se prendendo due vertici vi è un collegamento tra di loro. Combineremo la teoria dei grafi con la teoria delle matrici e la teoria dei sistemi.
+
+$I = \{1,\ \dots,\ N\}$ identifiers of our systems. $E$ tells us $\implies (i,j) \in E$ means that $i$ sends information to $j$. Directed graph. The communications are not generally bidirectional. Try to recall graph's teory. DIRECTED GRAPH AS DIGRAPH.
+\underline{Digraph} $G=(I,E)$ is a set of $N$ elements called $\{$\underline{vertices} and \underline{EDGES}$\},\ E \subset I\times I$ a set of pairs of vertices, called EDGES.
+
+UNDIRECTED GRAPH. A graph $G$ is Undirected if $\forall(i,j) \in E \iff (j,i) \in E$. Simply if I have an edge $(i,j)$ we have also the $(j,i)$ one. Equivalently $E$ is a set of unordered pair of vertices. An usual way to represent an undirected graph is the following: by using an unarrowed arc instead of an arc with the arrow in a way to represent the verse in which the communication is valid, this one used in directed graph. Clearly this corresponds to a digraph in which there are bidirectional communications for the edges. Let's introduce some notions:
+
+Notion of IN-NEIGHBOR and OUT-NEIGHBOR. If I'm a node, an IN-NEIGHBOR is another node such that it can sends information to me. Given an edge $(i,j) \in E$, we say that $i$ is an IN-NEIGHBOR of $j$ and $j$ is an OUT-NEIGHBOR of $i$.
+We'll denote $N_i^{IN}$ the set of IN-NEIGHBORS of $i \implies$ it means that:
+\[
+	\forall j \in N_i^{IN}\ \exists (j,i) \in E
+\]
+Similarly we'll denote $N_i^{OUT}$ the set of OUT-NEIGHBORS of $i \implies$ it means that:
+\[
+	\forall j \in N_i^{OUT}\ \exists (i,j) \in E
+\]	
+Given these sets,
+\[
+	\left\{
+	\begin{aligned}
+	&d_i^{IN} = \cardinality{N_i^{IN}} = "IN-DEGREE" = \#\{neighbors\ they\ can\ communicate\ with\ me\}\\
+	&d_i^{OUT} = \cardinality{N_i^{OUT}} = "OUT-DEGREE" = \#\{neighbors\ I\ can\ communicate\ with\}
+	\end{aligned} 
+	\right.
+\]
+For an \underline{undirected Graph}, we say that $j$ is a neighbor of $i$ if $(i,j) \in E$ (We don't need to specify $(i,j)\ \lor\ (j,i)$). $N_i$ set of neighbors and [$d_i = \cardinality{N_i}$ degree of node $i = \#\{neighbors\}$];
+
+Regarding (in-out/degrees, a digraph is said BALANCED if
+\[
+	\forall i\ d_i^{IN} = d_i^{OUT},\ \forall i \in \{1,\ \dots,\ N\}
+\]
+Some special digraphs. An undirected graph is a balanced one. A directed CYCLE is a balanced graph. For example: $\{d_i^{IN} = d_i^{OUT} = 1,\ \forall i\}$. Teorie dei grafi ormai assodate. Let's introduce another notion of \underline{DIRECTED PATH}. 
+
+A \underline{directed path} is a sequence of vertices such that any two consecutive vertices are an edge of the graph. Connectivity. \underline{STRONG CONNECTIVITY}. If we have a distributed algorithm, the informations have to propagate as well ass possible.
+
+\begin{defn}{\textbf{STRONG CONNECTIVITY}} \newline
+A digraph is \underline{strongly connected} if \newline
+$\forall (i,j) \in E\ \exists$ a directed path from $i$ to $j$. \underline{GLOBALLY REACHABLE VERTEX}. A vertex is GR if there is a directed path from any other vertex to that one. A graph is STRONGLY CONNECTED if $\forall$ vertex $i \in I$ is GLOBALLY REACHABLE.
+\end{defn}
+
+In other communities, graphs are used to model a problem (Optimization problem, outing problem). Here we're using graph to model communications. It doesn't make sense to have a fixed, static graph.
+
+\begin{defn}{\textbf{TIME-DEPENDENT GRAPHS}} \newline
+A time-dependent graph is a mapping $G \mapsto G(t) = (I,E(t)),\ t \in \Z$ (integer variable) such that $G(t)$ is a digraph, $\forall t$.
+\end{defn}
+
+We can allow different scheme of communications. 
+Some as. We need less. Not for all $t,\ G(t)$ to be strongly connected.
+
+\begin{defn}{\textbf{JOINT STRONG CONNECTIVITY}} \newline
+A TD digraph is \underline{joint strongly connected} if
+\[
+	(\forall t \in \Z),\ \cup_{\tau=t}^{+\infty}{G(\tau)}
+\]
+is strongly connected. It can happen that some edges just appears RARELY in time. PERSISTENZA di ATTIVAZIONE degli EDGES per la JSC.
+\end{defn}
+
+\begin{defn}{\textbf{UNIFORM JOINT STRONG CONNECTIVITY (\underline{PERIODIC})}} \newline
+A digraph $G$ is UJSC if $\exists T \in \N\ |\ \forall t (\dots)\ \cup_{\tau=(t-1)T+1}^{tT}{G(\tau)}$ is strongly connected. Stronger notion. I just need to connect. At some point I get strongly connected graph.
+\end{defn}
+
+What's the difference with the other notion? Nel caso non-uniform di volta in volta dobbiamo aspettare un intervallo più grande, ad esempio. Es. se un lost edges (fluttuante) appare per $t=1,\ 10,\ 100,\ 1000,\ \dots$. Nel caso uniforme invece dovrebbe apparire per intervalli temporali equidistanti: $t=1,\ 10,\ 20,\ 30,\ \dots$.
+
+For an \underline{UNDIRECTED} graph, we have: $\{$CONNECTIVITY, JOINT CONNECTIVITY, UNIFORM JOINT CONNECTIVITY$\}$.
+
+\subsection{Proprietà e definizioni dei grafi}
+
+Matrici collegate ai grafi.
+
+\subsubsection{MATRICES ASSOCIATED TO GRAPHS}
+Let's start talking about a WEIGHTED DIGRAPH, is basically a tuple, $G=(I,E,A)$, where $(I,E)$ is a DIGRAPH ($I$ set of vertices, $E$ set of edges) and $A \in \R^{n\times n}$ is a matrix that we call WEIGHTED ADJACENCY MATRIX (WAM) with the generic element
+\[
+	a_{ij}\ |\ a_{ij} > 0\ \iff (i,j) \in E\ \land\ a_{ij} = 0\ \iff (i,j) \notin E
+\]
+It means that we are basically considering a digraph in which we have WEIGHTS for each \underline{edge}. Our matrix $A$ could be for example:
+\[
+	A = \begin{bmatrix}0&a_{12}&0\\0&0&a_{23}\\a_{31}&a_{32}&0\end{bmatrix}
+\]
+(diagonal has all 0 elements! $\iff (k,k) \notin E\ \forall k \in I$). This is the matrix $A$ associated with our graph. This weighted matrix gives us also the structure of the graph! REVERSE ENGINEERING. Using the matrix I can immediately draw the graph! For a digraph (simple), we can define an adjacency matrix (Non-weighted) Boolean Matrix $\rightarrow \{a_{ij}=1,\ (i,j) \in E\ \land\ 0\ otherwise\}$.
+
+For example,
+\[
+	A \in \{0,1\}^{3\times 3} = \begin{bmatrix}0&1&0\\0&0&1\\1&1&0\end{bmatrix}
+\]
+
+By using an adjacency matrix, again, I can construct the digraph. Both in the weighted and in the simple one, I have 0 as diagonal elements. SELF-EDGES are special $(i,i)$ edges (I communicate my state to myself). Digraph with self-edges could have this WAM for example:
+
+\[
+	WAM = \begin{bmatrix}a_{11}&a_{12}&0\\0&a_{22}&a_{23}\\a_{31}&a_{32}&a_{33}\end{bmatrix}
+\]
+
+In designing our distributed algorithm we can have those type of matrices.
+If the graph is UNDIRECTED, we have SYMMETRIC MATRICES, for example:
+
+\[
+	A_{WAM} = \begin{bmatrix}0&a_{12}&a_{13}\\a_{23}&0&a_{23}\\a_{13}&a_{12}&0\end{bmatrix},
+	A_{WM} = \begin{bmatrix}0&1&1\\1&0&1\\1&1&0\end{bmatrix}
+\]
+
+We'll need another pair of matrices. In this case the matrices are DIAGONAL MATRICES, and tell the In-degree and the out-degree. Suppose three elements for this sample graph to use for definitions.
+
+\begin{defn}{\textbf{OUT-DEGREE (DIAGONAL) MATRIX}}
+\[
+	D^{OUT} = \begin{bmatrix}d_1^{OUT}&0&0\\0&d_2^{OUT}&0\\0&0&d_3^{OUT}\end{bmatrix}
+\]
+\end{defn}
+\begin{defn}{\textbf{IN-DEGREE (DIAGONAL) MATRIX}}
+\[
+	D^{IN} = \begin{bmatrix}d_1^{IN}&0&0\\0&d_2^{IN}&0\\0&0&d_3^{IN}\end{bmatrix}
+\]
+\end{defn}
+
+Why we've introduced this? Let's write this matrices for our digraph:
+
+\[
+	D^{OUT} = \Biggl\{ \begin{bmatrix}1&0&0\\0&1&0\\0&0&2\end{bmatrix},\ 
+	D^{IN} = \begin{bmatrix}1&0&0\\0&2&0\\0&0&1\end{bmatrix}\Biggr\}
+\]
+
+Notice that if I change the order of the edge, I'm changing $D^{OUT}$ with $D^{IN}$. ($D^{IN},\ D^{OUT}$ si scambiano, mentre $A_{WAM}$ e $A_{WM}$ vengono rispettivamente trasposte).
+
+$\implies$ By changing the order of the edges,
+
+\[
+	\left\{
+	\begin{aligned}
+	&EXCHANGE\ \{D^{IN},D^{OUT}\} \\
+	&TRANSPOSE\ \{A_{WAM},A_{WM}\} 
+	\end{aligned} 
+	\right.
+\]
+
+Let's introduce a new matrix, the LAPLACIAN OF A GRAPH. How it is defined?
+\begin{defn}{\textbf{LAPLACIAN OF A GRAPH}}
+\[
+	L^{OUT} := L = D^{OUT}-A
+\]
+\end{defn}
+
+example:
+
+\[
+	\Biggl\{D^{OUT} = \begin{bmatrix}1&0&0\\0&1&0\\0&0&2\end{bmatrix},\ 
+	A = \begin{bmatrix}0&1&0\\0&0&1\\1&1&0\end{bmatrix}\Biggr\} \implies
+	L=\begin{bmatrix}1&-1&0\\0&1&-1\\-1&-1&2\end{bmatrix}
+\]
+
+How we construct? $\{diag\{d_i^{OUT}\}\}|_{N\times N} - [(i,j)\in E]_{N\times N}$. Where here we've used the Iverson's parenthesis notation for the second matrix term.
+
+\begin{defn}{\textbf{IN-DEGREE LAPLACIAN}}
+\[
+	L^{IN} = D^{IN} - A^\top
+\]
+\end{defn}
+is the LAPLACIAN of the graph with all the edges inverted.
+
+If the edges are all inverted, then STRONG CONNECTIVITY property are well-mantained. It doesn't change anything. Let's keep in mind this remarks. $L,\ L^{IN}$ rimarrebbero invarianti in presenza di self-edges! Sarebbero gli stessi della stessa versione del grafo con self-edges aggiunti.
+
+We'll give a theorem for the Laplacian Matrix:
+
+\begin{thrm}{\textbf{(PROPERTIES OF LAPLACIAN)}} \newline
+The following statements hold:
+\begin{itemize}
+\item{i)} $L\mathbf{1} = \mathbf{0}$; (vettore colonna), where:
+\[
+	\mathbf{1} = \begin{bmatrix}1\\ \vdots\\1\end{bmatrix}
+\]
+(somma delle righe = elementi di $D^{IN}$. Analogamente per colonne e $D^{OUT}$);
+\item{ii)} $G$ undirected $\iff L=L^\top$ is symmetric;
+\item{iii)} $G$ undirected $\implies L \geq 0$ (pos. semidef.);
+\item{iv)}  $G$ contains a globally reachable vertex $\iff \rank(L) = n-1$;
+\item{v)} $G$ is (weight) balanced $\iff \mathbf{1}^\top L = \mathbf{0}^\top\ \lor\ \frac{(L+L^\top)}{2} \geq 0$ (pos. semidef.);
+\end{itemize}
+\end{thrm}
+
+Let's comment:
+\begin{itemize}
+\item{1)} If I sum all the elements of the row of a Laplacian I get 0 $\implies \mathbf{1}$ is a right eigenvectors of $L$ with associated eigenvalue 0 $\iff \mathbf{1} \in \ker(L)$;
+\item{4)} For a STRONGLY CONNECTED GRAPH every vertex is globally reachable vertex $\implies \rank(L)=n-1$;
+\end{itemize}
+
+\underline{If the graph is balanced}, $(d_i^{IN} = d_i^{OUT}) \implies \mathbf{1}^\top L = 0 \iff \mathbf{1} \in \ker^{\perp}{L}$:
+
+\[
+	\begin{bmatrix}1&\dots&1\end{bmatrix}
+	\begin{bmatrix}\dots&\dots&\dots\\ \vdots&\vdots&\vdots\\ \dots&\dots&\dots\end{bmatrix} = 0
+\]
+
+\subsection{NETWORK OF A PROCESSOR for a distributed algorithm}
+
+We identify a NoP with a time-dependent graph $\{G(t)\}_{t\geq 0} = \{(I,E(t))\}_{t\geq 0 }$, where $I = \{1,\ \dots,\ N\}$ is a set of identifiers of the processors and $E(t)$ is set of edges at time $t$, with $(i,j)\in E$ if processor $i$ can send a message to processor $j$. Generally time-variant graph:
+
+\begin{itemize}
+\item{DISTRIBUTED ALGORITHM} SETS:
+\begin{itemize}
+\item $X^{[i]}$ of processor states $\iff x^{[i]} \in X^{[i]}$;
+\item $A$ set of processor messages;
+\end{itemize}
+\item{MAPS to identify algorithm}:
+\begin{itemize}
+\item $msg^{[i]} : X^{[i]}\times I \mapsto A$ message GENERATION FUNCTION;
+\item $stf^{[i]} : X^{[i]}\times A^N \mapsto X^{[i]}$ STATE TRANSITION FUNCTION (STF);
+\end{itemize}
+\end{itemize}
+
+Typically we have:
+
+\[
+	\left\{
+	\begin{aligned}
+	&X^{[i]} = X\ \forall i \in \{1,\ \dots,\ N\} \\
+	&msg^{[i]} = msg\ \forall i \in \{1,\ \dots,\ N\} \\
+	&stf^{[i]} = stf\ \forall i \in \{1,\ \dots,\ N\}
+	\end{aligned} 
+	\right.
+\]
+
+$msg:X \mapsto A$ (Generally $X^{[i]}\times I$ because it can happen that I may send different message to different processors).
+A NETWORK in which these properties hold is called \underline{UNIFORM}. Each node will send its own update plus the network is given\dots Has not a parameter design to decide.
+
+It is not Parallel computation. What is the evolution of our distributed algorithm?
+\[
+	x^{[i]}(t+1) = stf(x^{[i]},y^{[i]}(t)),\ y^{[i]}_j = \left\{
+	\begin{aligned}
+	&msg(x^{[j]}),\ (j,i)\in E(t) \\
+	&NULL,\ otherwise
+	\end{aligned} 
+	\right.
+\]
+$NULL=$ there is no message $\implies$ the message is not sent to $i \implies i$ cannot use this information.
+For example, $y^{[1]} = \begin{bmatrix}NULL\\NULL\\msg(x^{[3]})\end{bmatrix}$. VERY IMPORTANT! Node $i$ can use information only from neighbors!
+What is the goal? Design that state transition function. Centralized control part. If we don't have one, we'll achieve that goal with a distributed system. $X^{[i]}$ SPAZIO degli STATI del processore $i$! Ex. boolean, reali, stringhe, etc\dots
+
+\[
+	x^{[i]}(t+1) = stf(x^{[i]}(t), \{msg(x^{[j]}(t)\}_{\underline{j\in N_i^{IN}(t)}})
+\]
+
+where the INPUT part is the set off the states of IN neighbors (Messages composition). This is a well structured dynamic. Another assumption that we'll often use is that $msg(x^{[j]}(t)) = x^{[j]}(t),\ i\in\{1,\ \dots,\ N\}$.
+
+\subsection{DISCRETE-TIME DYNAMICAL SYSTEMS}
+
+We have stacked states:
+
+\[
+	x := \begin{bmatrix}x^{[1]}\\ \vdots\\x^{[N]}\end{bmatrix}
+\]
+\[
+	x(t+1) = STF(x(t))
+\]	
+
+Keeping into account SPARSITY. Where $STF_i(x(t)) = x^{[i]}(t+1) = \mathord{\cdot}(x^{[i]}(t),\{x^{[j]}(t)\})$. But $y^{[2]}=?$ Algoritmi risolutivi in un contesto dinamico (sequenziale, etc\dots). Questo stesso problema, che risolverei con un algoritmo sequenziale, posso risolverlo in un mondo nel quale i dati sono distribuiti? I nodi possono iterare un'azione per far compiere l'algoritmo alla fine nel complesso. Sviluppare metodologie che sfruttano le nuove tecnologie. Collezione distribuita dei dati.
+
+\subsubsection{STATIC CONTROL NETWORK IN DISCRETE-TIME}
+
+(How to model a control network?) (special case)
+
+There exists also (general-related) one. What are the ingredients? First of all, the network:
+
+\begin{itemize}
+\item $I=(1,\ \dots,\ N)$ as before;
+\item $E:=E(t)$, set of edges such that $(j,i)\in E(t)$ if $j$ can send messages to $i$;
+\item $\forall i$, some local dynamic:
+\[
+	x^{[i]}(t+1) = f^{[i]}(x^{[i]}(t), u^{[i]}(t)),\ f^{[i]}:X^{[i]}\times U^{[i]} \mapsto X^{[i]}
+\]
+
+($\impliedby$ Since we're in discrete time), where:
+
+\[
+	\left\{
+	\begin{aligned}
+	&X^{[i]}\ set\ of\ states\ (state\ space)\ of\ system\ i\\
+	&U^{[i]}\ set\ of\ inputs\ (input\ space)\ of\ system\ i
+	\end{aligned} 
+	\right.
+\]
+\end{itemize}
+
+\subsubsection{CONTROL AND COMMUNICATION LAW (CCL) (as DISTRIBUTED CONTROL LAW (DCL))}
+\begin{itemize}
+\item SETS:
+\begin{itemize}
+\item $X^{[i]}$ set of states. $X^{[i]}=X$ (as before, $msg^{[i]}=msg:X\times I \mapsto A$);
+\item $A$ which is set of messages, as before;
+\end{itemize}
+\item MAPS:
+\begin{itemize}
+\item $msg^{[i]}:X^{[i]}\times I \mapsto A$ MESSAGE GENERATOR FUNCTION;
+\item $ctr^{[i]}:X^{[i]}\times A^N \mapsto U^{[i]}$;
+\end{itemize}
+\end{itemize}
+
+\[
+	x^{[i]}(t+1) = f(x^{[i]}(t), ctr(x^{[i]}(t),y^{[i]}(t)))
+\]
+
+where typically also the control function is the same: $ctr^{[i]}=ctr,\ f^{[i]}=f$.
+
+\[
+	y^{[i]}_j(t) = \left\{
+	\begin{aligned}
+	&msg(x^{[j]}),\ (j,i)\in E(t) \\
+	&NULL,\ otherwise
+	\end{aligned} 
+	\right.
+\]
+
+(As before we have a discrete time dynamical system. The difference is that each agent has its own dynamic, imposed by the nature of the system). $ctr$ is typically a special feedback law, a function only of \underline{the neighbors}. 
+Really very challenging in distributed context.
+
+\[
+	x^{[i]}(t+1) = f(x^{[i](t)},\ ctr(x^{[i]}(t),\{msg(x^{[j]}(t))\}_{j\in N_i^{IN}(t)})
+\]
+
+Nel caso generale possiamo avere uno stato fisico ed uno virtuale assieme.
+
+\subsubsection{STATIC CONTROL NETWORK IN CONTINUOUS TIME}
+
+In continuous time. Now our time is a Real variable $t \in \R$.
+\[
+	t\in\R,\ t\mapsto G(t)=(I,E(t)),\ G(t)=\mathord{\cdot}=(constant,\mathord{\cdot}(t))
+\]
+
+The idea is that the graph contains a piecewise continuos set function $(E(t))$. 
+$G(t)$ is a piecewise constant set valued function. What about the network? Exactly the same sets and maps:
+
+\[
+	\dot{x}^{[i]}(t) = f^{[i]}(x^{[i]}(t),\ ctr(x^{[i]}(t),\ y^{[i]}(t)))
+\]
+
+this is the local dynamic of the agents $i$, where:
+
+\[
+	\left\{
+	\begin{aligned}
+	&y^{[i]}_j(t) = msg(x^{[j]}(t)),\ (j,i)\in E(t) \\
+	&NULL,\ otherwise
+	\end{aligned} 
+	\right.
+\]
+
+According to the previous notation we have:
+
+\[
+	[\dot{x}^{[i]}(t) = f(x^{[i]}(t),\ ctr(x^{[i]}(t),\ \{msg(x^{[j]}(t))\}_{j\in N_i^{IN}(t)})]
+\]
+
+We have also other dynamical systems, in which we have ODE where $f$ changes discontinuously. (SWITCHED SYSTEMS) $\subset$ HYBRID SYSTEMS. in which the dynamic can change discontinuously.
+
+We've been considering graph where such as they are depending on time $\iff G=\mathord{\cdot}(t)$. This is a further challenging class of systems. If the graph is fixed and not dependent of time, we go back to the class of systems we know. (Nei sistemi ibridi la dinamica addirittura cambia istantaneamente). \underline{CLASSICAL STATE SPACE}:
+\[	
+	\dot{x}^{[i]}(t) = f(x^{[i]}(t),\ ctr(x^{[i]}(t),\ \{msg(x^{[j]}(t)\}_{j\in N_i^{IN}\neq N_i^{IN}(t)}))
+\]
+
+We have a FIXED GRAPH $\iff N_i^{IN} \neq N_i^{IN}(t) \neq \mathord{\cdot}(t)$. Nel tempo discreto le cose sono più semplici:
+
+\[
+	x^{[i]}(t+1) = f^{[i]}(x^{[i]}=\mathord{\cdot}(t),u^{[i]}),\ i \in \{1,\ \dots,\ N\}
+\]
+\[
+	x(t+1) = F(x(t),u(t)) \leftarrow \Biggl\{ x:=\begin{bmatrix}x^{[1]}\\ \vdots\\x^{[N]}\end{bmatrix},\ 
+	u := \begin{bmatrix}u^{[1]}\\ \vdots\\ u^{[N]}\end{bmatrix}\Biggr\}
+\]
+
+Se mettiamo in retroazione tutti gli stati, avremo un approccio CENTRALIZZATO, non distribuito.
+Prima classe di algoritmi distribuiti / leggi di controllo distribuite; algoritmi di diffusione lineare. Algoritmi ove ogni agente applica una legge di controllo lineare sui propri vicini o sul suo stato. Problema del CONSENSO/AGREEMENT.
+
+\section{LINEAR DISTRIBUTED ALGORITHM}
+A first class distributed algorithms (control laws). In particular, one of the first problem is that one of the Agreement/Consensus. CONSENSUS or AGREEMENT. The goal is the following: suppose we have our network system with $x^{[i]},\ i\in \{1,\ \dots,\ N\}$ and communication graph $\{G\}_{t\geq 0} = (I,E(t))_{t\geq 0},\ I=\{1,\ \dots,\ N\}$. Design a distributed algorithm such that:
+
+\[
+	\lim_{t\to +\infty}{\norma{x^{[i]}(t) - x^{[j]}(t)}} = 0\ \forall i,j \in \{1,\ \dots,\ N\}
+\]
+
+[\underline{initial states}]. All the limits, all the states agree, Reaching consensus in finite/asymptotic time. AVERAGE CONSENSUS. The goal is: suppose $x^{[i]}_0,\ i\in \{1,\ \dots,\ N\}$ are the initial states of the systems. Goal: reach consensus on the average of the initial states $\implies \frac{1}{N}\sum_{i=1}^{N}{x^{[i]}_0}$. GOAL: Agree on the average of CINITS. Let's see how LDA can solve the consensus problem and also the average consensus problem. Let's recall what a distributed algorithm looks like:
+
+\[
+	[x^{[i]}(t+1) = stf(x^{[i]}(t),\ \{x^{[j]}(t)\}_{j\in N_i^{IN}})]
+\]
+
+Suppose the digraph $G$ is fixed. State communication graph $G=(I,E)$. Goal: design $stf=?$.
+$G=(I,E),\ I=\{1,\ \dots,\ N\}\ \land\ E\subset I\times I$. Want to design $stf$. We can do it by using a LDA Linear (discrete-time) dynamics.
+
+Try this kind of intuition: why doesn't It start averaging my neighbors states?
+
+\[
+	x^{[i]}(t+1) = \sum_{j\in N_i^{IN}\cup\{i\}}{f_{ij}x^{[j]}(t)}
+\]
+
+where $i\in \{1,\ \dots,\ N\}$. $f_{ij}$ positive constants, positive coefficients.
+Distributed algorithm/(control law of $x$ treated as a physical state). Let's compute a linear combination of $x^{[j]}(t)$. What should I choose as $f_{ij}$? Just average my neighbors states ($\# \mathord{\cdot} = d^{IN}+1$). Let's stay however with a general combination. All these dynamics are linear $\implies$ linear system. How can we analyze this dynamic? First of all, let's rewrite it in the following way: $\implies$
+
+\[
+	[x^{[i]}(t+1) = \sum_{j=1}^N{f_{ij}x^{[j]}(t)}]
+\]
+
+*, but assume $f_{ij}>0\ \iff (j,i)\in E\ \lor\ i=j\ \land\ f_{ij}=0\ otherwise$. Completely equivalent version of $x^{[i]}(t+1)$; all these dynamics are linear. Discrete-time linear dynamical system. Let's again stack all states in a single vector (by impilating them). Let's suppose for the moment that:
+
+\[
+	x := \begin{bmatrix}x^{[1]}\\ \vdots\\ x^{[N]}\end{bmatrix} \implies x(t+1)=Fx(t)
+\]
+
+LINEAR-TIME-INVARIANT SYSTEM (discrete-time), where for the state matrix we have: $F \in \R^{N\times N},\ x^{[i]}(t) \in \R$ (it could be also other several possibilities). $F$ is a constant matrix $\iff f$ are constants. Since the graph is fixed is time-INVARIANT. But then, it's easy! Construct $F$, get the graph. Study its eigenvalues and then I get all informations about the systems! Why the problem is so challenging? Once we get graph and $F$, we're OK! But who gives us the matrix? $f_{ij}$? Our goal is try to give some general answers. Try to connect properties of dynamical systems and the properties of the graph. Reach an acceptable generality level.
+
+\subsubsection{Remark}
+
+WAM if we consider our communication graph, $F$ is some sort of WAM. In WAM we said $a_{ij}>0\ \iff (i,j)\in E\ \land\ 0,\ otherwise$. Here $f_{ij}>0\ \iff (j,i)\in E$ is an edge! Sort of convention. Reverse definition. First difference $f_{ij}>0$ also for $i=j$! Second difference. It holds [$F=A^\top$], where $A$ is the weighted adjacency matrix (WAM) of $G$ when adding self-loops, then we get $(F=A^\top)$. Why the transpose? For the differences of indices $\implies (i,j)\rightarrow(j,i)$. Changing the orientation of the edges. Just a convention, however. Discrepanza di notazione dovuta al fatto che inizialmente la teoria dei grafi non era pensata per la comunicazione. $F$ è a tutti gli effetti la matrice di adiacenza per un grafo pesato.
+
+GOAL: Link properties from graph theory to linear systems theory. Mapping GRAPH $\mapsto$ LTI's. Let's look at $F$ as properties of the graph. First of all, $F$ is a non-negative matrix $\iff f_{ij} \centernot{<} 0$! ($F$ Non-negative matrix). $\iff f_{ij} \geq 0\ \forall i,j \in \{1,\ \dots,\ N\}$. Then let's introduce some properties of matrix. Introduce the notion of \underline{irreducible MATRIX}.
+
+\begin{defn}{\textbf{Irreducible Matrix}} \newline
+A square matrix $A$ is irreducible $\iff$
+\[
+	\nexists \Pi\ |\ \inv{\Pi^\top A\Pi}
+\]
+is upper-triangular.
+\end{defn}
+
+\underline{FACT} If $A$ is the (weighted) adjacency matrix of a (weighted) digraph, then $A$ is irreducible $\iff$ the graph is strongly connected. (Connection between theories as (CBT)). If you have a SPARSE MATRIX with non-negative values, then you can do this association ($\iff$ holds). Now we'll give the notion of PRIMITIVE MATRIX.
+
+\begin{defn}{\textbf{PRIMITIVE MATRIX}} \newline
+A matrix $A$ is primitive $\iff$
+\[
+	\exists (k\in \N)\ |\ A^k > 0 \iff [A^k]_{i,j} > 0\ \forall (i,j)\in \{1,\ \dots,\ \dim{A^k}\} \times \{1,\ \dots,\ \dim{A^k}\}
+\]
+\end{defn}
+
+Where $A^k$ is substantially a positive matrix. It doesn't do anything for the moment with the graph's theory, but\dots
+
+\begin{prop}{\underline{1.35 BCM}}
+\label{primitif}
+Let $G$ be a weighted digraph, with weighted adjacency matrix $A$. Then the following statements are equivalent:
+\begin{itemize}
+\item{i)} $A$ is (\underline{primitive});
+\item{ii)} $G$ is \underline{strongly connected} and \underline{APERIODIC}; 
+\end{itemize}
+\end{prop}
+
+(La classe delle matrici primitive è INCLUSA in quelle delle matrici irriducibili). A graph is APERIODIC if the largest common cycle I can create is of dimension 1. To generate an aperiodic graph is sufficient to add self loops. Quindi se $G$ presenta self loops, allora è \underline{APERIODICO}. 
+
+Let's make a connection with dynamical systems.
+
+\begin{lemma}
+The square matrix $A$ is convergent, $\lim_{t\to\infty}{A^t}=0 \iff$
+\[
+	\rho(A) = \max{\{\norma{\lambda_\C}\ |\ \lambda = eigval(A) =\ spectral\ radius\ < 1\}}
+\]
+
+ex. $a+jb \implies \norma{\lambda} = \sqrt{a^2+b^2} = \norma{a+jb}_\C$. $A$ is semi-convergent, meaning that: $\exists \lim_{t\to\infty}{A^t} \iff$
+\begin{itemize}
+\item{i)} $\rho(A) \leq 1$;
+\item{ii)} $\lambda=1$ is the only eigenvalue on the unit circle;
+\item{iii)} algebraic multiplicity of $(\lambda=1)$ is equal to the geometric multiplicity;
+\end{itemize}
+\end{lemma}
+
+Except of ii), these are the stability properties for a DLTI system. Con la ii) stiamo escludendo la possibilità di avere moti oscillatori, altrimenti il limite non sarebbe ben definito.
+
+\subsubsection{LINEAR DISTRIBUTED ALGORITHMS}
+
+\begin{thrm}{\textbf{Perron-Frobenius for primitive matrices}} \newline
+\label{perfrobn}
+If the non-negative matrix $A$ is primitive, then $\implies$
+\begin{itemize}
+\item{i)} $\rho(A)>0$ ($\rho(A)=\max{\{\norma{\lambda_\C}\ |\ \lambda\ is\ an\ eigenvalue\ of\ A\}}$);
+\item{ii)} $\rho(A)$ is an eigenvalue, \underline{it is simple} and it is strictly larger than the magnitude of the other eigenvalues;
+\item{iii)} $\rho(A)$ has an eigenvector with positive components;
+\end{itemize}
+\end{thrm}
+
+\begin{corl}
+If the non-negative matrix $A$ is primitive, then $\implies$
+\[
+	\exists \lim_{t\to\infty}{[\frac{1}{\rho(A)}A]^t}
+\]
+
+(If I scale all eigenvalues with the largest eigenvalue, then all the eigenvalues are $< 1$).
+\end{corl}
+
+\[
+	[x^{[i]}(t+1) = \sum_{j=1}^N{f_{ij}x^{[j]}(t)}]
+\]
+
+Let's suppose that\dots Of course, most of them will be equal to 0. Assume $\sum_{j=1}^N{f_{ij}}=1$ (convex combination) $\forall i \in \{1,\ \dots,\ N\}$. If I take my matrix $F$ and I sum each element of a row, it is equal to 1 $\implies$
+\[
+	F\mathbf{1}=\mathbf{1},\ \mathbf{1} := \begin{bmatrix}1\\ \vdots\\ 1\end{bmatrix}
+\]
+
+A matrix that is non-negative and satisfies that property is called \underline{ROW STOCHASTIC}. Notice that $F$ is a SPARSE MATRIX. If the elements on the columns sum up to $N$ is equal to 1, respectively: $\implies$
+\[	
+	\mathbf{1}^\top F = \mathbf{1}^\top \impliedby \sum_{j=1}^Nf_{ji}=1
+\]
+
+$\implies F$ is \underline{COLUMN STOCHASTIC}. A \underline{(ROW+COLUMN) STOCHASTIC} matrix is called \underline{DOUBLY STOCHASTIC}, or simply \underline{STOCHASTIC}. We'll show that $[\lambda=1=\rho(F)]$ (the largest eigenvalue of the matrix $F$). $\mathbf{1}$ è un autovettore della matrice $F$ con autovalore $1$. Dobbiamo dimostrare che è il più grande.
+
+\begin{thrm}{\textbf{Gershgorin}} \newline
+\label{gershgorin}
+Let $A \in \R^{N\times N}$ a matrix with $a_{ij}$ entries, then any eigenvalue $\lambda$ of $A$ satisfies:
+\[
+	\lambda \in \cup_{i\in\{1,\ \dots,\ N\}}{\{z \in \C\ |\ \norma{z-a_{ii}}_\C \leq \sum_{j\neq i}{\abs{a_{ij}}} = R_i\}}
+\]
+\end{thrm}
+
+In general this is a very rough result, but in our case is quite useful. Let's see what happens in our matrix $\implies$
+\[
+	A=\begin{bmatrix}a_{11}&a_{12}&a_{13}\\a_{21}&a_{22}&a_{23}\\a_{31}&a_{32}&a_{33}\end{bmatrix}
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&R_1 &= \abs{a_{12}}+\abs{a_{13}} \\
+	&R_2 &= \abs{a_{21}}+\abs{a_{23}} \\
+	&R_3 &= \abs{a_{31}}+\abs{a_{32}}
+	\end{aligned} 
+	\right.
+\]
+$\implies f_{ij} = \abs{f_{ij}}>0$. Let's take the first row for example. $f_{11} + f_{12} + \dots + f_{1N} = 1 \implies [f_{11} = 1-\sum_{j\neq 1}{f_{1j}}]$. This holds in general. 
+$f_{ii} = 1-\sum_{j\neq i}{f_{ij}}$. Why is it interesting? Suppose I take $(f_{ii}>0)$. Then the radius will be $(R_i \leq 1) \impliedby 1-(\sum_{j\neq i}{f_{ij}}=R_i) = 1-R_i = f_{ii} \implies R_i=1-f_{ii} \iff$ Il raggio $R_i$ sarà sempre minore di 1. Se $\lambda=1$, esso sarà l'unico possibile autovalore più grande $\implies \lambda=1=\rho(F)$ is the spectral radius. Sappiamo solo che $(\lambda=1)$ è l'autovalore di NORMA MASSIMA. Ma nessuno mi dice che $(\lambda=1)$ ha molteplicità 1! $(f_{ii}>0)$ (Tutti i cerchi saranno centrati nel cerchio di raggio 1, e toccheremo l'1 solo in un punto!)
+
+\begin{thrm}
+Consider the consensus system for a linear distributed algorithm:
+\[
+	x(t+1)=Fx(t)
+\]
+Assume $F$ is \underline{ROW STOCHASTIC} (I'm choosing $f_{ij}$ such as they are convex combination of neighbors). Then let the communication digraph $G$ (with self-loops) be strongly-connected, and let $v\in\R^n$ be a left eigenvector of $F$ with eigenvalue 1. Then $\implies$
+\begin{itemize}
+\item{i)} consensus is asymptotically reached, i.e.
+\[
+	\lim_{t\to\infty}{x(t)}=\alpha\mathbf{1} := \begin{bmatrix}\alpha\\ \vdots\\ \alpha\end{bmatrix}
+\]
+for some $(\alpha\in\R)$, and this holds $\forall x_0 \in \R^n$;
+\item{ii)} The consensus value is:
+\[
+	[\alpha = \frac{v^\top x(0)}{v^\top \mathbf{1}} = \frac{\sum_{i=1}^N{v_ix^{[i]}(0)}}{\sum_{i=1}^N{v_i}}];
+\]
+\item{iii)} If $F$ is \underline{doubly stochastic}, then average consensus is reached:
+\[
+	[\alpha=\frac{1}{N}\sum_{i=1}^N{x^{[i]}(0)}];
+\]
+(la media delle CINIT's);
+\end{itemize}
+\end{thrm}
+
+We're assuming that the agents communicate according to a fixed graph. Assume G is \underline{strongly connected}. It's a requirement to have complete spreading of information (informations can propagate). All vertex do a convex combination of other neighbors states. Agent $i$ can decide its own weights! $\sum_{j}{f_{ij}}=1\ \land\ v^\top F = v^\top \iff v^\top$ left eigenvector, with eigenvalue 1.
+
+\begin{itemize}
+\item{1)} The Agent reach consensus $x:=\begin{bmatrix}x^{[1]}\\ \vdots\\ x^{[N]}\end{bmatrix}$; in general, $\alpha$ is a convex combination of initial state. But if the matrix $F$is \underline{doubly stochastic} $\implies [v^\top=\mathbf{1}^\top]$.
+\item{2)} Preso qualsiasi grafo fortemente connesso $\implies$ se agisci con questo protocollo, allora raggiungi il consenso (alla media);
+\item{3)} Se G è UNDIRECTED $(f_{ij}=f_{ji} \implies [F=F^\top]$, $F$ diventa una matrice simmetrica ed è quindi (\underline{doppiamente stocastica});
+\end{itemize}
+
+Grafo fisso, dinamica lineare. Situazione privilegiata. $\lambda=1=\rho(A) \iff$ Il raggio spettrale è un autovalore, ed è proprio 1. Il raggio spettrale di una matrice stocastica è $\leq 1$ per Gershgorin.
+
+\subsubsection{LINEAR DISTRIBUTED ALGORITHMS AND CONSENSUS}
+
+\begin{thrm}
+Consider the consensus system:
+\[
+	x^{[i]}(t+1) = \sum_{j\in N_i^{IN}\cup{\{i\}}}{f_{ij}x^{[j]}(t)},\ i\in\{1,\ \dots,\ N\}
+\]
+
+with $G=(I,E)$ the associated fixed digraph, or equivalently: $x(t+1)=Fx(t)$. Assume that $F$ is ROW STOCHASTIC and let $(v\in\R^n)$ be a left eigenvector of $F$ with eigenvalue 1. Assume $G$ is strongly connected. Then:
+\begin{itemize}
+\item Consensus is asymptotically reached, i.e. $\lim_{t\to\infty}{x(t)} = \alpha\mathbf{1}$, for some $(\alpha\in\R),(x_0\in\R^n)$;
+\item The consensus value is:
+\[
+	[\alpha = \frac{v^\top x(0)}{v^\top \mathbf{1}} = \frac{\sum_{i=1}^N{v_ix^{[i]}(0)}}{\sum_{i=1}^N{v_i}}];
+\]
+\item If the matrix $F$ is \underline{doubly STOCHASTIC} $\implies$ average consensus is asymptotically reached;
+\end{itemize}
+\end{thrm}
+
+\begin{proof}
+Let's start to prove the theorem.
+\begin{itemize}
+\item First of all, since we are considering $G$ as it does have self-loops, then $F$ is primitive since $G$ is aperiodic and strongly connected. We're assuming positive weights in the diagonal of the matrix $F$. So, the graph $G$ is strongly connected and by considering self-loops, is aperiodic. Thus, by \ref{primitif}, $F$ is primitive.
+
+By using \ref{gershgorin} and the assumption that $F$ is ROW STOCHASTIC $(\lambda=1)$ is an eigenvalue and $\rho(F)=\lambda=1$. So, $\lambda$ is the spectral RADIUS of that matrix.
+
+By using theorem 1.13 (BCM) and the \ref{perfrobn}, $(\lambda=1)$ is a simple eigenvalue (algebraic multiplicity $:=$ geometric multiplicity); and $\lambda=1 > \norma{\lambda_2} \geq \norma{\lambda_3} \geq \dots \geq \norma{\lambda_N}$. This is a consequence also of Gershgorin theorem. L'unico modo per un autovalore per avere norma pari a 1 è proprio essere l'autovalore 1! E secondo Gershgorin gli altri debbono essere anche inferiori ad esso in norma. Thus by using Lemma 1.7, $F$ is semi-convergent, i.e.
+\[
+	\exists \lim_{t\to\infty}{F^t} \implies \exists \lim_{t\to\infty}{x(t)} = \lim_{t\to\infty}{F^tx(0)}
+\]
+
+and this limit exists. Since this and since $F$ is \underline{row stochastic} ($F\mathbf{1}=\mathbf{1}$) $\implies \underline{\lambda=1}$ \underline{is an eigenvalue}! It can be shown that $\lim_{t\to\infty}{x(t)} = \alpha\mathbf{1}$. The space span by $\mathbf{1}$ is the largest INVARIANT SET (some sort of discrete time Lasalle's version). Then $\implies$ consensus is reached. But how consensus is reached? RECAP-RECALL: If the matrix $F$ is \underline{DOUBLY STOCHASTIC} $\implies$ then the average consensus is also asymptotically reached. It is possible to show that: $\lim_{t\to\infty}{F^t} = \mathbf{1}w^\top$, and therefore
+\[
+	\lim_{t\to\infty}{x(t)} = \lim_{t\to\infty}{F^tx(0)} = \mathbf{1}w^\top x(0) = \mathbf{1}\alpha
+\] \QEDA
+\item $v^\top x(t+1) = v^\top Fx(t) = v^\top x(t)$ thus $v^\top x(t) = v^\top x_0\ \forall t \geq 0$;
+If holds $\forall t\geq 0 \iff \lim_{t\to\infty}{v^\top x(t)} = v^\top x(0)$, but $v^\top (\alpha\mathbf{1}) = v^\top x_0 \iff \alpha v^\top\mathbf{1} = v^\top x(0) \implies \alpha = \frac{v^\top x(0)}{v^\top\mathbf{1}}$; \QEDA
+\item If $F$ is doubly stochastic, $v=\mathbf{1} \impliedby [\mathbf{1}^\top F = \mathbf{1}^\top]$. Thus:
+\[
+	\alpha = \frac{\mathbf{1}^\top x(0)}{\mathbf{1}^\top\mathbf{1}=N} = \frac{1}{N}\sum_{i=1}^N{x^{[i]}(0)} \] \QEDA
+$\implies$ and this is exactly the average. In questo caso sia l'autovettore sinistro che quello destro sono un vettore di uni.
+\end{itemize}
+\end{proof}
+
+Ricordiamo che abbiamo scelto una particolare $F$ non-negativa. $F$ è un parametro di progetto che decido io. In realtà i pesi $(i,j)$ se li sceglie il nodo $i$ autonomamente senza interpellare gli altri. Design della $F$ fatta da noi. Avendo supposto $f_{ij}>0$, $F$ può ad esempio essere questa:
+
+\[
+	F = \begin{bmatrix}f_{11}&f_{12}&0&0\\f_{21}&f_{22}&f_{23}&0\\0&f_{32}&f_{33}&f_{34}\\0&0&f_{43}&f_{44}\end{bmatrix}
+\]
+
+Se impongo che questa debba essere stocasticamente riga e colonna, possiamo dimenticarci in questo momento delle dimostrazioni ed impongo che $F$ sia in partenza simmetrica.
+\subsubsection{LINEAR DISTRIBUTED ALGORITHMS FOR TIME-DEPENDENT SYSTEMS}
+We've proven this consensus result for a static graph (it is fixed and doesn't change with time). But typically can happen that communication depends somehow by the time. Consensus algorithm for a time-dependant system:
+\[
+	x^{[i]}(t+1) = \sum_{j\in N_i^{IN}(t)\cup{\{i\}}}{f_{ij}(t)x^{[j]}(t)}
+\]
+(Some structure as in the static case). Therefore it can be written as:
+\[
+	x^{[i]}(t+1) = \sum_{j=1}^N{f_{ij}(t)x^{[j]}(t)}
+\]
+and assume that: $f_{ij}(t) > 0 \iff (j,i)\in E\ \lor\ j=1\ \land\ f_{ij}=0\ otherwise\ \forall i \in\{1,\ \dots,\ N\}$.
+
+Now we need the same connectivity. ASSUME that:
+\begin{itemize}
+\item{i)}
+\[
+	\exists \delta > 0\ |\ f_{ii}(t) \geq 0\ \forall t \geq 0\ \forall i \in\{1,\ \dots,\ N\}
+\]
+\item{ii)}
+\[
+	f_{ij}(t) \in \{0\} \cup{\{[\delta,1]\}}\ \forall t \geq 0\ \land\ \forall i,j\in\{1,\ \dots,\ N\}
+\]
+\item{iii)}
+\[
+	\sum_{j=1}^N{f_{ij}(t)} = 1\ \forall t \geq 0\ \forall i,j\in\{1,\ \dots,\ N\}
+\]
+\end{itemize}
+
+\begin{thrm}
+Consider a matrix in linear distributed algorithm:
+
+\[
+	x^{[i]}(t+1) = \sum_{j=1}^N{f_{ij}(t)x^{[i]}(t)}
+\]
+with time-dependent communication graph $\{G(t)\}_{t\geq 0}$. Assume that ASSUMPTION 1 holds and that $\{G(t)\}_{t\geq 0}$ is uniformly joint connected (let's recall the definition):
+
+\begin{defn}{\textbf{RECALL: UNIFORMLY JOINT STRONGLY CONNECTED GRAPH}} 
+\[
+	\cup_{\tau=(t-1)T+1}^{tT}{G(\tau)}
+\]
+$\forall t \geq 1$, for some $T>0$.
+\end{defn}
+
+Then consensus is asymptotically reached. (This is the counterpart of the static version we are given).
+\end{thrm}
+
+\underline{REMARK}: If the graph is balanced $\implies$ \newline joint connectivity strongness is sufficient.
+(\underline{GRAFO BILANCIATO}) $\implies F$ PRIMITIVA $\implies	[F=F^\top = A = A^\top]$.
+If the matrix is doubly stochastic then $\implies$ average consensus is reached.
+Let's just give an idea of what is included in the proof of this result. Let's write the definition in a compact way:
+
+\[
+	x = \begin{bmatrix}x^{[1]}\\ \vdots\\ x^{[N]}\end{bmatrix};\ x(t+1) = F(t)x(t),\ x(0)=x_0
+\]
+
+Now the system is time-varying. Let's see what is the STM = state transition matrix:
+
+\[
+	\left\{
+	\begin{aligned}
+	&x(t) = \phi(t,t_0)x(t_0)\\
+	&x(t) = F(t-1)F(t-2)\dots F(0)x_0 
+	\end{aligned} 
+	\right.
+\]
+
+$\phi$ sia in tempo continuo che un tempo discreto. In other words, we want to study: 
+
+\[
+	\lim_{t\to\infty}{x(t)} = \lim_{t\to\infty}{(F(t-1)\dots F(0)x_0)} \impliedby
+\]
+
+basically is equivalent to study the product of these matrices:
+
+\[
+	\exists \lim_{t\to\infty}{F(t-1)\dots F(0)}
+\]
+
+\subsubsection{LEFT PRODUCT OF (ROW) STOCHASTIC MATRICES}
+
+\dots by the way both the static version and the time-dependent version of the algorithm are strictly related to MARKOV CHAIN $\rightarrow$ different states and somehow these states are connected to a graph. Consider a random walk on the graph. That's why they're called somehow STOCHASTIC. $f_{ij}$ can be considered as a probability $\iff \sum_{j=1}^N{f_{ij}}=1$. WEAK STRONG ERGODICITY. In particular, for the left products of row matrices, WEAK ERGODICITY holds, and 
+\[
+	[\exists \lim_{t\to\infty}{F(t-1)\dots F(0)} = \mathbf{1}w^\top] \implies
+\]
+for some properties of the graph. Then you've immediately consensus reached. 
+\[
+	\implies \lim_{t\to\infty}{x(t)}=\lim_{t\to\infty}{F(t-1)\dots F(0)x_0} = \mathbf{1}w^\top (x_0=x(0)) = \mathbf{1}\alpha
+\]
+
+Questi prodotti a sinistra di queste matrici hanno a che fare con la teoria della catena di MARKOV. Lo stesso comportamento dinamico ce l'abbiamo con i sistemi di consenso. Ovviamente la proprietà di ergodicità si può dimostrare tramite delle proprietà del grafo (Alcune proprietà di connettività $\implies$ Joint Strong Connectivity as JSC); piccola osservazione: i risultati dati, per avere consenso alla media, abbiamo dovuto assumere il grafo bilanciato $\implies$ o quantomeno che la matrice $F$ sia DOPPIAMENTE STOCASTICA. Per avere una media dobbiamo avere una sorta di simmetria nella/e comunicazione/i. Si ricorre all'utilizzo di altri algoritmi non lineari. Nella pratica però è molto difficile!! CASO UNDIRECTED $\subset$ CASO BILANCIATO.
+
+\subsubsection{LINEAR DISTRIBUTED CONTROL FOR CONTINUOUS-TIME SYSTEMS}
+
+Let's make an observation on some of these algorithms. Agents reach consensus If we think processors as having physical states\dots 
+Discrete-time control with "\underline{first-order dynamics}". Each system has some dynamics that is:
+\[
+	x^{[i]}(t) + u^{[i]}(t) = x^{[i]}(t+1)
+\]
+SOME SORT OF INTEGRATOR. $u^{[i]}(t)$ some sort of accumulator. If I look at this system as a control system with an INPUT, we can apply consensus algorithm theorem and reach consensus $\implies$ equivalent to solve RENDEZVOUS PROBLEM. Try to asymptotically reach the same point. This is supposed to be done by chatting only with local neighbors. How can we design $u$ such I can get consensus?
+DESIGN $u$ such as my dynamic become:
+\[ 
+	x^{[i]}(t+1) = f_{ii}x^{[i]}(t) + \sum_{j\in N_i^{IN}}{f_{ij}x^{[j]}(t)}
+\]	
+
+(CONSENSUS DYNAMIC). Il grafo quindi in questo caso potrebbe dipendere dallo stato e quindi eventualmente perdere ad un certo punto la connettività! Il consensus si raggiunge mantenendo quindi la CONNETTIVITA'.
+
+$[N_i^{IN} = \mathord{\cdot}(t,X,\mathord{\cdot}t)]$. Studio delle dinamiche sociali. Possibile autoinfluenza su una opinione oppure mano a mano avremo sempre più delle opinioni distanti? Grafo e dinamica sono in feedback l'uno con l'altra! Possibile perdita della Connettività, e quindi del consenso.
+
+(\dots) $N$ control systems, (continuous time). Let's suppose integrators:
+
+\[
+	\dot{x}^{[i]}(t) = u^{[i]}(t),\ i\in\{1,\ \dots,\ N\}
+\]
+
+Does there exist a feedback control $(u)$ such the agents reach consensus? Consensus means:
+
+\[
+	\lim_{t\to\infty}{\norma{x^{[i]}(t)-x^{[j]}(t)}} = 0
+\]
+\[
+	u^{[i]}(t) = \sum_{j\in N_i^{IN}}{(x^{[j]}(t) - x^{[i]}(t))}
+\]
+It's like we're applying a (P = Proportional) Control, (Controllo proporzionale solo alla differenza tra stati). If CLOSED-LOOP DYNAMICS
+\[
+	\dot{x}^{[i]}(t) = u^{[i]}(t) = \sum_{j\in N_i^{IN}}{(x^{[j]}(t) - x^{[i]}(t))};
+\]
+
+LINEAR SYSTEM (linear combination). We'll prove that this dynamics allows us to reach consensus. [Problema del consenso strettamente collegato a quello della SINCRONIZZAZIONE]. Progettare una legge di controllo distribuita per una rete di singoli integratori.
+
+\subsubsection{LINEAR DISTRIBUTED CONTROL FOR CONTINUOUS-TIME SINGLE INTEGRATORS}
+
+The goal of this network is to reach consensus. (Could generalize a little bit since $x^{[i]}(t)$ may be a vector itself)
+
+\[
+	\dot{x}^{[i]}(t) = u^{[i]}(t),\ i\in\{1,\ \dots,\ N\}
+\]
+\[
+	\dot{x}^{[i]}(t) = \sum_{j\in N_i^{IN}}{(x^{[j]}(t) - x^{[j]}(t))};
+\]
+($x^{[i]}(0)=x_0^{[i]}$. Reach consensus and possibly reach consensus on the average of CINITS).
+Distributed because $j\in N_i^{IN}$. (fixed version of the graph) $\implies$ then the dynamic of this system is that of a classical LTI system.
+
+\[
+	G=(\{1,\ \dots,\ N\}, E),\ [\dot{x}=?x(t)],\ x := \begin{bmatrix}x^{[1]}\\ \vdots\\x^{[N]}\end{bmatrix}
+\]
+
+Since $\dot{x}^{[i]}(t)$ is linear dynamic $\forall i$, the entire dynamic is LTI $\implies \dot{x}=Mx$ (UNFORCED LTI SYSTEM (No INPUT)). What is that $M\neq M(t)$? Are we able to find that special matrix? Let's try to rewrite $\dot{x}^{[i]}(t)$ in a different way:
+
+\[
+	\dot{x}=Mx,\ \{d_i^{IN} = \cardinality{N_i^{IN}} = \# N_i^{IN}\}
+\]
+\[	
+	\dot{x}^{[i]}(t) = \sum_{j\in N_i^{IN}}{x^{[j]}}-\underline{\sum_{j\in N_i^{IN}}{x^{[i]}(t)}} = (\dots) =
+\]
+
+where the underlined summation are terms that don't depend by $j$. Then $\implies$
+\[
+	(\dots) = \sum_{j\in N_i^{IN}}{x^{[j]}(t)} - d_i^{IN}x^{[i]}(t) = [\sum_{j=1}^N{a_{ji}x^{[j]}(t)} -  d_i^{IN}x^{[i]}(t)]
+\]
+
+where $a_{ji}=1 \iff (j,i)\in E$. In other words, let's introduce this notation: Given $A$ as the ADJ. MATRIX:
+\[
+	A = \begin{bmatrix}a_{11}&\dots &a_{1i}& \dots & a_{1N}\\ \vdots & \vdots & \vdots & \vdots & \vdots \\ a_{N1}&\dots & a_{Ni} & \dots & a_{NN}\end{bmatrix}
+\]
+
+Let $A_i$ be the $i$-th column of $A$. Then $\implies$
+\[
+	\dot{x}^{[i]} = A_i^\top x -d_i^{IN}x^{[i]}
+\]
+
+If I stack all of these dynamics I get:
+
+\[
+	\begin{bmatrix}\dot{x}^{[1]}\\ \vdots\\ \dot{x}^{[N]}\end{bmatrix} = \begin{bmatrix}A_1^\top \\ \vdots\\ A_N^\top\end{bmatrix}x - \begin{bmatrix}d_1^{IN}&0&\dots & 0\\0&d_2^{IN}&\dots & 0\\ \vdots & \vdots & \dots & \vdots\\0&\dots &0&d_N^{IN}\end{bmatrix}x
+\]
+
+where:
+\[
+	\left\{
+	\begin{aligned}
+	&? = (A^\top - D^{IN}) \\
+	&\dot{x} = (A^\top - D^{IN})x \implies \dot{x} = -L^{IN}x 
+	\end{aligned} 
+	\right.
+\]
+
+\underline{REMARK}: If we write a different dynamics:
+\[
+	\dot{x}^{[i]}(t) = \sum_{j\in N_i^{OUT}}{x^{[j]} - x^{[i]}(t)}
+\]
+In this case the dynamic become $\dot{x}=-Lx$, where $L$ is the Laplacian of $G$.
+
+Noi per convenzione abbiamo adattato la convenzione che $i$ riceve da $j$. Differente convenzione: ci viene fuori comunque il LAPLACIANO della teoria dei grafi standard.
+
+\[
+	\dot{x} = (A - D^{OUT})x,\ \dot{x}=-Lx
+\]
+
+\begin{thrm}{\textbf{(Continuos-time consensus)}} \newline
+Consider a network of $N$ systems,
+\[
+	x^{[i]}(t) = u^{[i]}(t),\ i\in\{1,\ \dots,\ N\}
+\]
+with communication digraph $G=(\{1,\ \dots,\ N\},E)$; applying the consensus algorithm we have:
+
+\[
+	\dot{x}^{[i]}(t) = \sum_{j\in N_i^{OUT}}{x^{[j]}(t) - x^{[i]}(t)}
+\]
+
+Let's write the OUT neighbors so we can play with the standard LAPLACIAN $L$. Suppose that $G$ is strongly connected, let $L$ be the LAPLACIAN of $G$ with left eigenvector $\gamma = \begin{bmatrix}\gamma_1&\dots &\gamma_N\end{bmatrix}^\top$ satisfying $\gamma^\top L = 0$ left associated ($\gamma$ autovettore sinistro, generatore dello spazio $\ker^{\perp}{L}$).
+\begin{itemize}
+\item{i)} a consensus is asymptotically reached $\forall$ the initial states (CINIT's) $\iff \lim_{t\to\infty}{x(t)} = \alpha\mathbf{1}$, for some $(\alpha\in\R)$;
+\item{ii)} the consensus value is:
+\[
+	\alpha := \frac{\gamma^\top x(0)}{\gamma^\top \mathbf{1}} = [\frac{\sum_{i=1}^N{\gamma_i x^{[i]}(0)}}{\sum_{i=1}^N{\gamma_i}}];\ (x_0\in\R^N);
+\]
+\item{iii)} If the graph is BALANCED then the average consensus is asymptotically reached $\implies$
+\[
+	[\alpha = \frac{1}{N}\sum_{i=1}^N{x^{[i]}(0)}];
+\]
+\end{itemize}
+\end{thrm}
+
+Those conclusions are strictly related to that of the discrete-time counterpart.
+
+\begin{proof}
+\begin{itemize}
+\item{i)}
+First of all, we need to prove that we reach consensus. Property of Laplacian: $0$ is an eigenvalue of Laplacian. By using the theorem on the properties of the Laplacian, since $G$ is \underline{strongly connected}, then $\implies \rank(L) = N-1$ (Each node is globally reachable vertex); i.e., $\lambda=0$ is a simple eigenvalue. $[L\mathbf{1}=0]$. The kernel is generated by $\mathbf{1}$, the unique (only) right eigenvector. Take a Jordan basis:
+\[
+	T = \begin{bmatrix}\mathbf{1}&v_2& \dots & v_N\end{bmatrix}
+\]
+How can we construct this Jordan Basis? Just to complete these Jordan basis. If I do that, then I can take a change of variables $x=Tz$. My $x(t)$, I can write it as:
+\[
+	x(t) = z_1(t)\mathbf{1} + z_2(t)v_2 + \dots + z_n(t)v_N
+\]
+
+Let's write the dynamic of $\dot{z}(t) = $
+\[
+	\dot{z}(t) = \inv{T}\dot{x} = -\inv{T}Lx  = -\inv{T}LTz = (-\inv{T}LT=J)z
+\]
+
+where $J$ is a Jordan matrix. Let's again consider the Gershgorin theorem to study the eigenvalues of the matrix $-L$. All the eigenvalues belong to the left half plane $\implies$ thus $\lambda_2,\ \dots,\ \lambda_N$ have negative real part. $R_i = \sum_{j\neq i}{\abs{l_{ij}}} = d_i^{OUT}$. Consider $r = \# (blocks \subset J)$. Now let's write the expression of:
+\[
+	z(t) = z_1(0)\e^{0t} + (\sum_{i=2}^r{\sum_{j=1}^{v_i}{\alpha_{ij}t^{j-1}\e^{\lambda_it}}} \tendsto{t\to\infty} 0) = \begin{bmatrix}z_1(0)\in\R \\0\\0\\ \vdots \\0\end{bmatrix}
+\]
+
+Since all of this $\lambda_i$ have negative real part, As $t \tendsto{} \infty,\ z(t) \tendsto{} z_1(0)\e^{0t} = z_1(0)$. Thus $\implies$
+\[
+	[\lim_{t\to\infty}{x(t)} = z_1(0)\mathbf{1}];
+\] 
+\[
+	\left\{
+	\begin{aligned}
+	&z_1(t) = z_1(0)\e^{0t} = z_1(0) \\
+	&z_i(t) = \sum_{j=1}^{v_i}{\alpha_{ij}t^{j-1}\e^{\lambda_i t}}
+	\end{aligned} 
+	\right.
+\]
+Le altre componenti $z_i$ sono influenzate da autovalori a parte reale negativa, quindi non ci danno comunque alcun problema. \QEDA
+\item{ii)} Adesso dobbiamo vedere a quale valore di consenso perveniamo!
+($\gamma^\top$ is a left eigenvector associated to eigenvalue 0).
+\[	
+	y(t) = \gamma^\top x(t),\ \dot{y}(t) = \gamma^\top \dot{x}(t) = (-\gamma^\top L=0)x(t) = 0;
+\]
+$\implies y(t)$ is a constant $\iff y(t) = y(0) = \gamma^\top x(0)$. As in the discrete time case, this must hold for $t \tendsto{} \infty,\ \forall t \implies$
+\[
+	\implies \lim_{t\to\infty}{y(t)} = \gamma^\top \lim_{t\to\infty}{x(t)} = \gamma^\top (\alpha\mathbf{1}) = \alpha\gamma^\top\mathbf{1} = \gamma^\top(x(0)=x_0) \implies
+\]
+\[
+	\implies \alpha=\frac{\gamma^\top x(0)}{\gamma^\top\mathbf{1}}
+\] \QEDA
+
+(Exactly as in the same version of the discrete-time case);
+\item{iii)} If $G$ is BALANCED $\iff \mathbf{1}^\top L = 0 \implies (\mathbf{1}=\gamma)$ (l'autovettore sinistro è in questo caso proprio $\mathbf{1}$!). Therefore,
+\[
+	\alpha = \frac{\mathbf{1}^\top x(0)}{\mathbf{1}^\top \mathbf{1}} = \frac{\sum_{i=1}^N{x^{[i]}(0)}}{N}
+\]
+(AVERAGE CONSENSUS). \QEDA
+\end{itemize}
+\end{proof}(l'autovettore destro è in questo caso proprio $\mathbf{1}$!)
+
+Il grafo path (linea) è uno dei casi peggiori per questo consenso. La velocità di convergenza è legata al secondo autovalore più grande.
+Reverse network. Problem called CONTAINMENT or IN LEADER-FOLLOWER NETWORK.
+
+What is a LFN? Network of $N$ systems $\neq$ (master-slave = struttura di calcolo parallelo). For continuos-time consensus, suppose:
+
+\[
+	\dot{x}^{[i]} = u^{[i]},\ i\in\{1,\ \dots,\ N\}
+\]
+\[	
+	\left\{
+	\begin{aligned}
+	&n^l\ agents\ called\ \underline{leaders}\\
+	&n^f\ agents\ called\ \underline{followers}
+	\end{aligned} 
+	\right.
+\]
+
+INPUT $u$ is different depending on $i$. $[n^l+n^f := N]$. Without loss of generality, let's suppose $\{1,\ \dots,\ n^f\}$ follow set of leaders. Informally, the leaders can somehow decide independently the control INPUT $u^{[i]}$, depending on their own tasks. Suppose leaders are fixed. (fixed positions $\in \R^2$). Suppose:
+\[
+	u^{[i]}(t) = 0\ \forall i \in\{n^f+1,\ \dots,\ N\}
+\]
+(stationality of integrators). Let $G=(\{1,\ \dots,\ N\},N)$ be the UNDIRECTED communication graph. Let's suppose $G$ is fixed $\iff G\neq G(t)$; we stay we have a \underline{fixed undirected graph}. The followers run the following input:
+\[
+	u^{[i]}(t) = \sum_{\underline{j\in N_i}}{(x^{[j]}(t)-x^{[i]}(t))}
+\]
+Note that $N_i$ can include both leaders and followers! So, each follower looks at its neighbors, and it simply applies a consensus protocol, and this holds $\underline{\forall i \in\{1,\ \dots,\ n^f\}}$ (only for the followers).
+I follower comunicano secondo $G$ fisso. What is the GOAL? The GOAL is to show that the followers asymptotically converge to the convex hull of leaders. HULL := CHIUSURA CONVESSA == Convex enclosure = HULL. How do we show this? Let's write the dynamic of leaders/followers, by distinguishing their own dynamic: $\dot{x}_l = \mathbf{0}$ (naturalmente la dinamica dei leader è nulla, avendo supposto la stazionarietà dei loro input-integratori.
+
+\[	
+	[\dot{x}_f^{[i]} = \sum_{j\in N_i^f}{(x_f^{[j]}(t) - x_f^{[i]}(t))} + \sum_{j\in N_i^l}{(x_l^{[j]}(t) - x_f^{[i]}(t))}],\ \forall i \in\{1,\ \dots,\ n^f\}
+\]
+
+Let's forget ($x_l^{[i]} = 0$); suppose all the vertices are running a consensus protocol. Let us pretend that both leaders and followers run the consensus protocol, then I can write the dynamics:
+
+\[
+	x := \begin{bmatrix}x_f\\x_l\end{bmatrix},\ x_f = \begin{bmatrix}x_f^{[1]}\\ \vdots\\ x_f^{[n^f]}\end{bmatrix}
+\]
+
+then I can write: $[\dot{x}=-Lx]$ (seen it in previous case). But now let's remember that $x$ contains both $x_f$ and $x_l$ parts:
+
+\[
+	\dot{x} = \begin{bmatrix}\dot{x}_f\\ \dot{x}_l\end{bmatrix} = -\begin{bmatrix}L_f&l_{fl}\\l^{\top}_{fl}&L_l\end{bmatrix}\begin{bmatrix}x_f\\x_l\end{bmatrix}
+\]
+
+(Just written $L$ \underline{into blocks}). Where the antidiagonal blocks are equal and transposed since the Laplacian is symmetric.
+
+But now let's remember that leaders don't run the consensus problem, thus:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_f = -L_fx_f - \underline{l_{fl}x_l} \\
+	&\dot{x}_l = \mathbf{0}
+	\end{aligned} 
+	\right.
+\]
+
+(\underline{TRUE DYNAMICS}), where the underlined term is driven by an input that are the state of the leaders! And then Now if we look at the following this is a LINEAR DYNAMIC (LINEAR DISTRIBUTED) CONTROL PROTOCOL. This constant input (fixed locations of leaders) refers to the product of $l_{fl}$ with the positions of the leaders $x_l$. We need to understand what are the property of $L_f$ matrix! One thing that we need to be careful is the following! $L_f$ is NOT THE LAPLACIAN MATRIX of the followers subgraph! This could be a confusion that may happen. Cambia il grado sulla diagonale! Tiene conto dei leaders e dei followers, non soltanto dei followers! Inoltre non somma più a 0.
+
+\begin{lemma}
+If the graph $G$ is connected, then $L_f > 0$ is positive definite. Let's see why $L_f$ is positive definite.
+\end{lemma}
+
+\begin{proof}
+First of all, we know that: $L$ is positive semidefinite, Because $L$ is the Laplacian of an undirected graph $\implies x^\top Lx \geq 0\ \forall x\ \land\ x^\top Lx = 0\ \impliedby x=\alpha\mathbf{1},\ \alpha\in\R$. Let's take $x=\begin{bmatrix}x_f\\0\end{bmatrix}$. If I compute $x^\top Lx$, this will be equal to:
+\[
+	x^\top Lx = x^\top_fL_fx_f \geq 0\ \forall x
+\]
+
+For sure this $L_f$ is positive semidefinite. Is it possible that for some $x_f\, x^\top_fLx_f=0$? No, it isn't possible because $x^\top Lx = 0\ \impliedby x=\alpha\mathbf{1}$. Thus $\implies$ 
+\[
+	(\begin{bmatrix}x_f^\top\\0\end{bmatrix}^\top L\begin{bmatrix}x_f\\0\end{bmatrix} \neq 0) > 0\ \forall x_f
+\]
+and this concludes the proof. $L_f > 0 \implies \lambda_i(L_f) > 0\ \forall i$.
+\end{proof}
+
+\begin{lemma}
+Given fixed leaders' states $x_l$, then $\implies$
+\[
+	[x_{fe} = -\inv{L_f}l_{fl}x_l]
+\]
+is the asymptotically stable equilibrum of the followers dynamics.
+\end{lemma}
+
+\begin{proof}
+For followers dynamic,
+\[
+	0 = \dot{x}_f = -L_fx_f -l_{fl}x_l
+\]
+
+Since we want to compute the equilibrium, since $L_f$ is positive definite and thus $\exists \inv{L_f} \implies$ we can compute the equilibrium by simply inverting the element:
+\[
+	[x_{fe} = (-\inv{L_f})l_{fl}x_l]
+\]
+It is asymptotically stable because $-L_f$ is neg. def. and thus Hurwitz and thus the equilibrium is asymptotically stable. Followers will converge on the equilibrium point. We need to prove:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\Delta x_f := x_f - x_{fe}\\
+	&\dot{\Delta x_f} = \dot{x}_f - (\dot{x}_{fe} = 0) = \dot{x}_f = -L_fx_f
+	\end{aligned}
+	\right.
+\]
+\end{proof}
+
+\begin{thrm}{\textbf{containment for fixed graph}} \newline
+Given a leader/follower network with connected communication graph $G$, then the followers asymptotically converge to the convex hull of the leaders.
+\end{thrm}
+
+\begin{proof}
+From the previous Lemmas the followers states converge to $x_{fe}$ asymptotically. What are the components of $x_{fe}$? By simply setting to 0 each
+\[
+	\dot{x}_{fe}^{[i]} = 0 = \sum_{j\in N_i}{(x_e^{[j]} - x_{fe}^{[i]})}
+\]
+This means that:
+\[
+	\sum_j{x_{fe}^{[i]}} = \sum_{j\in N_i}{x_e^{[j]}} \implies \cardinality{N_i}x_{fe}^{[i]} = \sum_{j\in N_i}{x_e^{[j]}} \implies
+\]
+\[
+	\implies x_{fe}^{[i]} = \frac{1}{\cardinality{N_i}}\sum_{j\in N_i}{x_e^{[j]}}
+\]
+$\forall i \in\{1,\ \dots,\ n^f\}$. (This holds ONLY FOR THE FOLLOWERS!) This condition is saying that each equilibrium state of the followers is a convex combination of the neighbors. Each followers must end-up into the convex combination of its neighbors. For each followers, thus it must belongs to the convex hull of its neighbors. No matter if they are leaders/followers! But since the leaders are fixed and do not have to satisfy this condition, the proof holds.
+\end{proof}

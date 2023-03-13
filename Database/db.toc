@@ -1,0 +1,159 @@
+\select@language {english}
+\select@language {italian}
+\select@language {italian}
+\select@language {italian}
+\select@language {english}
+\select@language {italian}
+\contentsline {chapter}{Introduzione}{ii}{chapter*.3}
+\contentsline {chapter}{\numberline {1}Modeling}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Progettazione}{1}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}Caso di Studio - Google}{1}{subsection.1.1.1}
+\contentsline {subsection}{\numberline {1.1.2}Organizzazioni}{3}{subsection.1.1.2}
+\contentsline {subsection}{\numberline {1.1.3}Lo scenario della progettazione - Progetto e realizzazione}{5}{subsection.1.1.3}
+\contentsline {subsection}{\numberline {1.1.4}Scenario Ingegneristico della Progettazione}{6}{subsection.1.1.4}
+\contentsline {section}{\numberline {1.2}Architettura di un Progetto Software}{7}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}L'hardware}{7}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Il software - Architettura a tre livelli}{9}{subsection.1.2.2}
+\contentsline {section}{\numberline {1.3}Modellazione dei dati}{10}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}ESEMPIO \IeC {\textendash } APPLICAZIONE CLIENT-SERVER}{11}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.2}ESEMPIO}{13}{subsection.1.3.2}
+\contentsline {subsection}{\numberline {1.3.3}ESEMPIO - THE COMPANY DATABASE}{14}{subsection.1.3.3}
+\contentsline {section}{\numberline {1.4}Conceptual Model}{17}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}Il valore NULL}{19}{subsection.1.4.1}
+\contentsline {subsection}{\numberline {1.4.2}ANALIST}{19}{subsection.1.4.2}
+\contentsline {subsection}{\numberline {1.4.3}SCHEMA}{20}{subsection.1.4.3}
+\contentsline {subsection}{\numberline {1.4.4}Come iniziare la progettazione di un DB}{22}{subsection.1.4.4}
+\contentsline {subsection}{\numberline {1.4.5}Ternary relation type}{22}{subsection.1.4.5}
+\contentsline {section}{\numberline {1.5}APPENDICE}{24}{section.1.5}
+\contentsline {subsection}{\numberline {1.5.1}DESIGN PATTERN}{24}{subsection.1.5.1}
+\contentsline {section}{\numberline {1.6}Esercizio - Fermate Autobus}{25}{section.1.6}
+\contentsline {subsection}{\numberline {1.6.1}Design Pattern: Preventivo-Consuntivo}{32}{subsection.1.6.1}
+\contentsline {subsection}{\numberline {1.6.2}Conclusione}{33}{subsection.1.6.2}
+\contentsline {section}{\numberline {1.7}DATA CENTRIC APPLICATION}{34}{section.1.7}
+\contentsline {subsection}{\numberline {1.7.1}USER TYPES}{34}{subsection.1.7.1}
+\contentsline {subsection}{\numberline {1.7.2}ESEMPIO}{35}{subsection.1.7.2}
+\contentsline {subsection}{\numberline {1.7.3}SIMPLIFIED MAPPING ALGORITHM}{35}{subsection.1.7.3}
+\contentsline {subsection}{\numberline {1.7.4}PRESENTATION LAYER FOR CUSTOMER OR DIRECTOR}{36}{subsection.1.7.4}
+\contentsline {subsection}{\numberline {1.7.5}BUSINESS RULE LAYER}{38}{subsection.1.7.5}
+\contentsline {section}{\numberline {1.8}LIST VIEW and DETAIL VIEW}{39}{section.1.8}
+\contentsline {subsection}{\numberline {1.8.1}DATA PATTERN}{40}{subsection.1.8.1}
+\contentsline {subsubsection}{EXAMPLE}{43}{section*.59}
+\contentsline {subsubsection}{EXERCISE: PHR (EHR)}{45}{section*.64}
+\contentsline {section}{\numberline {1.9}DBMS}{54}{section.1.9}
+\contentsline {subsection}{\numberline {1.9.1}Descrizione dei principali DBMS}{54}{subsection.1.9.1}
+\contentsline {subsection}{\numberline {1.9.2}Installazione e configurazione di MySQL}{55}{subsection.1.9.2}
+\contentsline {subsection}{\numberline {1.9.3}PRIMO CONTATTO CON MYSQL WORKBENCH}{63}{subsection.1.9.3}
+\contentsline {section}{\numberline {1.10}IMPORTANZA MODELLI}{74}{section.1.10}
+\contentsline {subsection}{\numberline {1.10.1}IMPORTANZA MODELLO DATI}{74}{subsection.1.10.1}
+\contentsline {subsection}{\numberline {1.10.2}IMPORTANZA INFORMAZIONE}{75}{subsection.1.10.2}
+\contentsline {section}{\numberline {1.11}DIAGRAMMI EER}{76}{section.1.11}
+\contentsline {subsection}{\numberline {1.11.1}SCHEMA EER CAPITOLO 4}{79}{subsection.1.11.1}
+\contentsline {subsection}{\numberline {1.11.2}ESERCIZIO SVOLTO IN CLASSE}{79}{subsection.1.11.2}
+\contentsline {chapter}{\numberline {2}MODELLO LOGICO}{81}{chapter.2}
+\contentsline {section}{\numberline {2.1}SQL QUERY: Le interrogazioni del database}{81}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}ALGEBRA RELAZIONALE}{82}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Operatore Join}{84}{subsection.2.1.2}
+\contentsline {subsubsection}{Tipi di Join}{85}{section*.131}
+\contentsline {section}{\numberline {2.2}Sviluppo di una Web Application}{86}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}XAMPP}{86}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}MySQL Workbench}{92}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}DataGrip}{95}{subsection.2.2.3}
+\contentsline {section}{\numberline {2.3}Algebra Relazionale}{96}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}INTRODUZIONE}{96}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}ALTRI OPERATORI}{97}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}ESEMPI DI QUERY}{100}{subsection.2.3.3}
+\contentsline {section}{\numberline {2.4}Queries}{101}{section.2.4}
+\contentsline {section}{\numberline {2.5}Popolazione casuale DB}{106}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Tipi di dato in MySQL}{106}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Attributi}{107}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.3}Funzioni di Aggregazione}{107}{subsection.2.5.3}
+\contentsline {subsection}{\numberline {2.5.4}Popolazione del DataBase}{108}{subsection.2.5.4}
+\contentsline {section}{\numberline {2.6}MySQL}{113}{section.2.6}
+\contentsline {subsection}{\numberline {2.6.1}Tipi di tabelle}{113}{subsection.2.6.1}
+\contentsline {subsubsection}{MyISAM}{113}{section*.165}
+\contentsline {subsubsection}{InnoDB}{114}{section*.166}
+\contentsline {subsubsection}{InnoDB - Le Transazioni}{115}{section*.168}
+\contentsline {subsubsection}{InnoDB - le chiavi esterne}{115}{section*.169}
+\contentsline {subsection}{\numberline {2.6.2}AUTO-INCREMENT}{117}{subsection.2.6.2}
+\contentsline {subsection}{\numberline {2.6.3}Tipi di dato in SQL}{118}{subsection.2.6.3}
+\contentsline {subsection}{\numberline {2.6.4}Funzioni di aggregazione}{123}{subsection.2.6.4}
+\contentsline {subsection}{\numberline {2.6.5}phpMyAdmin \IeC {\textendash } indici}{127}{subsection.2.6.5}
+\contentsline {subsection}{\numberline {2.6.6}Popolare database}{128}{subsection.2.6.6}
+\contentsline {section}{\numberline {2.7}SQL Recap}{129}{section.2.7}
+\contentsline {subsection}{\numberline {2.7.1}VINCOLI}{131}{subsection.2.7.1}
+\contentsline {subsection}{\numberline {2.7.2}Meccanismo base Query}{131}{subsection.2.7.2}
+\contentsline {subsection}{\numberline {2.7.3}ESERCIZIO}{132}{subsection.2.7.3}
+\contentsline {section}{\numberline {2.8}SQL per manipolare i dati}{135}{section.2.8}
+\contentsline {subsection}{\numberline {2.8.1}Transazioni e concorrenza (accenno)}{137}{subsection.2.8.1}
+\contentsline {subsection}{\numberline {2.8.2}Algebra a tre livelli}{138}{subsection.2.8.2}
+\contentsline {subsection}{\numberline {2.8.3}Query pi\IeC {\`u} complesse}{139}{subsection.2.8.3}
+\contentsline {subsection}{\numberline {2.8.4}Vincoli in SQL}{144}{subsection.2.8.4}
+\contentsline {subsection}{\numberline {2.8.5}Asserzioni}{144}{subsection.2.8.5}
+\contentsline {subsection}{\numberline {2.8.6}Trigger}{145}{subsection.2.8.6}
+\contentsline {subsection}{\numberline {2.8.7}Viste (Views)}{145}{subsection.2.8.7}
+\contentsline {subsection}{\numberline {2.8.8}Esercizio}{146}{subsection.2.8.8}
+\contentsline {section}{\numberline {2.9}Continuazione Popolamento DB}{147}{section.2.9}
+\contentsline {subsection}{\numberline {2.9.1}CRUD (Create, Read, Update, Delete)}{150}{subsection.2.9.1}
+\contentsline {subsubsection}{ARCHITETTURA}{150}{section*.229}
+\contentsline {subsubsection}{CONNESSIONE AL DB}{150}{section*.231}
+\contentsline {subsubsection}{CLASSE PHP PER LA CONNESSIONE AL DB}{151}{section*.232}
+\contentsline {subsubsection}{GRID PER LE OPERAZIONI CRUD}{152}{section*.233}
+\contentsline {section}{\numberline {2.10}CRUD cycle}{165}{section.2.10}
+\contentsline {subsection}{\numberline {2.10.1}PDO (PhpData Objects)}{166}{subsection.2.10.1}
+\contentsline {subsection}{\numberline {2.10.2}Grid per le operazioni CRUD}{167}{subsection.2.10.2}
+\contentsline {subsubsection}{Bootstrap}{168}{section*.261}
+\contentsline {section}{\numberline {2.11}Enhanced Mapping}{178}{section.2.11}
+\contentsline {subsection}{\numberline {2.11.1}ALGORITMO DI MAPPING}{179}{subsection.2.11.1}
+\contentsline {section}{\numberline {2.12}Overview}{181}{section.2.12}
+\contentsline {subsection}{\numberline {2.12.1}Modellazione di dati}{183}{subsection.2.12.1}
+\contentsline {section}{\numberline {2.13}Mapping RECAP}{185}{section.2.13}
+\contentsline {subsection}{\numberline {2.13.1}Svolgimento traccia d'esame}{188}{subsection.2.13.1}
+\contentsline {section}{\numberline {2.14}Qualit\IeC {\`a} di un DB}{196}{section.2.14}
+\contentsline {subsection}{\numberline {2.14.1}DIPENDENZE FUNZIONALI}{199}{subsection.2.14.1}
+\contentsline {section}{\numberline {2.15}Transazioni e Concorrenza}{202}{section.2.15}
+\contentsline {subsection}{\numberline {2.15.1}Transazioni}{202}{subsection.2.15.1}
+\contentsline {subsubsection}{Introduzione al Processing Transazionale}{202}{section*.312}
+\contentsline {subsubsection}{Two Sample Transactions}{203}{section*.313}
+\contentsline {subsubsection}{State Transition Diagram}{205}{section*.318}
+\contentsline {subsubsection}{Propriet\IeC {\`a} Transazione}{206}{section*.320}
+\contentsline {subsection}{\numberline {2.15.2}Concurrency Control Techniques}{207}{subsection.2.15.2}
+\contentsline {subsubsection}{Two Phases Locking Techniques}{207}{section*.323}
+\contentsline {subsubsection}{Deadlock Detection e Resolution}{208}{section*.326}
+\contentsline {subsubsection}{Locking ottimistico e pessimistico}{208}{section*.327}
+\contentsline {section}{\numberline {2.16}Indicizzazione e Indici}{208}{section.2.16}
+\contentsline {chapter}{\numberline {3}DATA WAREHOUSE}{209}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduzione}{209}{section.3.1}
+\contentsline {section}{\numberline {3.2}Analisi multidimensionale}{210}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Operazioni concettuali}{213}{subsection.3.2.1}
+\contentsline {section}{\numberline {3.3}Analisi Multidimensionale e Data Warehousing}{214}{section.3.3}
+\contentsline {section}{\numberline {3.4}COSTRUTTI AVANZATI DEL DFM}{221}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}ESEMPIO DELLE VENDITE (DA E/R)}{224}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Passaggio dall\IeC {\textquoteright }ER riconciliato al DFM: l\IeC {\textquoteright }ALBERO DEGLI ATTRIBUTI}{224}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}CARICO DI LAVORO}{225}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.4.4}PROGETTAZIONE LOGICA}{226}{subsection.3.4.4}
+\contentsline {section}{\numberline {3.5}LE TABELLE PIVOT DI EXCEL PER IL DATA WAREHOUSE}{227}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}QUERY}{230}{subsection.3.5.1}
+\contentsline {section}{\numberline {3.6}PROGETTAZIONE LOGICA}{235}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Indicatori}{235}{subsection.3.6.1}
+\contentsline {subsection}{\numberline {3.6.2}Motore Data Warehouse}{237}{subsection.3.6.2}
+\contentsline {subsection}{\numberline {3.6.3}SnowFlake Schema}{237}{subsection.3.6.3}
+\contentsline {chapter}{Appendici}{238}{chapter*.368}
+\contentsline {section}{\numberline {3.7}Esercizio (Core di Facebook)}{238}{section.3.7}
+\contentsline {subsection}{\numberline {3.7.1}Esempi di interrogazioni}{242}{subsection.3.7.1}
+\contentsline {subsection}{\numberline {3.7.2}Meta-Database e Meta-Dati}{243}{subsection.3.7.2}
+\contentsline {section}{\numberline {3.8}Modellazione}{243}{section.3.8}
+\contentsline {subsection}{\numberline {3.8.1}Stima della dimensione del database}{244}{subsection.3.8.1}
+\contentsline {subsection}{\numberline {3.8.2}MODELLO VISIBILITY}{245}{subsection.3.8.2}
+\contentsline {section}{\numberline {3.9}Esercizio (Compagnia Aerea)}{246}{section.3.9}
+\contentsline {subsection}{\numberline {3.9.1}Continuazione ESERCITAZIONE}{250}{subsection.3.9.1}
+\contentsline {subsubsection}{Query SQL}{251}{section*.389}
+\contentsline {subsection}{\numberline {3.9.2}DFM}{253}{subsection.3.9.2}
+\contentsline {subsubsection}{FATTI PRINCIPALI}{253}{section*.392}
+\contentsline {subsubsection}{FACT MODEL}{254}{section*.396}
+\contentsline {section}{\numberline {3.10}DATABASE TECHNOLOGIES}{255}{section.3.10}
+\contentsline {subsection}{\numberline {3.10.1}CLOUD COMPUTING}{255}{subsection.3.10.1}
+\contentsline {subsection}{\numberline {3.10.2}NIST REFERENCE ARCHITECTURE}{256}{subsection.3.10.2}
+\contentsline {subsection}{\numberline {3.10.3}BIG DATA}{257}{subsection.3.10.3}
+\contentsline {subsection}{\numberline {3.10.4}CAP'S THEOREM}{257}{subsection.3.10.4}
+\contentsline {subsection}{\numberline {3.10.5}DATABASE NoSQL}{258}{subsection.3.10.5}
+\contentsline {subsection}{\numberline {3.10.6}MAP REDUCE}{258}{subsection.3.10.6}

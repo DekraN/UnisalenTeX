@@ -1,0 +1,378 @@
+% --- ADVANCED CONTROL TECHNIQUES ---
+% ------------------------------------------------------
+% Corso di Laurea Magistrale in: Ingegneria Informatica - Università Del Salento
+% Titolo: Advanced Control Techniques
+% Autore: Dott. Marco Chiarelli
+% Relatore: Prof. Giuseppe Notarstefano
+% Data: 31/05/2016
+% Anno Accademico 2015/2016
+% Consultazione Consentita
+
+%INIZIO PREAMBOLO
+
+\documentclass[11 pt,a4paper,twoside,openany]{book}
+
+% Preambolo codifica
+\usepackage[utf8]{inputenc}
+
+%Preambolo lingue
+\usepackage[english,italian]{babel}
+
+
+% Preambolo formattazione
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{indentfirst} %indentazione}
+
+% Preambolo stile pagina
+\usepackage{fancyhdr}
+
+%Preambolo matematica
+\usepackage{xfrac}
+\usepackage{amsmath}
+\usepackage{amsthm} % dopo amsmath!
+
+% Preambolo grafico
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage[pages=some]{background}
+\usepackage{transparent}
+
+% Preambolo contenuti LoremIpsum
+\usepackage{lipsum}
+
+%hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
+
+%Preambolo bibliografia
+
+\usepackage[numbers,sort&compress]{natbib}
+
+%Preambolo licensa
+%\usepackage{creativecommons}
+\usepackage{ccicons}
+
+
+%Preambolo testo
+\usepackage{setspace}
+\usepackage{epigraph}
+\usepackage{ragged2e}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Preambolo schema a blocchi
+\usepackage{verbatim}
+
+% Preambolo matematica
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{centernot}
+\usepackage{accents}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norma}{\lVert}{\rVert}
+
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{defn}{Definition}
+\newtheorem{thrm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corl}{Corollary}
+
+
+\newcommand\inv[1]{#1\raisebox{1.15ex}{$\scriptscriptstyle-\!1$}}
+\newcommand{\tendsto}[1]{\xrightarrow{\smash{\raisebox{0.10ex}{$\scriptstyle#1$}}}}
+  
+
+\newcommand{\numberset}{\mathbb}
+\newcommand{\N}{\numberset{N}}
+\newcommand{\Z}{\numberset{Z}}
+\newcommand{\R}{\numberset{R}}
+\newcommand{\C}{\numberset{C}}
+
+\newcommand{\cball}{\bar{\mathbb{B}}}
+\newcommand{\oball}{\mathring{\mathbb{B}}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}} %dichiarazione differenziale
+\newcommand*{\im}{\mathop{}\!\mathrm{i}} %dichiarazione unit immaginaria
+\newcommand*{\e}{\mathop{}\!\mathrm{e}} %dichiarazione unit nepero
+\newcommand*{\imm}{\mathop{}\!\mathrm{Imm}} %immagine
+\newcommand*{\id}{\mathop{}\!\mathrm{id}}
+\newcommand*{\Span}{\mathop{}\!\mathrm{span}} %span
+\newcommand{\sign}{\text{sign}}
+
+\newcommand{\lapl}{\mathcal{L}}
+
+\newcommand{\ctsys}{
+\[
+\left\{
+\begin{aligned}
+\dot{x}(t) &= f(x(t), u(t), t); \\
+y(t) &= h(x(t), u(t), t);
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0;
+\]
+}
+
+\newcommand{\dtsys}{
+\[
+\left\{
+\begin{aligned}
+x(t+1) &= f(x(t), u(t), t); \\
+y(t) &= h(x(t), u(t), t);
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0;
+\]
+}
+
+\newcommand{\lctsys}{
+\[
+\left\{
+\begin{aligned}
+\dot{x}(t) &= A(t)x(t) + B(t)u(t); \\
+y(t) &= C(t)x(t) + D(t)u(t)
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0;
+\]
+}
+
+\newcommand{\ldtsys}{
+\[
+\left\{
+\begin{aligned}
+x(t+1) &= A(t)x(t) + B(t)u(t); \\
+y(t) &= C(t)x(t) + D(t)u(t)
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0;
+\]
+}
+
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}
+\newcommand*{\QEDB}{\hfill\ensuremath{\square}}
+
+\newcommand{\cardinality}[1]{\left\vert{#1}\right\vert}
+
+% Preambolo Inclusione Capitoli
+\includeonly{chapters/intro,%
+			 chapters/systheory,%
+			 chapters/sysstab,%
+			 chapters/distsys,%
+			 chapters/algoptzs,%
+			 chapters/training}
+
+% Preambolo caption, subfig, etc...
+\usepackage{caption}
+\usepackage{subfig}
+
+%FINE PREAMBOLO
+
+
+%FINE PREAMBOLO
+
+\selectlanguage{english}
+\selectlanguage{italian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\newpage	
+\begin{titlepage}
+\begin{center}
+	
+\begin{figure}
+	\centering
+	\includegraphics[height=6cm]{unigold.jpg}
+\end{figure}		
+
+\begin{center}
+\begin{LARGE}
+	\textsc{UNIVERSIT\`A DEL SALENTO}\\
+	[0.2cm]
+	\textsc{Department of Innovation Engineering}
+\end{LARGE}
+\end{center}	
+	
+	\
+	\line(1,0){270} \\
+	[0.25cm]
+	
+	\textsc{Master's degree in Computer Engineering}\
+	
+	\textsl{}\\
+	[1cm]
+	\textsc{Advanced Control Techniques}\
+	
+	\bigskip 
+	\huge{\bfseries Advanced Control Techniques}\
+
+	
+	\bigskip
+	\textsl{}\\
+	[2cm]
+	
+
+
+\begin{LARGE}
+	
+	Dott. Marco Chiarelli
+	
+\end{LARGE}
+
+\vspace{5cm}
+	
+\line(1,0){150} \\
+\begin{small}
+	Academic Year 2015/2016 \\
+\end{small}
+\end{center}
+\end{titlepage}
+
+
+\pagenumbering{arabic}
+
+\newpage
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\newpage
+Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 3.0 Unported. Per leggere una copia della licenza visita il sito web http://creativecommons.org/licenses/by-nc-sa/3.0/ o spedisci una lettera a Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.\par \ccbyncsaeu
+	\vfill
+	Questi appunti sono stati scritti utilizzando \LaTeX\ tramite la distribuzione MiKTeX\ \url{http://miktex.org/}  
+	
+	Come editor è stato usato TeXMaker 4.4.1\ \url{http://www.xm1math.net/texmaker/}
+	\vfill
+Dei contenuti rielaborati in questa opera, salvo esplicitamente scritto il contrario, il prof. Giuseppe Notarstefano non se ne assume alcuna responsabilità.
+
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\thispagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\vspace{2cm}
+
+\selectlanguage{english}
+
+\noindent
+
+\chapter*{\centering\begin{normalsize}Sommario\end{normalsize}}
+\begin{quotation}
+\noindent Le seguenti dispense vogliono essere un resoconto didattico del corso di Advanced Control Techniques, il quale docente è il prof. Giuseppe Notarstefano, presso il CdL in Ingegneria Informatica at Unisalento. Il programma copre tre macro-argomenti: la Stabilità dei Sistemi Non Lineari, i Sistemi Distribuiti ed Algoritmi di Ottimizzazione (distribuiti), più un piccolo capitolo circa delle Esercitazioni. Il seguente lavoro non ha la pretesa di sistematizzare in maniera esatta ciò che è stato fatto a lezione, sebbene l'impostazione di base cerca di seguire fedelmente ogni singola lezione che è stata erogata. Piuttosto cerca di raccogliere in maniera sintetica ma al contempo esaustiva gli aspetti chiave della Teoria del Controllo Avanzato, di fare ordine tra una quantità non indifferente di nozioni, e soprattutto di dare un sussidio alla preparazione di un eventuale esame didattico che richieda la conoscenza di queste nozioni e relativa applicazione per quanto concerne il lato pratico.
+\end{quotation}
+\clearpage
+
+\selectlanguage{english}
+
+\chapter*{\centering\begin{normalsize}Abstract\end{normalsize}}
+\begin{quotation}
+\noindent The following work want to be a report about the Advanced Control Techniques course, whose teacher is the prof. Giuseppe Notarstefano, at. Computer Engineering @ Unisalento. The program covers three macro-topics: Non-Linear Systems' Stability, Distributed Systems, and (Distributed) Optimization Algorithms plus a little chapter that treats some Exercises. It won't systematize the entire work done at lessons in an exact manner, despite the base setting tries to follow each lessons that has been delivered to us. It tries to gather the key aspects of the Advanced Control Theory, and to reorder some difficult notions. Moreover it tries to give an help for the preparation of an eventual didactic exam that requires the knowledge about these notions and the related practical applications/homework/exercises.
+\end{quotation}
+\clearpage
+
+\selectlanguage{italian}
+
+\tableofcontents
+
+
+\frontmatter
+
+\cleardoublepage\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\bfseries Ringraziamenti
+\end{center}
+\bigskip
+
+Un grazie particolare va ai miei compagni\\
+d'università, Dino Sbarro, Gabriele Accarino, Giampiero D'Autilia, Matteo Settembrini, Paolo Panarese ed Emanuele Costa Cesari.
+
+\vspace*{\fill}
+\pagebreak
+
+%************************************************
+% Chapter 0: INTRODUCTION
+%************************************************
+\include{chapters/intro}
+
+\mainmatter
+
+%************************************************
+% Chapter 1: SYSTEMS' THEORY
+%************************************************
+\include{chapters/systheory}
+
+%************************************************
+% Chapter 2: SYSTEMS' STABILITY
+%************************************************
+\include{chapters/sysstab}
+
+%************************************************
+% Chapter 3: DISTRIBUTED SYSTEMS
+%************************************************
+\include{chapters/distsys}
+
+%************************************************
+% Chapter 4: (DISTRIBUTED) OPTIMIZATION'S ALGORITHMS
+%************************************************
+\include{chapters/algoptzs}
+
+%************************************************
+% Chapter 5: TRAINING FACILITY
+%************************************************
+\include{chapters/training}
+
+\backmatter
+%************************************************
+% Capitolo: CONCLUSIONE
+%************************************************
+% \include{chapters/ending}
+
+\newpage
+
+\section*{Credits}
+
+\begin{figure}[h]
+\includegraphics[width=3cm]{figures/marco.jpg}
+\vspace{0.3cm}
+
+\raisebox{-0.35ex}{\includegraphics[width=4ex]{figures/link.png}}%
+\hspace{0.05cm} /marcochiarelli
+
+\end{figure}
+
+
+
+%BIBLIOGRAFIA - redatta con il relativo ambiente
+\begin{thebibliography}{100}
+\bibitem{rif1} F. Bullo, J. Cortés, S. Martinez \emph{Distributed Control of Robotic Networks}
+\bibitem{rif2} Hassan K. Khalil \emph{Nonlinear System Third Edition}
+\bibitem{rif3} Dimitri P. Bertsekas \emph{Nonlinear Programming SECOND EDITION}
+\bibitem{rif4} L. Fortuna, M. Frasca \emph{Complementi di Teoria dei Sistemi e di Controlli Automatici}
+\end{thebibliography}
+
+\end{document}

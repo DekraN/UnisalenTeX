@@ -1,0 +1,2681 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Systems' Stability}
+\label{cap:sysstab}
+%************************************************\\
+
+\section{INTERNAL STABILITY}
+
+\subsection{Equilibria Stability}
+
+Let's move to the concept of stability. Internal $\impliedby$ we want to study the stability of the equilibria. We're not changing the input. $u :=\ constant$. We only allow the CINIT to vary. In other words, we are interested to see what happens to one equilibrium trajectory if, instead of starting at the equilibrium, we take CINIT in a \underline{neighborhood} of the equilibrium. For example, for the PENDULUM we have to set the TORQUE $\underline{(u \neq u(t)) = u_e}$.
+
+\begin{defn}{\textbf{STABLE EQUILIBRIUM}}
+\label{stabeq}
+An equilibrium $x_e$ of $\dot{x} = f(x,t)$ is \underline{STABLE} if:
+\[
+	\forall \epsilon > 0\ \exists \delta(\epsilon, t_0) > 0\ |\ \norma{x(0) - x_e = \delta_x} < \delta(\epsilon,t_0) \implies \norma{x(t) - x_e} < \epsilon \quad \forall t \geq 0
+\]
+\end{defn}
+
+This holds for (UNFORCED systems), or for FORCED-FIXED-INPUT systems (FFI's).
+If we start from $x_e$ then do we know we will stay $\forall t$ at this point. But if we start in a neighborhood\dots ? Roughly speaking, an equilibrium is stable when starting closely to the equilibrium, then I remain sufficiently close to it. The $\forall \epsilon$ means that we have that ball in which we want the trajectory to stay.
+The $\delta$ to choose must be such that: $[\delta(\epsilon,t_0) < \epsilon]$. 
+We can pick any CINIT inside that $\delta$.
+I can guarantee the trajectory still remains within $\epsilon$-radius sphere. 
+So, take an arbitrarily small $\epsilon$, then decide $\delta(\epsilon,t_0)$. No matter where to choose CINIT inside $\delta$, the trajectory stays in the $\epsilon$-interior neighborhood. 
+
+\begin{defn}{\textbf{UNIFORMLY STABLE EQUILIBRIUM}}
+The same as before \ref{stabeq}. The difference is that must hold:
+\[
+	\delta(\epsilon,t_0) = \delta(\epsilon) \neq \mathord{\cdot}(t_0)
+\]
+DOESN'T DEPEND on $t_0$.
+\end{defn}
+
+The $\delta$ will be always the same.
+Note that for TIME-INVARIANT systems, stable equilibrium are also always UNIFORMLY STABLE (Dal momento che per tali sistemi la traiettoria in un diverso istante temporale sarà sempre una versione traslata della precedente). Il concetto di uniforme stabilità di un equilibrio fa sostanzialmente sì che il $\delta$ sia scelto indipendentemente dal'istante iniziale in cui comincia ad evolvere la traiettoria.
+
+\begin{defn}{\textbf{UNSTABLE EQUILIBRIUM}}
+An equilibrium is \underline{UNSTABLE} if it is NOT stable.
+\end{defn}
+
+Just explicitly negate the stability definition. Do as an exercise: try to write explicitly the definition of an unstable equilibrium.
+
+\begin{defn}{\textbf{ATTRACTIVE EQUILIBIRUM}}
+An equilibrium $x_e$ is \underline{attractive} if:
+\[
+	\exists \delta(t_0)\ |\ \forall x(t),\ with\ \norma{x(t_0) - x_e} \leq \delta(t_0),\ \implies \lim_{t \to +\infty} \norma{x(t) - x_e} = 0
+\]
+\end{defn}
+
+This compact definition is only a SHORTHAND for the following we'll write to deeply comprehend this notion:
+
+\[	
+	\forall \eta > 0\ \exists T(\eta,t_0) > 0\ |\ \norma{x(t_0) - x_e} < \delta(t_0) = \delta(\eta,t_0) \implies \norma{x(t)-x_e} < \eta\ \forall t \geq T(\eta,t_0)
+\]
+
+Just the definition of the limit explicited.
+
+\begin{defn}{\textbf{UNIFORMLY ATTRACTIVE}}
+An equilibrium $x_e$ is \underline{uniformly attractive} if it is attractive and the following holds:
+\[
+	\left\{
+	\begin{aligned}
+	\delta(t_0) &= \delta \neq \mathord{\cdot}(t_0) \\
+	T(\eta,t_0) &= T(\eta) \neq \mathord{\cdot}(t_0)
+	\end{aligned} 
+	\right.
+\]
+\end{defn}
+
+Substantially it means that the convergence is uniform in $t_0$. This definition tells us something about the asymptotic behavior of the system. Some neighborhood $\delta$ such that, if we start in this neighborhood, the trajectory will evolve but no matter when this happens: the trajectory goes back to the equilibrium, which was the previous CINIT.
+In particular, it must be clear that the notions of stability and of attractiveness are two distinct concept! Actually: $STABILITY \centernot{\iff} ATTRACTIVENESS$. A little flashforward: Nel caso valgano entrambe le proprietà, si parla di ASINTOTICA STABILITA'.
+
+Let's see some counterexamples
+
+\subsection{counterexamples}
+
+\subsubsection{discrete-time counterexamples}
+
+\[
+	x(t+1) = f(x(t)),\ where:
+\]
+\[
+	f(x(t)) := \left\{
+	\begin{aligned}
+	2x(t),& \quad \abs{x(t)} < 1 \\
+	0,& \quad otherwise
+	\end{aligned} 
+	\right.
+\]
+
+It is quite straightforward to see that despite the equilibrium is \underline{globally attractive}, it is \underline{not stable}. In fact, by taking some $\epsilon < 1$, I cannot find any $\delta$ such that the definition of the stability holds. This behavior is some special situation due to discontinuity, but it's not a property that holds for both CT/DT.
+
+\subsubsection{continuous-time counterexamples}
+
+\[
+	f(x(t)) := \left\{
+	\begin{aligned}
+	\dot{x}_1 &= [\frac{x_1^2(x_2-x_1) + x_2^5}{(x_1^2 + x_2^2)(1+(x_1^2+x_2^2))}] \\
+	\dot{x}_2 &= [\frac{x_2^2(x_2-2x_1)}{x_1^2+x_2^2)(1+(x_1^2+x_2^2))}]
+	\end{aligned} 
+	\right.
+\]
+
+$(0,0)$ is not defined. But we may extend it for continuity. Try to simulate in MATLAB the evolution of this system. Put some CINIT in a neighborhood of the origin. It will go OUTSIDE, but it will GO BACK TO THE ORIGIN.
+
+\subsection*{Equilibria Stabiliy}
+
+Let's go back to the Equilibria Stability. Let's introduce the notion of Asymptotic Stability:
+
+\begin{defn}{\textbf{(Uniformly) Asymptotically STABLE Equilibrium}}
+
+An equilibrium $x_e$ is \underline{(Uniformly) Asymptotically stable} if it is:
+\begin{itemize}
+\item STABLE (Uniformly)
+\item ATTRACTIVE (Uniformly)
+\end{itemize}
+\end{defn}
+
+Let's go back one more time to the attractiveness property: Fundamentally, it tells us: $\lim_{t\to\infty}\norma{x(t)-x_e}=0 \implies \lim_{t\to\infty}x(t)=x_e$; (Non è detto che debba uscire, ma l'importante è che ritorni. Quindi praticamente non ci preoccupiamo della stabilità nell'attrattività).
+We've introduced earlier also the notion of stability. What happens when we start in a neighborhood of equilibrium point, which if ATTRACTIVE, then it'll go back to the origin. (for DTS, in particular, it happens in a finite time). The main property is the asymptotically stable property.
+REMARK: It should be clear that for time-invariant systems, the stability properties are always uniform, because we have just trajectory that are time-translated version of the test trajectory.
+
+Let's introduce new one more definition:
+
+\begin{defn}{\textbf{GLOBALLY UNIFORMLY ASYMPTOTICALLY STABLE}}
+
+An equilibrium $x_e$ is so-called \underline{\emph{GUAS}} if it is:
+\begin{itemize}
+\item \underline{stable}; but it actually holds in some special way...
+\item $\delta(\epsilon) > 0$ should satisfy this property: $[\lim_{\epsilon\to\infty}\delta(\epsilon) = +\infty]$, here we're asking more. Chosen a big $\epsilon$, we're not allowed to choose a small $\delta$. If we want to stay around the equilibrium we should choose a sufficiently big neighborhood along with $\epsilon$;
+\item $\forall \eta > 0\ \forall c > 0\ \exists T(\eta,c) > 0\ \forall x(t_0),\ with\ \norma{x(t_0)-x_e} < c \implies \norma{x(t)-x_e} < \eta, \forall t \geq T(\eta,c)$ (UNIFORMLY ATTRACTIVE);
+\end{itemize}
+This is the GLOBALLY UNIFORMLY ASYMPTOTICALLY STABLE definition (la quale sostanzialmente ci dice che NON importa dove partiamo).
+\end{defn}
+
+Roughly speaking, it means that somehow I stay bounded with my trajectory. No matter how far then we converge to the equilibrium. T.INV stable systems are always uniform. It should be clear that if $x_e$ is GAS, it has to be \underline{UNIQUE}! The second part of the definition is in fact clear enough! No matter where we start, we must come to the equilibrium (Se esiste un altro equilibrio, allora se ivi partissimo, ivi dovremmo rimanere, e questo creerebbe una INCONSISTENCY. La definizione di GAS non sarebbe infatti più verificata).
+
+\begin{defn}{\textbf{(UNIFORM) EXPONENTIAL STABILITY}} \newline
+An equilibrium $x_e$ is \underline{exponentially STABLE} if: $\exists K > 0\ c > 0\ |\ \forall x(t_0)\ with\ \norma{x(t_0) - x_e} < c \implies$
+\[
+	\norma{x(t) - x_e} < K\norma{x(t_0)-x_e}\e^{-K(t-t_0)},\ \forall t \geq t_0
+\]
+\end{defn}
+
+Substantially it means that we're converging to the equilibrium in an exponential way. There's an exponential envelope such that if I start in this neighborhood, this trajectory goes to 0 inside THIS exponential envelope.
+
+\begin{defn}{\textbf{Globally EXPONENTIAL STABILITY}} \newline
+If Exponential Stability holds $\forall x(t_0) \in \R^n$.
+\end{defn}
+
+(No matter how we choose $x(t_0)$, that property holds $\forall c $).
+Exercise: Prove that exponential stability $\implies$ asymptotical stability.
+
+Let's show that the stability of a general equilibrium can be studied with the original for another system. (for a different but equivalent system). $\dot{x}=f(x,t),\ x_e$ is an equilibrium, ie $\underline{f(x_e,t)=0, \forall t}$.
+STATE: $[\tilde{x} = x-x_e]$, and let's write the dynamic of $\tilde{x}$. If it is a trajectory, it must satisfy some dynamic:
+
+\[
+	\dot{\tilde{x}}(t) = \dot{x} - (\dot{x_e}=0) = \dot{x}(t) = f(x(t),t) = f(\tilde{x}(t)+x_e,t)
+\]
+
+The dynamic is $\dot{\tilde{x}} = f(\tilde{x}+x_e,t)$. Let's see if the new point is an equilibrium. $\tilde{x}=0$ is an equilibrium of the new system since $f(x_e,t) = 0$. The new system is: $\dot{\tilde{x}}=\tilde{f}(\tilde{x},t)$, where $\tilde{f}$ is a new function such defined:
+\[
+	\tilde{f}(\tilde{x},t) := f(\tilde{x}+x_e,t)
+\]
+
+Note that $f,\ \tilde{f}$ are different functions in their variables. It is important to point out that: $\tilde{f}(z,t) \neq f(z,t),\ z \in \R^n$! We've shown that if we have an equilibrium, we can study the equilibrium of the origin for the new system. (Daremo i risultati studiando la stabilità dell'origine ed altre proprietà, ex.). Observation: TIME-INVARIANT case:
+$\dot{x}=f(x),\ x_e$ is an equilibrium, $f(x_e) = 0;\ \dot{\tilde{x}} = f(\tilde{x}+x_e) = \tilde{f}(\tilde{x})$. We get then: $\tilde{f}(\tilde{x}) = f(\tilde{x}+x_e)$. So, by recap, if I start from a time invariant system, the EQUIVALENT SYSTEM is also T. INV!
+\[
+	\dot{\tilde{x}} = \tilde{f}(\tilde{x})
+\]
+If I start from a T.INV with an equilibrium, with this transformation we're playing always with T.INV systems.
+
+\subsection{Trajectories Stability}
+
+\begin{defn}{\textbf{STABILITY OF A TRAJECTORY (INTERNAL STABILITY OF A TRAJECTORY)}}
+A trajectory $(\bar{x}(\mathord{\cdot}),\dot{u}(\mathord{\cdot}))$ of $\dot{x}=f(x,u,t)$ (remember that trajectory means that $\dot{\bar{x}}(t) = f(\bar{x}(t),\bar{u}(t),t)$ is satisfied) is internally stable if: $\forall \epsilon > 0\ \exists \delta(\epsilon,t_0)\ |$
+
+\[
+	\forall x(t_0)\ with\ \norma{x(t_0)-\bar{x}(t_0)} < \delta(\epsilon,t_0) \implies \norma{x(t)-\bar{x}(t)} < \epsilon,\ \forall t \geq t_0
+\]
+\end{defn}
+
+SAME INPUT, but different CINIT's. If the trajectory stays in that tube, then it is stable. ex: Rewrite the previous definition for the equilibrium as a special trajectory.
+
+$\dot{x}(t) = f(x(t),u(t),t)$, FIXED $u$. This become: $\dot{x}(t) = f(x(t),\bar{u}(t),t)$ is an UNFORCED system. If we put an equilibrium in the definition of the stability of a trajectory, then we obtain the definition of the stability of the equilibrium. Stability of trajectories is a more general version. Somehow equilibria ARE SPECIAL TRAJECTORIES. The equilibrium is a special constant trajectory.
+For the equilibria we've seen that we could always study the stability of the origin for a new equivalent system. Do we can apply the same trick as before for the trajectory?
+
+$\dot{x}(t) = f(x,u,t),\ (\bar{x}(\mathord{\cdot}),\bar{u}(\mathord{\cdot}))$ is a trajectory. Be: $\tilde{x}(t) := x(t) - \bar{x}(t)$ (SAME INPUT)! We get:
+
+\[
+	\dot{\tilde{x}}(t) = \dot{x}(t) - \dot{\bar{x}}(t) = f(x(t),\bar{u}(t),t) - f(\bar{x}(t),\bar{u}(t),t) = (\dots)
+\]
+
+The trajectory changes but the INPUT is the same!
+
+\[
+	(\dots) = f(\tilde{x}(t)+\bar{x}(t),\bar{u}(t),t) - f(\bar{x}(t),\bar{u}(t),t) = \tilde{f}(\tilde{x}(t),\bar{u}(t),t) = \tilde{f}(\tilde{x}(t),t)
+\]
+
+So now the question is: is $\tilde{x}=0$ an equilibrium?
+\begin{itemize}
+\item Yes, of course, it is still valid. It satisfies the condition of being an equilibrium. $(\dots) = f((\tilde{x}(t) = 0) + \bar{x}(t),\bar{u}(t),t) - f(\bar{x}(t),\bar{u}(t),t) = 0$;
+\item What happens if we start from a T.INV system?
+%\end{itemize}
+
+$\dot{x}(t) = f(x(t),u(t))$ which is TIME-INVARIANT. It is true that we can study the equilibrium of the origin, but the new system is a TV system! Let's prove it by playing the same game as before:
+
+$(\bar{x}(\mathord{\cdot}),\bar{u}(\mathord{\cdot}))$ TRAJECTORY.
+
+\[
+	\dot{\tilde{x}}(t) = f(\tilde{x}(t)+\bar{x}(t),\bar{u}(t)) - f(\bar{x}(t),\bar{u}(t)) = \tilde{f}(\tilde{x},t) := f(\tilde{x}(t)+\bar{x}(t),\bar{u}(t)) - f(\bar{x}(t),\bar{u}(t))
+\]
+
+So we can also rewrite the system into an equivalent one: $\dot{\bar{x}}(t) = \tilde{f}(\tilde{x}(t)),\ \tilde{x}=0$ is again an EQUILIBRIUM for the new system, but this system is clearly a TIME VARYING system since structurally it depends on time, being itself defined as the difference of two time-(even if not explicitly)-dependant functions! We don't know whether this resulting difference depends explicitly on the time, but in general it is true! Even if we started from a T.INV system, where T.INV is a subclass of TV systems. Even for linear systems, LTI $\implies$ TV is a much more challenging prove.
+
+PUNTI CRUCIALI:
+\begin{itemize}
+\item Possiamo, dato un generico equilibrio/generica traiettoria, studiare la stabilità dell'origine per il \underline{sistema equivalente $\neq$ sistema iniziale};
+\item Partendo da un T.INV, tuttavia, applico la trasformazione e studio la stabilità dell'origine del nuovo sistema, che sarà però un TV!
+\end{itemize}
+\end{itemize}
+
+\underline{EXAMPLE}: $\dot{x}(t) = A(t)x(t) + B(t)u(t)$ possibly TV but LINEAR (LTV). Suppose that for this system we have that $(\bar{x}(\mathord{\cdot}),\bar{u}(\mathord{\cdot}))$ is a TRAJECTORY (even constant, where in this case $(\bar{x}(t),\bar{u}(t)) = (x_e,u_e)\ \forall t$). We defined: $\tilde{x}(t) = x(t)-\bar{x}(t)$. Let's write its dynamic:
+
+\[	
+	\dot{\tilde{x}}(t) = \dot{x}(t) - \dot{\bar{x}}(t) = (\dots)
+\]
+
+Si noti anche che $(x,\bar{x})$ sono traiettorie differenti, giacché pur condividendo il medesimo ingresso fissato, cambiano le CONDIZIONI INIZIALI!
+
+\[
+	(\dots) = A(t)x(t) + B(t)\bar{u}(t) - A(t)\bar{x}(t) - B(t)\bar{u}(t) = A(t)(x(t)-\bar{x}(t)) = A(t)\tilde{x}(t)
+\]
+
+For a LINEAR SYSTEM, if we want to study the stability of a trajectory, we can study the stability of the origin. In other words, all trajectories share the same stability property. So, even if in general this is a very grave error, for linear systems, even with a negligible abuse of notation, it is correct to talk about the STABILITY OF THE SYSTEM.
+Studiare la stabilità di qualsiasi traiettoria è equivalente a studiare quindi quella dell'origine per sistemi lineari (anche TEMPO VARIANTI).
+
+\begin{defn}{\textbf{INSTABILITY}}
+\[
+	\exists \epsilon > 0\ \forall \delta\ \exists(t_0)\ \exists \bar{t} \geq t_0,\ with\ \norma{x(t_0)-x_e} < \delta \implies \norma{x(\bar{t})-x_e} \geq \epsilon
+\]
+\end{defn}
+
+\subsubsection{exercise}
+
+Given:
+
+\[
+	f(x(t)) := \left\{
+	\begin{aligned}
+	\dot{x}_1 &= x_2 \\
+	\dot{x}_2 &= -\frac{g}{l}\sin{x_1} - \frac{K}{m}x_2 + \frac{u}{ml}
+	\end{aligned} 
+	\right.
+\]
+
+$x_2 = 0 \impliedby \dot{x}_1 = 0,\ [-\frac{g}{l}\sin{x_{1e}} + \frac{u_e}{ml} = 0]$.
+
+(COPPIA CHE BILANCI LA GRAVITA'). Quindi $(x_{1e},0)$ è il punto di equilibrio cercato. $[u_e = mg\sin{x_{1e}}]$. Quindi la coppia di equilibrio è: $(\begin{bmatrix}x_{1e}\\0\end{bmatrix},u_e)$ nel caso FORCED. Ci si riconduca ad un sistema equivalente che abbia come punto di equilibrio l'origine.
+
+\subsection{Lyapunov's Theorem}
+
+(STABILITY OF EQUILIBRIA FOR \underline{TIME-INVARIANT SYSTEM}). Results on the stability of equilibria in time-invariant systems. Stability of the origin. We need few definitions:
+
+\subsubsection{Some preliminar's mathematical tools} 
+
+\begin{defn}{\textbf{POSITIVE DEFINITE FUNCTION}} \newline
+A function $\underline{V: \R^n \mapsto \R}$ is positive definite (p.d. as a shorthand, sometimes pd) on some domain $D \subseteq \R^n$ if $V(0\in D) = 0 \land V(x) > 0\ \forall x \in D\setminus\{0\}$.
+\end{defn}
+
+$V$ can be a anything.
+
+\begin{defn}{\textbf{NEG. DEF}} \newline
+$V$ is neg. def. if $-V$ is pd $\iff V(0 \in D) = 0 \land V(x) < 0\ \forall x \in D\setminus\{0\}$.
+\end{defn}
+
+\begin{defn}{\textbf{POSITIVE SEMIDEFINITE FUNCTION}} \newline
+A function $\underline{V: \R^n \mapsto \R}$ is positive semidefinite (p.s.d. as a shorthand, sometimes psd) if $V(x) \geq 0\ \forall x \in D \land V(0) = 0$.
+\end{defn}
+
+\begin{defn}{\textbf{NEGATIVE SEMIDEFINITE FUNCTION}} \newline
+A function $\underline{V: \R^n \mapsto \R}$ is negative semidefinite (n.s.d. as a shorthand, sometimes nsd) if $-V(x) \leq 0\ \forall x \in D \land V(0) = 0$.
+\end{defn}
+Be careful! The difference between pd, psd is that for pd we have that outside the origin the function is strictly positive, while in the second case it could be zero. We'll refer with this notation $[V(x)>0,V(x)<0] = [V(x)\ pd,\ V(x)\ nd]$ as a shorthand. The same for the semidefinite cases: $[V(x)\geq 0,V(x)\leq 0] = [V(x)\ psd,\ V(x)\ nsd]$.
+
+Let's give another definition (mathematical).
+
+\begin{defn}{\textbf{LIE DERIVATIVE OF A SCALAR FUNCTION} \underline{wrt a vector FIELD}}
+
+Let $V:\R^n \mapsto \R$ be a differentiable scalar function and $f:\R^n \mapsto \R^n$ a vector field (campo vettoriale). The Lie Derivative of $V$ wrt $f$ is defined as:
+\[
+	L_fV(x) := \frac{\partial{V(x)}}{\partial{x}}f(x),\ x \in \R^n
+\]
+\end{defn}
+
+It's taking a scalar function (map), we take the derivative (basically the gradient) of the function $V$ (basically, the transpose of its gradient) - times this vector field $f(x)$; we'll see why it's very useful.
+This object here is defined without dynamical systems. It is a function (scalar) $[L_fV(x):\R^n \mapsto \R]$; take a vector X $\implies$ associate a number $\in \R$. Fornisce in output uno scalare.
+Let's suppose we have an UNFORCED T. INVARIANT system $\dot{x}=f(x)$. (We'll have some trajectory defined by varying CINIT). Let's take a function $V:\R^n \mapsto \R$ and let's consider the composite function $V(x(t)) = V \circ x$. $V(x(t))$ as my $V$ function. Basically $x:[0,+\infty) \mapsto \R^n,\ V \circ x:[0,+\infty] \mapsto \R$. So new $V(x(t)) = \mathord{\cdot}(t)$ is a function of the time. There's a little abuse of notation.
+
+$t \mapsto V(x(t))$. So it's a new function, $V \circ x: [0,+\infty]\mapsto \R$. The Lyapunov's theorem is a corner point of ACT. Most of the results will rely on this idea behind the Lyapunov's theory. What happens to the trajectory of our system in terms of some energy function. Energy that decreases as soon as I get from that point. Try to find some energy and try to show that this function decreases. $V$ is defined independently from this system. $[V:\R^n \mapsto \R]$! And gives it a particular number, typically the energy. CORNER STONES. Powerful Idea.
+The system trajectory decreases the energy when they evolve. The way to show how this decreases is:
+
+Let's compute $V(x(t))$, and let's compute \underline{wrt time} the derivative of this SCALAR function $\frac{dV(x(t))}{dt}$, by using the CHAIN RULE:
+\[
+	V \circ x:[0,+\infty] \mapsto \R.\ \frac{dV(x)}{dt} = \frac{\partial{V(x)}}{\partial{x}}|_{x=x(t)}(\dot{x}(t)=\frac{dx(t)}{dt}) = [\frac{\partial{V(x)}}{\partial{x}}|_{x=x(t)}\dot{x}(t)]
+\]
+If $x(t)$ is just a common function, then I cannot say anymore, but if we assume that $x:[0,+\infty] \mapsto \R^n$ is a trajectory of $\dot{x}=f(x)$, then we can say something more! We can say that, $\dot{x}=f(x(t))$:
+$\frac{\partial{V(x)}}{\partial{x}}|_{x=x(t)}f(x(t)) = [\frac{\partial{V(x)}}{\partial{x}}f(x)]|_{x=x(t)} = L_fV(x)|_{x=x(t)} = L_fV(x(t)) = \dot{V}(x(t))$;
+
+REMARK on the function: $V: \R^n \mapsto \R,\ x \mapsto V(x) \in \R,\ V \circ x :[0,+\infty) \mapsto \R,\ t \mapsto V(x(t))$ is a completely different function! $L_fV:\R^n \mapsto \R,\ x \mapsto L_fV(x) \in \R,\ L_fV \circ x :[0,+\infty) \mapsto \R, \ t \mapsto L_fV(x(t))$.
+
+As before, as a notation we have:
+
+\[
+	\dot{V}(x) := L_fV(x)
+\]
+
+$\dot{V}(x)$ doesn't mean anything alone. Sarebbe la derivata rispetto al tempo di $V(x(t))$, ottenuta semplicemente ricorrendo all'applicazione della CHAIN RULE. $\dot{V}:\R^n \mapsto \R$, but it will be defined as: $\dot{V} \circ x:[0,+\infty] \mapsto \R$. $V(x(t))$ si può dire se è monotona o meno, mentre di $V$ in generale non si può dire null'altro.
+
+\subsubsection{Lyapunov's Theorems}
+
+\begin{defn}{\textbf{Lyapunov's theorem}} \newline
+Let $x=0$ be an equilibrium of $\dot{x}=f(x)$. (Let's take a subset of state space, $D$ that contains the origin $x=0$). (with $f$ locally Lipschitz on $D \subseteq \R^n$) and be $D \subseteq \R^n$ a domain containing $(x=0)$.
+Let $V:D\mapsto \R$ be a $C^1$ (continuously differentiable) function, \underline{positive definite on $D$}. Then the following holds: if $L_fV(x) := \dot{V}(x)$ is negative semidefinite $(\dot{V} \leq 0)$,
+\begin{itemize}
+\item $x=0$ is \underline{stable};
+\item $\dot{V}(x) := L_fV(x)$ is neg. definite, $x=0$ is \underline{asymptotically stable};
+\end{itemize}
+\end{defn}
+
+Ci sta sostanzialmente dicendo che: preso un sistema dinamico (T.INV) del quale vogliamo studiare la stabilità di un equilibrio, dobbiamo verificare che la $V$ soddisfi alcune proprietà! Si badi però alle seguenti affermazioni:\begin{itemize}
+\item Il sistema deve essere T.INV!
+\item Stiamo assumendo che l'equilibrio sia l'origine!
+\end{itemize}
+
+Questo teorema dice che: ci fornisce delle condizioni sufficienti: suppose that you are able to get this function with these characteristics; then you get stability! Senza dover verificare $\forall traiettoria,\ \forall CINIT$! Tutte le assunzioni che stiamo facendo riguardano funzioni che vanno da $\R^n \mapsto \R$.
+
+\begin{proof}{i)} \newline
+GOAL: We need to prove that:
+
+\[
+	\forall \epsilon > 0\ \exists \delta(\epsilon,t_0) > 0\ |\ \norma{x} < \delta \implies \norma{x(t)} < \epsilon,\ \forall t \geq 0
+\]
+	Take $r \leq \epsilon\ |\ \oball(0,r) = \{x \in \R^n\ |\ \norma{x} < r\} \subset D$. Take:
+$\exists \alpha = \min_{x,\norma{x}=r}{V(x)}$, because $V$ is continuos on a COMPACT D (closed and limited), and the boundary is closed. $0 < \beta < \alpha,\ \Omega_\beta=\{x \in \R^n\ |\ V(x) \leq \beta\}$. The set $(\Omega_\beta \subseteq \R^n)$ contains the origin! $\iff 0 \in \Omega_\beta$.
+For the moment we don't know anything more. Some properties. $\Omega_\beta$ bounded or unbounded? We don't know if it contains a neighborhood of the origin, We'll show instead that it is bounded and it contains a neighborhood of the origin.
+
+We have to show that: $\Omega_\beta \subset \oball(0,r)$. So, \underline{by contradiction}, suppose that $\exists \bar{x} \in \Omega_\beta,\ x \notin \oball(0,r) \implies V(\bar{x}) \leq \beta, V(\bar{x}) \geq \alpha > \beta \implies \beta < \alpha \leq \beta$ and this is an ABSURD! So we have to suppose that $x \in \partial\oball(0,r)$. (Deve esistere almeno un punto che appartiene alla frontiera).
+
+Next we show that any trajectory starting in $\Omega_\beta$ remains in $\Omega_\beta$. $(x(t_0) \in \Omega_\beta \implies x(t) \in \Omega_\beta\ \forall t > 0)$. 
+$\frac{dV(x(t))}{dt} = \dot{V}(x(t)) =\ (NON\ INCREASING!) = L_fV(x(t)) \leq 0 \implies V(x(t)) \leq V(x(0)) \leq \beta$ - where the first inequality holds as long as by assumption $x(t) \in D$ - $\implies V(x(t)) \leq \beta \implies x(t) \in \Omega_\beta,\ \forall t \geq 0$.
+La traiettoria esiste su un intervallo di tempo ben definito. Ma se vale ciò deve stare in $\Omega_\beta$. Allora continuo a farla esistere in $\Omega_\beta$. Quindi è limitata e quindi $\nexists FET \implies \exists x(t):[0,+\infty) \mapsto \R^n$ (PER LA LIMITATEZZA DI TALE INSIEME non ci possono essere delle divergenze dei suoi elementi). 
+$\Omega_\beta$ LIMITATO, CHIUSO (dimostrato prima) $\implies$ (COMPATTO). e se qualcosa parte lì dentro, finisce lì dentro. Dobbiamo ora solo dimostrare che $\Omega_\beta$ contiene un intorno dell'origine.
+
+We need to show that $\cball(0,\delta) \in \Omega_\beta$. We'll prove this simply by using the continuity of $V$. V continuos, thus $\forall \beta > 0\ \exists \delta > 0,\ |\ \norma{x} \leq \delta \implies V(x) < \beta$. But this means that, therefore, $\forall x \in \cball(0,\delta) \in \Omega_\beta$.
+\[
+	\forall x(t_0) \in \cball(0,\delta) \subset \Omega_\beta \subset \oball(0,r) \implies x(t) \in \Omega_\beta \subset \oball(0,r)
+\]
+
+thus, $x(t) \in \oball(0,r)\ \forall t \geq 0$.
+
+\end{proof}
+
+\begin{proof}{ii)} \newline
+We need stable + attractive. The origin is already stable. We need just it to be attractive. Definizione di attrattività:
+\[
+	\forall a > 0\ \exists T,b > 0\ |\ \norma{x(t_0)} < b \implies \norma{x(t)} < a,\ t \geq T
+\]
+
+Given $\oball(0,a),\ \exists b > 0$ such that $\Omega_b \subset \cball(0,a)$. We can just proove that $lim_{t\to +\infty}{V(x(t))} = 0$. So let's work on $V(x(t))$. This function is bounded from below (BFB).
+\[
+	\frac{dV(x(t))}{dt} = L_fV(x(t)) < 0 \implies V(x(t))
+\]
+
+is a decreasing function of \underline{TIME}, therefore per una funzione limitata inferiormente e decrescente, $\exists \lim_{t\to +\infty}{V(x(t))} = c \geq 0$. We want to prove that $c$ is exactly 0. 
+So by contradiction, suppose $c > 0$ (strictly). Then $\exists d > 0\ |\ \cball(0,d) \subset \Omega_c$. ($V(x(t))$ è strettamente decrescente). if we take $x_0 \in \cball(0,d) \implies V(x) < c$, and even more. Let's define:
+
+\[
+	\Omega_c = \{x \in \R^n | V(x) \leq c\}
+\]
+
+Le traiettorie, una volta ivi entrate, debbono avere un valore di $(V(x) < c)$, per ipotesi! 
+$L_fV(x)$ is always negative, except for the origin. In this zones where $L_fV(x) < 0$ (per definizione), the function is continuous on a compact set $\implies \exists max_{d\leq \norma{x} \leq r}{L_fV(x)} = -(\lambda > 0) < 0$. So,
+\[
+	V(x(t)) = V(x(0)) + \int_0^t{L_fV(x(\tau))d\tau} \leq V(x(0)) - \lambda t \leq d < c
+\]
+
+So here does exists a $t\ |\ V(x(t)) < c$. (\underline{è entrata lì dentro!}) $\implies ABSURD!$. So, $lim_{t\to +\infty}{V(x(t))} = c > d > 0$.
+
+Quindi, dato $\eta < d$, mi dovrei spostare in $c$. Ma ciò non è possibile perché la $V$ è strettamente decrescente.
+
+\end{proof}
+
+Tutte le implicazioni devono essere corrette e tutte le ipotesi soddisfatte. Abbiamo dovuto proprio dimostrare che $\Omega_c$ contiene un intorno completo dell'origine. Sorta di situazione intermedia tra il primo punto del teorema di Lyapunov ed il secondo. Se la $\dot{V}$ è solo semidefinita negativa, non sappiamo però dove va a finire $\dot{V}$. Analisi del comportamento. Versione globale del teorema di Lyapunov. Piccola osservazione: il teorema di Lyapunov fornisce una condizione \underline{SUFFICIENTE}! Se non riusciamo a trovare $V(x)$ con quelle caratteristiche, non è detto che l'origine non possa essere stabile! Violare la condizione sufficiente non vuol dire assolutamente negare la tesi.
+
+Let's suppose we have an asymptotically stable equilibrium.
+
+\begin{defn}{\textbf{REGION OF ATTRACTION (RoA) FOR AN A.S. EQ}} \newline
+Let $x_e$ be an a.s. equilibrium.
+
+\[
+	R_a = \{x_0 \in \R^n\ |\ lim_{t\to +\infty}{x(t)} = x_e,\}\ with\ x(t)\ TRAJECTORY\ of\ \dot{x}=f(x),\ x(0)=x_0
+\]
+
+How we can estimate $R_a$? There's a way to estimate, at least to give a lower bound for the \emph{RoA}. 
+
+\end{defn}
+
+In the proof of the Lyapunov's theorem\dots $\Omega_c$ is an INVARIANT SET. If the trajectory starts in $\Omega_c$, then it will always remain in $\Omega_c$. We want so to characterize RoA for an a.s. equilibrium.
+\[
+	\Omega_c = \{x \in \R^n\ |\ V(x) \leq c\}
+\]
+
+, where $c$ is taken arbitrarily. Suppose $L_fV(x) < 0 \implies CINIT:\ x_0 \in \Omega_c \implies x(t) \in \Omega_c$, but even more it will converge to the origin. It does satisfy the sufficient condition of the Lyapunov's theorem. RoA caratterizzata dal set di punti ove $\dot{V}$ è definita negativa. RoA is the set of point in a neighborhood of the origin where $\dot{V} < 0$. 
+
+Let's see another sufficient condition. Stronger Result $\iff$ Stronger Assumption in general. Let $(x=0)$ be equilibrium for $f(x)$. Let $V:\R^n \mapsto \R \in C^1$ (continuous, differentiable), positive definite function $(V > 0)$, and let $V$ be \underline{RADIALLY UNBOUNDED}. Now the domain is the entire $\R^n$. $V > 0$ in the entire domain $\R^n$. But what does it mean for a function to be \underline{radially unbounded}?
+
+$[\lim_{\norma{x}\to +\infty}{V(x)} = +\infty]$. Moreover, $V$ has to be such that: $\dot{V}(x) := L_fV(x) < 0\ \forall x \in \R^n \implies (x=0)$ is GLOBALLY ASYMPTOTICALLY STABLE (G.A.S.). 
+Be careful because if we find a positive definite function, and $L_fV(x)$ is negative definite, both on the entire $\R^n$ (this is not enough to apply the theorem)! We have to prove also that $V$ is \underline{radially unbounded}!
+
+\begin{proof}
+We need to show that $\forall p \in \R^n$, we're able to find a bounded $\Omega_c \ni p$. Let's see why this holds:
+Let $(p \in \R^n)$ and let $[V(p) = c]$. Let's explicitly write the definition of a radially unbounded function. For a Radially Unbounded V,
+\[
+	\forall c > 0\ \exists r > 0\ |\ \forall x\ with\ \norma{x} > r \implies V(x) > c
+\]
+
+But this basically means that $V(x) \leq c \iff V(x) \in \Omega_c \implies \norma{x} \leq r \iff x \in \oball(0,r) \iff \Omega_c$ is BOUNDED and we can continue with the previous version (local) of the Lyapunov's theorem (with the same arguments).
+
+\end{proof}
+
+We may ask the following question: suppose we find $(V > 0),\ (\dot{V} \leq 0)$, what are the possibilities? We get some results that characterize the behavior.
+
+\subsubsection{LaSalle's Invariance Principle - Some math tools}
+
+\begin{defn}{\textbf{POSITIVE LIMIT POINT OF A TRAJECTORY}}
+Let $x(t),\ t \geq 0$ be a trajectory of $\dot{x}=f(x)$ (Also valid for time varying systems). A point $x^+$ is a POSITIVE LIMIT POINT of $x(t),\ t \geq 0$ if there $\exists$ a sequence of positive time instants $\{t_n\}$ with $(\lim_{n\to\infty}{t_n} = +\infty)$; such that $\lim_{n\to\infty}{x(t_n)} = x^+$.
+\end{defn}
+
+\begin{defn}{\textbf{POSITIVE LIMIT SET}}
+A positive limit set is the set of all positive limit points (and clearly of a trajectory $x(t),\ t \geq 0$).
+\end{defn}
+
+Let's see what is this definition. Suppose $\{x^+,x^{++}\} = PLS$. IDEA: Take some $t_1,\ t_2,\ t_3$ and so on\dots. this time instants are increasing and the limit holds. Why this definition is useful? $x^+$ limite di una certa successione divergente $\{t_n\}$. Supponiamo $\{t_1 \mapsto x(t_1),\ t_2 \mapsto x(t_2),\ t_3 \mapsto x(t_3),\ \dots\ ,\ t_{n\to\infty} \mapsto x(t_n = \infty)=x^+\}$. Si esegua lo stesso ragionamento per il PLP $x^{++}$.
+
+Let's give another definition:
+
+\begin{defn}{\textbf{\underline{Positive Invariant SET}}}
+A set $M \subset \R^n$ is positively INVARIANT for our system $\dot{x}=f(x)$ if:
+
+\[
+	[x(0) \in M \implies x(t) \in M],\ \forall t \geq 0]
+\]
+\end{defn}
+
+\begin{defn}{\textbf{NEGATIVE INV. SET}}
+$M \subset \R^n$ is n.i.s. (nis sometimes) FOR $\dot{x}=f(x)$, if:
+
+\[
+	 [x(0) \in M \implies x(t) \in M],\ \forall t \leq 0]
+\]
+\end{defn}
+
+\begin{defn}{\textbf{INVARIANT SET}}
+if $(M \subset \R^n)$ is both PIS and NIS, so it holds:
+
+\[
+	(x(0) \in M \implies [x(t) \in M,\ (\forall t \in \R)])
+\]
+\end{defn}
+
+Some examples of invariant sets are the \emph{RoA}, the $[\Omega_c = \{x \in \R^n\ |\ V(x) \leq c\}]$, l'insieme dei punti immagine di una traiettoria: $\Ima{x(t)}$;
+
+We just give definitions. Now let's start to give some results using these definitions.
+
+\begin{lemma}{\textbf{POSITIVE LIMIT SET of a BFB trajectory}}
+\label{plsbfb}
+Given $D \subset \R^n,\ f:D \mapsto \R^n$. If a trajectory $x(t),\ t \geq 0$ of $\dot{x}=f(x)$ with $f$ locally Lipschitz, is \underline{bounded} and belongs to $D$ ($x(t) \in D,\ \forall t \geq 0) \implies$ its \underline{positive limit set} $L^+$ is AN (NON-EMPTY, COMPACT) INVARIANT SET. \underline{Moreover $x(t)$ converges to $L^+$ as $t \to \infty$}.
+\end{lemma}
+
+Intuitivamente, converge ad un punto dell'insieme.
+
+Given this definition: $dist(x,M) = \inf_{p\in M}{\norma{x-p}}$ the theorem is substantially saying that: if $f$ is locally Lipschitz, so the trajectory exists in the entire time interval $\iff \exists!\ x(t),\ \forall t \in \R \implies$:
+\[
+	\lim_{t\to\infty}{dist(x(t),L^+)} = 0
+\]
+
+\subsubsection{LaSalle's Invariance Principle - the theorem}
+
+\begin{thrm}{\textbf{LASALLE'S INVARIANCE PRINCIPLE}} \newline
+Let $[\Omega \in D]$ be a \underline{compact set} that is positively invariant wrt $\dot{x}=f(x)$. Let $V:D \mapsto \R \in C^1$ a continuous, differentiable function such that $\dot{V}$ is negative semi-definite in $\Omega$. Let $E$ be the set of points in $\Omega$ where $\dot{V}(x) = 0$. Let $M$ be the largest invariant set contained in $E$. This $\implies$:
+\[
+	\forall x(t_0) \in \Omega \implies x(t) \tendsto{t\to\infty} M,\ \forall t \geq 0
+\]
+\end{thrm}
+
+\begin{proof}
+Let's look at the assumptions. $\Omega$ is a compact set (bounded and closed) that is positively invariant. $V$ could also be not positive definite. It is sufficiently for $V$ to be $C^1$. The largest invariant set of points in $\Omega$ where $\dot{V}=0$. Sort of Lyapunov function (Relaxation about $V$). First of all, trajectories starting in $\Omega$ will always remain in $\Omega$, because this set is for assumption positively invariant. Moreover, since $\dot{V}$ is negative semidefinite, $V(x(t))$ is a non-increasing function (as in the Lyapunov's theorem) of time; we can say that. since $V$ is a function of $x \implies V(x)$ is continuous on the compact set $\Omega$. So it does have a maximum and a minimum. In particular, it does have a minimum. Since $x(t)$ always stays in $\Omega$, then $V(x(t))$ is a function bounded from below (BFB) and therefore it converges as $t\to \infty$, ie $\exists a \in \R\ |\ \lim_{t\to\infty}{V(x(t))}=a$. We take a trajectory $x(t)$, if it starts in $\Omega \implies$ it will goes around in $\Omega$. Interesting. Take $V := V(x(t)) \in C^1$. in a compact set $\Omega$, it does have a minimum. $V(x(t))$ bounded from below, which is non-increasing. So it must converge in something (in some point $a \in \R$). (funzione limitata inferiormente e non crescente $\tendsto{} a \in \R$).
+Let's consider the limit set $L^+$ of the trajectory $x(t)$. Choose CINIT's. We consider the trajectory $x(t)$ plus it does have a limit set $L^+$; using the previous LEMMA \ref{plsbfb}, since $x(t) \in \Omega\ \forall t \geq 0\ \land x(t) < +\infty$, (appartiene ad un compatto, chiuso e limitato), then by the lemma its limit set is $L^+ \neq \emptyset$ COMPACT INVARIANT SET. Even more $L^+$ is contained in $\Omega$ (because $x(t)$ ALWAYS $\in \Omega$ (closed)); any convergence sequence in $\Omega$ will converge in $\Omega$. $L^+$ will be in $\Omega$. $L^+ \in \Omega$. Let's recall the definition of limit point: $\forall x^+ \in L^+,\ \exists$ some sequence $\{t_n\}$ such that: $[\lim_{n\to\infty}{x(t_n)} = x^+]$, but due of the continuity of V we have also that: $[\lim_{n\to\infty}{V(x(t_n))} = V(x^+)]$. What can we say now of $V(x^+)$ is that: $\lim_{t\to\infty}{V(x(t))} = a$. So even if we take any subsequence $\{t_n\}$, $V(x(t_n))$ will converge to $a \in \R$. So it must hold:
+\[
+	V(x^+) = a\ \forall x^+ \in L^+
+\]
+If I don't say anything more, I cannot say anything more about $V(x^+)$ or some other function.
+So now, since \underline{$L^+$ is INVARIANT}, $\forall x^+(0) \in L^+\ x^+(t) \in L^+\ \forall t \in \R$.
+If I evaluate $[V(x^+(t)) = a \in \R]$, so $\dot{V}(x^+(t)) = 0 = \frac{dV(x^+(t))}{dt} = L_fV(x^+(t)) = 0$. 
+Since we can apply this $\forall$ points $\in \Omega$, we can conclude:
+\[
+	\dot{V}(x^+) = L_fV(x^+) = 0\ \forall x^+ \in L^+
+\]
+Il fatto che tutti i punti di $L^+$ abbiano $V(x^+) = a$ non è detto che la $\dot{V}$ sia 0. Remember: $[L_fV(x^+) = \frac{\partial{x^+}}{\partial{x}}f(x^+)]$. \underline{Serve quindi l'invarianza di $L^+$}!
+$\forall x(t),\ t \geq 0$, the associated $L^+$ satisfies this condition. But this implies:
+\[
+	\underline{L^+ \subset M \subset E \subset \Omega} \subset D \subseteq \R^n
+\]
+Thus $\forall x(t) \tendsto{t\to\infty} L^+ \implies x(t) \tendsto{t\to\infty} M$. 
+\end{proof}
+
+If we have $V(x)$, the associated $L^+$ p.d. as in the Lyapunov's theorem, then take $\Omega$ as $\Omega_c,\ \forall c > 0$. The equilibrium is one of possible points.
+
+\begin{corl}{\textbf{KRASOWSKII}} \newline
+Let $(x=0)$ be an eq. of $\dot{x}=f(x)$; let $V:D\mapsto \R \in C^1$ a pos. def. function with $\dot{V}(x)$ neg. semidef. in $D$. Let $S = \{x \in \R^n\ |\ \dot{V}(x) = 0\}$. Suppose that the only trajectory starting in $S$ and remaining in $S\ \forall t \geq 0$ is the trajectory $x(t) = 0\ \forall t \geq 0 \implies (x=0)$ is \underline{asymptotically stable} ($S$ is simply the set $E$ of the previous LaSalle's Theorem).
+\end{corl}
+
+Il corollario dice semplicemente che se l'unico insieme invariante è l'origine, allora l'origine è un equilibrio asintoticamente stabile ($M$ è in questo caso solo l'origine, ovvero solo un punto).
+
+I risultati sinora visti sono validi per sistemi T.INV (stabilità dell'origine).
+
+\subsubsection{exercise}
+
+$\dot{x}=g(x),\ x \in \R$ (T.INV SCALAR 1st order system). We take $g(x)$ as a special functional, defined as below:
+
+\[
+	g(x) := \left\{
+	\begin{aligned}
+	g(0) &= 0 \\
+	g(x) &< 0,\quad x > 0 \\
+	g(x) &>0,\quad x < 0 \\
+	\end{aligned} 
+	\right.
+\]
+
+Let's suppose $g(0)=0, (x=0)$ is an equilibrium for $\dot{x}=g(x)$. Let's see why this class of function are very nice to study. Find a Lyapunov's function. The first try is a quadratic function, positive definite.
+$V(x)=\frac{1}{2}x^2,\ where\ V(0)=0,\ V(x\neq 0)>0$. (In this case for a scalar system most simple that is continuous and $C^1$. Even more, it is ANALYTIC!). Essa soddisfa le condizioni sulla Lie Derivative:
+\[
+	\dot{V}(x) := L_gV(x) = \frac{\partial{V(x)}}{\partial{x}}g(x) = xg(x)
+\]
+
+For $x \neq 0$, it happens that:
+	
+\[
+	\dot{V}(x) := \left\{
+	\begin{aligned}
+	xg(x) &< 0,\quad x > 0 \\
+	xg(x) &< 0,\quad x < 0 \\
+	\end{aligned} 
+	\right.
+\]	
+
+$\implies$ since $xg(x) < 0$ (in neg. definite sense), we have that $x=0$ is an asymptotically stable equilibrium (LOCAL) for our system. There is a neighborhood of the origin such that stability and attractiveness holds, by using Lyapunov's theorem.
+What about GAS (Global Asymptotical Stability) property? Suppose $g(\mathord{\cdot})$ defined on the entire real axis $\R$. $V(x)=\frac{1}{2}x^2$ is radially unbounded. Remember that:
+\[
+	(x=0)\ GAS\ \iff [\lim_{\norma{x}\to\infty}{V(x)} = +\infty]
+\]
+
+Thus, by the global Lyapunov's theorem, $(x=0)$ is globally asymptotically stable. However we need to remember that, when we want to apply that theorem that, the assumptions are subject to the fact that $g(x)$ must be at least locally Lipschitz. We will see that if we don't have a locally Lipschitz function, trajectory is not unique (Felipov's systems for example).
+The important thing is that, nel momento in cui soddisfiamo le condizioni di stabilità, poiché abbiamo gratis la limitatezza, abbiamo anche la Lipschitzianità. La funzione si suppone essere almeno localmente Lipschitz. Another possibility is: one typical flow to solve exercise: we may choose:
+\[
+	V(x) = \int_0^x{g(y)dy}
+\]
+Show as an exercise that it could be a Lyapunov function. Even more, it IS ACTUALLY a Lyapunov function! And it is called \emph{CANDIDATE LYAP. FUNC}.
+\begin{itemize}
+\item $V$ is positive definite?
+\item Compute $\dot{V}$, and show that it is negative definite;
+\end{itemize}
+
+\subsubsection{example}
+
+$\dot{x}=-x^3$. Let's see if we can apply the result we've just seen. Let's check if this function $f(x)=-x^3,\ x \in \R$ is locally Lipschitz. What does it mean for a function to be locally Lipschitz?
+\[
+	\exists L > 0\ |\ \norma{f(x_1)-f(x_2)} \leq \norma{x_1-x_2}
+\]
+Let's compute the derivative of our $f(x)$. $f'(x) = -3x^2$. For any interval we choose, in that interval its derivative $f'(x)$ is a continuos function $\implies f(x)$ is bounded in any bounded interval. This $\implies f(x)$. Find a proof of this result as an exercise. 
+$(x=0)$ is an equilibrium, first of all. Assure to always check this before starting an exercise.
+$\dot{x}=-x^3,\ x \in \R$. $-x^3$ is an odd function. $f(x)$ è definita in tutto $\R$. Therefore we could just recheck this:
+
+\[
+	\left\{
+	\begin{aligned}
+	&V(x) = \frac{1}{2}x^2 \\
+	&\dot{V}(x) = x(-x^3) = -x^4 |_{x=0} = 0 |_{x\neq 0} < 0
+	\end{aligned} 
+	\right.
+\]	
+
+partendo da una qualsiasi condizione iniziale, la soluzione esisterà (traiettoria $x(t)$). Thus by global Lyapunov's theorem, $(x=0)$ is GAS.
+
+\subsubsection{exercise}
+
+\[
+	\left\{
+	\begin{aligned}
+	&funzione\ localmente\ Lipschitz,\quad \exists x\ su\ un\ intervallo\ che\ non\ sappiamo \\
+	&funzione\ globalmente\ Lipschitz,\quad \exists x\ sull'\ intero\ intervallo\ di\ tempo
+	\end{aligned} 
+	\right.
+\]
+
+Sono solo CONDIZIONI SUFFICIENTI. Infatti nel precedente caso avevamo che $g(x):=-x^3$, pur essendo localmente Lipschitz, ha una soluzione $\exists x(t),\ t \in [0,+\infty) = \bar{\R}^+$.
+Facciamo invece vedere cosa succede sfruttando direttamente il teorema di Lyapunov.
+$\dot{x}=x^3$ is just the minus the previous one, and it is NOT GLOBALLY LIPSCHITZ! It is locally Lipschitz. What can we say about existence of trajectories?
+\[
+	\exists \delta > 0\ |\ \exists x(t),\ t \in [0,\delta]
+\]
+
+Non sappiamo però come è fatto questo intervallo! (And we cannot say anything about FET or existence in $[0,+\infty)$). Do as an exercise: explicitly find the trajectory of this system.
+
+HINT: $\frac{dx}{dt} = x^3,\ [\int_0^x{\frac{1}{\sigma^3}d\sigma} = \int_0^t{1d\tau}]$. (Separazione di variabili) Calcolo esplicito di traiettoria.
+In order to conclude the existence on the entire time interval, we have to solve the differential equation. Il fatto che le traiettoria restino limitate assicura che esistano in un intervallo limitato.
+
+I risultati della stabilità ci portano a concludere alcune informazioni sull'esistenza della traiettoria.
+
+\subsubsection{exercise}
+
+$\dot{x}=-x^2=f(x)$ let's check: $(x=0)$ is an equilibrium of $\dot{x}=-x^2$.
+\[
+	f(x) = -x^2,\ f'(x) = -2x
+\]
+$f$ is locally Lipschitz but not globally Lipschitz. Take $V(x)=\frac{1}{2}x^2 \implies \dot{V}(x) = x(-x^2) = -x^3$. THIS FUNCTION IS NOT POSITIVE OR NEGATIVE DEFINITE. We cannot say anything. Maybe we have choose a not good function. INTUITION: However, we'll see that we can say something about the origin for this system. If I take points arbitrarily close to the origin, on these points $\dot{V}(x) < 0$. Una $\dot{V}$ fatta in questa maniera soddisfa proprio delle condizioni di INSTABILITA' (CHETAEV), risultato che vedremo però in seguito.
+
+Let's stay with this system. This is an example of system with a FET. If we compute explicitly the trajectory, we get: 
+\[
+	\int_0^{x(t)}{-\frac{1}{\omega^2}d\omega} = \int_0^t{1d\tau} \implies [\frac{1}{\sigma}]_{0}^x = t \implies \frac{1}{x(t)}-\frac{1}{x_0} = t \implies \frac{1}{x(t)}=t+\frac{1}{x_0}
+\]
+
+EXPLICITLY, $[x(t) = \frac{1}{t+\frac{1}{x_0}}]$. For $x_0 < 0,\ t=0 \mapsto x(0) = x_0 < 0$; $x_0 < 0 \implies t+\frac{1}{x_0} > 0 \implies$ this traj. exists for $t \in [0,+\infty)$. $x_0 < 0,\ t\uparrow \implies x \tendsto{} -\infty (x_0 = -1)$. This system diverge in finite time as soon as for $x_0 = -1 \implies x(t) = \frac{1}{t-1} \implies \lim_{t\to 1^-}{x(t)} = -\infty$. Moreover, in this case the trajectory even doesn't exist for $t>1$ (Situazione ancora peggiore)!
+
+\subsubsection{exercise}{UNDAMPED PENDULUM}
+
+\[
+	\left\{
+	\begin{aligned}
+	\dot{x}_1 &= x_2 \\
+	\dot{x}_2 &= \frac{g}{l}\sin{x_1}
+	\end{aligned} 
+	\right.
+\]
+
+$\begin{bmatrix}x_1 & x_2\end{bmatrix}^\top = \begin{bmatrix}0 & 0\end{bmatrix}^\top$ is an equilibrium. What can  we say about stability or Asymptotic Stability of the origin? We need to find the Lyapunov function (sort of energy function). Let's write the energy for this system:
+\[
+	V(x) = -\frac{g}{l}(1-\cos{x_1}) + \frac{1}{2}x_2
+\]
+where the first term is the POTENTIAL ENERGY and the second is the KINETIC's one. Let's compute:
+\[ 
+	[\dot{V}(x) = \frac{g}{l}\sin{x_1}(\dot{x}_1) + x_2(\dot{x}_2)] = (\dots)
+\]
+The upwritten equation is not formally correct at all, from a mathematical point of view. But let's remain in our practical context. 
+\[
+	(\dots) = \frac{g}{l}x_2\sin{x_1} + x_2(-\frac{g}{l}\sin{x_1}) = 0
+\]
+Actually, $\dot{V} \leq 0$ (negative semidefinite) $\implies\ (x=0)$ is (STABLE). Moreover, even if we had to do before the Lie Derivative's check,
+\[
+	V(0) = 0,\ V(\begin{bmatrix}x_1 & x_2\end{bmatrix}^\top) > 0,\ \forall x_1 \in (-2\pi,2\pi),\ x_2 \in \R
+\] 
+
+Then the origin is stable in a neighborhood of the origin where $V$ is definite;
+
+We cannot say anything on asymptotic stability. We may proceed in this way to check it:
+
+\[
+	\left\{
+	\begin{aligned}
+	&FIND\ ANOTHER\ LYAP.\ FUNC.\ V \\
+	&APPLY\ KRASOWSKII\ COROLLARY
+	\end{aligned} 
+	\right.
+\]
+
+
+Ci viene incontro la fisica in un certo senso. Per un pendolo non smorzato la traiettoria non converge all'origine del sistema. $\dot{V} = 0$ (per qualsiasi traiettoria, per qualsiasi CINIT, $V(x(t)) =\ constant\ = V(x_0) \neq 0$. Per convergere a 0, dovrebbe $V(x(t))$ convergere a 0. Ma per far sì che $x(t) \tendsto{DOVESSE} x_0 \implies V(x(t)) \tendsto{} V(x_0) \neq 0$, ma stiamo partendo da una condizione iniziale $x_0 \neq 0 \implies (V(x_0) \neq 0) > 0$.
+
+Now let's consider the more interesting {DAMPED PENDULUM}
+
+\[
+	\left\{
+	\begin{aligned}
+	\dot{x}_1 &= x_2 \\
+	\dot{x}_2 &= -\frac{g}{l}\sin{x_1} - bx_2
+	\end{aligned} 
+	\right. ;
+	\left\{
+	\begin{aligned}
+	V(x) &= \frac{g}{l}(1-\cos{x_1}) + \frac{1}{2}x_{2}^2 \\
+	\dot{V}(x) &= \frac{g}{l}x_2\sin{x_1}-\frac{g}{l}x_2\sin{x_1}-bx_{2}^2 = -bx_{2}^2 \neq 0
+	\end{aligned} 
+	\right.
+\]
+
+So, $\dot{V}$ is negative semidefinite $\impliedby V(x=\begin{bmatrix}x_1 & 0\end{bmatrix}^\top) = 0$.
+Asymptotically Stable? From the physics yes, but we have to prove by ourself without any extrinsic considerations. Let's try with the Krasowskii's corollary:
+It says that: take all the points in:
+\[
+	S = \{x \in \R^2\ |\ \dot{V}(0) = 0\} = \{x \in \R^2\ |\ x_2 = 0\}
+\]
+We need to show that the largest invariant set in $S$ is only the origin. So, we need to show that $M=\{\begin{bmatrix}0\\0\end{bmatrix}\}$ is the largest invariant set contained in $S$.
+
+If we start in $S$, the only way to remain in $S$ is the origin. We need to prove this. So force the CINIT's to be: 
+
+\[
+	\left\{
+	\begin{aligned}
+	x_1(0) &= x_{10} \\
+	x_2(0) &= 0
+	\end{aligned} 
+	\right.
+\]
+
+And now let's force the trajectory to remain in $S$:
+
+\[
+	x_2(t) = 0,\ \forall t \geq 0 \implies \dot{x}_2(t) = 0,\ \forall t \geq 0
+\]
+
+let's force $\dot{x}_2 = 0 \implies$ let's go back to the ODE:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1(t) = 0 \\
+	&\dot{x}_2 = -\frac{g}{l}\sin{x_1} = 0
+	\end{aligned} 
+	\right. \implies \left\{
+	\begin{aligned}
+	&x_1(t) = 0 \\
+	&0 = -\frac{g}{l}\sin{x_{10}}
+	\end{aligned} 
+	\right.
+\]
+
+So, if we restrict ourselves to the domain $x_1 \in (-\pi,\pi)$, then $x_{10} = 0$, then $x=\begin{bmatrix}0 & 0\end{bmatrix}^\top$ is a.s. LOCALLY, for the Krasowskii corollary.
+
+When we have a negative semidefinite $\dot{V}$, we can also try to find another Lyapunov function. In this case, the problem was the lack of dependency of $x_2$ for the $V$.
+
+\[
+	V(x) = \frac{g}{l}(1-\cos{x_1}) + \frac{1}{2}\begin{bmatrix}x_1\\x_2\end{bmatrix}^\top (P=\begin{bmatrix}P_{11} & P_{12} \\ P_{21} & P_{22}\end{bmatrix})\begin{bmatrix}x_1\\x_2\end{bmatrix}
+\]
+
+where $P$ is a positive definite symmetric matrix. We have to force that however, by using the Nord-Ovest Principal Minors Criteria:
+
+\[
+	\left\{
+	\begin{aligned}
+	&P_{11} > 0 \\
+	&P_{11}P_{22} - P_{12}^2 > 0
+	\end{aligned} 
+	\right.
+\]
+
+Let's compute $\dot{V}(x)$:
+
+\[
+	\dot{V}(x) = \frac{g}{l}x_2\sin{x_1} + \begin{bmatrix}x_1\\x_2\end{bmatrix}^\top P \begin{bmatrix}x_2 \\ -\frac{g}{l}\sin{x_1}-bx_2\end{bmatrix} = (\dots) + \begin{bmatrix}x_1\\x_2\end{bmatrix}^\top \begin{bmatrix}P_{11} & P_{12} \\ P_{21} & P_{22}\end{bmatrix} \begin{bmatrix}x_1\\x_2\end{bmatrix} = \dots
+\]
+
+SMALL RECAP: $V(x) = \frac{1}{2}x^\top Px,\ \dot{V}(x) = \frac{1}{2}x^\top P\dot{x} + \frac{1}{2}\dot{x}^\top Px = x^\top P\dot{x} = \dots$ (data la simmetria di P!) So:
+
+
+\[
+	\dots = \frac{g}{l}x_12\sin {x_1} + \begin{bmatrix}x_1\\x_2\end{bmatrix}^\top \begin{bmatrix}P_{11}x_2 - P_{12}\frac{g}{l}\sin{x_1}-P_{12}bx_2 \\ P_{12}x_2 - P_{22}\frac{g}{l}\sin{x_1}-P_{22}bx_2\end{bmatrix} =
+\]
+\[
+	= \frac{g}{l}x_2\sin{x_1} + P_{11}x_1x_2 - P_{12}\frac{g}{l}x_1\sin{x_1} - P_{12}bx_1x_2 + P_{12}x_2^2 - P_{22}\frac{g}{l}x_2\sin{x_1} - P_{22}bx_2^2 =
+\]
+\[
+	= \frac{g}{l}x_2\sin{x_1} + (P_{11}-bP_{12})x_1x_2 - P_{22}\frac{g}{l}x_2\sin{x_1} - P_{12}\frac{g}{l}x_1\sin{x_1} - (bP_{22}-P_{12})x_2^2
+\]
+
+Dobbiamo cercare di annullare i termini non definiti in segno, onde poter continuare l'analisi:
+
+\[
+	\left\{
+	\begin{aligned}
+	&P_{22} = 1 \\
+	&P_{11} = bP_{12}
+	\end{aligned} 
+	\right.
+\]
+
+Rimangono gli ultimi termini, al quale applicare le condizioni per la definitezza in segno, a sistema con le condizioni per i minori di nord-ovest, che ci garantiscono invece la positiva definitezza in segno della matrice $P$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&N.O.\ CRITERIA'S\ CONDITIONS \\
+	&bP_{12} - P_{12}^2 > 0\\
+	&P_{12}(b-P_{12}) > 0
+	\end{aligned} 
+	\right.
+\]
+
+So,
+\[
+	V(x) = \frac{1}{2}x^\top \begin{bmatrix}P_{11} & P_{12}\\P_{21} & P_{22}\end{bmatrix}x + (\dots) =
+\]
+\[
+	= \frac{1}{2}x^\top \begin{bmatrix}bP_{12} & P_{12}\\P_{12} & 1\end{bmatrix}x + (\dots) = \dots
+\]
+
+, where the $(\dots)$ refers to the potential's energy term.
+
+Condizioni/Caratterizzazioni sufficienti per la stabilità/asintotica stabilità. Vediamo ora delle condizioni sufficienti per l'INSTABILITA'. Verrà dimostrato. Gli Inverse Theorem's che anche vedremo non sono molto utili dal punto di vista operazionale.
+
+\subsection{Instability and Inverse Theorem's}
+
+\subsubsection{Instability Theorem}
+
+\begin{thrm}{\textbf{CHETAEV'S THEOREM}} \newline
+Let $(x=0)$ be an equilibrium for $\dot{x}=f(x)$. Let $V:D \in \R \in C^1$ be a continuously differentiable function such that: $V(0)=0 \land V(x\ |\ \norma{x} \ll 1) > 0$ for points arbitrarily close to the origin.
+Let $U = \{x \in \cball(0,r)\ |\ V(x) > 0\}$ for some $r>0$, and suppose that $\dot{V}(x):=L_fV(x)$ is positive definite on $U$ then $\implies$ the origin is UNSTABLE.
+\end{thrm}
+
+Before proving the theorem, let's do a discussion about the assumptions. This is the most general theorem for instability. Find this energy function $V(x),\ V(0) = 0$ (it is valid for the origin. Otherwise let's apply a translation for $x_0$). $V > 0$ on point arbitrarily close to the origin. The $\dot{V}$ on this set $U$, we want to be positive definite. $V$ is an energy, and which, I find $V,L_fV > 0$ energy increases and trajectories will go out. We don't need for the $V$ to be positive definite on the entire axis, but only in an interval (time-interval). Definition of Instability holds if assumptions are satisfied.
+
+\begin{proof}
+Take an $x_0$ which can be arbitrarily close to the origin. (potrebbe anche essere $x_0=0 \implies x_0 \in Interior(U)$). If $x_0 \in Interior(U),\ V(x_0) = a > 0$ (just a number). We show now that the traj. $x(t)$ starts with $x(0) = x_0$ and goes out from $\cball(0,r)$. Let:
+\[
+	\gamma = \min_{x\in\R^n}\{\dot{V}(x)\ |\ x \in U \land V(x) \geq a\}
+\]
+
+$\dot{V}$ is continuous $\impliedby V \in C^1$. We are minimizing $\dot{V}$ in a reduced set and this minimum exists since $\dot{V}$ is continuous on a compact set. For A.S. we bounded the energy $V(x(t))$ to show that $x$ had to go inside some subset. Now we need to bound, by taking into account that now $V(x(t))$ is an increasing function of time $t$:
+
+\[
+	V(x(t)) = [V(x(0)) + \int_0^t{\dot{V}(x(\tau))d\tau}] \geq a + \gamma t
+\]
+
+$V(x(t))$ is an increasing function at least within that $U$, which is an interception (bounded set). Since then, this is why we cannot state for the system to remain in $U$. $U$ = set of points in which $\dot{V}>0$. What are the possibilities to go out from $U$? Two possibilities: \begin{itemize}
+\item where $V = 0$;
+\item from the ball
+\end{itemize}
+
+The $x(t)$ must go out from $U$, and in particular from $\cball(0,r)$. $U$ bounded set, and since $V(x(t))$ is an increasing function, this concludes the proof. Otherwise, there should be some $\bar{t}\ |\ V(x(\bar{t})) = 0 < a,\ U=\cball(0,r)$.
+
+\subsubsection{example}
+
+$\dot{x}=-x^2,\ V(x)=\frac{1}{2}x^2,\ \dot{V}(x)=-x^3$. FIND EXPLICITLY $U$: $U = \{x \in \R^n\ |\ x \in \cball(0,r)\ |\ V(x) > 0 \land \dot{V}(x) > 0\}$.
+
+\end{proof}
+
+\begin{thrm}{\textbf{CONVERSE THEOREM (Teorema del Converso)}} \newline
+Let $x=0$ be an equilibrium (asymptotically stable) of $\dot{x}=f(x)$ with $f:D\mapsto \R^n$ locally Lipschitz and $D \ni x=0 \implies \exists$ smooth pos. def. function $V(x),\ \exists$ continuous pos. def. $W(x)$ both defined on $R_a \in D$, region of attraction of $x=0\ |$
+\[
+	\underline{\dot{V}(x) \leq -W(x)},\ \forall x \in R_a,\ \lim_{x\to\partial{R_a}}{V(x)} = +\infty
+\]
+\end{thrm}
+
+There exist some $V$. It gives us an important result. There are functions that do the job. Non fornisce condizioni operative. Ma se un equilibrio è asintoticamente stabile, allora un'opportuna funzione $V$ ci sarà! Quindi vale la pena trovarla. Anche se con Krasowskii (a volte più semplice) riusciamo lo stesso a dimostrare l'A.S., però esiste comunque una $\dot{V}$ DEFINITA NEGATIVA.
+
+\subsection{STABILITY OF DISCRETE TIME SYSTEMS} {(Lyapunov's theorem dt counterparts)}
+
+$x(t+1)=f(x(t))$. In discrete time, properties of sequences are extremely important. First of all, $x$ is an equilibrium thus $[x_e=f(x_e)]$, and let $x_e$ be the origin (because also in discrete time we may change the system of coordinates). Let $V:W\mapsto \R$ be some function with $W$ positively INVARIANT. i.e. ($\forall x \in W \implies f(x) \in W$. Define $\Delta V:W\mapsto \R$, $\Delta V(x) := V(f(x)) - V(x)$. This $\Delta V = \Delta V(x)$ is NOT a function of time. Let $x(t),\ t \in \Z,\ t \geq 0$ be a trajectory of $x(t+1)=f(x(t))$, then:
+\[
+	[\Delta V(x(t)) = V(f(x(t))) - V(x(t))] = V(x(t+1))-V(x(t))
+\]
+
+(Simply check the difference of the energy (between current state and next state). Evaluating energy at two time instances).
+
+\begin{thrm}
+Let $(x=0)$ be an equilibrium of $x(t+1)=f(x(t))$, with $f$ continuous. Let $V:W\mapsto \R$ be a continuous function on a neighborhood $W$ of $x=0$ and let $V(x)$ be positive definite. Then:
+\begin{itemize}
+\item{i)} If $\Delta V:W\mapsto \R$ is neg. def., $(x=0)$ is asymptotically stable; L'idea è la stessa del tempo continuo. 
+Point couple of things): First of all, this theorem is saying: given a sequence of states $\{\dots,\ x(t),\ x(t+1),\ x(t+2),\ \dots\} = \{x(t_i)\}_i$, we are evaluating the energy $V(x)$. If this sequence is non increasing, we're not getting unbounded. ($V$ is lower bounded by 0).
+\item{ii)} Why is the analysis of discrete-time system interesting? It can be some dynamical systems, some evolution intrinsically discrete. Sometimes there could be discrete-time system as an approximation of continuous-time systems.
+\item{iii)} If you look at discrete-time systems, $(t =\ time,\ COUNTER)$. Given some update, there's an algorithm. We'll see algorithm for optimization. Algorithm are substantially discrete-time dynamical systems. Study convergence properties of the algorithms.
+\end{itemize}
+\end{thrm}
+
+\begin{thrm}{\textbf{KRASOWSKII DISCRETE-TIME COROLLARY}} \newline
+Let $(x=0)$ be an equilibrium for $x(t+1)=f(x(t))$, $f$ continuous and $V:W\mapsto \R$ continuous on $W$ and $V$ positive definite \dots If $\Delta V$, where $\Delta V$ neg. semidef. for $S=\{x \in W\ |\ \Delta V = 0\}$, the only traj. starting in $S$ and remaining in $S$ is $x(t)=0,\ \forall t \geq 0 \implies x=0$ is as. stable (the differences are the assumptions wrt to the Lyapunov's continuos theorem). 
+\end{thrm}
+
+\begin{thrm}{\textbf{CHETAEV'S THEOREM, DT VERSION}}
+Let $(x=0)$ be an eq. of $x(t+1)=f(x(t))$, with $f$ continuous. Let $V:W \mapsto \R$ a continuous function on a neighborhood $W$ of $x=0$. If $V(x)>0$ for points $x \in \R^n\ |\ \norma{x} \ll 1$ (arbitrarily small); let $\Delta V:W \mapsto \R$ be pos. def. on $U=\{x \in \cball(0,r)\ |\ V(x) > 0\} \implies x=0$ is \underline{UNSTABLE}
+\end{thrm}
+
+\subsection{LINEARIZATIONS}
+
+SMALL RECAP: $LTI \subset (NLTI) \subset (NLTV) \implies$ We've studied LTI systems as a subclass of the more general non-linear TIME-INVARIANT systems.
+
+\subsubsection{LINEARIZATION OF A NONLINEAR SYSTEM (AT AN EQUILIBRIUM)}
+(Some of the result could be used on some ones we'll see).
+
+Let's start with an unforced system.
+
+$\dot{x}=f(x(t))$. Let's suppose that $x_0$ is an equilibrium $\implies f(x_e) = 0$ (dinamica nulla). If $x_e$ is an equilibrium $\implies$ ask ourselves what happens when starting in a neighborhood of this equilibrium. NSF $f$. W can approximate $f$, by using ie Taylor series expansion:
+$x(0)=x_e \implies x_0(t)=x_e\ \forall t$. What happens if $x(0)=x_e+\Delta x_0$, and let $x(t)$ be a new trajectory of the system. We'll have $\dot{x}(t) = f(x(t))$. Let's define:
+\[
+	[x(t) := x_e(t) + \Delta x(t) = x_e + \Delta x(t)]
+\]
+Simply rewritten the trajectory. $\centernot{\dot{x}_e(t)} + \dot{\Delta x(t)} = f(x_e(t) + \Delta x(t)) = (\dot{x}_e(t) = 0) + \dot{\Delta x(t)} = f(x_e(t)+\Delta x(t)) = [\dot{\Delta x(t)} = f(x_e + \Delta x(t))];$ (we've supposed $\norma{\Delta x} \ll 1$, respectively it has to be sufficiently small).
+
+EXPAND WITH TAYLOR: $ -: \dot{\Delta x(t)} = (f(x_e) = 0) + (\frac{\partial{f}}{\partial{x}}(x_e)\Delta x(t) = \frac{\partial{f}}{\partial{x}}(x)\Delta x(t)|_{x=x_e}) + R(\norma{\Delta x(t)}^2)$.
+So,
+\[
+	[\dot{\Delta x(t)}_{CBWAS} = A\Delta x(t) + R(\norma{\Delta x(t)}^2)]
+\]
+, where $A := \frac{\partial{f}}{\partial{x}}(x_e)$. This is the dynamic of the variation of the trajectory (still exact!). $[A =\ JACOBIAN(f)\ wrt\ x]$. Per il momento ancora non vi è alcuna approssimazione. Let's consider:
+\[
+	\dot{z}(t) = Az(t),\ z(0) =\Delta x_0 \land \Delta x(t) \approx z(t)
+\]
+
+so $\Delta x(t)$ will be approximatively equal to $z(t)$, for sufficiently small $\Delta x(t)$ in norm. Approximation by using linear portion of that dynamic. If I get some properties on this system, do we'll get informations also for $x_e$?
+
+Remember this definition:
+\[
+	A := \frac{\partial{f}}{\partial{x}}(x)\Delta x(t)|_{x=x_e}
+\]
+
+WARNING! $\Delta x(t) \approx z(t)$ = (approssimazione di una \underline{variazione} rispetto ad una traiettoria). Le traiettoria del sistema linearizzato approssimano una variazione della traiettoria. Ma se $(x_e=0)$, allora la variazione della traiettoria coincide con la traiettoria stessa (ma solo ed esclusivamente in questo caso). $x(t) \approx x_e + z(t),\ whilst\ x(t) = x_e + \Delta x(t)$.
+
+In generale quindi, noi studiamo la variazione della traiettoria originaria, che abbiamo supposto inizialmente essere un punto di equilibrio. Suppose we have a surface, and suppose that that points represent a trajectory.
+\[
+	\dot{\Delta x} = A\Delta x + R(\Delta x),\ where\ [\lim_{\norma{\Delta x}\to 0}{\frac{\norma{R(\Delta x)}}{\norma{\Delta x}}} = 0]
+\]
+
+Nella classe dei sistemi non lineari T.INV, rientra la classe dei sistemi LTI. Il limite di cui sopra sostanzialmente ci informa che quel termine và a 0 quadraticamente ($R(\Delta x)$). Utilizziamo questa proprietà (approssimando la dinamica della variazione trascurando il termine $R(\Delta x)$); proprietà dei sistemi LTI.
+
+\subsection{STABILITY OF LTI SYSTEMS (T.INV) (RECAP)}
+
+Suppose that we have: $\dot{x}=Ax,\ A \neq A(t)$. If the system is unforced, and this system is that one, then $x(t) = \e^{At}x_0$. $[\e^{At} =\ EXPONENTIAL\ MATRIX]$, which tells us the entire characterization of the system. That matrix contains modes of the system. The trajectory is defined in term of $\e^{At}$ properties. Any trajectory is combination of these exponential terms (exponential of real eigenvalues or complex conj.) which involves eigenvalues of the system.
+
+\begin{thrm}{\textbf{Summarization}} \newline
+The equilibrium $(x=0)$ of $\dot{x}=Ax$ is stable $\iff$ the eigenvalues $\lambda_i,\ i \in \{1,\ \dots,\ n\}$ of A satisfy $\Re{\lambda_i} \leq 0$ and for any eigenvalue with $\Re{\lambda_i} = 0$ we have that its algebraic multiplicity is equal to geometric multiplicity. Remember that in general $\lambda_i \in \C$ are some complex eigenvalues. $q_i \geq 2$ (RANGO NULLITA') $\implies \rank(A-\lambda_iI) = n - q_i$.
+The equilibrium is A.S. $\iff \Re{\lambda_i} < 0,\ \forall i \in \{1,\ \dots,\ n\}$. Remember also that for linear systems we have same type of stability for any other trajectory. NOTATION: $A$ Hurwitz if $\Re{\lambda_i} < 0,\ \forall \lambda_i\ of\ A$. 
+\end{thrm}
+
+Just a couple of comments. UNSTABLE equilibrium $\implies$ violates the conditions. Different types of stability. Roughly speaking, first type of stability is the [exponential stability] resp. $\exists i\ |\ \lambda_i < 0$. The second one is a lighter stability. 2nd comment: about the theorem in discrete time. We can give the same theorem, also as a summarization
+
+\begin{thrm}{\textbf{DISCRETE-TIME STABILITY OF LTI's}}
+\begin{itemize}
+\item Simple Stability: $\abs{\lambda_i} \leq 1$ + conditions on algebraic and geometric multiplicities;
+\item Asymptotic Stability: $\abs{\lambda_i} < 1$.
+\end{itemize}
+\end{thrm}
+
+Let's somehow separate the two things\dots Lyapunov's theorem for nonlinear systems. Let's apply them to LTI systems. Find Lyapunov (energy) function. Take: $V(x)=x^\top Px,\ [P=P^\top]>0$. Let's parametrize the Lyapunov's function:
+\[
+	\dot{V}(x) := L_fV(x) = x^\top PAx + x^\top A^\top Px = x^\top(A^\top P + PA)x
+\]
+$P$ is at the moment some unknown matrix we've to choose. $A$ is given. Need to know $P$. Suppose we're able to find that: $PA + A^\top P = -Q$ [LYAPUNOV'S-RICCATI EQUATION], for some $Q$ symm. positive definite. Solve this matrix equation, for ex. $Q=I=Q^T > 0$. We decide some $Q$ and resolving that equation we'll find some $P$ of the type upwritten. If so, then we satisfy the Lyapunov's theorem for NL systems, since:
+\[	
+	[\dot{V} = -x^\top Qx < 0]
+\]
+
+(NEGATIVE DEFINITE). Somehow we have two characterization of the A.S. at least; LYAPUNOV'S EQUATION. We'll see that in fact these two chars are equivalent. This found is even stronger! [Necessary-sufficient conditions]. Find some $P$. State a theorem:
+
+\begin{thrm}
+A matrix $A$ is Hurwitz ($\Re{\lambda_i} < 0,\ \forall \lambda_i$) $\iff$
+\[
+	\forall Q > 0\ [\exists! (P=P^\top > 0) = \int_0^{+\infty}{\e^{A^\top t}Q\e^{At}dt}]
+\]
+that satisfies the Lyapunov's equation. Moreover if $A$ is Hurwitz, $P$ is the unique solution.
+\end{thrm}
+
+Si noti che se $A$ non fosse Hurwitz, allora quell'integrale matriciale potrebbe anche fornire multiple soluzioni. Viene introdotta una piccola ridondanza nel teorema, menzionando due volte questa affermazione onde permetterne di coglierne l'importanza.
+This is a way to prove stability. (LINEAR MATRIX INEQUALITY (LMI)). Inequalities of matrix which are linear. Powerful tools to solve this class of inequalities. Stabilizing Feedback Filters. Designing some Robot (control Function), go on MATLAB, \emph{lmi} routines. ($A' = A - BK$, where $K$ stabilizes the system (feedback matrix)).
+
+\begin{proof}
+\begin{itemize}
+\item{i)} $\exists! P>0 \implies A$ Hurwitz. Apply Lyapunov's theorem, with $[V(x) = x^\top Px]$. $\dot{V}$ will be negative definite $\iff \dot{V}(x) < 0 \implies (x=0)$ is A.S. $\implies A$ Hurwitz $\implies$ SYS A.S.
+\item{ii)} $P = \int_0^{+\infty}{\e^{A^\top t}Q\e^{At}dt}$. Basically this does the job. Hp: \underline{A Hurwitz} $\implies \exists! P > 0$ for the previous proof's point. But is this matrix well-defined? Yes it is because all the eigenvalues of $A$ are such that $\Re{\lambda_i} < 0$. The integral is well defined (ie convergent). P is symmetric. But\dots
+\begin{itemize}
+\item It can be shown that $P$ is symmetric $\iff [P=P^\top]$, simply from direct calculus. $P$ is positive definite? ($P > 0$)?
+Let's suppose by contradiction:
+\[
+	\exists (x \neq 0) \in \R^n\ |\ x^\top Px = 0
+\]
+($Q$ è definita positiva. Dipende tutto dalla struttura spettrale di $P$).
+\[	
+	\int_0^{+\infty}{x^\top \e^{A^\top t}Q\e^{At}x\ dt} \geq 0
+\]
+This is a quadratic form, so it's non negative. Ma l'unico modo per soddisfare quell'equazione è $x=0$! Ma avevamo escluso dal dominio l'origine. $(\e^{At}x) = 0, \forall t \geq 0 \iff x=0$. CONTRADICTION! \QEDA
+
+\item Does $P$ satisfy Lyapunov's equation?
+\[
+	PA+ A^\top P = \int_0^{+\infty}{[\e^{A^\top t}Q\e^{At}A + A^\top \e^{A^\top t}Q\e^{At}]dt} =
+\]
+\[
+	= \int_0^{+\infty}{\frac{d}{dt}[\e^{A^\top t}Q\e^{At}]dt} = [\e^{A^\top t}Q\e^{At}]_{0}^{+\infty} = (0 = \e^{A^\top t}Q\e{At}|_{t\to +\infty}) - Q = -Q
+\]
+
+Where the last evaluated limit is 0 due to the fact that $A$ is Hurwitz. So the fact that $Q$ is positive definite prove this part. \QEDA
+
+\item $\exists!P \impliedby$ We have to prove the uniqueness of $P$:
+Again by contradiction, suppose $\exists \tilde{P} > 0\ |\ [\tilde{P}A + A^\top \tilde{P} = -Q] \implies (P-\tilde{P})A + A^\top (P-\tilde{P}) = 0 \implies \e^{A^\top t}[(P-\tilde{P})A + A^\top (P-\tilde{P})]\e^{At} = 0 \implies \frac{d}{dt}[\e^{A^\top t}(P-\tilde{P})\e^{At}] = 0$. We have right-multiplied the expression with that exponential matrix since that matrix is non singular. Now, we have:
+\[
+	[\e^{A^\top t}(P-\tilde{P})\e^{At} =\ constant],\ \forall t \implies
+\]
+\[
+	\e^{A^\top t}(P-\tilde{P})\e^{At}|_{t=0} = (P-\tilde{P}) = \e^{A^\top t}(P-\tilde{P})\e^{At} \tendsto{t\to +\infty} 0 \implies [P=\tilde{P}]
+\]
+Where here we used again the fact that $A$ is Hurwitz to show that the last limit converges to 0. \QEDA
+\end{itemize}
+\end{itemize}
+\end{proof}
+
+\begin{thrm}{\textbf{LYAPUNOV'S INDIRECT THEOREM}} \newline
+Let $(x=0)$ be an equilibrium for the nonlinear system $\dot{x}=f(x)$, where $f \in C^1$ on a neighborhood of $(x=0)$. Then $\implies$
+\begin{itemize}
+\item If $\Re{\lambda_i} < 0\ \forall \lambda_i\ of\ A$, $x=0$ is asymptotically stable;
+\item If $\exists i\ |\ \Re{\lambda_i} > 0$, $x=0$ is \underline{unstable};
+\end{itemize}
+\end{thrm}
+
+Some consideration\dots
+\begin{itemize}
+\item Sufficient conditions based on linearization's application;
+\item Sufficient conditions for instability;
+\item If all eigenvalues are negative, the equilibrium of the NL system is A.S.;
+\item If just one eigenvalue is positive, then the equilibrium is UNSTABLE;
+\end{itemize}
+
+\begin{proof}
+$\dot{x}=f(x)$. Let $A := \frac{\partial{f}}{\partial{x}}(x)|_{x=0}$. Look at the system:
+\[
+	\dot{z}=Az,\ A=\frac{\partial{f}}{\partial{x}}(x)|_{x=0}
+\]
+and study the stability of this system. LINEARIZATION AT $x=0$. Depending on the linearization, we'll get infos about stability of the origin for the original system. Note that: $\dot{x} \neq Ax \approx Ax$!
+Since that by assumption we have that: Since $A$ is Hurwitz, $\exists P > 0\ |\ PA + A^\top P=-Q$. Let's try to do this: take this as a candidate Lyapunov's function: $V(x)=x^\top Px$.
+$V(z) = z^\top Pz \implies \dot{V}(x) = x^\top Pf(x) + f\top (x) Px = x^\top P(Ax + R(x)) + (x^\top A^\top + R^\top (x))Px = x^\top (PA + A^\top P)x + ((x^\top PR(x) \in \R) + (R^\top (x)Px \in \R)) = x^\top (PA + A^\top P)x + 2x^\top PR(x) = -x^\top Qx + 2x^\top PR(x) \approx (\dots)$;
+
+\begin{itemize}
+\item{i)}
+Intuition: $2x^\top PR(x)$ is a 2nd order term. Let's write it formally: let's write explicitly the definition of limit:
+\[
+	\forall \epsilon > 0\ \exists \delta > 0\ |\ \norma{x}<\delta \implies \frac{\norma{R(x)}}{\norma{x}} < \epsilon \leq (\dots) \implies \norma{R(x)} < \norma{x}\epsilon
+\]
+\[
+	(\dots) \leq -x^\top Qx + 2\norma{x}\norma{P}\epsilon\norma{x} \leq (\dots)
+\]
+$Q > 0$ is positive definite $\implies x^\top Qx > 0,\ \forall x \neq 0$ and this basically defines an induced norm of the matrix $Q \implies \norma{Q} >\ constant\ = c < \lambda_i\ \forall \ \lambda_i\ of\ A$.
+\[
+	(\dots) \leq -(\norma{Q}-2\norma{P}\epsilon)\norma{x}^2 < 0
+\]
+Take $\epsilon$ this way: $[\epsilon < \frac{\norma{Q}}{2\norma{P}}]$. $[x^\top Qx \geq \norma{Q}\norma{x}^2 = c\norma{x}^2]$, where $\norma{Q} = \frac{x^\top Qx}{x^\top x}$ is well defined, as previously said.
+Then $\implies (Q-cI) \geq 0 \implies Q \geq cI,\ c > 0$. \QEDA
+\item{sketch of ii's proof)}
+\underline{REMARK}: (Lyapunov's indirect theorem gives us also a Lyapunov's function to prove a.s. of $x=0,\ V(x) = \frac{1}{2}x^\top Px$).
+Just very briefly, we have eigenvalues $|\ \Re{\lambda_i} = 0 \impliedby\ \exists i\ \land\ \exists \bar{i}\ |\ \Re{\lambda_i} < 0$, and the last one is also an exponential stability.
+Suppose however, for simplicity, that $\nexists i\ |\ \Re{\lambda_i} = 0$. Then we can decompose the system, due to the $A$ Hurwitzness, into this:
+\[
+	TA\inv{T} = \begin{bmatrix}-A_1 & 0 \\ 0 & A_2\end{bmatrix}
+\]
+Now the state matrix has this structure. Suddivisione del sistema in sistema instabile e sistema asintoticamente stabile. With: $y:=Tx,\ y=\begin{bmatrix}y_1\\y_2\end{bmatrix},\ A_1,\ A_2\ $ Hurwitz, we have:
+\[
+	\left\{
+	\begin{aligned}
+	\dot{y_1} &= -A_1y_1 + R_1(y)\\
+	\dot{y_2} &= A_2y_2 + R_2(y)
+	\end{aligned}
+	\right.
+\]
+, where we reintroduced the usual remainder of the Taylor's series expansion:
+\[
+	[\lim_{\norma{y}\to 0}{\frac{\norma{R_1(y)}}{\norma{y}}} = 0 = \lim_{\norma{y}\to 0}{\frac{\norma{R_2(y)}}{\norma{y}}}]
+\]
+$y$ è semplicemente un cambio di coordinate, non la $z$ della linearizzazione. $R_1,R_2$ sono esattamente quelle di prima definite a meno di un cambio di variabile invertibile. Usiamo quindi il criterio di Chetaev. Lyapunov's theorem:
+
+\[
+	\left\{
+	\begin{aligned}
+	&P_1A_1 + A_1^\top P_1 = Q_1 \\
+	&P_2A_2 + A_2^\top P_2 = -Q_2
+	\end{aligned} 
+	\right.
+\]
+
+Notiamo che:
+\[
+	[V(y) = y_1^\top P_1y_1 - y_2^\top P_2y_2]
+\]
+
+$\impliedby P_1,P_2$ soddisfano l'equazione di Lyapunov rispettive. Abbiamo che: $V(y) > 0,\ \dot{V}(y) > 0$ SU UNA CERTA REGIONE! $\implies$ applicando quindi il criterio di Chetaev's deduciamo l'instabilità dell'origine per il sistema. \QEDA
+\end{itemize}
+\end{proof}
+
+$P_1,P_2 > 0$ definite positive! La differenza di due funzioni definita positive NON è detto che sia però definita positiva! Quindi è una proposizione non ovvia che dovrebbe venire comunque dimostrata nella seconda parte della dimostrazione del teorema precedente. Difatti, essa è solo uno sketch della reale dimostrazione.
+
+\subsection{DESIGN OF A FEEDBACK ASYMPT. STABILIZER SYSTEM FOR AN EQUILIBRIUM}
+
+$\dot{x}=f(x,u)$. Suppose that: $(x_e,u_e)$ EQUIL. PAIR. $\implies$ It means that $f(x_e,u_e)=0$. Let's try to use: $u = u_e + K(x-x_e)$, which is composed by the sum of a feedforward term and a state feedback term. $K(x-x_e)$ is the linear feedback law portion. We have to design $K$, but let's see the stabilizing effects\dots
+
+$\dot{x}=f(x,u_e+K(x-x_e))$; ($x_e$ is an equilibrium of this now unforced system). CLOSED LOOP SYSTEM as CLS. Is $x_e$ an equilibrium of the CL system?
+\[
+	f(x_e,u_e+K(x_e-x_e)) = f(x_e,u_e) = 0
+\]
+Do apply a change of coordinates:
+\[
+	\tilde{x}=x-x_e,\ \dot{\tilde{x}} = f(\tilde{x}+x_e,u_e+K\tilde{x}) = \tilde{f}(\tilde{x})
+\]
+
+But what about $[A_e = \frac{\partial{\tilde{f}}}{\partial{\tilde{x}}}(\tilde{x})|_{\tilde{x}=0} = ?]$
+
+Stabilizzazione mediante Linearizzazione. Progettazione di Feedback Stabilizzante. Condizioni sufficienti di Stabilità per sistemi TV nonostante siano forti, rimangono comunque sufficienti. Let's go back:
+
+\subsection{LINEARIZATION OF A NONLINEAR FORCED SYSTEM}
+
+$\dot{x}=f(x(t),u(t)),\ x(0) = x_0$. If we want to linearize our system when this is forced. Let's use the same argument. Do in general for linearizing a trajectory:
+
+Be $(x(\mathord{\cdot}),u(\mathord{\cdot}))$ a TRAJECTORY. Perturbe this trajectory by perturbing $x_0$ or my INPUT. My new trajectory: $[x(t) := \bar{x}(t) + \Delta x(t)],\ [u(t) := \bar{u}(t) + \Delta u(t)]$, (exactly as done with unforced system). We get that this trajectory must satisfy the dynamic: $\dot{\bar{x}}(t) + \dot{\Delta x(t)} = f(\bar{x}(t) + \Delta x(t), \bar{u}(t) + \Delta u(t)) = (\dots)$. Let's suppose to expand this function $f$ at the 1st order: $(\dots) = f(\bar{x}(t),\bar{u}(t)) + f_x(\bar{x}(t),\bar{u}(t))\Delta x(t) + f_u(\bar{x}(t), \bar{u}(t))\Delta u(t) + R(x(t),(t))$ (as before). Plus as before\dots
+
+
+\[
+	\left\{
+	\begin{aligned}
+	&A = (A(t) \in \R^{n\times n}) = f_x(\bar{x},\bar{u}) := \frac{\partial{f}}{\partial{x}}(x,u)_{x=\bar{x},u=\bar{u}} \\
+	&B = (B(t) \in \R^{n\times m}) = f_u(\bar{x},\bar{u}) := \frac{\partial{f}}{\partial{u}}(x,u)_{x=\bar{x},u=\bar{u}}
+	\end{aligned} 
+	\right.
+\]
+
+\[
+	\dot{\Delta x(t)} = A(t)\Delta x(t) + B(t)\Delta u(t) + (R(x(t),u(t))=\ Remainder)
+\]
+
+$(\Delta x, \Delta u)$! Moreover $R(\Delta x(t), \Delta u(t), t) = R(x(t),u(t))$. This is the exact dynamic of the variation. As we've done before for the equilibrium, consider a linear dynamic:
+
+\[
+	\dot{z}(t) = A(t)z(t) + B(t)v(t),\ [z(0) = \Delta x(0) = \Delta x_0]
+\]
+
+$x(0) = x_0 + \Delta x_0$. (perturbing both initial conditions and then also perturbing the INPUT, and we're pretending that $\Delta x(t) \approx z(t)$. This is called Linearization (LINEARIZATION of $\dot{x}=f(x,u)$ AT THE TRAJECTORY $(x(\mathord{\cdot}),u(\mathord{\cdot}))$). $\implies x(t) = \bar{x}(t) + \Delta x(t) \approx \bar{x}(t) + z(t)\ \land\ u(t) = \bar{u}(t) + \Delta u(t) \approx \bar{u}(t) + v(t)$. (generalizzazione del caso precedente). Let's see what happens if $(x(\mathord{\cdot}),u(\mathord{\cdot}))$ is a special trajectory, an equilibrium PAIR. In tal caso $\implies A(t) = A = A_e\ \land\ B(t) = B = B_e$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\bar{x}(t) = x_e,\ \forall t > 0 \\
+	&\bar{u}(t) = u_e,\ \forall t > 0
+	\end{aligned} 
+	\right.
+\]
+
+$(x_e,u_e)$ is the EQ. PAIR. $\implies [\dot{z}(t) = A_ez(t) + B_ev(t)]$ (LTI SYSTEM), $where\ z(0) = \Delta x_0$.
+
+\subsection{LINEARIZATION AT THE EQ. PAIR}
+
+Given the eq. pair $(x_e,u_e)$, se linearizziamo attorno ad un equilibrio partendo da un sistema T.I., il sistema risultante linearizzato sarà ancora LTI, mentre se linearizziamo il sistema attorno ad una traiettoria, il sistema risultante sarà T.V.
+
+$\dot{x}=f(x,u)$. What happens if I start somewhere else? $(x_e,u_e)$ EQ. PAIR. We've said that our general trajectory can be written as:
+
+\[
+	\left\{
+	\begin{aligned}
+	&x(t) = x_e + \Delta x(t) \approx x_e + z(t) \\
+	&u(t) = u_e + \Delta u(t) \approx u_e + v(t)
+	\end{aligned} 
+	\right. \iff
+	\left\{
+	\begin{aligned}
+	&\Delta x(t) \approx z(t) \\
+	&\Delta u(t) \approx v(t)
+	\end{aligned} 
+	\right.
+\]
+
+If I start from $x_e$ and want to return at $x_e$, I want $\Delta x(t) \tendsto{t\to +\infty} 0\ \land\ \Delta x(t) < +\infty$. What I can do is to pretend that $(\Delta x(t) \approx z(t)) \tendsto{t\to +\infty} 0,\ [\dot{z}(t) = A_ez(t) + B_ev(t)]$.
+
+Design a feedback to stabilize the origin $(z=0)$. Take: $v(t) = Kz(t)$. CLOSED LOOP SYSTEM resultant is the following:
+\[
+	\dot{z}(t) = (A+BK)z(t),\ z(0) = \Delta x_0
+\]
+
+If $K$ is designed such that $(A+BK)$ is Hurwitz $\implies (z=0)$ for the CLOSED LOOP SYSTEM will be asymptotically stable.
+
+RECALL: We need CONTROLLABILITY and at least STABILIZABILITY.
+[(per avere l'allocazione arbitraria degli autovalori $\iff \exists K$) CLAIM: $[u(t) = u_e + (K(x(t)-x_e) = K \Delta x(t))]$] locally asymptotically stabilizes $x=0$ (eq. of $\dot{x}=f(x)$). If I construct this input where $x(t)-x_e = \Delta x(t),\ \dot{x}(t) = f(x(t),u_e +K(x(t)-x_e))$. Let $\tilde{x} = x-x_e \implies \dot{\tilde{x}} = \dot{x} - (\dot{x_e} = 0) \implies \dot{\tilde{x}} = f(\tilde{x}+x_e,u_e + K\tilde{x}),\ \dot{\Delta x} = f(\Delta x + x_e,u_e + K\Delta x) = \tilde{f}(\Delta x)$.
+Ponendo $(\Delta x = 0)$ ORIGINE $\implies (\Delta x = 0)$ EQUILIBRIUM $\iff f((\Delta x = 0)+x_e,u_e) = f(x_e,u_e) = 0 \impliedby \Delta x := \tilde{x}$. Eseguito un cambio di coordinate in maniera esatta onde portarci in un sistema differente ma equivalente che ha come equilibrio l'origine. TEOREMA INDIRETTO: Calcoliamo la linearizzazione di $\tilde{f}$ e studiamo la linearizzazione $\implies \dot{z} = f_x(x_e,u_e)z + f_u(x_e,u_e)Kz = (A_e+B_eK)z$. La linearizzazione attorno il punto di equilibrio del sistema non lineare è un sistema LTI. AS. STABILIZE this: $\implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\Delta x = 0\ is\ local\ asymptotically\ stable\ for\ \dot{\Delta x}=f(\Delta x,\Delta u) \\
+	&x_e\ is\ local\ asymptotically\ stable\ for\ \dot{x}=f(x,Kx)
+	\end{aligned} 
+	\right.
+\]
+
+$(A_e + B_eK)$ Hurwitz, then by Lyapunov's indirect theorem $\Delta x = 0$ is locally asymptotically stable; $x_e$ is LAS equilibrium of the closed-loop system (se applichiamo quell'ingresso al sistema NL in anello aperto diventa un sistema NL CLOSED LOOP.
+
+\subsubsection{example}
+
+$\dot{x}=-x^3$. (Let's start with unforced system. Suppose to study the internal stability of the origin by using Lyapunov's indirect theorem).
+
+$A = \frac{\partial{f}}{\partial{x}}(x)|_{x=0} = -3x^2|_{x=0} = 0$. The linearization is $\dot{z}=0 \implies (\lambda = 0)\ EIG$ (Non possiamo dire nulla). Gli autovalori non sono tutti a parte reale strettamente negativa e non esistono autovalori a parte reale positiva, affermazione che implicherebbe l'instabilità. WE CAN'T CONCLUDE ANYTHING.
+
+\subsubsection{example}
+
+$\dot{x}=x^3$. (Different system from the previous one).
+
+$A = \frac{\partial{f}}{\partial{x}}(x)|_{x=0} = 3x^2|_{x=0} = 0$. We cannot conclude anything $\iff (\dot{z}=0)$. This is a different system but with the same linearization around the origin. Let's study the Stability in a different way, for EXAMPLE: $V(x) = \frac{1}{2}x^2 \implies \dot{V}(x) = x(-x^3) = -x^4 < 0$. (l'equilibrio $(x=0)$ è \underline{asintoticamente stabile}.
+
+\subsubsection{example}
+
+$V(x) = \frac{1}{2}x^2 \implies \dot{V}(x) = x(x^3) = x^4 > 0$ POS. DEF. everywhere (We've applied Cheatev in the most fashionable way).
+
+Two different systems, the same linearizations, but two different behaviors. [Now what we'll see is that $\dot{x}=-x^3$ has not exponential stability (AND with indirect theorem the stability is exponential)]. Suppose that now we have: $\dot{x}=x^3 + u$. If we set $(x_e,u_e) = (0,0)$ allora è un equilibrio instabile, ma se settiamo $(u_e \neq 0)$ ed applichiamo la Stabilization by Linearization otteniamo che la linearizzazione $\dot{z}= 0 + v$ è stabilizzabile con: $v=Kz,\ (K < 0) \lor K=-(b>0)<0$, for example set $K=-1$. (prendiamo un qualsiasi valore negativo). Scegliendo questo ingresso abbiamo: $\dot{z}=Kz \implies \dot{z}=-z$. Now we have to apply in $u=(u_e=0) + K(x-(x_e=0)) = Kx \implies \dot{x}=x^3 + Kx = \dot{x}(x^2 +K)$. WARNING: $K<0$. 
+
+\subsubsection{EXERCISE}
+
+$\dot{x}=(x-1)^3 + u$.
+
+\begin{itemize}
+\item FIND THE EQUILIBRIA;
+\item STUDY OPEN LOOP STABILITY;
+\item STABILIZE INSTABLE EQUILIBRIA
+\end{itemize}
+
+\subsubsection{EXAMPLE}
+
+$\dot{x}=x^3 + u$. Can we use Lyapunov's direct theorem to stabilize the origin?
+
+Suppose we leave the input there: $V(x)=\frac{1}{2}x^2$. Suppose that this is the candidate Lyapunov's function: $\dot{V}(x) = x(f(x,u)) = x^4 + xu = x^4 + Kx^4 = x^4(K+1),\ 1+K < 0,\ [K<-1],\ u=Kx^3$ IS A NONLINEAR CONTROL. The closed loop system is: $\dot{x}=x^3 + Kx^3 = x^3(K+1)$.
+
+$V(x) = \frac{1}{2}x^2$ P.D. and it is also radially unbounded $\implies$ GAS-ness for the origin. $\dot{V}(x)$ is negative definite on $\R$. So, the equilibrium is GAS.
+
+The linearization of \underline{closed loop system} is: $(\dot{z}=0)$. We get: $A = (1+K)3x^2|_{x=} = 0 \implies$ It will be not exponentially stable. 
+
+In general $\dot{x}=f(x,u)$, where: $V(x) > 0 \land \dot{V}(x) = \dot{V}(x,u) := L_{f(x,u)}V(x) = \frac{\partial{V}}{\partial{x}}f(x,u)$. If $\exists$ some $u=K(x)$ (possibily non linear function), such that:
+\[
+	\frac{\partial{V}}{\partial{x}}(f(x,u) = f(x,K(x))) < 0
+\]
+is. NEG. DEF., $\implies$ then $(x=0)$ will be asymptotically stable for the CL NL system. Just generalized what we've done previously (by applying Lyapunov's direct theorem). 
+So, $V(x)$ is the CONTROL LYAPUNOV FUNCTION $\leftarrow$ another way to stabilize the equilibria. (La $u$ è una funzione dello stato).
+
+Per effettuare la stabilizzazione in retroazione dello stato, abbiamo quindi già visto due possibili strategie:
+\begin{itemize}
+\item METODO INDIRETTO $\rightarrow$ stabilità locale;
+\item METODO DIRETTO:
+\begin{itemize}
+\item{$\rightarrow$} globale;
+\item{$\rightarrow$} locale;
+\end{itemize}
+(a seconda della $V$ che scegliamo come CLF).
+\end{itemize}
+
+Così come per il caso non forzato, $u=u_e + K(x-x_e)$. Asintoticamente possiamo trovare una $P$ che soddisfi l'equazione di Lyapunov:
+\[
+	P(A+BK)+(A+BK)^\top P = -Q
+\]
+
+LYAP. EQ. FOR CLOSED LOOP LINEARIZATION $\dot{z}=(A+BK)z,\ u=u_e+K(x-x_e)$. Moreover, $V(x)=x^\top Px$ is the Lyapunov's function for the CLOSED LOOP system.
+
+\subsection{STABILITY OF TIME-VARYING SYSTEMS}
+
+So far, we've analyzed stability for T.INV (NL). Lyapunov's therem, LaSalle Invariance Principle, Lyapunov's Indirect, Chetaev, etc.
+
+Suppose $(x=0)$ is an EQUILIBRIUM of $f=\mathord{\cdot}(t)$ (Diversamente ci possiamo ricondurre all'origine effettuando un opportuno cambio di coordinate). Precisely, $\dot{x}=f(x,t),\ f(x_e,t)=0$. We're considering the entire time interval. How can we check if the origin is stable, asymptotically stable, unstable, etc? All the theorems that we'll develop for T.VAR systems hold for T.INV systems. We'll need stronger assumptions. It will be harder to verify them.
+
+\begin{thrm}
+Let $(x=0)$ be an equilibrium $\dot{x}=f(x,t),\ (D \subset \R^n) \ni (x=0)$ a domain containing the $(x=0)$. Let $V:D \times [0,+\infty) \mapsto \R,\ V \in C^1$. We allow $V = \mathord{\cdot}(t)$ to be also time-dependant. It is a continuously differentiable function wrt the two arguments such that:
+\[
+	W_1(x) \leq V(x,t) \leq W_2(x)
+\]
+$V(x,t)$ is so bounded between $[W_1(x);W_2(x)]$. $\forall t, t_0,\ \forall x \in D,\ with\ W_1(x),W_2(x)$ continuous and positive definite on $D \iff W_1(x),W_2(x) > 0$ in $D \implies$
+\begin{itemize}
+\item
+\[
+	[\frac{\partial{V(x,t)}}{\partial{x}}f(x,t) + \frac{\partial{V(x,t)}}{\partial{t}} \leq 0]
+\]
+
+$\forall t \geq t_0 \land \forall x \in D \implies (x=0)$ is \underline{UNIFORMLY STABLE};
+\item if this function
+\[
+	\frac{\partial{V(x,t)}}{\partial{x}}f(x,t) + \frac{\partial{V(x,t)}}{\partial{t}} \leq -W_3(x)
+\]
+
+$\forall t \geq t_0\ \land\ \forall x \in D,\ with\ ((W_3(x)>0) \in C^0) \implies$
+
+$(x=0)$ is \underline{UNIFORMLY ASYMPTOTICALLY STABLE}
+\end{itemize}
+\end{thrm}
+
+Strong sufficient conditions $\implies$ strong assumptions. Uniform property. In this case $V$ have to be:
+\begin{itemize}
+\item UNIFORMLY BOUNDED;
+\item UNIFORMLY POSITIVE DEFINITE
+\end{itemize}
+Let:
+
+\[
+	[\frac{\partial{V(x,t)}}{\partial{x}}f(x,t) + \frac{\partial{V(x,t)}}{\partial{t}}] = \dot{V}(x,t)
+\]
+
+Why? It could happen tht at infinity $\dot{V}(x,t) \tendsto{} 0$, but uniformly! UNIFORME = proprietà che non cambia se cambiamo il tempo di partenza. $V = \mathord{\cdot}(t)$ positiva definita ma in modo uniforme $\iff$ senza che il tempo cambi questa proprietà. Abbiamo bisogno di entrambi i bound! $\dot{V}(x,t)$ dev'essere definita negativa ma in modo indipendente dal tempo!
+$\{W_1(x),W_2(x),W_3(x)\} > 0$ devono essere tutte definite positive! Dobbiamo sostanzialmente trovarlo noi. Let's see how to prove stability.
+
+
+\begin{proof}
+Remember the uniform stability. As in the T.INV version, let's take:
+
+$r > 0,\ \cball(0,r)$ be the ball centered in 0, with radius $r$. Let $\alpha = \min_{\norma{x}=r}{W_1(x)}$. Let's call:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\Omega_1 = \{x \in \cball(0,r)\ |\ W_1(x) \leq c\} \\
+	&\Omega_2 = \{x \in \cball(0,r)\ |\ W_2(x) \leq c\}
+	\end{aligned} 
+	\right.
+\]
+
+, where $c < \alpha$. And then, $[\Omega_2 \subset \Omega_{t,c} \subset \Omega_1]$. Let $\Omega_{t,c}=\{x \in \cball(0,r)\ |\ V(x,t) \leq c\} = \mathord{\cdot}(t)$ (it depends on time!). So, we have:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\Omega_{t,c} \subset \Omega_1 \\
+	&\Omega_{t,c} \supset \Omega_2
+	\end{aligned} 
+	\right.
+\]
+
+Let's see why: To prove that: $\Omega_2 \subset \Omega_{t,c}$ we observe that: $x \in \Omega_2,\ W_2(x) \leq c \implies V(x,t) \leq W_2(x) \leq c \implies x \in \Omega_{t,c}$; to prove that $\Omega_{t,c} \subset \Omega_1$, we do the opposite but same trick: If $x \in \Omega_{t,c} \implies V(x,t) \leq c$, but $W_1(x) \leq V(x,t)$ which is $V(x,t) \leq c \implies x \in \Omega_1$. So,
+\[
+	\underline{\Omega_2 \subset \Omega_{t,c} \subset \Omega_1}
+\]
+Both of them are also contained in the ball $\cball(0,r) \implies \Omega_2,\Omega_1 \subset \cball(0,r)$.
+
+$\Omega_{t,c} = \mathord{\cdot}(t)$ but it is contained between $\Omega_2$ and $\Omega_1$ ($\Omega_1$ è quello esterno, $\Omega_2$ è quello interno). Since $\dot{V}(x,t) \leq 0 \implies \forall x(t),\ x(t_0) \in \Omega_{t,c} \implies x(t) \in \Omega_{t,c},\ \forall t \geq t_0$. (Exactly the same argument as the T.INV version).
+
+So now, the last step we're missing is that: by continuity of $W_2(x) (\iff \forall c > 0\ \exists \delta > 0 \implies \norma{x}<\delta \implies W_2(x) < c) \implies \exists \delta > 0\ |\ \cball(0,\delta) \subset \Omega_2 \implies \forall x_0\ \in \cball(0,\delta),\ x(t) \in \Omega_{t,c} \implies x(t) \in \cball(0,r)$. 
+We use $W_2$ to construct $\cball(0,\delta)$. 
+\end{proof}
+
+Sistemi tempo-varianti. Progettazione di un feedback di un sistema TV. Studiare la stabilità di una certa traiettoria. Versione del teorema di Lyapunov per i sistemi TV. Principi di Invarianza per sistemi TV. Linearizzazione. Versione più generale del teorema indiretto. Studio delle proprietà Strutturali. Strumenti per sistemi senza ingresso.
+
+\subsection{EXPONENTIAL STABILITY}
+
+We have given the definition of (exponential) stability. It tells us that the trajectory of the system is a neighborhood of an equilibrium it converges exponentially to it. For LINEAR time-INVARIANT systems, asymptotic stability is always exponential.
+
+\begin{thrm}
+Let $(x=0)$ be an equilibrium of $\dot{x}=f(x,t),\ (D \subset \R^n) \ni x=0$ a domain containing the origin. Let $V:D \times [0,+\infty) \mapsto \R,\ V \in C^1$ be a function satisfying:
+\[
+	(K_1\norma{x}^a = W_1(x)) \leq V(x,t) \leq (K_2\norma{x}^a = W_2(x))
+\]
+
+Asking for some uniform bound. For the $\dot{V}$ we have that:
+\[
+	\dot{V} = \frac{\partial{V(x,t)}}{\partial{x}}f(x,t) + \frac{\partial{V(x,t)}}{\partial{t}} \leq -K_3\norma{x}^a,\ \forall t \geq t_0,\ \forall x \in D
+\]
+
+with $K_1,\ K_2,\ K_3 > 0$ positive constants. Then $\implies (x=0)$ is \underline{exponentially stable}. If the assumptions hold globally, then $x=0$ is GES (Globally Exponentially Stable).
+\end{thrm}
+
+Note that: $\{W_1(x) = K_1(x)\norma{x}^a,\ W_2(x) = K_2\norma{x}^a,\ W_3(x) = K_3\norma{x}^a\},\ W_1,W_2,W_3 > 0$ (positive definite). Stronger assumptions $\implies$ special $\{W_i(x)\}$.
+
+\begin{proof}
+Let's consider $\dot{V}(x,t) = \frac{\partial{V(x(t),t)}}{\partial{t}}$ (TOTAL DERIVATIVE), and: $\dot{V}(x(t),t) \leq -\frac{K_3}{K_1}V(x(t),t).\ V \in \R$. Simplify the notation: $\dot{V} \leq \frac{K_3}{K_1}V$. (quite straightforward to solve this inequality). $\implies$
+\[
+	V(x(t),t) \leq \e^{-\frac{K_3}{K_1}(t-t_0)}\norma{V(x(t_0),t_0)} \leq  V(x(t_0),t_0) \e^{-\frac{K_3}{K_1}(t-t_0)} \implies
+\]
+\[
+	\norma{x(t)}^a \leq \frac{V(x(t),t)}{K_1} \leq \frac{V(x(t_0),t_0)}{K_1} \e^{-\frac{K_3}{K_1}(t-t_0)} \leq \norma{x(t_0)}^a \frac{K_2}{K_1} \e^{-\frac{K_3}{K_1}(t-t_0)} \implies
+\]
+\[
+	\norma{x(t)} \le \norma{x(t_0)}[\frac{K_2}{K_1}]^{\frac{1}{a}} \e^{-\frac{K_3}{aK_1} (t-t_0)}
+\]
+That by merging the term $[\norma{x(t_0)}[\frac{K_2}{K_1}^{1/a}]$ this is the exactly definition of EXPONENTIAL STABILITY.
+\end{proof}
+
+Note that by applying this bounds for the norm, this holds also with GAS. A much easier property is studying the linearization (local property).
+
+Let's try the same thing we've done for TI case at the LTV. Check if we can use the Linearization (we'll get exponential stability). Suppose that we have: $[\dot{x}=A(t)x]$. Study the AS for this system using the Lyapunov's tools. Let's take our $V$ as $V(x,t) = x^\top Px$. $V$ must be bounded by two functions that do not depend on $V$. Impose that $x^\top Px$ is non-negative $\land\ [P(t)=P^\top (t)],\ \forall t \geq 0$. $P$ must be positive definite. Function is uniformly positive definite! Bounds on some quadratic new $V(t)$. $\forall x \in \R^n,\ x^\top Px$, this is : $[c_1I \leq P(t) \leq c_2I]\ P(t) - cI \geq 0$ ($P(t)-cI$ POSITIVE SEMIDEFINITE) $\implies$
+\[
+	[x^\top c_1Ix \leq x^\top P(t)x \leq x^\top c_2Ix] \implies c_1\norma{x}^2 \leq V(x,t) \leq c_2\norma{x}^2
+\]
+
+$\forall x \in \R^n$. This is the Time-Varying version of the Lyapunov's theorem. Let's compute $\dot{V}(x,t) = \frac{\partial{V(x(t),t)}}{\partial{x}}f(x,t) + \frac{\partial{V}}{\partial{x}} = x^\top P(t)A(t)x + x^\top A(t)\top P(t)x + x^\top \dot{P}(t)x = x^\top (P(t)A(t) + A(t)\top P(t) + \dot{P}(t))x = (\dots)$. We need also the derivative of $x^\top P(t)x$. (Some structure as Lyapunov's equation for LTI's). $P$ was constant in the TI version. Suppose that we're able to impose that $(\dots) = -x^\top Qx \implies [\dot{P}(t) + P(t)A(t) + A^\top (t)P(t) = -Q(t)],\ \forall t \geq t_0$. ASSUME: $Q(t) \geq c_3I\ \forall t \geq t_0$ (Some mixed bounds). SE riusciamo ad avere questo, abbiamo anche l'asintotica stabilità. Differential equation. This case we have to solve the LDC on $[t_0,+\infty)$. Somehow we have a condition. $Q(t)$ la scegliamo NOI!! E data $Q$, prendo una $P$ tale che soddisfi quella condizione. If we're able to solve some differential equation, we can solve TV systems.
+
+\begin{thrm}
+Let $(x=0)$ be the exponentially stable equilibrium of $\dot{x}=A(t)x$. (Per un sistema LINEARE, se un equilibrio è AS, è GAS ma se è GAS è anche l'unico equilibrio). Suppose that $A(t)$ is CONTINUOUS and bounded. Let $P(t)$ be a continuous bounded positive definite $(P>0)$ symmetric matrix. Then $\implies$ there $\exists Q(t) \in C^1$ continuously differentiable, bounded, positive definite symmetric matrix satisfying:
+
+\[
+	-\dot{P}(t) = P(t)A(t) + A(t)^\top P(t) + Q(t)
+\]
+
+[Hence, $V(x,t) = x^\top Px$ is a Lyapunov's function for the system satisfying the conditions for exponential stability].
+\end{thrm}
+
+Take some $Q(t)$. LMI (diffeq). $\rightarrow$ prove exponential stability of the system. Method for LTV systems. Anche il viceversa è vero! Più banalmente.
+$\dot{x}=A(t)x$. We want to characterize stability property of the equilibrium. For the T.I. we can write explicitly the solution:
+
+T.I.:
+
+\[
+	\dot{x}=Ax,\ x(t) = \e^{At}x_0
+\]
+
+$(x=0)$ EXPONENTIAL STABLE $\iff \Re{\lambda_i} < 0\ \forall \lambda_i$.
+This characterization doesn't hold for T.V. systems, but we can expand this expression. Do something similar!
+
+$x(t) = \phi(t,t_0)x(t_0)$, where $\phi(t,t_0)$ satisfy: (It depends on some initial time $t_0$). [$\phi(t)$ = STATE TRANSITION MATRIX (STM)]:
+
+\[
+	\dot{\phi}(t,t_0) = A(t)\phi(t,t_0),\ \phi(t_0,t_0)=I
+\]
+
+In TV $\phi$ is not the exponential! Something that cannot be written explicitly.
+
+\begin{thrm}
+The linear system is (globally) EXPONENTIALLY STABLE $\iff \norma{\phi(t,t_0)} \leq K\e^{-(\lambda t-t_0)},\ \forall t \geq t_0$, for some positive $K,\lambda$.
+
+\end{thrm}
+
+Useful in terms of characterization of stability. It's not very useful. Typically we can't write explicitly $\phi$.
+
+WARNING: For LTV systems eigenvalues are NOT informative. It can happen that, even though $\Re{\lambda_i} < 0\ \forall \lambda_i$, the equilibrium can still be unstable. Aware, in general this is not true!
+Per un intervallo di tempo INFINITO ha a che fare effettivamente con la stabilità. (La stabilità la abbiamo studiata a $+\infty$);
+
+\subsubsection{counterexample}
+
+Stiamo attenti al fatto che non possiamo generalizzare la proprietà degli autovalori. Sistemi lentamente variabili nel tempo $\implies$ si potrebbero avere dei risultati in termini di autovalori. Ma in generale nei TV non dicono nulla.
+
+$\dot{x}(t) = A(t)x(t)$.
+
+\[
+	A(t) := A = \begin{bmatrix}
+	-1+1.5\cos^2{t} & 1-1.5\sin{t}\cos{t} \\
+	-1-1.5\sin{t}\cos{t} & -1+1.5\sin^2{t} \end{bmatrix}
+\]
+
+by taking this matrix\dots and compute its eigenvalues (two), they are even constants: $\lambda_i(t) = -0.25 \pm j0.25\sqrt{7}$ (parte reale negativa) $\iff \Re{\lambda_i} < 0,\ i=1,2$. But if we find the State Transition Matrix (STM) in this example we get:
+
+\[
+	\phi(t,0) = \begin{bmatrix}
+	\e^{0.5} \cos{t} & \e^{-t}\sin{t} \\
+	\e^{0.5t}\sin{t} & \e^{-t}\sin{t} \end{bmatrix}
+\]
+
+START with an unstable system.
+
+\[
+	\begin{bmatrix} \cos{t} & \sin{t} \\
+	-\sin{t} & \cos{t} \end{bmatrix}
+\]
+
+$\leftarrow$ Apply this rotation (change coordinates), we have positive exponentials here. We're just not verifying the sufficient condition of the previous theorem. (basterebbe un solo elemento che diverge).
+$x(t) = \phi(t,0)x(0)$ as $t \tendsto{} +\infty \implies \norma{\phi(t,0)} \tendsto{} +\infty \implies$ thus (Equilibrium is unstable), (unstable system) - ($x=0$ unstable). For LTV system it is much difficult to study the stability of a system. But we can get some informations\dots $[\norma{A} = \max_{\norma{x}=1}{x^\top Ax}]$ \underline{possibile norma di matrice}.
+
+\begin{thrm}{\textbf{LINEARIZATION (OF A NLTV) AND EXPONENTIAL STABILITY}} \newline
+Let's see basically the equivalent version of Lyapunov's indirect theorem. What we see for TV systems hold also for TI systems.
+Let $(x=0)$ be an equilibrium of $\dot{x}=f(x(t),t)$ (general NLTV system), where $(f:D \times [0,+\infty) \mapsto \R^m) \in C^1$ is a continuously differentiable map (for the sake of JACOBIAN computation).
+$D \subset \R^n,\ D = \{x \in \R^n\ |\ \norma{x}_2 < r\} \iff$ (dominio sferico), for some $r > 0$, and $\frac{\partial{f(x,t)}}{\partial{x}}|_{x=0}$ bounded and Lipschitz on $D$, uniformly in $t$. Let
+\[	
+	A(t) = \frac{\partial{f(x,t)}}{\partial{x}}|_{x=0} \implies
+\]
+$(x=0)$ is \underline{exponentially STABLE} $\iff \dot{z}(t) = At$ is a globally exponentially stable linear time-varying (LTV) system. Notice that the equivalence is on the exponential stability.
+\end{thrm}
+
+Let's have a look up on the possible cases: If the linearization is exponentially stable, then the origin of the original system is also exponentially stable. If the linearization isn't so, then the original system surely is not exponentially stable, but it might be: asymptotically stable, stable or unstable. Let's have a look to a sketch of the proof. (Just one direction of the proof).
+
+
+\begin{proof}{Sketch}
+
+If the linearization system is exp. stable $\implies: \exists P(t)\ |\ [-\dot{P}(t) = P(t)A(t) + A^\top (t)P(t) + Q(t)]$. Take: $V(x,t) = V(x) = x^\top Px,\ [V(z,t) = V(z) = z^\top Pz]$.
+\[
+	\dot{V}(x,t) = \frac{\partial{V(x,t)}}{\partial{x}}f(x,t) + \frac{\partial{V(x,t)}}{\partial{t}} = x^\top P(t)f(x,t) + f(x,t)^\top P(t)x(t) + x^\top \dot{P}x
+\]
+Linearization at the equilibrium (\dots) = $\underline{x^\top P(t)A(t)x} + (\dots) + \underline{x^\top \dot{A}(t)P(t)x} + 2x^\top P(t)R(x,t) + \underline{x^\top \dot{P}(t)x}$. Now if we take these underlined terms we have:
+$x^\top (\dot{P}(t) + P(t)A(t) + A^\top (t)P(t))x + 2x^\top P(t)R(x,t) = -x^\top Q(t)x + 2x^\top P(t)R(x,t) \leq -c\norma{x}^2 + K\norma{x}^3 \leq (\dots) = -\norma{x}^2(c-K\norma{x})$.
+
+where for $\norma{x}$ sufficiently small this is negative definite. So we get:
+\[
+	(LIN.\ EXP.\ STABLE\ \implies\ NONLINEAR\ EXP.\ STABLE\ EQUILIBRIUM)
+\]	
+Just proved only one of the directions (the $\implies$ one).
+\end{proof}
+
+Come per il TI case, se stabilizziamo esponenzialmente il linearizzato, abbiamo stabilizzato anche il TV (con riferimento ovviamente ad i punti di equilibrio).
+
+$\dot{x}=f(x(t),u(t)),\ TRAJ\ :==\ (\bar{x}(\mathord{\cdot}), \bar{u}(\mathord{\cdot}))$ is the trajectory of the system $\iff \dot{\bar{x}}(t) = f(\bar{x}(t),\bar{u}(t))$. DESIGN A FEEDBACK $\bar{u}(\mathord{\cdot})$ to EXPONENTIALLY STABILIZE THE TRAJECTORY $(\bar{x}(\mathord{\cdot}), \bar{u}(\mathord{\cdot}))$. Suggerimento/HINT: Try to extend the TI case, where we had: $[u(t) = u_e + K(x-x_e)]$.
+
+\subsubsection{example}
+
+$\dot{x}=c(x-1)^3 + u,\ \dot{\tilde{x}} = c\tilde{x}^3 + u,\ \dot{V}(\tilde{x},u) = [c\tilde{x}^4 + \tilde{x}u],\ u=-K\tilde{x}^3 = -K(x-1)^3,\ c \in [10,20]$.
+
+$\dot{x}=(x-1)^3 + u$. (Possiamo giocarci un nuovo ingresso).
+$* u=-(x-1)^3 + w(t)$. $\dot{x}=w(t) \leftarrow$ (Sistema lineare forzato). (Possiamo fargli inseguire una traiettoria, stabilizzarlo ad un altro equilibrio, etc\dots).
+
+\[
+	u = u_e + K(x-x_e)
+\]
+
+$\dot{x}=f(x(t))$, $x_0$ E.Q
+\[
+	\Delta x := x-x_e \implies x = \Delta x + x_e,\ \dot{x}=f(x,u_e+K_e(x-x_e))
+\]
+
+$\dot{\Delta x} = f(\Delta x + x_e, u_e + K\Delta x) \tendsto{linearizzazione} \dot{z}= f_x(x_e,u_e)z + f_u(x_e,u_e)Kz = (A+BK)z$. 
+
+$\dot{x}=f(x,u)\ \ (\bar{x}(t), \bar{u}(t)),\ t \geq 0$. Take: $u(t) = \bar{u}(t) + K(x-\bar{x}(t))$, proviamo a metterlo nella legge di controllo (Metodo deduttivo - dimostrativo):
+
+$\dot{x} = f(x,\bar{u}(t) + K(t)x - K(t)\bar{x}(t))$;
+$\Delta x(t) := x(t) - \bar{x}(t),\ \dot{\Delta x} = \dot{x}(t) - \dot{\bar{x}}(t) =$
+\[
+	= [f(\Delta x(t) + \bar{x}(t), \bar{u}(t) + K(t)\Delta x(t)) -  f(\bar{x}(t),\bar{u}(t))]
+\]
+
+(Adesso dobbiamo linearizzare). Scriviamo prima l'approssimazione in serie di Taylor della $f$:
+
+\[
+	\dot{\Delta x}(t) = f(\bar{x}(t), \bar{u}(t)) + (f_x(\bar{x}(t),\bar{u}(t)) = A(t))\Delta x + (f_u(\bar{x}(t), \bar{u}(t)) = B(t))K(t)\Delta x +
+\]
+\[
+	+ (R(\Delta x) = R(\Delta x, t)) - f(\bar{x}(t),\bar{u}(t))
+\]
+
+\[
+	\dot{\Delta x}(t) = A(t)\Delta x + B(t)K(t)\Delta x + R = \Delta x(A(t) + B(t)K(t)) + R(\Delta x, t)
+\]
+\[
+	\implies [\dot{z}(t) = (A(t) + B(t)K(t))z(t)]
+\]
+
+questo è un sistema tempo-variante. Design $K(t),\ t \geq 0$, such that $\dot{z}(t) = (A(t)+B(t)K(t))z(t)$ is (exponentially stable).
+
+Un altro modo per arrivarci era:
+
+$\dot{x}=f(x,u)$. Linearizzazione di questo sistema forzato:
+
+\[	
+	\dot{z}(t) = f_x(\bar{x}(t), \bar{u}(t))z(t) + f_u(\bar{x}(t), \bar{u}(t))v(t) 
+\]
+
+Linearizzazione attorno la traiettoria, metto un feedback del tipo: $v(t) = K(t)z(t) \implies$
+
+\[
+	\dot{z}(t) = (A(t)+B(t)K(t))z(t)
+\]
+
+(Metodo costruttivo)
+
+\subsubsection{example}{Sistema PENDOLO INVERSO}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -\frac{g}{l}\sin{x_1} + u\cos{x_1}
+	\end{aligned} 
+	\right.
+\]
+
+$u$ è un'opportuna $(\frac{F}{ml})$ (fisicamente); Stiamo ignorando in qualche maniera la variazione orizzontale del pendolo; $[u := \frac{F}{ml}],\ \theta = x_1$; proviamo a trovare la coppia di equilibrio del sistema. Ponendo $u_e = 0 \implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&0 = x_{2eq} \\
+	&0 = -\frac{g}{l}\sin{x_{1eq}}
+	\end{aligned} 
+	\right. ; \left\{
+	\begin{aligned}
+	&x_{2eq} = 0 \\
+	&x_{1eq} = k\pi
+	\end{aligned} 
+	\right.
+\]
+
+$\implies (\begin{bmatrix}k\pi\\0\end{bmatrix}, 0) =: (x_e,u_e)$. 
+
+Linearizziamo il sistema attorno l'equilibrio $(\begin{bmatrix}0\\0\end{bmatrix}, 0)$.
+
+\[
+	A_e = \frac{\partial{f}}{\partial{x}}|_{x=\mathbf{0}} = \begin{bmatrix}
+	\frac{\partial{f_1(x)}}{\partial{x_1}} & \frac{\partial{f_1(x)}}{\partial{x_2}} \\
+	\frac{\partial{f_2(x)}}{\partial{x_1}} & \frac{\partial{f_2(x)}}{\partial{x_2}}\end{bmatrix}|_{x=\mathbf{0}} = \begin{bmatrix}
+	0 & 1 \\
+	-\frac{g}{l}\cos{x_1} - u\sin{x_1}|_{x=\mathbf{0}} & 0\end{bmatrix} = 
+\]
+\[
+	 = \begin{bmatrix}
+	 0 & 1 \\
+	 -\frac{g}{l} & 0\end{bmatrix} \in \R^{2 \times 2}
+\]
+
+\[
+	\begin{bmatrix}\dot{x_1}\\ \dot{x_2}\end{bmatrix} = \begin{bmatrix}f_1(x,u)\\f_2(x,u)\end{bmatrix} =
+	\begin{bmatrix}x_2\\-\frac{g}{l}\sin{x_1} & u\cos{x_1}\end{bmatrix}
+\]
+
+\[
+	B_e = \begin{bmatrix}\frac{\partial{f_1(x)}}{\partial{u}}\\ \frac{\partial{f_2(x)}}{\partial{u}}\end{bmatrix}|_{x=\mathbf{0}} \in \R^{2 \times 1} = \begin{bmatrix}0\\ \cos_{x_1}\end{bmatrix}|_{x=\mathbf{0}} = \begin{bmatrix}0\\1\end{bmatrix}
+\]
+
+Linearizzato all'equilibrio diventa:
+
+\[
+	\begin{bmatrix}\dot{z_1}\\ \dot{z_2}\end{bmatrix} = \begin{bmatrix}0 & 1\\ -\frac{g}{l} & 0\end{bmatrix}\begin{bmatrix}z_1\\z_2 \end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix}v
+\]
+
+Non applicando nessun controllo. Calcoliamo gli autovalori: $p(\lambda) = \lambda^2 + \frac{g}{l} \implies \lambda^2 + 1 \implies \lambda = \pm j$ (parte reale nulla). $g > 0\ \land\ l > 0 \implies$ (Non possiamo concludere nulla sul sistema originario) $\iff$ (Poli puramente immaginari). (Il linearizzato non ci dice nulla).
+
+Il controllo lo possiamo sintetizzare anche qui. Proviamo a stabilizzare esponenzialmente il linearizzato:
+
+($K$ vettore riga).
+
+$R=[B\ |\ AB] = \begin{bmatrix}0 & 1 \\ 1 & 0\end{bmatrix}$. (Il sistema è completamente raggiungibile. Ha quindi senso progettare il feedback stabilizzante):
+
+$(A+BK) = \begin{bmatrix}0&1\\-\frac{g}{l} & 0\end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix}\begin{bmatrix}K_1 & K_2\end{bmatrix} = \begin{bmatrix}0&1 \\ -\frac{g}{l}+K_1 & K_2\end{bmatrix}$.
+
+(FORMA CANONICA (COMPAGNA)). $-\frac{g}{l} + K_1 < 0\ \land\ K_2 < 0$.
+
+Alternativamente, si calcolano direttamente gli autovalori e si impongono a parte reale minore di 0. $\iff [\Re{\lambda_i} < 0]$; es.
+\[
+	K_1 = 0,\ K_2 = -1 \iff \{K_1 < \frac{g}{l},\ K_2 < 0\}
+\]
+
+$p(\lambda) = \lambda(\lambda - K_2)  - (K_1 - \frac{g}{l}) = \lambda^2 - K_2\lambda - (K_1 - \frac{g}{l})$;
+$u = u_e + K(x-x_e)$ in generale $\implies (u=Kx)$ (nello specifico) $u = \begin{bmatrix}K_1&K_2\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}$.
+
+Se per esempio scegliamo $K=\begin{bmatrix}0&-1\end{bmatrix}$, stiamo aggiungendo uno smorzamento al pendolo.
+
+\subsubsection{exercise}
+
+Do as an exercise: Linearizzazione attorno $(x_{eq},u_{eq}) = (\begin{bmatrix}\pi\\0\end{bmatrix}, 0)$ (ingresso non nullo, Altro equilibrio).
+
+\subsubsection{more examples}
+
+Supponiamo di voler tenere fermo il pendolo ad un equilibrio con un angolo di 45°, $x_{1e} = (\frac{\pi}{4}) \implies$
+\[	
+	\left\{
+	\begin{aligned}
+	&0 = x_{2e} \\
+	&0 = -\frac{g}{l}\sin{\frac{\pi}{4}} + u_{eq}\cos{\frac{\pi}{4}}
+	\end{aligned} 
+	\right. \implies 
+\]
+
+$0 = -\frac{g}{l}\frac{\sqrt{2}}{2} + u\frac{\sqrt{2}}{2} \implies u\frac{\sqrt{2}}{2} = \frac{g}{l}\frac{\sqrt{2}}{2} \implies [u_e = \frac{g}{l}]$.
+
+La coppia di equilibrio sarà quindi: $(\begin{bmatrix}\frac{\pi}{4}\\0\end{bmatrix}, \frac{g}{l})$;
+
+\[
+	B_e = \begin{bmatrix}0\\ \frac{\sqrt{2}}{2}\end{bmatrix}; A_e = \begin{bmatrix}
+	0 & 1 \\ -\sqrt{2}\frac{g}{l} & 0\end{bmatrix}
+\]
+
+\[
+	\dot{z} = \begin{bmatrix}
+	0 & 1 \\ -\sqrt{2}\frac{g}{l} & 0\end{bmatrix}z + \begin{bmatrix}0\\ \frac{\sqrt{2}}{2}\end{bmatrix}v
+\]
+
+poli complessi e coniugati; non possiamo dire nulla! Possiamo usare lo stesso tipo di feedback di prima.
+
+\[
+	A_e + B_eK_e = \begin{bmatrix}0&1\\-\frac{g}{l}\sqrt{2} + K_1\frac{\sqrt{2}}{2} & K_2\frac{\sqrt{2}}{2}\end{bmatrix}
+\]
+
+where $\{K_2 < 0, -\frac{g}{l}\sqrt{2} + K_1\frac{\sqrt{2}}{2} < 0 \implies K_1 < 2\frac{g}{l}\}$.
+
+Adesso, dal momento che le matrici di stato del linearizzato sono state valutate direttamente nel punto di equilibrio diverso dall'origine, $u = u_e + K(x-x_e) = \frac{g}{l} + \begin{bmatrix}K_1&K_2\end{bmatrix}\begin{bmatrix}x_1-\frac{\pi}{4}\\x_2\end{bmatrix} = \frac{g}{l} + K_1(x_1-\frac{\pi}{4}) + K_2x_2$;
+(Adesso abbiamo un controllo più generale).
+
+\subsubsection{exercise}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = -6x_1 + 3x_2 \\
+	&\dot{x}_2 = -3x_1 -2x_2 -dx_2^3
+	\end{aligned} 
+	\right. \implies 
+\]
+
+Study the stability of the equilibrium $x_e=(0,0)$. For this first point, $d =\ constant\ = K$. Let's check if $(0,0)$ is actually an equilibrium $\implies (x_1,x_2)=(0,0) \implies \{\dot{x}_1 = 0\ \land\ \dot{x}_2 = 0\}$. Let $[d=1=K]$. Let's study the stability. This is an LTI system, so let's try to use a Lyapunov's function (our usual quadratic function): $V(x) = \frac{1}{2}(x_1^2 + x_2^2)$,
+
+\[
+	\dot{V}(x) = x_1(-6x_1 + 3x_2) + x_2(-3x_1 - 2x_2 + dx_2^3) =
+\]
+\[
+	= -6x_1^2 +3x_1x_2 -3x_1x_2 - 2x_2^2 + dx_2^4 = -6x_1^2 - 2x_2^2 + dx_2^4 =
+\]
+\[
+	= -6x_1^2 + x_2^2(-2+dx_2^2)
+\]
+
+So, COLLECT $x_2^2$ and observe that $-2+dx_2^2$ is NOT always negative definite. But if $\norma{x} \ll 1$, the term could be locally negative. For $-2+dx_2^2 < 0 \implies dx_2^2 < 2 \implies \abs{x_2}^2 < (\frac{2}{d})$, the $\dot{V}(x)$ is negative definite (NEG. DEF.) $\implies$ (origine asintoticamente stabile) $\implies\ LAS$. By doing this choice, we are sure that this interval contains a complete neighborhood of the origin.
+
+Notice that: $D = \forall x_1,\ \forall x_2 \in \{\abs{x_2}^2 < (\frac{2}{d})$. Neighborhood of the origin where $\dot{V}$ is NEGATIVE. Give a bound, a RoA for $x_e=(0,0)$ for the given Lyapunov function $\implies RoA=D$ OR ANY bounded set included in $D \implies \forall\ [P \subseteq D]$.
+
+Then what can we say about local exponentially stability of the equilibrium?
+
+-) EXPONENTIAL STABILITY. Linearizziamo il sistema attorno l'origine. Compute the linearization:
+
+\[
+	\frac{\partial{f(x)}}{\partial{x}}|_{x=0} =: A = \begin{bmatrix}6 & 3\\-3 & -2+dx_2^3\end{bmatrix}|_{x=0} = \begin{bmatrix}6&3\\-3&-2\end{bmatrix}
+\]
+\[
+	p(\lambda) = \det{\begin{bmatrix}-6-\lambda & 3\\-3 & -2-\lambda\end{bmatrix}} = (6+\lambda)(2+\lambda) + 9 = \lambda^2 + 8\lambda + 21 = 0 \implies
+\]
+
+$\Re{\lambda_{1,2}} < 0,\ i=1,2\ \implies$ EXP. STABLE (LES) (in a neighborhood of the origin).
+	
+Is the equilibrium GAS? The $\dot{V}$ is not negative on the entire $\R^2$, but this doesn't say anything! \underline{A necessary GAS condition is the UNIQUENESS of the equilibrium point!!}. So let's check whether do they exist other equilibria for this system $\implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&0 = -6x_1 + 3x_2 \\
+	&0 = -3x_1 -2x_2 + x_2^3\ (d=1)
+	\end{aligned} 
+	\right. \implies
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&2x_1 = x_2 \\
+	&0=x_1(-7+8x_1^2)
+	\end{aligned} 
+	\right. ; \left\{
+	\begin{aligned}
+	&x_1^2 = \frac{7}{8} \implies x_1 = \pm \sqrt{\frac{7}{8}} \\
+	&x_2 = \pm \sqrt{\frac{7}{2}}
+	\end{aligned} 
+	\right.
+\]
+
+there are two other equilibria for the system $\implies (x=0)$ CANNOT be GAS! Thus $(x=0)$ is NOT GAS!
+
+Next point is suppose that $d$ now is time-varying parameter $\iff d:=d(t)$. Now $d$ is a time depending function, then study the stability of the origin of this now NLTV system. We do have to apply theorems of time-varying portion of theory. Maybe we can use: $V(x,t) = V(x) = \frac{1}{2}(x_1^2 + x_2^2) = W_1(x) = W_2(x)$, where $V(x)$ doesn't depend on time $\implies V(x) \neq \mathord{\cdot}(t)$. We're fine:
+\[
+	\dot{V}(x) = \frac{\partial{V(x,t)}}{\partial{x}}f(x) + (\frac{\partial{V(x)}}{\partial{t}} = 0)
+\]
+
+We can just compute the first part, but for the previous point we know that: $\dot{V}(x) =\ [EXACTLY\ THE\ PREVIOUS\ ONE] = -6x_1^2 + (-2+\alpha (t)x_2^2)x_2^2 \leq -W_3(x)$, where $W_3(x) > 0$ positive definite. Take:
+	
+\[
+	[W_3(x) = -6x_1^2 + (-2+x_2^2)x_2^2]
+\]
+$\implies$ \underline{LUAS} (Locally \textbf{uniformly} Asymptotically Stable).
+
+\subsection{FEEDBACK LINEARIZATION}
+
+Linearizzazione mediante feedback $\neq$ dalla linearizzazione vista sino ad adesso. FEEDBACK LINEARIZATION. Rendo il sistema lineare esattamente. F.L. non è da confondere con la linearizzazione vista sino ad ora. I/O LINEARIZATION. Stabilizzazione di equilibrio od inseguimento di traiettorie.
+
+\subsubsection{EXAMPLE}{Just a pendulum!}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -a\sin{x_1} - bx_2 + cu
+	\end{aligned} 
+	\right.
+\]
+
+where $\{a,b,c\}$ some values. If we want to stabilize this system at an equilibrium, we can us linearization as:
+
+\[
+	\left\{
+	\begin{aligned}
+	&0 = x_{2eq} \\
+	&0 = -a\sin{x_{1eq}} + cu_e
+	\end{aligned} 
+	\right. \implies [u=\frac{a}{c}\sin{x_{1eq}}] \implies
+\]
+\[
+	\implies [(x_{1eq},0), \frac{a}{c}\sin{x_{1eq}}]
+\]
+EQUILIBRIUM PAIR. Given any angle; if we want to linearize, then
+
+\[
+	A_e = \begin{bmatrix}0&1\\-a\cos{x_{1e}}&-b\end{bmatrix},\ B_e = \begin{bmatrix}0\\c\end{bmatrix}
+\]
+
+$\dot{z} = A_ez + B_ev$, such that $(A_e + B_eK)$ is Hurwitz, $v=Kz,\ \dot{z}=(A_e+B_eK)z \implies$
+\[
+	u = (\frac{a}{c}\sin{x_{1eq}}=u_e) + (K_1(x_1-x_{1e}) + K_2x_2 = K(x-x_e))
+\]
+Since the feedback $K$ exponentially stabilized the equilibrium, this INPUT stabilizes the equilibrium fo the \underline{NL system}. Let's rewrite it:
+
+\[ 
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -a\sin{x_1} - bx_2 + a\sin{x_{1eq}} + cK_1(x_1-x_{1e}) + cK_2x_2
+	\end{aligned} 
+	\right.
+\]
+
+We have the $a\sin{x_{1eq}}$ term that at the equilibrum, it will be compensed with $-a\sin{x_1}|_{x=x_{1eq}}$. Suppose that we go back to our system. $x_2$ is linear function. $x_1$ has a linear and a non linear term. $u=\mathord{\cdot}(x);\ \{a,b,c\}\ KNOWN$. Suppose to choose $u\ |$:
+\[
+	u = a\sin{x_1} + w
+\]
+(Non linear function of $x_1$). We'll define this $w$.
+
+\[ 
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -bx_2 + cw
+	\end{aligned} 
+	\right.
+\]
+
+Now this system is linear and it's not a linear system approximating $z \approx (x-x_e)$; but I've converted my system in a linear system one (LTI) with the feedback control. Choose $w$ to stabilize this system. Stabilize some $x_1(t),\ t \geq 0$; I can write:
+\[
+	w = \frac{1}{c}\dot{x}_{2d}(t)+K(x-x_d(t))
+\]
+and this $w$ stabilized the system and in particular the trajectory $x_d(t)$. (Stabilizzazione di una traiettoria di un sistema LTI). Assuming that: $x_{2d}(t) = \dot{x}_{1d}(t)$ and assuming this change of coordinates:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{x} := x-x_d(t) \\
+	&\dot{\tilde{x}}_1 = \tilde{x}_2 \\
+	&\dot{\tilde{x}}_2 = -b\tilde{x}_2 + \dot{x}_{2d}(t) + cw = -bx_{2d}(t) + cw
+	\end{aligned} 
+	\right.
+\]
+
+\[
+	\dot{\tilde{x}}_1 = \dot{x}_1 - \dot{x}_{1d}(t) = x_2 - x_{2d}(t) = \tilde{x}_2
+\]
+\[
+	\dot{\tilde{x}}_2 = \dot{x}_2 - \dot{x}_{2d}(t) = -bx_2 + cw - \dot{x}_{2d}(t) = -b(x_2-x_{2d}) + cw
+\]
+
+\[
+	[w = \frac{b}{c}x_{2d}(t) + \frac{1}{c}\dot{x}_{2d}(t) + K_1(x_1 - x_{1d}(t)) + K_2(x_2-x_{2d}(t))]
+\]
+
+(Scriviamo la dinamica della differenza tra la traiettoria e della traiettoria desiderata). Dal sistema di partenza perveniamo all'LTV.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\tilde{x}}_1 = \tilde{x}_2 \\
+	&\dot{\tilde{x}}_2 = -b\tilde{x}_2 + K\tilde{x}
+	\end{aligned} 
+	\right.
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -a\sin{x_1} - bx_2 + cu
+	\end{aligned} 
+	\right.
+\]
+
+where $u = \frac{a}{c}\sin{x_1} + w \tendsto{LTI}$:
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -bx_2 + cw
+	\end{aligned}
+	\right. \implies
+\]
+\[
+	\begin{bmatrix}\dot{x}_1\\ \dot{x}_2\end{bmatrix} = \begin{bmatrix}0&1\\0&-b\end{bmatrix} + \begin{bmatrix}0\\c\end{bmatrix}w
+\]
+
+$\leftarrow$ SISTEMA LINEARE. Let's look at this system (NL system):
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -a\sin{x_1} -bx_2 + cu
+	\end{aligned}
+	\right.
+\]
+
+We can rewrite the \underline{NL system} this way:
+
+\[
+		\begin{bmatrix}\dot{x}_1\\ \dot{x}_2\end{bmatrix} = \begin{bmatrix}0&1\\0&-b\end{bmatrix} + c\begin{bmatrix}0\\1\end{bmatrix}c(-\frac{a}{c}\sin{x_1}+u)
+\]
+
+Very special structure of $\{A,B\}$. Let's suppose I have a system like this (We're somehow generalizing the previous structure):
+
+\[
+	\dot{x} = Ax + B\gamma(x)(u-\alpha(x))
+\]
+
+where $\gamma \in \R^n$. 
+Se scegliamo $u = \alpha(x) + \frac{1}{\gamma(x)}w = \alpha(x)+\gamma^{-1}(x)w$, con queste condizioni otteniamo: $[\dot{x} = Ax + Bw]$. Riusciamo a trovare un sistema con questa forma del genere? Conoscere tutti i parametri del sistema è necessario. FEEDBACK LINEARIZATION.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = a\sin{x_2} \\
+	&\dot{x}_2 = -x_1^2 + u
+	\end{aligned}
+	\right.
+\]
+
+For this system, we cannot write it in the previous form. However, make a change of coordinates: ($z=T(x))$ change of coordinates), and $T(x)$ must be an invertible function. 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{z}_1 = z_2 \\
+	&\dot{z}_2 = a\cos{x_2}(-x_1^2 + u)
+	\end{aligned}
+	\right. ; \left\{
+	\begin{aligned}
+	&\dot{z}_1 = z_2 = x_1 \\
+	&\dot{z}_2 = a\cos{\arcsin{\frac{z_2}{a}(-x_1^2 + u)}}
+	\end{aligned}
+	\right.
+\]
+
+Take $[u = x_1^2 + \frac{1}{a\cos{x_2}}w] \implies \{\dot{z}_1 = z_2,\ \dot{z}_2 = w\}$. Scelto di nuovo opportunamente l'ingresso, si riesce a stabilizzare il sistema feedback linearizzato.
+
+\begin{defn}{\textbf{(FEEDBACK LINEARIZATION) FLS}} \newline
+A nonlinear system:
+\[
+	\dot{x} = f(x) + G(x)u
+\]
+
+(CONTROL AFFINE SYSTEM as C.A.S.) (more special structure of the system), where $f:D \mapsto \R^n\ \land\ G(x):D \mapsto \R^n$. is said to be FEEDBACK LINEARIZABLE $\iff \exists$ a diffeomorphism $T:D \mapsto \R^n$ ($T$ is invertible, $T,T^{-1} \in C^1$). such that $0 \in T(D)$, and $z=T(x)$ changes the system in this form:
+
+\[
+	\dot{z}=Az + B\gamma(x)[(u-\alpha(x))]
+\]
+
+with $(A,B)$ controllable, $\gamma(x)$ non singular $\forall x \in D$.
+\end{defn}
+
+This is our goal. Change of coordinates to convert our NL system into a linear one.
+
+\subsubsection{INPUT-OUTPUT LINEARIZATION}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = f(x) + g(x)u \\
+	&y = h(x)
+	\end{aligned}
+	\right.
+\]
+
+SISO $\iff u \in \R$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = a\sin{x}_2 \\
+	&\dot{x}_2 = -x_1^2 + u \\
+	&y=x_2
+	\end{aligned}
+	\right.
+\]
+
+Let's suppose we have an output, $[y=x_2]$. Let's write the dynamic of the output: $\dot{y}=\dot{x}_2 = -x_1^2 + u,\ u = x_1^2 + w \implies \dot{y}=w$ (linear dynamic for the output). (We have linearized the output dynamic but not the entire state dynamic).
+
+ENTIRE DYNAMIC :=
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = a\sin{y} \\
+	&\dot{y} = w
+	\end{aligned}
+	\right.
+\]
+
+The output is a measure or a performance output. If I'm able to linearize the output, I can bring it to what ever I want. Clearly this is not a general good idea to ignore the rest of the dynamic. But if $\dot{x}_1$ stays bounded, then I'm fine; control part of the dynamic. [OBSERVABILITY] Ci sono stati indistinguibili?
+
+Take a different output,
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = a\sin{x_2} \\
+	&\dot{x}_2 = -x_1^2 + u \\
+	&y = x_1
+	\end{aligned}
+	\right.
+\]
+
+Let's try to write the dynamic of the output. So let's differentiate the output:
+
+\[
+	\dot{y} = \dot{x_1} = a\sin{x_2}
+\]
+
+Since I don't have the input, let's differentiate again $\dot{y}$. So,
+
+\[
+	\ddot{y} = a\cos{x_2}\dot{x_2} = a\cos{x_2}[-x_1^2 + u]
+\]
+
+If I choose $[u = x_1^2 + \frac{1}{a\cos{x_2}}w$, then I have limited the output dynamic another time, then I get $\ddot{y}=w \leftarrow$ INPUT-OUTPUT LINEARIZED Linear output dynamic system. Let's generalize:
+
+$T(x) := \begin{bmatrix}z_1\\z_2\end{bmatrix}$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{z}_1 = z_2 \\
+	&\dot{x}_2 = a\cos{x_1}(-x_1^2 + u)
+	\end{aligned}
+	\right.
+\]	
+
+Suppose: $T(x) = \begin{bmatrix}y\\ \dot{y}\end{bmatrix} = \begin{bmatrix}x_1 \\ a\sin{x_2}\end{bmatrix}$.
+
+Then we have: 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\gamma (x) = a\cos{x_2} \\
+	&\alpha (x) = x_1^2
+	\end{aligned}
+	\right. ; \left\{
+	\begin{aligned}
+	&\dot{z}_1 = z_2 \\
+	&\dot{z}_2 = w
+	\end{aligned}
+	\right.
+\]
+
+(by using a suitable $u$). Both If I have $y=x_1\ \lor\ y=x_2$, my system is I/O Linearizable, but in the second and last case it is better because I also feedback linearized my system. (feedback \underline{LINEARIZABLE}). $\iff$ I have linearized the entire dynamic, not just some output dynamics! Not only the $y$.
+
+Nel secondo caso per raggiungere l'ingresso devo derivare due volte. Pari proprio all'ordine del sistema. DERIVO 2 volte e trovo l'ingresso. 2 coincide con $(n=2)$, l'ordine dello stato del sistema. Nel secondo caso trovo l'ingresso solo alla derivata $n$-esima. Nel primo caso derivando ulteriormente controlleremmo la $\dot{u}$.
+
+Let's try to generalize further.
+In general, $y=h(x)$. In this case suppose $h(x)=x_1$. To compute $\dot{y}$, we do:
+\[
+	\dot{y} = \frac{\partial{x_1}}{\partial{x}}(f(x) + g(x)u) = \begin{bmatrix}1&0\end{bmatrix}(\begin{bmatrix}a\sin{x_2}\\-x_1^2\end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix}u) = a\sin{x_2}
+\]
+
+$\frac{\partial{h}}{\partial{x}} g(x) = 0$ (NON COMPARE l'ingresso per questo motivo).
+
+\[
+	\ddot{y} = \frac{\partial{a\sin{x_2}}}{\partial{x}}(f(x)+g(x)u) = \begin{bmatrix}0&a\cos{x_2}\end{bmatrix}(\begin{bmatrix}a\sin{x_2}\\ -x_1^2\end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix}u) =
+\]
+\[
+	= (a\cos{x_2}(-x_1^2) = L_f^2h(x)) + (\begin{bmatrix}0&a\cos{x_2}\end{bmatrix}\begin{bmatrix}0\\1\end{bmatrix}u = L_gL_f(h(x))u)
+\]
+
+$\implies L_gL_fh(x) \neq 0$ NOW!
+
+Suppose:
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x} = f(x) + G(x)u \\
+	&y=h(x)
+	\end{aligned}
+	\right.
+\]
+
+$u,y \in \R \iff$ SISO system. Let's compute $\dot{y}:$
+\[
+	\dot{y} = \frac{\partial{h(x)}}{\partial{x}}[f(x)+g(x)u = \dot{x}] = \frac{\partial{h(x)}}{\partial{x}}f(x) + \frac{\partial{h(x)}}{\partial{x}}g(x)u = [L_fh(x) + L_gh(x)u]
+\]
+
+It may happen two cases:
+\begin{itemize}
+\item $L_gh(x) = 0 \implies$ MOVE ON *;
+\item $L_gh(x) \neq 0 \implies$ STOP. I/O Linearized system;
+\end{itemize}
+
+Suppose the case $\iff L_gh(x) = 0 \implies$ with $L_gh(\mathord{\cdot}):\R^n \mapsto \R$ some SCALAR function, $\dot{y}=(L_fh(x))$
+\[
+	[\ddot{y}=\frac{\partial{L_fh(x)}}{\partial{x}}f(x) + \frac{\partial{L_fh(x)}}{\partial{x}}g(x)u] \implies
+\]
+\[
+	\{L^2_fh(x) := \frac{\partial{L_fh(x)}}{\partial{x}}f(x),\ L_g(L_fh(x)) = (\frac{\partial{L_fh(x)}}{\partial{x}}g(x))\}
+\]
+\[
+	\ddot{y} = L^2_fh(x) + L_gL_fh(x)u
+\]
+
+what are two possibilities?
+\begin{itemize}
+\item $L_gL_fh(x)=0$;
+\item $L_gL_fh(x)\neq 0 \rightarrow$ STOP;
+\end{itemize}
+Suppose $L_gL_fh(x) = 0$:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\ddot{y}=L^2_fh(x) \\
+	&\vdots \\
+	&y^{(\rho)}=L^{\rho}_fh(x) + L_gL^{\rho-1}_fh(x)u
+	\end{aligned}
+	\right.
+\]
+
+(If at a certain point we find $[L_gL_f^{\rho -1}h(x) \neq 0]$, STOP and take:
+\[
+	u = \frac{1}{L_gL_f^{\rho-1}h(x)}(-L^{\rho}_fh(x) + w)
+\]
+
+$y^{\rho} = w \leftarrow$ INPUT-OUTPUT LINEARIZED, where $\rho \leq n$ is called \underline{RELATIVE DEGREE}. If $\rho =n \implies T(x) = \begin{bmatrix}h(x)\\L_fh(x)\\ \vdots \\ L^{\rho -1}_fh(x)\end{bmatrix} := \begin{bmatrix}\xi_1 \\ \vdots \\ \xi_n\end{bmatrix}$.
+
+If REL. DEGREE is well defined, then the system is I/O LINEARIZABLE. Se $\rho$ non è definito, non è I/O linearizzabile.
+
+\subsubsection{INPUT/OUTPUT LINEARIZATION}
+$(\rho < n)$ trovare un altro set per cambiare le coordinate:
+Suppose $\exists \rho < n$, il sistema è I/O LINEARIZZABILE.
+
+\[
+	\left\{
+	\begin{aligned}
+	&L_gL^{\lambda -1}_fh(x) = 0 \\
+	&L_gL^{\rho -1}_fh(x) \neq 0
+	\end{aligned}
+	\right.
+\]
+
+where $\lambda \in \{1,\ \dots,\ \rho -2\}$, $\rho$ è il \underline{grado relativo}.
+
+$\forall x \in D_0 \subset D,\ 1 \leq (\rho \leq n),\ D_0\ SOTTODOMINIO$;
+
+\begin{itemize}
+\item $[\rho = n]$. CASO PARTICOLARE, change of coordinates:
+
+\[
+	T(x) = \begin{bmatrix}h(x)\\L_fh(x)\\ \vdots \\ L^{n-1}_fh(x)\end{bmatrix} := \begin{bmatrix}\xi_1 \\ \vdots \\ \xi_n\end{bmatrix}
+\]
+
+What is the dynamic in the new coordinates?
+
+$[\dot{\xi}_1 = \xi_2,\ \dot{\xi}_2 = \xi_3,\ \dots,\ \dot{\xi}_{n-1}=\xi_n] \implies \dot{\xi}_n = L^n_fh(x) + L_gL^{n-1}_fh(x)u$. Se scegliamo $u = \frac{1}{L_gL{n-1}_fh(x)}(-L^n_fh(x) + w)$, we get that the system is equal to:
+
+\[
+	\begin{bmatrix}\dot{\xi}_1 \\ \vdots \\ \dot{\xi}_n\end{bmatrix} = (A_c = \begin{bmatrix}0&1&0&0& \dots & 0\\0&0&1&0& \dots & 0 \\ \dots & \dots & \dots & \dots & \dots & \dots \\ \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\ 0& \dots & \dots & \dots & \dots & 1 \\ 0&\dots&\dots&\dots&\dots&0\end{bmatrix})\begin{bmatrix}\xi_1\\ \vdots \\ \xi_n\end{bmatrix} +
+\]
+\[
+	+ (B_c = \begin{bmatrix}0\\ \vdots \\ 1\end{bmatrix})L_gL^{n-1}_fh(x)(u + \frac{L^n_fh(x)}{L_gL^{n-1}_fh(x)}) \implies
+\]
+\[
+	\implies \begin{bmatrix}\dot{\xi}_1 = \xi_2 \\ \vdots \\ \dot{\xi}_n = \xi_{n-1}\end{bmatrix}
+\]
+
+(CHAIN OF INTEGRATORS), which is linear. $y^{(\rho)} = w$; let's rewrite:
+\[
+	\dot{z}=A_z + B\gamma (x)(u - \alpha (x))
+\]
+
+(FORMA CANONICA). 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\xi} = A_c\xi + B_e\gamma (x)(u-\alpha (x)) \\
+	&\gamma(x) = L_gL^{n-1}_fh(x),\ \alpha(x) = -\frac{L^n_fh(x)}{L_gL^{n-1}_fh(x)} = -\frac{L^n_fh(x)}{\gamma(x)}
+	\end{aligned}
+	\right.
+\]
+
+$[\dot{\xi} = A_c\xi + B_cw]$; by using that INPUT. And therefore we can track any trajectory we want to follow. Se riusciamo a derivare l'uscita per n volte, allora abbiamo immediatamente feedback linearizzato il sistema, ma anche come piace a noi. Nelle nuove coordinate abbiamo direttamente un sistema in forma CANONICA. Sistema risultante sulla quale si può applicare direttamente inseguimento di traiettoria o stabilizzazione.
+\item Now let's see what happens if we're not able to compute all derivatives of the output $(\rho < n)$. The INPUT appears in a derivative of order $\rho < n$. $\rho = n \leftarrow$ taken that change of coordinates. Here those new coordinates are:
+
+\[
+	\begin{bmatrix}\eta\\ \xi\end{bmatrix} = \begin{bmatrix}\eta_1 \\ \vdots \\ \eta_{n-\rho} \\ \xi_1 \\ \vdots \\ \xi_\rho\end{bmatrix} =: T(x) = \begin{bmatrix}\Phi_1(x) \\ \vdots \\ \Phi_{n-\rho}(x)\\ h(x) \\ L_fh(x) \\ \vdots \\ L^{\rho-1}_fh(x)\end{bmatrix}
+\]
+
+(Ci servono delle nuove coordinate, funzioni $\Phi_i(x)$. Dobbiamo trovarle).
+
+How we can choose $\Phi_1(x),\ \dots,\ \Phi_{n-\rho}(x)$? Let's go back to our example.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = a\sin{x_2} \\
+	&\dot{x}_2 = -x_1^2 + u
+	\end{aligned}
+	\right.
+\]
+
+Suppose that $y=x_2\ \land\ \eta := x_1 \implies \{\xi := x_2\ \land\ \eta := x_1\},\ u = x_1^2 + w \implies$
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = a\sin{\xi} \\
+	&\dot{\xi} = w
+	\end{aligned}
+	\right.
+\]
+
+This is somehow a structure that we'll try to give in general. Nonlinear part is $\eta$, Linear part is $\xi$. In this example I've a good situation where there's no INPUT. Ma in generale posso scegliere qualsiasi cambio di coordinate. Quando scriviamo la $\dot{x}$ nelle varie derivate potrebbe comunque apparire l'ingresso (Controllo la parte lineare il nostro ingresso e trascuriamo quella NL).
+
+How can we choose $\eta$? We've said that we want to have a $\eta$ dynamic such that input doesn't appear there (let's stay with the old coordinates):
+
+\[
+	\dot{\eta}_i = \frac{\partial{\Phi_i(x)}}{\partial{x}}\dot{x} = \frac{\partial{\Phi_i(x)}}{\partial{x}}(f(x) + g(x)u) = \frac{\partial{\Phi_i(x)}}{\partial{x}}f(x) + \frac{\partial{\Phi_i(x)}}{\partial{x}}g(x)u
+\]
+
+How do I need to choose $\Phi_i(x)$ in modo tale che non compaia l'ingresso?
+
+\[
+	\frac{\partial{\Phi_i(x)}}{\partial{x}}g(x) = 0,\ \forall i \in \{1, \dots,\ n-\rho\}
+\]
+
+In principle I can choice any $\eta$, but... Nobody tells us how to satisfy this condition. Is it possible to find $\Phi_i(x)$ satisfying this condition?
+
+\end{itemize}
+
+\begin{thrm}
+If $\rho = n,\ \exists \oball(x_0,r)$ for some $x_0 \in D,\ r > 0$ such that:
+\[
+	T(x) = \begin{bmatrix}h(x) \\ \vdots \\ L^{n-1}_fh(x)\end{bmatrix}
+\]
+
+is a diffeomorphism on $\oball(x_0,r)$. First part of the theorem. That change of coordinates is invertible and $T,T^{-1} \in C^1$. $T(x)$ is always a nonsingular transformation. If $\rho < n,\ \exists \Phi_1(x),\ \dots,\ \Phi_{n-\rho}(x)$ such that
+
+\[
+	[\frac{\partial{\Phi_i(x)}}{\partial{x}}g(x) = 0]
+\]
+
+$\forall i \in \{1,\ \dots,\ n-\rho\}\ \land\ \exists T(x) =$
+\[
+	T(x) = \begin{bmatrix}\Phi_1(x) \\ \vdots \\ \Phi_{n-\rho}(x) \\ h(x) \\ \vdots \\ L^{\rho-1}_fh(x)\end{bmatrix}
+\]
+
+is a diffeomorphism.
+\end{thrm}
+
+Esiste quindi almeno una trasformazione tale che:
+\[
+	\frac{\partial{\Phi_i(x)}}{\partial{x}}g(x) = 0 \iff \begin{bmatrix}\frac{\partial{\Phi_1(x)}}{\partial{x}} & \dots & \frac{\partial{\Phi_n(x)}}{\partial{x}}\end{bmatrix}\begin{bmatrix}g_1(x)\\ \vdots \\ g_n(x)\end{bmatrix} = 0
+\]. Questo teorema ci garantisce il fatto che esiste una tale trasformazione. $g(x)$ è un vettore!
+Tutti questi discorsi valgono per $u$ SCALARE (sistemi SIXO). Ci sono dei risultati anche per sistemi multi-ingresso. Quando $\rho < n$ scegliamo $\xi$ ed $\eta$ in quella maniera tale che l'ingresso non compaia nella dinamica di $\eta \implies $
+ 
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = f_0(\eta, \xi) \\
+	&\dot{\xi} = A_c\xi + B_c\gamma(x)(u-\alpha(x))
+	\end{aligned}
+	\right.
+\]
+	
+where:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\gamma(x) = L_gL^{\rho -1}_fh(x) \\
+	&\alpha(x) = -\frac{L^\rho_fh(x)}{L_gL^{\rho-1}_fh(x)}
+	\end{aligned}
+	\right.
+\]
+
+\underline{NORMAL FORM}. Why do we put the system in this form? 
+
+\subsubsection{EQUILIBRIUM STABILIZATION}
+
+Now we can ask ourself: this is useful for design a feedback control law to stabilize some equilibrium of the starting NL system? System in the original coordinate:
+$\dot{x}=f(x)+g(x)u$, let $(x^\star,u^\star)$ be an eq. that we want to stabilize. Let's see how $x^\star$ is mapped in the new coordinates. Remember that:
+\[
+	\left\{
+	\begin{aligned}
+	&\eta^\star = \Phi(x^\star) \\
+	&\xi^\star = \begin{bmatrix}h(x^\star)\\L_fh(x^\star)\\ \vdots\\L_f^{\rho -1}h(x^\star)\end{bmatrix} = \begin{bmatrix}h(x^\star)\\0\\ \vdots\\0\end{bmatrix}
+	\end{aligned}
+	\right.
+\]
+
+Suppose that we have $\bar{h}({x}^\star) \neq 0$, then I can choose $h(x) = \bar{h}(x) - \bar{h}(x^\star)$. Without loss of generality, suppose $h(x^\star) = 0$. Similarly suppose we have chosen $\Phi(x)\ |\ \Phi(x^\star) = 0$. [As before, if $\bar{\Phi}(x) \neq 0$, then choose: $\Phi(x) = \bar{\Phi}(x) - \bar{\Phi}(x^\star)$]. $\implies \begin{bmatrix}\eta^\star \\ \xi^\star \end{bmatrix}=\begin{bmatrix}0\\0\end{bmatrix}$ is the equilibrium for the new coordinates, $x^\star$. GOAL is to stabilize it. If this is an equilibrium for the new system, $0 = f_0(0,0),\ (\dots)$ for $\xi$.
+We can only control the second part of the system! Suppose we're able to control the 2nd part of the system such that:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\eta^\star = f_0(\eta, \xi) \\
+	&\xi^\star = A_c\xi + B_cw
+	\end{aligned}
+	\right.
+\]
+
+Choose some $w=K\xi\ |\ A_c+B_cK$ is Hurwitz, cosicché almeno $\dot{\xi}$ vada a 0 asintoticamente $\iff \xi \tendsto{} 0$. Consider this dynamic here: $f_0(\eta, \xi \tendsto{} 0) = \dot{\eta} = f_0(\eta,0)$. becomes an autonomous system. The $\eta$ dynamic is called ZERO DYNAMIC and it can be distinguished into two class of systems. Why do we distinguish these systems?
+
+\begin{itemize}
+\item MINIMUM PHASE SYSTEM $\iff \eta = 0$ \underline{is AS equilibrium of the ZERO-DYNAMICS};
+\item NON-MINIMUM PHASE SYSTEM otherwise;
+\end{itemize}
+
+For MPS, we can automatically stabilize with $K\xi$ the $\eta$ dynamic.
+$[\rho < n] \rightarrow$ sistema a fase MINIMA $\implies$ (stabilizzare la dinamica di $\xi$ ed automaticamente $\eta$ andrà a 0).
+
+Ricapitolando, data una certa uscita possiamo fare questo cambio di coordinate:
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta}^\star = f_0(\eta, \xi) \\
+	&\dot{\xi}^\star = A_c\xi + B_cw (*) \\
+	&w = K\xi
+	\end{aligned}
+	\right.
+\]
+
+ed anzitutto da linearizzare la parte lineare $\xi$ e poi sperare che il sistema sia a fase minima.
+
+\begin{thrm}
+The origin $\begin{bmatrix}\eta \\ \xi\end{bmatrix}=\begin{bmatrix}0\\0\end{bmatrix}$ of system (*) is with $K\ |\ (A_c+B_cK)$ Hurwitz is asymptotically stable if $\eta = 0$ is an asymptotically stable equilibrium of $\dot{\eta} = f_0(\eta,0)$. (sistema autonomo, ZERO-DYNAMICS) (SISTEMA A FASE MINIMA).
+\end{thrm}
+
+\[
+	\left\{
+	\begin{aligned}
+	&u = \frac{1}{L_gL^{\rho-1}_fh(x)}[-L^\rho_fh(x) + w] \\
+	&u^\star = \frac{1}{L_gL^{\rho-1}_fh(x)}[-L^\rho_fh(x) + (w=0)] \\
+	&w = K\xi
+	\end{aligned}
+	\right.
+\]
+
+where $u = 0 \impliedby K\xi \tendsto{} 0$. 
+
+Il teorema precedente afferma che se $\eta = 0$ è un AS della ZERO DINAMICA (MFS), allora con le sue premesse rende l'equilibrio del sistema originario asintoticamente stabile. Stabilizziamo necessariamente la parte in $\xi$ di un sistema MFS per stabilizzare il punto di equilibrio. Couple of observations. Suppose that:
+\begin{itemize}
+\item System FEEDBACK LINEARIZABLE $\implies$ then clearly the system is MINIMUM PHASE. Why? Because we have no $\eta$ dynamic $\iff$ (All coordinates are $\xi$ coordinates). (A desirable situation);
+\item For I/O LINEARIZATION, $\dot{x}=f(x)+g(x)u$. If we can find an output $y=h(x)$ such that $[\underline{\rho = n}]\ \implies$ then the system is FEEDBACK LINEARIZABLE;
+\end{itemize}
+Per la feedback linearization non abbiamo bisogno di un'uscita esplicitamente! Ma abbiamo scoperto una cosa! (Abbiamo trovato una caratterizzazione della feedback linearization tramite I/O linearization con $[\rho = n]$.
+Come fare un qualcosa di più complesso? (\underline{OUTPUT TRACKING}) (Inseguimento di un'uscita desiderata).
+
+\subsubsection{TRACKING FOR LINEAR SYTEMS}
+
+Suppose we have a linear system: $[\dot{\xi} = A\xi + Bw]$. For ex. linearized system or fixed linear. Suppose we want to track a trajectory $(\xi_d(t),w_d(t))$ DESIRED TRAJECTORY. How can we design a controller that tracks this trajectory? Assuming that, Let's define an error: $e = \xi - \xi_d(t)$. Emphasize:
+\[
+	[\dot{\xi}_d(t) = A\xi_d(t) + Bw_d(t)]\ \land\ [e(t) = \xi(t) - \xi_d(t)]
+\]
+What is the dynamic of $e(t)$?
+\[
+	\dot{e}(t) = \dot{\xi}(t) - \dot{\xi}_d(t) = A\xi(t) +Bw(t) - \dot{\xi}_d(t) =
+\]
+\[
+	= A\xi(t) + Bw(t) -A\xi_d(t) - Bw(t) = Ae + B(w(t) - w_d(t))
+\] 
+
+Same thing we've done to show that a linear system could be defined stable.
+
+\[
+	w(t) = w_d(t) + Ke(t) = w_d(t) + K(\xi(t) - \xi_d(t))
+\]
+
+Assuming we know $w_d$, then in original coordinates:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}=f(x)+g(x)u \\
+	&[y=h(x)]
+	\end{aligned}
+	\right.
+\]
+
+where $[y :=\ PERFORMANCE\ OUTPUT]$.
+
+$\exists \{y_d(t),\ \dot{y}_d(t),\ \dots,\ y^{\rho-1}_d(t)\},\ t \geq 0$. ($y_d(t)$ this is a desired function profile that does not necessarily satisfies a particular dynamic).
+
+PROFILE = We want to assign and assume that. Mi costruisco IO una funzione desiderata del tempo $\implies$ compito prettamente facile. Lo scelgo io come progettista. How can i track this output? Going in new coordinates, we have:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = f_0(\eta, \xi) \\
+	&\dot{\xi} = A_c\xi + B_cw
+	\end{aligned}
+	\right.
+\]
+
+and let's suppose that $f_0(0,0) = 0$ is A.S. $\iff$ (MPS). Let's define:
+\[
+	e(t) = \begin{bmatrix}y(t) - y_d(t)\\ y(t) - \dot{y}_d(t) \\ \vdots \\ y^{(\rho-1)} - y^{(\rho-1)}_d(t)\end{bmatrix};
+\]
+\[
+	\bar{y}_d(t) := \begin{bmatrix}y_d(t)\\ \dot{y}_d(t)\\ \vdots \\ y^{(\rho-1)}_d(t)\end{bmatrix}
+\]
+
+Observe that: $\dot{e} = A_c\xi + B_cw - A_c\bar{y}_d(t) - B_cy^{(\rho)}(t) = A_ce + B_c(w - y^{(\rho)}_d(t))$. $e(t) = (\xi(t) = y(t)) - \bar{y}_d(t)$.
+
+\subsubsection{problema}
+
+\[
+	\dot{\eta} = f_0(\eta, e+\bar{y}_d(t))
+\]
+\[
+	\dot{e} = A_ce + B_c(w - y^{(\rho)}_d(t))
+\]
+\[
+	w(t) = y^{(\rho)}_d(t) + Ke
+\]
+(Scegliere una $w$ tale che stabilizzi l'errore. Tracking dell'uscita. It can be shown that for sufficiently small $\{e(0),\ \eta(0),\ \bar{y}_d(t)\}$ the $\eta(t)$ will remain bounded. Non serve che la $\eta$ stia a 0! Purché sia limitata, $\forall t \geq 0$.
+Mi è concesso avere degli angoli che varino. Ma non devono divergere! Dinamica residua. Se il sistema è \underline{feedback linearizzabile}, allora non c'è alcuna $\eta$! Lie Bracket.
+
+\subsubsection{EXERCISES}
+
+$\dot{\eta} = f_0(\eta, 0 = \xi)$ ZERO DYNAMIC. If the equilibrium of the Z.D. is A.S., I'm ok. There is a method to find if the sys. is minimum phase in the original coordinates.
+
+$\xi(t) := 0$. The only way to have $\xi=0$ is $w=0$.
+$u(t) = \alpha(x) + \gamma(x)^{-1}w|_{w=0} \implies u(t) = \alpha(x(t))$.
+\[
+	x(t) \in \Z^\star = \{x \in D_0\ |\ h(x)=L_fh(x)=\ \dots\ = \ L^{\rho-1}_fh(x) = 0\}
+\]
+How we find that the sys. is minimum phase?
+
+\[
+	\dot{x} = [f(x) + g(x)u]|_{x\in \Z^\star}
+\]
+
+(force $x$ to stay in $\Z^\star$). I restrict the dynamics.
+
+\textbf{ZERO DYNAMIC IN ORIGINAL COORDINATES}
+If the eq. of the restriction of zero dynamic in original coordinates is a.s. then the sys. is minimum phase.
+
+\subsubsection{exercise 1}
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_1 \\
+	&\dot{x}_2 = x_2 + u \\
+	&y = x_1 = h(x)
+	\end{aligned}
+	\right.
+\]
+
+The sys. is already linear. \underline{Find if the sys. is I/O linearizable}.
+$\dot{y} = \dot{x}_1 = x_1\ \land\ \ddot{y} = \dot{x}_1 = x_1\ \land\ (\dots) \iff$ \underline{THE SYS IS NOT I/O LINEARIZABLE}.
+
+\[
+	\dot{y} = L_fh(x) + L_gh(x)u = \begin{bmatrix}1&0\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix} + \begin{bmatrix}1&0\end{bmatrix}\begin{bmatrix}0\\1\end{bmatrix}u
+\]
+\[
+	\ddot{y} = L^2_fh(x) + (L_gL_fh(x) = 0)u
+\]
+$\implies$ So $\underline{L_gL_f^ih(x) = 0\ \forall i}$ (ATYPIC CASE).
+
+\subsubsection{exercise 2}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_1 \\
+	&\dot{x}_2 = x_2 + u \\
+	&y = x_2 = h(x)
+	\end{aligned}
+	\right.
+\]
+
+$\implies$
+
+\[
+	\begin{bmatrix}\dot{x}_1\\ \dot{x}_2\end{bmatrix} = (\begin{bmatrix}x_1 \\ x_2\end{bmatrix}=f(x)) + (\begin{bmatrix}0\\1\end{bmatrix}=g(x))u
+\]
+
+\[
+	\dot{y} = \begin{bmatrix}0&1\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix} + (\begin{bmatrix}0&1\end{bmatrix} \neq 0)u = x_2 + u
+\]
+
+$\implies \rho = 1 \iff$ THE SYS. IS I/O LINEARIZABLE BUT IT IS NOT FEEDBACK LINEARIZABLE BECAUSE $\rho=1$ AND THE STATE DIMENSION IS $n=2 \implies \rho \neq n$.
+
+Check if sys. is minimum phase:
+
+$\dot{\eta} = \eta \rightarrow$ ZERO DYNAMICS $(\xi = 0)$. (Non c'è $\xi$ da mettere a 0).
+$\dot{\xi} = \xi+ u$. The system is NON-MINIMUM PHASE, so we can't use the $\xi=0$ to a.s. the $\eta$ dynamics $\iff \exists!\ \lambda_\eta\ |\ \Re{\lambda_\eta} > 0$.
+
+\underline{NB}: $\phi(x),\ \frac{\partial{\phi(x)}}{\partial{x}}g(x) = 0$.
+\[
+	\begin{bmatrix}\frac{\partial{\phi(x)}}{\partial{x}}&\frac{\partial{\phi(x)}}{\partial{x}}\end{bmatrix}\begin{bmatrix}0\\1\end{bmatrix} = 0 \implies \frac{\partial{\phi(x)}}{\partial{x_2}} = 0 \implies
+\]
+$\implies \phi(x)=x_1$, ma $x_2:=\xi$, quindi $\eta := x_1$.
+
+\subsubsection{exercise 3}
+
+\begin{itemize}
+\item{(i)}
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 \\
+	&\dot{x}_2 = -x_1 + \epsilon(1-x_1^2)x_2 + u \\
+	&y = x_1
+	\end{aligned}
+	\right.
+\]
+
+\begin{itemize}
+\item{($\rho=1$)} $\dot{y}=\dot{x}_1=x_2$;
+\item{($\rho=2$)} $\ddot{y}=\dot{x}_2 = -x_1 + \epsilon(1-x_1^2)x_2 + u$;
+\end{itemize}
+
+$\implies$ I/O LINEARIZABLE with $\rho=n=2 \iff$ AND FEEDBACK LINEARIZABLE ON $\R^2$.
+\[
+	u = x_1 - \epsilon(1-x_1^2)x_2 + w
+\]
+\item{(ii)}
+$y=x_2,\ (\rho=1) \iff \dot{y}=\dot{x}_2=-x_1+\epsilon(1-x_1^2)x_2+u \implies$ I/O LINEARIZABLE ON $\R^2$, $\rho=1<n=2 \implies$ \underline{not} FEEDBACK LINEARIZABLE. Let's check!
+Put the sys. in NORMAL FORM:
+
+$\xi = x_2 \implies T(x) = \begin{bmatrix}\phi(x)\\h(x)\end{bmatrix}$. Let's find it:
+\[
+	\frac{\partial{\phi(x)}}{\partial{x}}g(x) = 0 \implies \begin{bmatrix}\frac{\partial{\phi(x)}}{\partial{x_1}}&\frac{\partial{\phi(x)}}{\partial{x_2}}\end{bmatrix}\begin{bmatrix}0\\1\end{bmatrix}
+\]
+$\eta = \phi(x) = x_1$ (NOT CONSTANT) , BECAUSE we are changing coordinates $\implies$
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = \xi \\
+	&\dot{\xi} = w
+	\end{aligned}
+	\right.
+\]
+
+NORMAL FORM. Is the sys. min. phase?
+$(\xi = 0) \implies \eta = 0 \implies$ Not A.S. but surely LOCALLY STABLE, however it is \underline{not} MINIMUM PHASE.
+\end{itemize}
+
+\underline{Dim} $V(\eta) = \frac{1}{2}(\eta^2) \implies \dot{V} = \eta(0) = 0 \leq 0 \iff$ NEGATIVE SEMI-DEFINITE. Moreover the Krasowskii's criteria doesn't success.
+
+\subsubsection{exercise 4}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = -x_1 + \frac{2+x_3^2}{1+x_3^2}u \\
+	&\dot{x}_2 = x_3 \\
+	&\dot{x}_3 = x_1x_3 + u\\
+	&y=x_2
+	\end{aligned}
+	\right. \implies \begin{bmatrix}\dot{x}_1\\ \dot{x}_2 \\ \dot{x}_3\end{bmatrix} = \begin{bmatrix}-x_1\\x_3\\x_1x_3\end{bmatrix} + \begin{bmatrix}\frac{2+x_3^2}{1+x_3^2}\\0\\1\end{bmatrix}u
+\]
+
+\[
+	\dot{y} = \begin{bmatrix}0&1&0\end{bmatrix}\begin{bmatrix}-x_1\\x_3\\x_1x_3\end{bmatrix} + \begin{bmatrix}0&1&0\end{bmatrix}\begin{bmatrix}\frac{2+x_3^2}{1+x_3^2}\\0\\1\end{bmatrix}u = x_3
+\]
+\[
+	\ddot{y} = \begin{bmatrix}0&0&1\end{bmatrix}\begin{bmatrix}-x_1\\x_3\\x_1x_3\end{bmatrix} + \begin{bmatrix}0&0&1\end{bmatrix}\begin{bmatrix}\frac{2+x_3^2}{1+x_3^2}\\0\\1\end{bmatrix}u = x_1x_3 + u
+\]
+
+So, $\rho=2<n=3 \implies$ INPUT/OUTPUT LINEARIZABLE. \underline{OSS}: Se trovo un'uscita che verifica $\rho=n$ allora è FL, ma se $\rho<n$ non posso dirlo a priori, quella potrebbe non essere l'uscita giusta!
+
+$\xi := \begin{bmatrix}x_2\\x_3\end{bmatrix},\ \eta := \phi(x) \in \R$.
+\[
+	\frac{\partial{\phi(x)}}{\partial{x}}g(x) = 0 \implies \begin{bmatrix}\frac{\partial{\phi(x)}}{\partial{x_1}}&\frac{\partial{\phi(x)}}{\partial{x_2}}&\frac{\partial{\phi(x)}}{\partial{x_3}}\end{bmatrix}\begin{bmatrix}\frac{2+x_3^2}{1+x_3^2}\\0\\1\end{bmatrix} = 0 \implies
+\]
+\[
+	\implies \frac{\partial{\phi(x)}}{\partial{x_1}}(\frac{2+x_3^2}{1+x_3^2}) + \frac{\partial{\phi(x)}}{\partial{x_3}} = 0 \iff \phi(x) = -x_1 + x_3 + \arctan(x_3)
+\]
+
+(PARTIALLY DIFF. EQ.). Potevamo scegliere $\phi(x)=x_2$ ma non avremmo ottenuto un set di coordinate indipendenti.
+
+[If we won't solve the equation above there is a method to find if the sys. is MINIMUM PHASE].
+
+$\ddot{y} = x_1x_3 + u \implies u = -x_1x_3 + w$
+\[
+	\Z^\star = \{x \in (D_0=\R^3)\ |\ (h(x)=y) = (L_fh(x)=\dot{y}) = 0\} = \{x \in \R^3\ |\ x_2=x_3=0\}
+\]	
+Per verificare la ZERO DINAMICA $(w=0 \implies u=-x_1x_3)$ but $u=[-x_1x_3]|_{x\in\Z^\star} = 0 \implies u = 0$.
+
+So the ZERO DYNAMICS IN THE ORIGINAL COORDINATES IS:
+$\dot{x}_1 = -x_1$. Sistema lineare con autovalore $\lambda=-1$, quindi $x_1=0$ is an A.S. equilibrium thus the system is MINIMUM PHASE.
+
+\begin{proof}
+$V(x) = \frac{1}{2}x_1^2\ \land\ \dot{V}(x) = x_1(-x_1) = -x_1^2 < 0 \iff x_1=0$ A.S.
+\end{proof}
+
+\subsubsection{exercise 5}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = x_2 + x_3 \\
+	&\dot{x}_2 = -x_1 + x_2(x_2^2 + x_3^2 - 4) + u \\
+	&\dot{x}_3 = -x_1 + x_3(x_2^2 + x_3^2 - 4) + u \\
+	&y = x_1
+	\end{aligned}
+	\right.
+\]
+
+Let's study the internal stability of the equilibrium $\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix} = \begin{bmatrix}0\\0\\0\end{bmatrix}$. $x=0$ is an equilibrium. The system is time-invariant.
+$V(x) = \frac{1}{2}(x_1^2 + x_2^2 + x_3^3)\ \land\ \dot{V}(x) = x_1(x_2+x_3) + x_2(-x_1+x_2(x_2^2+x_3^2-4)) + x_3(-x_1+x_3(x_2^2+x_3^2-4)) = x_1(x_2+x_3) - x_1(x_2+x_3) + (x_2^2 + x_3^2)(x_2^2+x_3^2-4)$.
+
+Troviamo un intorno dell'origine tale che $\dot{V}(x) < 0$.
+$x_2^2 + x_3^2 -4 < 0 \implies x_2^2 + x_3^2 < 4 \implies \dot{V}(x)$ NEGATIVE SEMI-DEFINITE ON $\oball(0,2)$ (poiché non compare $x_1$) $\implies$ The equilibrium $x=0$ is locally stable. Look at Lasalle's principle for check the possibile a.s. for $x=0$.
+
+\[
+	S = \{x \in D\ |\ \dot{V}(x) = 0\} = \{x \in D\ |\ x_2=x_3=0\}
+\]	
+
+Siamo nella palla di raggio 2, $\oball(0,2)$, quindi i punti $x_2^2+x_3^2 = 4$ non ci interessano. Le traiettoria che partono in $S$ e che rimangono in $S$, sono:
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_2(t) := 0 \implies \dot{x}_2(t) := 0 \\
+	&x_3(t) := 0 \implies \dot{x}_3(t) := 0 \\
+	&\dot{x}_1 = 0 \\
+	&0 = -x_1 \\
+	&0 = -x_1
+	\end{aligned}
+	\right.
+\]
+
+$\implies x_1=0 \implies$ thus for Krasowskii's corollary, $x=0$ is a.s. (locally) $\rightarrow$ se non partissi da $x_1=0$ anche se $x_2=x_3=0$, allora uscirei da $S$.
+$x_2=x_3=0 \rightarrow$ retta $x_1$. Se parto da $x_1=0$ allora resto in $S$ altrimenti la traiettoria esce da $S$.
+
+Check if the sys. is I/O LINEARIZABLE:
+
+\[
+	\dot{y} = \dot{x}_1 = x_2 + x_3 
+\]
+\[
+	\ddot{y} = \dot{x}_2 + \dot{x}_3 = -2x_1 + (x_2+x_3)(x_2^2 + x_3^2 - 4) + 2u
+\]
+$\implies \rho=2 \implies$ I/O LINEARIZABLE ON $\R^3$. There is no way to set $\gamma(x)=0 \iff \gamma(x)=2$.
+
+\[
+	\xi = \begin{bmatrix}x_1\\x_2+x_3\end{bmatrix},\ \eta := \phi(x) \in \R
+\]
+
+Impose:
+
+\[
+	\frac{\partial{\phi(x)}}{\partial{x}}g(x) = 0,\ \phi(0)=0 \implies
+\]
+\[
+	\implies \begin{bmatrix}\frac{\partial{\phi(x)}}{\partial{x_1}}&\frac{\partial{\phi(x)}}{\partial{x_2}}&\frac{\partial{\phi(x)}}{\partial{x_3}}\end{bmatrix}\begin{bmatrix}0\\1\\1\end{bmatrix} \implies
+\]
+\[
+	\implies \frac{\partial{\phi(x)}}{\partial{x_2}} + \frac{\partial{\phi(x)}}{\partial{x_3}} = 0
+\]
+
+If $\phi(x)=x_1$ is ok but $\xi=x_1$, so it is not a good change of coordinates. $\phi(x)$ must be function of $x_2$ and $x_3$.
+
+$\phi(x)=x_2-x_3$. It is a good change of coordinates because it is independent from $x_1$ and $x_2+x_3$.
+Can't choose in fact $x_3+x_2$ because the change of coordinates will be not independent.
+
+NORMAL FORM
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\xi}_1 = \xi_2 \\
+	&\dot{\xi}_2 = -2x_1 + (x_2+x_3)(x_2^2 + x_3^2 -4) + 2u
+	\end{aligned}
+	\right. \implies \begin{bmatrix}\dot{\xi}_1\\ \dot{\xi}_2\end{bmatrix}=A_c\begin{bmatrix}\xi_1\\ \xi_2\end{bmatrix} + B_c(\dots)
+\]
+with:
+\[
+	A_c = \begin{bmatrix}0&1\\0&0\end{bmatrix}\ \land\ B_c = \begin{bmatrix}0\\1\end{bmatrix}
+\]
+
+$u = \frac{1}{2}(2x_1 -(x_2+x_3)(x_2^2+x_3^2-4) + w)$.
+$\eta = x_2 - x_3 \implies \dot{\eta} = \dot{x}_2 - \dot{x}_3 = (x_2-x_3)(x_2^2 +x_3^2 -4)$.
+
+$\{\eta = x_2 - x_3\ \land\ \xi_2=x_2+x_3\} \implies \{x_2=\frac{(\eta + \xi_2)}{2}\ \land\ x_3 = \frac{(\xi_2 -\eta)}{2}\} \implies$
+
+\[
+	\implies \dot{\eta} = \eta[\frac{(\eta + \xi_2)^2}{4} + \frac{(\xi_2\eta)^2}{4}-4]
+\]
+
+ZERO DYNAMICS $(\xi_2=0)$
+
+\[
+	\dot{\eta} = \eta[\frac{\eta^2}{4}+\frac{\eta^2}{4}-4] = \eta[\frac{\eta^2}{2}-4]
+\]
+$\eta = 0$ is eq. of ZERO DYNAMICS. I can find a Lyap. function as if $\abs{\eta} < 2\sqrt(2) \implies$ the eq. is (locally) a.s., so the sys is MINIMUM PHASE.
+
+\[
+	V(\eta) = \frac{1}{2}\eta^2 \implies \dot{V}(\eta) = \eta(\eta[\frac{\eta^2}{2}-4]) = \eta^2[\frac{\eta^2}{2}-4]
+\]
+If $-2\sqrt{2} < \eta < 2\sqrt{2} \implies \dot{V}(\eta) < 0 \implies \exists \oball(0,2\sqrt{2})\ |\ \dot{V}(\eta) < 0$ on this ball. 
+

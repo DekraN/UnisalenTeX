@@ -1,0 +1,279 @@
+% --- ENGLISH II ---
+% ------------------------------------------------------
+% Corso di Laurea Magistrale in: Ingegneria Informatica - Università Del Salento
+% Titolo: English II
+% Autore: Dott. Marco Chiarelli
+% Relatore: Prof. Pietro Luigi IAIA
+% Data: 21/07/2017
+% Anno Accademico 2015/2016
+% Consultazione Consentita
+
+%INIZIO PREAMBOLO
+
+\documentclass[11 pt,a4paper,twoside,openany]{book}
+
+% Preambolo codifica
+\usepackage[utf8x]{inputenc}
+
+%Preambolo lingue
+\usepackage[english,italian]{babel}
+
+
+% Preambolo formattazione
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{indentfirst} %indentazione}
+
+% Preambolo stile pagina
+\usepackage{fancyhdr}
+
+%Preambolo matematica
+\usepackage{xfrac}
+\usepackage{amsmath}
+\usepackage{amsthm} % dopo amsmath!
+
+% Preambolo grafico
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage[pages=some]{background}
+\usepackage{transparent}
+
+% Preambolo contenuti LoremIpsum
+\usepackage{lipsum}
+
+%hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
+
+%Preambolo bibliografia
+
+\usepackage[numbers,sort&compress]{natbib}
+
+%Preambolo licensa
+%\usepackage{creativecommons}
+\usepackage{ccicons}
+
+
+%Preambolo testo
+\usepackage{setspace}
+\usepackage{epigraph}
+\usepackage{ragged2e}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Preambolo schema a blocchi
+\usepackage{verbatim}
+
+% Preambolo matematica
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{centernot}
+\usepackage{accents}
+
+\usepackage{listings}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norma}{\lVert}{\rVert}
+
+\newtheorem{defn}{Definition}
+\newtheorem{thrm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corl}{Corollary}
+\newtheorem{snpt}{Snippet}
+
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}
+\newcommand*{\QEDB}{\hfill\ensuremath{\square}}
+
+% Preambolo Inclusione Capitoli
+\includeonly{chapters/sd,%
+			 chapters/cmbeng,%
+			 chapters/gram}
+
+
+% Preambolo caption, subfig, etc...
+\usepackage{caption}
+\usepackage{subfig}
+
+%FINE PREAMBOLO
+
+
+%FINE PREAMBOLO
+
+\selectlanguage{english}
+\selectlanguage{italian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\newpage	
+\begin{titlepage}
+\begin{center}
+	
+\begin{figure}
+	\centering
+	\includegraphics[height=6cm]{unigold.jpg}
+\end{figure}		
+
+\begin{center}
+\begin{LARGE}
+	\textsc{UNIVERSIT\`A DEL SALENTO}\\
+	[0.2cm]
+	\textsc{Department of Innovation Engineering}
+\end{LARGE}
+\end{center}	
+	
+	\
+	\line(1,0){270} \\
+	[0.25cm]
+	
+	\textsc{Master's degree in Computer Engineering}\
+	
+	\textsl{}\\
+	[1cm]
+	\textsc{English II}\
+	
+	\bigskip 
+	\huge{\bfseries English II}\
+
+	
+	\bigskip
+	\textsl{}\\
+	[2cm]
+	
+
+
+\begin{LARGE}
+	
+	Dott. Marco Chiarelli
+	
+\end{LARGE}
+
+\vspace{5cm}
+	
+\line(1,0){150} \\
+\begin{small}
+	Academic Year 2016/2017 \\
+\end{small}
+\end{center}
+\end{titlepage}
+
+
+\pagenumbering{arabic}
+
+\newpage
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\newpage
+Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 3.0 Unported. Per leggere una copia della licenza visita il sito web http://creativecommons.org/licenses/by-nc-sa/3.0/ o spedisci una lettera a Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.\par \ccbyncsaeu
+	\vfill
+	Questi appunti sono stati scritti utilizzando \LaTeX\ tramite la distribuzione MiKTeX\ \url{http://miktex.org/}  
+	
+	Come editor è stato usato TeXMaker 4.4.1\ \url{http://www.xm1math.net/texmaker/}
+	\vfill
+Dei contenuti rielaborati in questa opera, salvo esplicitamente scritto il contrario, il prof. Pietro Luigi Iaia non se ne assume alcuna responsabilità.
+
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\thispagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\vspace{2cm}
+
+\selectlanguage{english}
+
+\noindent
+
+\chapter*{\centering\begin{normalsize}Sommario\end{normalsize}}
+\begin{quotation}
+\noindent Le seguenti dispense vogliono essere uno strumento didattico utile alla preparazione del corso di Inglese II, il quale docente è il prof. Pietro Luigi Iaia, presso il CdL in Ingegneria Informatica et Ingegneria delle Telecomunicazioni at Unisalento.
+\end{quotation}
+\clearpage
+
+\selectlanguage{english}
+
+\chapter*{\centering\begin{normalsize}Abstract\end{normalsize}}
+\begin{quotation}
+\noindent The following work want to be a useful instrument for the preparation of the English II exam, whose teacher is the prof. Pietro Luigi Iaia, at Computer Engineering and at Communication Engineering AT UNISALENTO.
+\end{quotation}
+\clearpage
+
+\selectlanguage{italian}
+
+\tableofcontents
+
+
+\frontmatter
+
+\cleardoublepage\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\bfseries Ringraziamenti
+\end{center}
+\bigskip
+
+Un grazie particolare va ai miei compagni\\
+d'università, Dino Sbarro, Gabriele Accarino, Giampiero D'Autilia, Matteo Settembrini, Paolo Panarese ed Emanuele Costa Cesari.
+
+\vspace*{\fill}
+\pagebreak
+
+\mainmatter
+
+%************************************************
+% Chapter 1: Discorso Specialistico
+%************************************************
+\include{chapters/sd}
+
+%************************************************
+% Chapter 2: Cambridge English for Engineering - Esercizi Risolti
+%************************************************
+\include{chapters/cmbeng}
+
+%************************************************
+% Chapter 3: Regole Grammaticali di Inglese
+%************************************************
+\include{chapters/gram}
+
+\backmatter
+
+%************************************************
+% Capitolo: APPENDICI
+%************************************************
+\include{chapters/appendix}
+
+\newpage
+
+\section*{Credits}
+
+\begin{figure}[h]
+\includegraphics[width=3cm]{figures/marco.jpg}
+\vspace{0.3cm}
+
+\raisebox{-0.35ex}{\includegraphics[width=4ex]{figures/link.png}}%
+\hspace{0.05cm} /marcochiarelli
+
+\end{figure}
+
+%BIBLIOGRAFIA - redatta con il relativo ambiente
+\begin{thebibliography}{100}
+\bibitem{rif1} M. Ibbotson \emph{Cambridge English for Engineering}
+\bibitem{rif2} \url{http://www.e-grammar.org/}
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,120 @@
+\BOOKMARK [0][-]{chapter*.5}{Prefazione all'edizione italiana}{}% 1
+\BOOKMARK [0][-]{chapter*.6}{Introduzione}{}% 2
+\BOOKMARK [0][-]{chapter.1}{Network Technologies}{}% 3
+\BOOKMARK [1][-]{section.1.1}{CONGESTIONE}{chapter.1}% 4
+\BOOKMARK [2][-]{subsection.1.1.1}{TCP TRAFFIC CONTROL}{section.1.1}% 5
+\BOOKMARK [1][-]{section.1.2}{X-CASTING}{chapter.1}% 6
+\BOOKMARK [2][-]{subsection.1.2.1}{MULTICAST}{section.1.2}% 7
+\BOOKMARK [2][-]{subsection.1.2.2}{BROADCAST}{section.1.2}% 8
+\BOOKMARK [2][-]{subsection.1.2.3}{MULTICASTING}{section.1.2}% 9
+\BOOKMARK [1][-]{section.1.3}{IPv6}{chapter.1}% 10
+\BOOKMARK [2][-]{subsection.1.3.1}{Tipi di indirizzi}{section.1.3}% 11
+\BOOKMARK [2][-]{subsection.1.3.2}{AUTOCONFIGURAZIONE}{section.1.3}% 12
+\BOOKMARK [2][-]{subsection.1.3.3}{Formato del pacchetto}{section.1.3}% 13
+\BOOKMARK [2][-]{subsection.1.3.4}{TRANSIZIONE IPv4-IPv6}{section.1.3}% 14
+\BOOKMARK [1][-]{section.1.4}{MULTIMEDIA e QoS}{chapter.1}% 15
+\BOOKMARK [2][-]{subsection.1.4.1}{Multimedia}{section.1.4}% 16
+\BOOKMARK [2][-]{subsection.1.4.2}{QoS - Quality of Service}{section.1.4}% 17
+\BOOKMARK [2][-]{subsection.1.4.3}{IntServ model}{section.1.4}% 18
+\BOOKMARK [2][-]{subsection.1.4.4}{DiffServ model}{section.1.4}% 19
+\BOOKMARK [2][-]{subsection.1.4.5}{RECAP}{section.1.4}% 20
+\BOOKMARK [0][-]{chapter.2}{TEORIA DELLE CODE}{}% 21
+\BOOKMARK [1][-]{section.2.1}{PROCESSI STOCASTICI}{chapter.2}% 22
+\BOOKMARK [2][-]{subsection.2.1.1}{CATENE DI MARKOV}{section.2.1}% 23
+\BOOKMARK [2][-]{subsection.2.1.2}{Probabilit\340 a regime}{section.2.1}% 24
+\BOOKMARK [2][-]{subsection.2.1.3}{ERGODICIT\300}{section.2.1}% 25
+\BOOKMARK [2][-]{subsection.2.1.4}{CMTC Nascita e Morte}{section.2.1}% 26
+\BOOKMARK [2][-]{subsection.2.1.5}{PROCESSO DI POISSON}{section.2.1}% 27
+\BOOKMARK [2][-]{subsection.2.1.6}{RITARDO NELLE RETI DI DATI}{section.2.1}% 28
+\BOOKMARK [1][-]{section.2.2}{SISTEMI A CODA}{chapter.2}% 29
+\BOOKMARK [2][-]{subsection.2.2.1}{Sistema a coda M/M/1}{section.2.2}% 30
+\BOOKMARK [2][-]{subsection.2.2.2}{Sistemi a coda M/M/m}{section.2.2}% 31
+\BOOKMARK [2][-]{subsection.2.2.3}{Sistemi a coda M/M/inf}{section.2.2}% 32
+\BOOKMARK [0][-]{chapter.3}{Affidabilit\340 e Disponibilit\340}{}% 33
+\BOOKMARK [1][-]{section.3.1}{Starting Point}{chapter.3}% 34
+\BOOKMARK [2][-]{subsection.3.1.1}{Exercise}{section.3.1}% 35
+\BOOKMARK [2][-]{subsection.3.1.2}{Ridondanza}{section.3.1}% 36
+\BOOKMARK [1][-]{section.3.2}{Affidabilit\340}{chapter.3}% 37
+\BOOKMARK [1][-]{section.3.3}{Disponibilit\340}{chapter.3}% 38
+\BOOKMARK [1][-]{section.3.4}{RBD \(Reliability Block Diagram\)}{chapter.3}% 39
+\BOOKMARK [2][-]{subsection.3.4.1}{Struttura SERIE}{section.3.4}% 40
+\BOOKMARK [2][-]{subsection.3.4.2}{Struttura PARALLELO}{section.3.4}% 41
+\BOOKMARK [2][-]{subsection.3.4.3}{Struttura k-out-of-n}{section.3.4}% 42
+\BOOKMARK [2][-]{subsection.3.4.4}{Network Lecce-Torino \(Exercise\)}{section.3.4}% 43
+\BOOKMARK [2][-]{subsection.3.4.5}{SYSTEM RELIABILITY}{section.3.4}% 44
+\BOOKMARK [2][-]{subsection.3.4.6}{ABD \(Availability Block Diagram\)}{section.3.4}% 45
+\BOOKMARK [1][-]{section.3.5}{CMTC e Affidabilit\340}{chapter.3}% 46
+\BOOKMARK [2][-]{subsection.3.5.1}{Stati Assorbenti}{section.3.5}% 47
+\BOOKMARK [1][-]{section.3.6}{Markov Reward Model \(MRM\)}{chapter.3}% 48
+\BOOKMARK [2][-]{subsection.3.6.1}{Markov Reward Model \(MRM\)}{section.3.6}% 49
+\BOOKMARK [2][-]{subsection.3.6.2}{Analisi Combinata}{section.3.6}% 50
+\BOOKMARK [2][-]{subsection.3.6.3}{RECAP}{section.3.6}% 51
+\BOOKMARK [0][-]{chapter.4}{Reti di Code}{}% 52
+\BOOKMARK [1][-]{section.4.1}{Starting Point}{chapter.4}% 53
+\BOOKMARK [2][-]{subsection.4.1.1}{Client-Server System Exercise}{section.4.1}% 54
+\BOOKMARK [2][-]{subsection.4.1.2}{RECAP}{section.4.1}% 55
+\BOOKMARK [1][-]{section.4.2}{RETI DI CODE}{chapter.4}% 56
+\BOOKMARK [2][-]{subsection.4.2.1}{RETE DI CODE APERTA}{section.4.2}% 57
+\BOOKMARK [2][-]{subsection.4.2.2}{Feed-Forward \(Reti di code ACICLICHE\)}{section.4.2}% 58
+\BOOKMARK [2][-]{subsection.4.2.3}{Reti di code CICLICHE}{section.4.2}% 59
+\BOOKMARK [2][-]{subsection.4.2.4}{Reti BCMP}{section.4.2}% 60
+\BOOKMARK [2][-]{subsection.4.2.5}{RECAP}{section.4.2}% 61
+\BOOKMARK [1][-]{section.4.3}{Reti di dati}{chapter.4}% 62
+\BOOKMARK [2][-]{subsection.4.3.1}{Exercise}{section.4.3}% 63
+\BOOKMARK [2][-]{subsection.4.3.2}{Response-Time Blocks \(RTB\)}{section.4.3}% 64
+\BOOKMARK [0][-]{chapter.5}{Network Technologies 2}{}% 65
+\BOOKMARK [1][-]{section.5.1}{\(Rapid\)STP - Spanning Tree Protocol}{chapter.5}% 66
+\BOOKMARK [2][-]{subsection.5.1.1}{Funzionamento STP}{section.5.1}% 67
+\BOOKMARK [1][-]{section.5.2}{LAN Virtuali \(VLAN\)}{chapter.5}% 68
+\BOOKMARK [2][-]{subsection.5.2.1}{Configurazione}{section.5.2}% 69
+\BOOKMARK [2][-]{subsection.5.2.2}{Private Virtual LAN \(PVLAN\)}{section.5.2}% 70
+\BOOKMARK [1][-]{section.5.3}{NETWORK DESIGN}{chapter.5}% 71
+\BOOKMARK [2][-]{subsection.5.3.1}{Progettazione di rete ad Alta Disponibilit\340}{section.5.3}% 72
+\BOOKMARK [2][-]{subsection.5.3.2}{FAULT-TOLERANCE}{section.5.3}% 73
+\BOOKMARK [2][-]{subsection.5.3.3}{Network Design in pratica}{section.5.3}% 74
+\BOOKMARK [2][-]{subsection.5.3.4}{Progettazione Gerarchica}{section.5.3}% 75
+\BOOKMARK [1][-]{section.5.4}{Parte Wireless}{chapter.5}% 76
+\BOOKMARK [2][-]{subsection.5.4.1}{Funzionamento}{section.5.4}% 77
+\BOOKMARK [2][-]{subsection.5.4.2}{CSMA-CA \(Collision Avoidance\)}{section.5.4}% 78
+\BOOKMARK [2][-]{subsection.5.4.3}{Mobilit\340 in IPv6}{section.5.4}% 79
+\BOOKMARK [2][-]{subsection.5.4.4}{Architetture}{section.5.4}% 80
+\BOOKMARK [2][-]{subsection.5.4.5}{Progettazione}{section.5.4}% 81
+\BOOKMARK [2][-]{subsection.5.4.6}{Reti Wireless AdHoc}{section.5.4}% 82
+\BOOKMARK [2][-]{subsection.5.4.7}{VANET}{section.5.4}% 83
+\BOOKMARK [1][-]{section.5.5}{MPLS}{chapter.5}% 84
+\BOOKMARK [2][-]{subsection.5.5.1}{Funzionamento}{section.5.5}% 85
+\BOOKMARK [2][-]{subsection.5.5.2}{QoS}{section.5.5}% 86
+\BOOKMARK [1][-]{section.5.6}{Security}{chapter.5}% 87
+\BOOKMARK [2][-]{subsection.5.6.1}{IPSec}{section.5.6}% 88
+\BOOKMARK [2][-]{subsection.5.6.2}{Firewall}{section.5.6}% 89
+\BOOKMARK [2][-]{subsection.5.6.3}{IPSec e Firewall}{section.5.6}% 90
+\BOOKMARK [2][-]{subsection.5.6.4}{Sicurezza nelle Applicazioni}{section.5.6}% 91
+\BOOKMARK [0][-]{chapter.6}{Training Facility}{}% 92
+\BOOKMARK [1][-]{section.6.1}{Homeworks 1}{chapter.6}% 93
+\BOOKMARK [2][-]{subsection.6.1.1}{Esercizio 1}{section.6.1}% 94
+\BOOKMARK [2][-]{subsection.6.1.2}{Esercizio 2}{section.6.1}% 95
+\BOOKMARK [2][-]{subsection.6.1.3}{Esercizio 3}{section.6.1}% 96
+\BOOKMARK [1][-]{section.6.2}{Homeworks 2}{chapter.6}% 97
+\BOOKMARK [2][-]{subsection.6.2.1}{Esercizio 1}{section.6.2}% 98
+\BOOKMARK [2][-]{subsection.6.2.2}{Esercizio 2}{section.6.2}% 99
+\BOOKMARK [2][-]{subsection.6.2.3}{Esercizio 3}{section.6.2}% 100
+\BOOKMARK [1][-]{section.6.3}{MTTF of a fiber link}{chapter.6}% 101
+\BOOKMARK [1][-]{section.6.4}{Response Time Distribution 2}{chapter.6}% 102
+\BOOKMARK [1][-]{section.6.5}{Server Load Balancer}{chapter.6}% 103
+\BOOKMARK [0][-]{chapter*.81}{Appendici}{}% 104
+\BOOKMARK [1][-]{section.6.6}{Velocit\340 di Uscita e Tassi di Transizione}{chapter*.81}% 105
+\BOOKMARK [2][-]{subsection.6.6.1}{M/M/1}{section.6.6}% 106
+\BOOKMARK [2][-]{subsection.6.6.2}{M/M/m}{section.6.6}% 107
+\BOOKMARK [2][-]{subsection.6.6.3}{Server Farm Exercise}{section.6.6}% 108
+\BOOKMARK [2][-]{subsection.6.6.4}{Client-Server System Exercise}{section.6.6}% 109
+\BOOKMARK [2][-]{subsection.6.6.5}{Composite Model Exercise}{section.6.6}% 110
+\BOOKMARK [1][-]{section.6.7}{Tips and Tricks}{chapter*.81}% 111
+\BOOKMARK [2][-]{subsection.6.7.1}{MTTF in Reliability/Availability Computational Models}{section.6.7}% 112
+\BOOKMARK [2][-]{subsection.6.7.2}{Failure Rate e MTTF in parallelo}{section.6.7}% 113
+\BOOKMARK [1][-]{section.6.8}{Trasformate di Laplace}{chapter*.81}% 114
+\BOOKMARK [2][-]{subsection.6.8.1}{Propriet\340 e Trasformate di Funzioni Notevoli}{section.6.8}% 115
+\BOOKMARK [2][-]{subsection.6.8.2}{CMTC with Absorbing States}{section.6.8}% 116
+\BOOKMARK [2][-]{subsection.6.8.3}{Homeworks 2-1}{section.6.8}% 117
+\BOOKMARK [1][-]{section.6.9}{Sigle Network Technologies}{chapter*.81}% 118
+\BOOKMARK [2][-]{subsection.6.9.1}{Sigle IEEE}{section.6.9}% 119
+\BOOKMARK [2][-]{subsection.6.9.2}{Sigle varie divise per argomento}{section.6.9}% 120

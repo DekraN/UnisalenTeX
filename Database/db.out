@@ -1,0 +1,131 @@
+\BOOKMARK [0][-]{chapter*.3}{Introduzione}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Modeling}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Progettazione}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.1}{Caso di Studio - Google}{section.1.1}% 4
+\BOOKMARK [2][-]{subsection.1.1.2}{Organizzazioni}{section.1.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.3}{Lo scenario della progettazione - Progetto e realizzazione}{section.1.1}% 6
+\BOOKMARK [2][-]{subsection.1.1.4}{Scenario Ingegneristico della Progettazione}{section.1.1}% 7
+\BOOKMARK [1][-]{section.1.2}{Architettura di un Progetto Software}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.2.1}{L'hardware}{section.1.2}% 9
+\BOOKMARK [2][-]{subsection.1.2.2}{Il software - Architettura a tre livelli}{section.1.2}% 10
+\BOOKMARK [1][-]{section.1.3}{Modellazione dei dati}{chapter.1}% 11
+\BOOKMARK [2][-]{subsection.1.3.1}{ESEMPIO \205 APPLICAZIONE CLIENT-SERVER}{section.1.3}% 12
+\BOOKMARK [2][-]{subsection.1.3.2}{ESEMPIO}{section.1.3}% 13
+\BOOKMARK [2][-]{subsection.1.3.3}{ESEMPIO - THE COMPANY DATABASE}{section.1.3}% 14
+\BOOKMARK [1][-]{section.1.4}{Conceptual Model}{chapter.1}% 15
+\BOOKMARK [2][-]{subsection.1.4.1}{Il valore NULL}{section.1.4}% 16
+\BOOKMARK [2][-]{subsection.1.4.2}{ANALIST}{section.1.4}% 17
+\BOOKMARK [2][-]{subsection.1.4.3}{SCHEMA}{section.1.4}% 18
+\BOOKMARK [2][-]{subsection.1.4.4}{Come iniziare la progettazione di un DB}{section.1.4}% 19
+\BOOKMARK [2][-]{subsection.1.4.5}{Ternary relation type}{section.1.4}% 20
+\BOOKMARK [1][-]{section.1.5}{APPENDICE}{chapter.1}% 21
+\BOOKMARK [2][-]{subsection.1.5.1}{DESIGN PATTERN}{section.1.5}% 22
+\BOOKMARK [1][-]{section.1.6}{Esercizio - Fermate Autobus}{chapter.1}% 23
+\BOOKMARK [2][-]{subsection.1.6.1}{Design Pattern: Preventivo-Consuntivo}{section.1.6}% 24
+\BOOKMARK [2][-]{subsection.1.6.2}{Conclusione}{section.1.6}% 25
+\BOOKMARK [1][-]{section.1.7}{DATA CENTRIC APPLICATION}{chapter.1}% 26
+\BOOKMARK [2][-]{subsection.1.7.1}{USER TYPES}{section.1.7}% 27
+\BOOKMARK [2][-]{subsection.1.7.2}{ESEMPIO}{section.1.7}% 28
+\BOOKMARK [2][-]{subsection.1.7.3}{SIMPLIFIED MAPPING ALGORITHM}{section.1.7}% 29
+\BOOKMARK [2][-]{subsection.1.7.4}{PRESENTATION LAYER FOR CUSTOMER OR DIRECTOR}{section.1.7}% 30
+\BOOKMARK [2][-]{subsection.1.7.5}{BUSINESS RULE LAYER}{section.1.7}% 31
+\BOOKMARK [1][-]{section.1.8}{LIST VIEW and DETAIL VIEW}{chapter.1}% 32
+\BOOKMARK [2][-]{subsection.1.8.1}{DATA PATTERN}{section.1.8}% 33
+\BOOKMARK [1][-]{section.1.9}{DBMS}{chapter.1}% 34
+\BOOKMARK [2][-]{subsection.1.9.1}{Descrizione dei principali DBMS}{section.1.9}% 35
+\BOOKMARK [2][-]{subsection.1.9.2}{Installazione e configurazione di MySQL}{section.1.9}% 36
+\BOOKMARK [2][-]{subsection.1.9.3}{PRIMO CONTATTO CON MYSQL WORKBENCH}{section.1.9}% 37
+\BOOKMARK [1][-]{section.1.10}{IMPORTANZA MODELLI}{chapter.1}% 38
+\BOOKMARK [2][-]{subsection.1.10.1}{IMPORTANZA MODELLO DATI}{section.1.10}% 39
+\BOOKMARK [2][-]{subsection.1.10.2}{IMPORTANZA INFORMAZIONE}{section.1.10}% 40
+\BOOKMARK [1][-]{section.1.11}{DIAGRAMMI EER}{chapter.1}% 41
+\BOOKMARK [2][-]{subsection.1.11.1}{SCHEMA EER CAPITOLO 4}{section.1.11}% 42
+\BOOKMARK [2][-]{subsection.1.11.2}{ESERCIZIO SVOLTO IN CLASSE}{section.1.11}% 43
+\BOOKMARK [0][-]{chapter.2}{MODELLO LOGICO}{}% 44
+\BOOKMARK [1][-]{section.2.1}{SQL QUERY: Le interrogazioni del database}{chapter.2}% 45
+\BOOKMARK [2][-]{subsection.2.1.1}{ALGEBRA RELAZIONALE}{section.2.1}% 46
+\BOOKMARK [2][-]{subsection.2.1.2}{Operatore Join}{section.2.1}% 47
+\BOOKMARK [1][-]{section.2.2}{Sviluppo di una Web Application}{chapter.2}% 48
+\BOOKMARK [2][-]{subsection.2.2.1}{XAMPP}{section.2.2}% 49
+\BOOKMARK [2][-]{subsection.2.2.2}{MySQL Workbench}{section.2.2}% 50
+\BOOKMARK [2][-]{subsection.2.2.3}{DataGrip}{section.2.2}% 51
+\BOOKMARK [1][-]{section.2.3}{Algebra Relazionale}{chapter.2}% 52
+\BOOKMARK [2][-]{subsection.2.3.1}{INTRODUZIONE}{section.2.3}% 53
+\BOOKMARK [2][-]{subsection.2.3.2}{ALTRI OPERATORI}{section.2.3}% 54
+\BOOKMARK [2][-]{subsection.2.3.3}{ESEMPI DI QUERY}{section.2.3}% 55
+\BOOKMARK [1][-]{section.2.4}{Queries}{chapter.2}% 56
+\BOOKMARK [1][-]{section.2.5}{Popolazione casuale DB}{chapter.2}% 57
+\BOOKMARK [2][-]{subsection.2.5.1}{Tipi di dato in MySQL}{section.2.5}% 58
+\BOOKMARK [2][-]{subsection.2.5.2}{Attributi}{section.2.5}% 59
+\BOOKMARK [2][-]{subsection.2.5.3}{Funzioni di Aggregazione}{section.2.5}% 60
+\BOOKMARK [2][-]{subsection.2.5.4}{Popolazione del DataBase}{section.2.5}% 61
+\BOOKMARK [1][-]{section.2.6}{MySQL}{chapter.2}% 62
+\BOOKMARK [2][-]{subsection.2.6.1}{Tipi di tabelle}{section.2.6}% 63
+\BOOKMARK [2][-]{subsection.2.6.2}{AUTO-INCREMENT}{section.2.6}% 64
+\BOOKMARK [2][-]{subsection.2.6.3}{Tipi di dato in SQL}{section.2.6}% 65
+\BOOKMARK [2][-]{subsection.2.6.4}{Funzioni di aggregazione}{section.2.6}% 66
+\BOOKMARK [2][-]{subsection.2.6.5}{phpMyAdmin \205 indici}{section.2.6}% 67
+\BOOKMARK [2][-]{subsection.2.6.6}{Popolare database}{section.2.6}% 68
+\BOOKMARK [1][-]{section.2.7}{SQL Recap}{chapter.2}% 69
+\BOOKMARK [2][-]{subsection.2.7.1}{VINCOLI}{section.2.7}% 70
+\BOOKMARK [2][-]{subsection.2.7.2}{Meccanismo base Query}{section.2.7}% 71
+\BOOKMARK [2][-]{subsection.2.7.3}{ESERCIZIO}{section.2.7}% 72
+\BOOKMARK [1][-]{section.2.8}{SQL per manipolare i dati}{chapter.2}% 73
+\BOOKMARK [2][-]{subsection.2.8.1}{Transazioni e concorrenza \(accenno\)}{section.2.8}% 74
+\BOOKMARK [2][-]{subsection.2.8.2}{Algebra a tre livelli}{section.2.8}% 75
+\BOOKMARK [2][-]{subsection.2.8.3}{Query pi\371 complesse}{section.2.8}% 76
+\BOOKMARK [2][-]{subsection.2.8.4}{Vincoli in SQL}{section.2.8}% 77
+\BOOKMARK [2][-]{subsection.2.8.5}{Asserzioni}{section.2.8}% 78
+\BOOKMARK [2][-]{subsection.2.8.6}{Trigger}{section.2.8}% 79
+\BOOKMARK [2][-]{subsection.2.8.7}{Viste \(Views\)}{section.2.8}% 80
+\BOOKMARK [2][-]{subsection.2.8.8}{Esercizio}{section.2.8}% 81
+\BOOKMARK [1][-]{section.2.9}{Continuazione Popolamento DB}{chapter.2}% 82
+\BOOKMARK [2][-]{subsection.2.9.1}{CRUD \(Create, Read, Update, Delete\)}{section.2.9}% 83
+\BOOKMARK [1][-]{section.2.10}{CRUD cycle}{chapter.2}% 84
+\BOOKMARK [2][-]{subsection.2.10.1}{PDO \(PhpData Objects\)}{section.2.10}% 85
+\BOOKMARK [2][-]{subsection.2.10.2}{Grid per le operazioni CRUD}{section.2.10}% 86
+\BOOKMARK [1][-]{section.2.11}{Enhanced Mapping}{chapter.2}% 87
+\BOOKMARK [2][-]{subsection.2.11.1}{ALGORITMO DI MAPPING}{section.2.11}% 88
+\BOOKMARK [1][-]{section.2.12}{Overview}{chapter.2}% 89
+\BOOKMARK [2][-]{subsection.2.12.1}{Modellazione di dati}{section.2.12}% 90
+\BOOKMARK [1][-]{section.2.13}{Mapping RECAP}{chapter.2}% 91
+\BOOKMARK [2][-]{subsection.2.13.1}{Svolgimento traccia d'esame}{section.2.13}% 92
+\BOOKMARK [1][-]{section.2.14}{Qualit\340 di un DB}{chapter.2}% 93
+\BOOKMARK [2][-]{subsection.2.14.1}{DIPENDENZE FUNZIONALI}{section.2.14}% 94
+\BOOKMARK [1][-]{section.2.15}{Transazioni e Concorrenza}{chapter.2}% 95
+\BOOKMARK [2][-]{subsection.2.15.1}{Transazioni}{section.2.15}% 96
+\BOOKMARK [2][-]{subsection.2.15.2}{Concurrency Control Techniques}{section.2.15}% 97
+\BOOKMARK [1][-]{section.2.16}{Indicizzazione e Indici}{chapter.2}% 98
+\BOOKMARK [0][-]{chapter.3}{DATA WAREHOUSE}{}% 99
+\BOOKMARK [1][-]{section.3.1}{Introduzione}{chapter.3}% 100
+\BOOKMARK [1][-]{section.3.2}{Analisi multidimensionale}{chapter.3}% 101
+\BOOKMARK [2][-]{subsection.3.2.1}{Operazioni concettuali}{section.3.2}% 102
+\BOOKMARK [1][-]{section.3.3}{Analisi Multidimensionale e Data Warehousing}{chapter.3}% 103
+\BOOKMARK [1][-]{section.3.4}{COSTRUTTI AVANZATI DEL DFM}{chapter.3}% 104
+\BOOKMARK [2][-]{subsection.3.4.1}{ESEMPIO DELLE VENDITE \(DA E/R\)}{section.3.4}% 105
+\BOOKMARK [2][-]{subsection.3.4.2}{Passaggio dall\220ER riconciliato al DFM: l\220ALBERO DEGLI ATTRIBUTI}{section.3.4}% 106
+\BOOKMARK [2][-]{subsection.3.4.3}{CARICO DI LAVORO}{section.3.4}% 107
+\BOOKMARK [2][-]{subsection.3.4.4}{PROGETTAZIONE LOGICA}{section.3.4}% 108
+\BOOKMARK [1][-]{section.3.5}{LE TABELLE PIVOT DI EXCEL PER IL DATA WAREHOUSE}{chapter.3}% 109
+\BOOKMARK [2][-]{subsection.3.5.1}{QUERY}{section.3.5}% 110
+\BOOKMARK [1][-]{section.3.6}{PROGETTAZIONE LOGICA}{chapter.3}% 111
+\BOOKMARK [2][-]{subsection.3.6.1}{Indicatori}{section.3.6}% 112
+\BOOKMARK [2][-]{subsection.3.6.2}{Motore Data Warehouse}{section.3.6}% 113
+\BOOKMARK [2][-]{subsection.3.6.3}{SnowFlake Schema}{section.3.6}% 114
+\BOOKMARK [0][-]{chapter*.368}{Appendici}{}% 115
+\BOOKMARK [1][-]{section.3.7}{Esercizio \(Core di Facebook\)}{chapter*.368}% 116
+\BOOKMARK [2][-]{subsection.3.7.1}{Esempi di interrogazioni}{section.3.7}% 117
+\BOOKMARK [2][-]{subsection.3.7.2}{Meta-Database e Meta-Dati}{section.3.7}% 118
+\BOOKMARK [1][-]{section.3.8}{Modellazione}{chapter*.368}% 119
+\BOOKMARK [2][-]{subsection.3.8.1}{Stima della dimensione del database}{section.3.8}% 120
+\BOOKMARK [2][-]{subsection.3.8.2}{MODELLO VISIBILITY}{section.3.8}% 121
+\BOOKMARK [1][-]{section.3.9}{Esercizio \(Compagnia Aerea\)}{chapter*.368}% 122
+\BOOKMARK [2][-]{subsection.3.9.1}{Continuazione ESERCITAZIONE}{section.3.9}% 123
+\BOOKMARK [2][-]{subsection.3.9.2}{DFM}{section.3.9}% 124
+\BOOKMARK [1][-]{section.3.10}{DATABASE TECHNOLOGIES}{chapter*.368}% 125
+\BOOKMARK [2][-]{subsection.3.10.1}{CLOUD COMPUTING}{section.3.10}% 126
+\BOOKMARK [2][-]{subsection.3.10.2}{NIST REFERENCE ARCHITECTURE}{section.3.10}% 127
+\BOOKMARK [2][-]{subsection.3.10.3}{BIG DATA}{section.3.10}% 128
+\BOOKMARK [2][-]{subsection.3.10.4}{CAP'S THEOREM}{section.3.10}% 129
+\BOOKMARK [2][-]{subsection.3.10.5}{DATABASE NoSQL}{section.3.10}% 130
+\BOOKMARK [2][-]{subsection.3.10.6}{MAP REDUCE}{section.3.10}% 131

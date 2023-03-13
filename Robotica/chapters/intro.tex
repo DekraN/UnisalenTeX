@@ -1,0 +1,39 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Introduzione}
+\label{cap:intro}
+%************************************************\\
+
+\section{Overview}
+
+Il corso di Robotica è prettamente algoritmico. Riguarderà la Modellistica, la Cinematica, Algoritmi di Stima (problemi di navigazione), controllo di Robot più o meno complicati. Algoritmi realmente utili su un sistema reale. Testing su un ambiente di prototipazione. Simulazione di scenari abbastanza complicati. Attività sperimentale su piattaforme serie reali.
+
+Sistemi in HW per un sistema di controllo su un \underline{Segway} (pendolo inverso), autostabilizzante. Stima della POSA. Più concentrato sul filtraggio. Problema della Stima, della LOCALIZZAZIONE. Robot che si muovono in ambienti sconosciuti. Problema fondamentale. Altre tecniche utilizzate sono il filtro di Kalman, Louenberger: \{GPS, Accelerometri, Giroscopi\}. Funzionano meglio di \emph{Google Track}! Sugli Android si utilizza soltanto il GPS per favorire l'interoperabilità e la portabilità. Sviluppo SW: progettazione analitica dei filtri. Sviluppo codice eventualmente su queste piattaforme.
+
+ISME - \emph{Integrated System for Marine Environment}. Istituzione di cui UNISALENTO fa parte. Centro interuniversitario. Network di diversi atenei che si occupa di Robotica Marina. Di fatto sono tutti ricercatori o docenti di Automatica. Vengono da Pisa, Firenze, Genova, Sapienza di Roma (da qualche mese). Tranne a Firenze, gli altri sono fondamentalmente tutti automatici. Molte attività di ricerca sono svolte in questo ambito. Risultati ottenuti in laboratorio sono quasi tutti fatti nell'ambito di ricerche ISME.
+
+ROBOTICA: Come materia è una disciplina fortemente multidisciplinare. Il termine Robotica è un contenitore molto ampio. Robot e veicoli subacquei. ROV: \textit{Remotely Operated Vehicle}. Robotica marina, applicazioni robotiche legate in qualche maniera al subacqueo. Il corso non è al 100\% incentrato sulla robotica marina, ma quasi. Robot che volano. Aeroplani, quadricotteri, droni etc. I veicoli subacquei sono un po' meno comuni. Elicottero: veicolo che si utilizza per muoversi in regimi limitati a velocità basse. HOVERING: stare fermi. Aeroplani: velocità alte su grandi distanze. Nell'ambito marino abbiamo le stesse classificazioni: I ROV prediligono velocità basse, massima precisione ottenibile, mentre altri robot subacquei invece prediligono grandi distanze e grandi velocità. Nei ROV troviamo il cosiddetto Tetere, cavo che collega il ROV agli operatori. I veicoli evoluti hanno dei sistemi di comando abbastanza complessi. Orientazione automatica, etc. Abbiamo i vari sottosistemi: Elettronico, Motore, etc. fissati sul telaio, una struttura di metallo. Veicoli \textit{Open-Frame} (a telaio aperto, letteralmente). Caratteristica principale: motori aggiuntivi: si tratta di sistemi SOVRATTUATI, ove abbiamo più motori di quelli strettamente necessari. Nello spazio libero abbiamo sei gradi di libertà: $\{(x,y,z),(\theta_x,\theta_y,\theta_z)\}$. Bisogna produrre forze e coppie lungo i sei assi. Abbiamo invece addirittura otto motori sovrattuati: più motori, attuatori rispetto a quelli che servono indispensabilmente. Il BRACCIO ha sei gradi di libertà. Noi abbiamo sette motori, essendo quindi dei sistemi sovrattuati.
+
+Problema corrispondente nell'Algebra Lineare: sistemi con infinite soluzioni. Scegliamo tra quelle infinite quelle che soddisfano qualche particolare criterio di ottimizzazione. INFINITE POSE sul braccio corrispondenti a quelle determinate dalla posa della mano. Quella che corrisponde alla fatica minore da compiere, tipicamente è un esempio di un tale vincolo sceglibile.
+
+Tornando al ROV, sotto il mantello del motore troviamo l'ELICA. Quattro di questi motori sono nei quattro spigoli verticali. Gli altri quattro sono disposti a $45^{\circ}$ orizzontalmente tra di loro. Questi ultimi comandano la spinta in avanti: SURGE, che sarebbe la velocità in direzione dell'asse principale di moto, Due che spingono nella stessa direzione. SWAY, grado di libertà perpendicolare. Se i motori spingono in maniera differenziale, si verificano le rotazioni $\iff$ IMBARDATA. Quelli verticali, se spingono in maniera uniforme si muoveranno uniformememente lungo z. Altrimenti BECCHEGGIO: pitch, oppure ROLL: rollio. L'Acqua produce pressione. La pressione indotta dal fluido è proporzionale alla quota. Qualunque oggetto che vogliamo proteggere dall'acqua va mandato in tenuta STAGNA.
+
+Come modelli dei motori, vedremo una versione semplificata del modello matematico del motore elettrico. Il punto più delicato in un motore marino è la transizione interna $\rightarrow$ esterna. Guaina di transizione. Molto complessi e molto costosi in tutte le soluzioni tecnologiche. Proteggere dei contenitori. In aria questo problema non è presente. La Spinta di Archimede è data dalla famosa formula:
+
+\[
+	\underline{S_A = \rho V g}
+\]
+
+E' una spinta dal basso verso l'alto da parte del fluido. Viene sfruttata per rendere possibile il galleggiamento. Rimanere in equilibrio: bisogna eguagliare la FORZA PESO con la SPINTA DI ARCHIMEDE: condizione neutrale. Abbiamo due tipi di oggetti:
+
+\begin{itemize}
+\item{Oggetti positivi}: tendono a rimanere a galla;
+\item{Oggetti negativi}: tendono ad affondare.
+\end{itemize}
+
+Parte gialla: galleggiante. Salvagente del robot. Esso deve pesare il meno possibile, così che abbiamo una spinta più grande possibile. Volume maggiore. Galleggiante in maniera tale che il peso del volume d'acqua che sposta sia pari al peso del veicolo. La SALINIT\`A dell'acqua NON è sempre uniforme! Bisogna compensare masse e volumi. Incertezza che tipicamente si corregge sul posto. Veicoli complicati tecnologicamente. In superficie la pressione non è un problema. Ma già a $10\ m$ abbiamo $10\ atm$! Gestione della pressione. La parte più costosa è proprio il galleggiante! Il POLISTIROLO probabilmente si ridurrebbe ad una monetina. Letteralmente imploderebbe. I costi sono quindi abbastanza elevati per costruire questi oggetti.
+Robot mobili. Problema dei Robot mobili. Nella robotica mobile sono coinvolti veicoli che si muovono su ruote o su zampe, tipicamente a terra. Possiamo anche avere veicoli a leg (gambe), ed in tal caso avremmo la problematica della LOCOMOZIONE. Vanno molto forti oggi. Tecnologica delle cosiddette RUOTE SVEDESI, le quali scivolano di lato. Le ruote della nostra macchina sono invece fatte per ruotare perpendicolarmente all'asse principale. RUOTE SVEDESI: Piccole rotelline che ruotano di lato. Se ne mettiamo tre a $120^{\circ}$, l'oggetto risultante può traslare in ogni direzione. La mobilità delle ruote svedesi è molto maggiore. Abbiamo dei veicoli che ruotano sulla z allo stesso tempo. Problemi di vario tipo. Perimetro della ruota non proprio rotondo. Problema delle VIBRAZIONI. Oltre una certa velocità sono abbastanza fastidiose. 

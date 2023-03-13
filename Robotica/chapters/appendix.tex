@@ -1,0 +1,674 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Appendici}
+\label{cap:appendix}
+%************************************************\\
+
+\section{Varie dimostrazioni}
+
+\subsection{Dimostrazioni e Proprietà delle Rotazioni e dell'Antisimmetria}
+
+\subsubsection{Autovalori unitari relativi ad Isometrie}
+
+\begin{proof}
+
+\[
+	[Rx = \lambda x] \implies \norma{\lambda x}^2=\norma{x}^2 \implies \lambda^2(x^2+y^2+z^2)=x^2+y^2+z^2 \implies \lambda=\pm 1
+\]
+
+\end{proof}
+
+\subsubsection{Proprietà delle potenze di una Matrice Antisimmetrica}
+
+\begin{proof}{\textbf{Proprietà delle potenze di una Matrice Antisimmetrica}}
+
+\begin{itemize}
+
+\item{\textbf{CASO PARI}}
+
+\[
+	S^2(h) = S(h)S(h) \implies S^2(h)v = h\times(h\times v) = \underline{h}(h^\top v) - \underline{v}(h^\top h = 1) = (\dots)
+\]
+\[
+	(\dots) = (hh^\top -I_{3\times 3})v \implies S^2(h) = (hh^\top - I_{3\times 3})
+\]
+
+\item{\textbf{CASO DISPARI}}
+
+\[
+	S^3(h) = S(h)S^2(h) \implies S^3(h)v = h\times[h(h^\top v) - v(h^\top h = 1)] = (\dots)
+\]
+\[
+	(\dots) = -h\times v \implies S^3(h) = -S(h)
+\]
+
+\end{itemize}
+
+E così via per gli altri casi, ove si nota la ricorsione esplicitata.
+
+\end{proof}
+
+\subsubsection{Dimostrazione della formula della Traccia delle Potenze Pari di una Matrice Antisimmetrica}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\Tr(hh^\top) = h^\top h=1\\
+	&\Tr(I_{n\times n}) = n \implies \Tr(I_{3\times 3}) = 3
+	\end{aligned}
+	\right.\stackrel{\Tr(A+B)=\Tr(A)+\Tr(B)}{\implies} \Tr(S^{2(i+1)}(\underline{h})) = (-1)^{i+1}2
+\]
+
+\end{proof}
+
+\subsubsection{Derivazione dell'Accelerazione Cinematica in presenza di velocità relativa nulla}
+
+\begin{prop}
+
+In caso un oggetto abbia una posizione costante rispetto ad un sistema di riferimento non inerziale, rotante rispetto ad un sistema inerziale, l'accelerazione di Coriolis non è presente:
+
+\[
+	(^1\dot{\rho}=0)\implies (\nexists\ 2\ ^0\omega_{1/0}\times\ ^0R_1\ ^1\dot{\rho} = 0)
+\] 
+
+\end{prop}
+
+\begin{proof}
+
+\[	
+	p = q+\rho \implies\ ^0p =\ ^0q+\ ^0R_1\ ^1\rho \implies\ ^0\dot{p} =\ ^0\dot{q} +\ ^0\dot{R}_1\ ^1\rho + (\centernot{^0R_1\ ^1\dot{\rho}=0}) \implies (\dots)
+\]
+\[	
+	(\dots) =\ ^0\dot{q} +\ ^0\omega_{1/0}\times\ ^0\rho \implies\ ^0\ddot{p} =\ ^0\ddot{q} +\ ^0\dot{\omega}_{1/0}\times\ ^0\rho +\ ^0\omega_{1/0}\times\ \frac{d}{dt}(^0R_1\ ^1\rho) = (\dots)
+\]
+\[
+	(\dots) =\ ^0\ddot{q}+\ ^0\dot{\omega}_{1/0}\times\ ^0\rho +\ ^0\omega_{1/0}\times(^0\dot{R}_1\ ^\rho +\ \centernot{^0R_1\ ^1\dot{\rho}=0}) =\ ^0\ddot{q} +\ ^0\dot{\omega}_{1/0}\times\ ^0\rho +\ ^0\omega_{1/0}\times(^0\omega_{1/0}\times\ ^0\rho)
+\]
+
+\end{proof}
+
+\subsection{Dimostrazioni e Derivazioni sulla Teoria del Controllo}
+
+\subsubsection{Dimostrazione della formula del Modello Dinamico nello Spazio Operativo}
+
+\begin{proof}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&B(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) = \tau := (J^\top(q)\gamma) - J^\top(q)h\\
+	&\ddot{q} = -\inv{B}(q)C(q,\dot{q})\dot{q} - \inv{B}(q)g(q) + \inv{B}(q)J^\top(q)(\gamma -h)
+	\end{aligned}
+	\right.\\
+	&\ddot{x}=J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}\\
+	&\inv{B_A} = J_A\inv{B}J_A^\top \iff B_A = \inv{(J_A\inv{B}J_A^\top)}\\
+	&J = T_AJ_A \iff J^\top = J_A^\top T_A^\top\\
+	&\left[
+	\begin{aligned}
+	&\ddot{x} = -J_A\inv{B}C\dot{q} - J_A\inv{B}g + \dot{J}_A\dot{q} + J_A\inv{B}J_A^\top((\gamma_A := T_A^\top\gamma) - (h_A := T_A^\top h))\\
+	&B_A\ddot{x} = -(C_A\dot{x} := B_AJ_A\inv{B}C\dot{q}-B_A\dot{J}_A\dot{q}) - (g_A := B_AJ_A\inv{B}g) + \gamma_A - h_A\\
+	&B_A(x)\ddot{x} + C_A(x,\dot{x})\dot{x} + g_A(x) = \gamma_A - h_A
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\subsubsection{Dimostrazione della formula di disaccoppiamento nel Controllo nello Spazio dei Giunti}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&K_rq=q_m \implies K_r\dot{q}=\dot{q}_m \implies K_r\ddot{q}=\ddot{q}_m\\
+	&\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&(B(q) := \bar{B} + \Delta B(q))\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + g(q) = \tau = K_r\tau_m\\
+	&\tau_m = \inv{K_r}(\bar{B} + \Delta B(q))\inv{K_r}\ddot{q}_m + \inv{K_r}C(q,\dot{q})\inv{K_r}\dot{q}_m + \inv{K_r}F_v\inv{K_r}\dot{q}_m + \inv{K_r}g(q)\\
+	&\tau_m = \inv{K_r}\bar{B}\inv{K_r}\ddot{q}_m + (F_m := \inv{K_r}F_v\inv{K_r})\dot{q}_m + d
+	\end{aligned}
+	\right.\\
+	&d := \inv{K_r}\Delta B(q)\inv{K_r}\ddot{q}_m + \inv{K_r}C(q,\dot{q})\inv{K_r}\dot{q}_m + \inv{K_r}g(q)
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof} 
+
+\subsubsection{Dimostrazione dell'Equazione Generale della Robotica con Ingressi Elettrici}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&G_vv_c = R_ai_a + K_v\dot{q}_m \implies R_ai_a = G_vv_c - K_v\dot{q}_m \implies i_a=\inv{R_a}(G_vv_c - K_v\dot{q}_m)\\
+	&\inv{K_r}\tau = K_ti_a \implies \tau = K_rK_ti_a = K_rK_t\inv{R_a}(G_vv_c - K_v\dot{q}_m)\\
+	&K_rq=q_m \implies K_r\dot{q} = \dot{q}_m\\
+	&\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + g(q) = K_rK_t\inv{R_a}(G_vv_c - K_v\dot{q}_m)\\
+	&B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F\dot{q} + g(q) = u
+	\end{aligned}
+	\right.\\
+	&F := F_v + K_rK_t\inv{R_a}K_vK_r\\
+	&u := K_rK_t\inv{R_a}G_vv_c
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\subsubsection{Dimostrazione della derivata della funzione di Lyapunov nel PD con Compensazione della Gravità nello Spazio dei Giunti}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{q} := q_d-q \implies \dot{\tilde{q}} := (\dot{q}_d := 0 \impliedby q_d=const) - \dot{q}\\
+	&V(\dot{q},\tilde{q}) := \underline{\frac{1}{2}\dot{q}^\top B(q)\dot{q}} + \underline{\frac{1}{2}\tilde{q}^\top K_P\tilde{q}}],\ \forall \dot{q},\tilde{q}\neq 0\\
+	&\left[
+	\begin{aligned}
+	&B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F\dot{q} + g(q) = u\\
+	&B(q)\ddot{q} = u - C(q,\dot{q})\dot{q} - F\dot{q} - g(q)
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&\dot{V}(q,\tilde{q}) = \dot{q}^\top B(q)\ddot{q} + \frac{1}{2}\dot{q}^\top\dot{B}(q)\dot{q} + (\frac{1}{2}\dot{\tilde{q}}^\top K_p\tilde{q} + \frac{1}{2}\tilde{q}^\top K_p\dot{\tilde{q}} = -\dot{q}^\top K_P\tilde{q})\\
+	&\dot{V}(q,\tilde{q}) = \dot{q}^\top(u - C(q,\dot{q})\dot{q} - F\dot{q} - g(q)) + \frac{1}{2}\dot{q}^\top\dot{B}(q)\dot{q} -\dot{q}^\top K_P\tilde{q} = (\dots)\\
+	&(\dots) = \frac{1}{2}\dot{q}^\top(\dot{B}(q) - 2C(q,\dot{q}) = 0)\dot{q} - \dot{q}^\top F\dot{q} + \dot{q}^\top(u - g(q) - K_P\tilde{q}) = (\dots)\\
+	&(\dots) = - \dot{q}^\top F\dot{q} + \dot{q}^\top(u - g(q) - K_P\tilde{q})
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\subsubsection{Dimostrazione della derivazione della formula del riferimento del banco di PID nel Controllo a Dinamica Inversa nello Spazio dei Giunti}
+
+\begin{proof}
+
+Il riferimento da utilizzare è il seguente:
+
+\[
+	r := \ddot{q}_d + K_D\dot{q}_d + K_Pq_d
+\]
+
+Per far sì che il segnale $y$ abbia la tale dinamica:
+
+\[
+	y = -K_Pq - K_D\dot{q} + \ddot{q}_d + K_D\dot{q}_d + K_Pq_d = \ddot{q}_d + K_D(\dot{q}_d - \dot{q} := \dot{\tilde{q}}) + K_P(q_d - q := \tilde{q})
+\]
+ 
+\end{proof}
+
+\subsubsection{Dimostrazione della derivata della funzione di Lyapunov nel PD con Compensazione della Gravità nello Spazio Operativo}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{x} := x_d-x \implies \dot{\tilde{x}} := (\dot{x}_d := 0 \impliedby x_d=const) - \dot{x}\\
+	&V(\dot{q},\tilde{x}) := [\frac{1}{2}\dot{q}^\top B(q)\dot{q} + \frac{1}{2}\tilde{x}^\top K_P\tilde{x} > 0]\\
+	&B(q)\ddot{q} = u - C(q,\dot{q})\dot{q} - F\dot{q} - g(q)\\
+	&\dot{x}=J_A(q)\dot{q} \implies \dot{\tilde{x}} = -\dot{x} = -J_A(q)\dot{q}\\
+	&\left[
+	\begin{aligned}
+	&\dot{V} = \dot{q}^\top B(q)\ddot{q} + \frac{1}{2}\dot{q}^\top\dot{B}(q)\dot{q} + \dot{\tilde{x}}^\top K_P\tilde{x} = (\dots)\\
+	&(\dots) = \dot{q}^\top(B(q)\ddot{q}) + \frac{1}{2}\dot{q}^\top\dot{B}(q)\dot{q} - \dot{q}^\top J_A^\top(q)K_P\tilde{x} = (\dots)\\
+	&(\dots) = \frac{1}{2}\dot{q}^\top(\dot{B}(q) - 2C(q,\dot{q}) = 0)\dot{q} - \dot{q}^\top F\dot{q} + \dot{q}^\top(u-g(q)-J_A^\top(q)K_P\tilde{x})
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\subsubsection{Finalizzazione della derivazione del Controllo a Dinamica Inversa nello Spazio Operativo}
+
+Avendo scelto:
+
+\[	
+	[y := \inv{J_A}(q)(\underline{\ddot{x}_d} + K_D\dot{\tilde{x}} + K_P\tilde{x} - \dot{J}_A(q,\dot{q})\dot{q})]
+\]
+
+sostituendolo nell'equazione della Dinamica Inversa: $\ddot{q}=y$, ed utilizzando la derivata dell'Inversione Cinematica otteniamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&[\ddot{x} = J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}]\\
+	&\ddot{q} = \inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&\inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q} = \inv{J_A}(q)(\underline{\ddot{x}_d} + K_D\dot{\tilde{x}} + K_P\tilde{x} - \dot{J}_A(q,\dot{q})\dot{q})\\
+	&(\ddot{x}_d-\ddot{x} := \ddot{\tilde{x}}) + K_D\dot{\tilde{x}} + K_P\tilde{x} = 0
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\subsubsection{Derivazioni sul Controllo di Impedenza a Dinamica Inversa nello Spazio Operativo}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&u := B(q)y + n(q,\dot{q})\\
+	&\left[
+	\begin{aligned}
+	&B(q)\ddot{q} + n(q,\dot{q})\dot{q} = u - J^\top(q)h\\
+	&B(q)\ddot{q} = B(q)y - J^\top(q)h\implies \ddot{q}=y-\inv{B}(q)J^\top(q)h
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Se si prendesse come $y$ il seguente riferimento:
+
+\[
+	y := \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q}) = (\dots)
+\]
+
+otterremmo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&(\dots)\\
+	&\left[
+	\begin{aligned}
+	&\ddot{x} = J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}\\
+	&\ddot{q} = \inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q}
+	\end{aligned}
+	\right.\\
+	&\ddot{q}=y-\inv{B}(q)J^\top(q)h\\
+	&\left[
+	\begin{aligned}
+	&\ddot{q} = \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q}) - \inv{B}(q)J^\top(q)h\\
+	&\inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q} = \inv{J_A}(q)\inv{M_d}M_d\ddot{x}_d + \inv{J_A}(q)\inv{M_d}K_D\dot{\tilde{x}} + (\dots)\\
+	&(\dots) =  \inv{J_A}(q)\inv{M_d}K_P\tilde{x} - \inv{J_A}(q)\inv{M_d}M_d\dot{J}_A(q,\dot{q})\dot{q} - \inv{B}(q)J^\top(q)h\\
+	&M_d(\ddot{x}_d-\ddot{x}:=\ddot{\tilde{x}}) + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_dJ_A(q)\inv{B}(q)J^\top(q)h = 0\\
+	&M_d(\ddot{x}_d-\ddot{x}:=\ddot{\tilde{x}}) + K_D\dot{\tilde{x}} + K_P\tilde{x} = M_d\inv{B_A}(q)h_A
+	\end{aligned}
+	\right.\\	
+	&\left\{
+	\begin{aligned}
+	&B_A(q) := \inv{J_A^\top}(q)B(q)\inv{J_A}(q) \implies \inv{B_A}(q) = J_A(q)\inv{B}(q)J_A^\top(q)\\
+	&J_A^\top(q)h_A = J^\top(q)h
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\subsubsection{Derivazioni sul Controllo di Impedenza a Dinamica Inversa nello Spazio Operativo con termine di Trasduzione}
+
+\begin{proof}
+
+\[
+	\left\{
+	\begin{aligned}
+	&u := B(q)y + n(q,\dot{q}) + J^\top(q)h\\
+	&\left[
+	\begin{aligned}
+	&B(q)\ddot{q} + n(q,\dot{q})\dot{q} = u - J^\top(q)h\\
+	&B(q)\ddot{q} = B(q)y \implies \ddot{q}=y
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Se si prendesse come $y$ il seguente riferimento:
+
+\[
+	y := \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q} - h_A) = (\dots)
+\]
+
+otterremmo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&(\dots)\\
+	&\left[
+	\begin{aligned}
+	&\ddot{x} = J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}\\
+	&\ddot{q} = \inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q}
+	\end{aligned}
+	\right.\\
+	&\ddot{q}=y\\
+	&\left[
+	\begin{aligned}
+	&\ddot{q} = \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q} - h_A)\\
+	&\inv{J_A}(q)\ddot{x} - \inv{J_A}(q)\dot{J}_A(q,\dot{q})\dot{q} = \inv{J_A}(q)\inv{M_d}M_d\ddot{x}_d + \inv{J_A}(q)\inv{M_d}K_D\dot{\tilde{x}} + (\dots)\\
+	&(\dots) =  \inv{J_A}(q)\inv{M_d}K_P\tilde{x} - \inv{J_A}(q)\inv{M_d}M_d\dot{J}_A(q,\dot{q})\dot{q} - \inv{J_A}(q)\inv{M_d}h_A\\
+	&M_d(\ddot{x}_d - \ddot{x} := \ddot{\tilde{x}}) + K_D\dot{\tilde{x}} + K_P\tilde{x} = h_A
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+\section{Identificazione Parametrica: Pseudoinverse ed SVD}
+
+Si noti che, con riferimento a quanto abbiamo detto per lo schema generale riguardante il numero di soluzioni di un problema lineare inverso $y=(M\in\R^{n\times m})x, x=?y$, è opportuno fare delle precisazioni. Scriviamo il teorema rango - nullità per ogni caso, ponendo: $\{r:=\rank{M},\ k:=\dim\ker{M}\}$. Ricordiamo che la dimensione del kernel ci fornisce la dimensione dello spazio dei vettori di input che vengono mappati in 0 in output.
+
+\begin{itemize}
+
+\item{\textbf{Caso Rango Pieno}}:
+
+\begin{itemize}
+
+\item{$n<m$}:
+
+\[
+	(r = n) + k = m \implies k = m-n \implies \infty^{m-n}\ SOL
+\]
+
+In tal caso, abbiamo il kernel non vuoto, come dimostra la formula sopra. Tuttavia, fortunatamente abbiamo suriettività della trasformazione, in quanto tutti i vettori $y$ possono essere raggiunti. Infatti, il rango è $n$, proprio pari alla dimensione del sottospazio di arrivo, o meglio, della dimensione di output del prodotto matrice vettore. In tal caso abbiamo quindi: NON UNIVOCIT\`A della soluzione, ma in compenso abbiamo SURIETTIVIT\`A;
+
+\item{$n=m$}:
+
+Questo è il caso più fortunato di tutti: $n=m$. Nel rango nullità abbiamo:
+
+\[
+	(r=(n=m)) + k = (n=m) \implies k=0
+\]
+
+\`E abbastanza facile comprendere che abbiamo sia univocità della soluzione, dal momento che il kernel è vuoto, ed inoltre tutti i vettori possono essere raggiunti. Quindi abbiamo univocità della soluzione ed anche suriettività della trasformazione;
+
+\item{$n>m$}:
+
+In tal caso, il teorema ci dice:
+
+\[
+	(r = m) + k = (m = r) \implies k=0
+\]
+
+Ciò vuol dire che abbiamo univocità della soluzione, dal momento che anche qui il kernel è nullo. Invece non abbiamo suriettività, ovvero il sottospazio di arrivo è $n$ e non coincide con la dimensione dell'immagine, ovvero il rango, cioè $m$. Quindi, se la soluzione esiste, è unica.
+
+\end{itemize}
+
+\item{\textbf{Caso Rango non Pieno}}
+
+In tal caso è inutile scandagliare tutte e tre le casistiche dimensionali. Tanto il rango è sempre minore del minimo tra le due dimensioni $\iff r<\{n,m\}$, il che vuol dire che il kernel non sarà mai vuoto. Di conseguenza, per forza di cose la trasformazione non sarà mai suriettiva dal momento che $(r<n)\neq n$, ovvero la dimensione dell'immagine non coincide con quella del sottospazio di arrivo.
+
+\end{itemize}
+
+\subsection{Considerazioni sulle pseudoinverse}
+
+\begin{itemize}
+
+\item{\textbf{Caso Rango Pieno}}
+
+\begin{itemize}
+
+\item{\textbf{\textit{Pseudoinversa destra}}}
+
+Siamo nel caso $n<m$. In tal caso, la funzione di costo (paraboloide) include due termini, due addendi.
+
+Il primo addendo è la norma $P$ del vettore $x$. Questo addendo serve per trovare un $x$ a norma minima. Il secondo addendo effettivamente serve per soddisfare il vincolo, ed è un vincolo DURO. Tale errore sarà sicuramente 0 per una soluzione; ha sempre senso scrivere qui il vincolo duro, dal momento che sarà sempre soddisfatto, perché ci troviamo in condizioni di suriettività. 
+
+\item{\textbf{\textit{Pseudoinversa sinistra}}}
+
+In tal caso non siamo in condizioni di suriettività. Il vincolo potrebbe NON essere soddisfatto, quindi sarebbe scorretto utilizzare l'espressione del vincolo duro. Invece, si utilizza il vincolo SOFFICE, ovvero si cerca di minimizzare la funzione di costo scritta come la norma pesata rispetto a $P$ dell'errore, ove $P$ è un'opportuna matrice dei pesi. Qui non abbiamo bisogno di minimizzare la norma del vettore $x$: siamo in condizioni di kernel vuoto, ovvero di univocità. L'insieme $X$ dei vettori che minimizzano la norma dell'errore è costituito da un solo elemento, l'eventuale soluzione. Soluzione che come già detto, potrebbe pure non esistere. Se non esiste, l'utilizzo della pseudoinversa restituisce comunque una soluzione che è un approssimante.
+
+\end{itemize}
+
+In ambo i casi, precisiamo che l'inversione delle matrice parentesi è ben posta se $M$ è a rango pieno. Inoltre, nell'equazione normale dei minimi quadrati abbiamo un termine $M^\top$ a LHS ed a RHS. Ciò significa che siamo nello stesso spazio, in input ed in output. Quindi troviamo sempre una soluzione al problema MODIFICATO, data la bigettività (invertibilità) della nuova trasformazione (la trasformazione PSEUDO) $\iff M^\top Qy = (M^\top QM)x \iff M^\top Qy\in\range{M^\top QM}\ \forall y$. Per problema MODIFICATO intendiamo l'impostazione del problema che accetta anche un'approssimante come soluzione.
+
+\item{\textbf{Rango non Pieno}}
+
+Prendendo in esame ad esempio il metodo (D)WLS..
+
+\begin{itemize}
+
+\item{\textbf{Pseudoinversa (smorzata) destra}}
+
+Qui si potrebbe interpretare la funzione di costo che si utilizza nel DAMPED come quella del caso rango pieno, ma con la sostituzione del vincolo dalla forma DURA, con moltiplicatore di Lagrange vettoriale, alla forma soffice, nella quale compare come secondo addendo la norma dell'errore, premoltiplicata per un fattore $\beta$ di amplificazione isotropica. Infatti, ricordiamo che l'addendo relativo alla minimizzazione della norma di $x$, deve permanere nella formula del costo DAMPED, dal momento che abbiamo ancora più problemi di NON univocità qui, dal momento che abbiamo perso rango. Quindi abbiamo sia problemi di NON univocità, come prima nel caso rango pieno, ma sono sopraggiunti problemi di suriettività, dato che $r<n$, quindi ci è occorso in aiuto il vincolo SOFFICE per permettere di scandagliare tra le infinite soluzioni, quelle che minimizzano la norma dell'errore relativo al vincolo;
+
+\item{\textbf{Pseudoinversa (smorzata) sinistra}}
+
+Dualmente, nella funzione di costo della pseudoinversa smorzata sinistra, ritroviamo come sempre l'addendo della norma dell'errore relativo al vincolo, sempre presente perché abbiamo ancora più vettori $y\notin\range{M}$, ovvero ancora più problemi di suriettività. Inoltre, per sistemare le cose bisogna aggiungere anche un termine che minimizzi la norma di $x$, dal momento che il kernel ora è non vuoto, introducendo anche qui dei problemi di non univocità.
+
+\end{itemize}
+
+\end{itemize}
+
+In conclusione possiamo notare che vi sono delle dualità intrinseche e in un caso e nell'altro; dualità che si completano vicendevolmente nel caso DAMPED, dovendo risolvere uno dei due problemi che nel caso rango pieno non sussistevano. Possiamo quindi sintetizzare nel seguente elenco le casistiche:
+
+\begin{itemize}
+\item{$n<m$, rango pieno}: suriettività e kernel non vuoto;
+\item{$n=m$, rango pieno}: suriettività e kernel vuoto;
+\item{$n>m$, rango pieno}: non suriettività e kernel vuoto;
+\item{$n<m$, rango non pieno}: non suriettività e kernel non vuoto;
+\item{$n=m$, ''}: '';
+\item{$n>m$, ''}: '';
+\end{itemize}
+
+\subsubsection{Norma vettoriale 2 di una Matrice}
+
+\begin{thrm}{\textbf{Norma vettoriale 2 di una Matrice uguale al suo Valore Singolare MASSIMO}}
+
+Data una generica matrice $M\in\R^{n\times m}$, vale:
+
+\[
+	[\norma{M}_2 := \max_{\norma{x}_2=1}{\norma{Mx}_2}] = \sigma_1
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+Risolviamo il seguente problema di ottimizzazione vincolata, sfruttando il metodo dei moltiplicatori di Lagrange:
+
+\[
+	\max{\norma{Mx}_2^2},\ \text{subject to}: g(x):=x^\top x = 1
+\]
+
+Scriviamo l'espressione del costo $C$ ed imponiamone il gradiente uguale a 0:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&C := -x^\top M^\top Mx + (\lambda\in\R)(x^\top x-1)\\
+	&\left[
+	\begin{aligned}
+	&\nabla_x{C} = -M^\top Mx-M^\top Mx + \lambda^\top x+\lambda x = -\centernot{2}M^\top Mx + \centernot{2}\lambda x = 0 \implies (\dots)\\
+	&(\dots) = M^\top Mx=\lambda \implies (M^\top M -\lambda I_{m\times m})x = 0
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+\end{proof}
+
+Quindi è stato dimostrato che la soluzione di questo problema è da ricondursi al calcolo dell'autovalore massimo della matrice $M^\top M$, che per la dimostrazione nella prossima sottosezione sarà essere uguale a $\sigma_1^2$, ovvero al valore singolare (al quadrato) più grande della matrice $M$ originaria.
+
+\subsection{Considerazioni sull'Identificabilità}
+
+\begin{snpt}{\textbf{Schema mnemonico per la dualità Ripidezza Hessiano - Covarianza Stima}}
+
+\begin{itemize}
+
+\item{$\norma{H^\top\inv{R}H}_2\uparrow \implies \norma{\inv{(H^\top\inv{R}H)}}_2\downarrow \iff$} funzionale di costo ripido, minimo significativo, covarianza della stima scende;
+\item{$\norma{H^\top\inv{R}H}_2\downarrow \implies \norma{\inv{(H^\top\inv{R}H)}}_2\uparrow \iff$} funzionale di costo poco ripido, minimo poco significativo, covarianza della stima aumenta;
+\item{\textbf{CASO ESTREMO}}: $H=0\implies (P=\infty\iff\norma{P}_2=+\infty)$, ovvero caso di regressore nullo e minimo assolutamente privo di significato; ciò implica una covarianza infinita, quindi una incertezza arbitrariamente grande.
+
+\end{itemize}
+
+\end{snpt}
+
+\begin{prop}{\textbf{Identificabilità}}
+
+\[
+	R > 0 \implies \det{H\inv{R}H}\neq 0\iff \det{H^\top H}\neq 0
+\]
+
+\end{prop}
+
+\subsection{Calcoli di Media e Varianza della Stima MAP (DA VERIFICARE)}
+
+\begin{prop}
+
+\[
+	\E[\hat{\theta}_{MAP}]=\theta^\star
+\]
+
+\end{prop}
+
+\begin{proof}
+
+\[
+	\hat{\theta}_{MAP} = \theta^\star + K(y-H\theta^\star) \implies \E[\hat{\theta}_{MAP}] = (\E[\theta^\star]=\theta^\star) + (\dots)
+\]
+\[
+	(\dots) = K(\E[y:=H\theta+\epsilon] - (\E[H\theta^\star]=H\theta^\star)) \implies
+\]
+\[
+	\implies \E[\hat{\theta}_{MAP}] = \theta^\star + K((\E[H\theta]=H\E[\theta]=\theta^\star) + \centernot{(\E[\epsilon]=0)} - H\theta^\star) = \theta^\star
+\]
+
+\end{proof}
+
+Utilizziamo ora il risultato precedente nel calcolo della Covarianza della Stima $\hat{\theta}_{MAP}$:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\E[\theta]=\underline{\E[\hat{\theta}_{MAP}]}=\theta^\star]\\
+	&\left[
+	\begin{aligned}
+	&\E[(\hat{\theta}_{MAP}-(\E[\hat{\theta}_{MAP}] = \theta^\star))(\hat{\theta}_{MAP} - \theta^\star)^\top] = (\dots)\\
+	&(\dots) = \E[(\centernot{\theta^\star} + K(y-H\theta^\star)-\centernot{\theta^\star})(\centernot{\theta^\star}+K(y-H\theta^\star)-\centernot{\theta^\star})^\top] = (\dots)\\
+	&(\dots) = \E[(K(y-H\theta^\star))(K(y-H\theta^\star))^\top] = (\dots)\\
+	&(\dots) = \E[(K(H\theta+\epsilon-H\theta^\star))(K(H\theta+\epsilon-H\theta^\star))^\top] = (\dots)\\
+	&(\dots) = \E[(K(H\theta+\epsilon-H\theta^\star))((H\theta+\epsilon-H\theta^\star)^\top K^\top] = (\dots)\\
+	&(\dots) = KH\E[(\theta-\theta^\star)(\theta-\theta^\star)^\top]H^\top K^\top + K(R:=\E[\epsilon\epsilon^\top])K^\top = KHP(KH)^\top + KRK^\top
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+	
+
+\subsection{Prodotto Matrice Vettore e Matrice Matrice}
+
+Sappiamo che un prodotto matrice vettore si ottiene come combinazione lineare delle colonne della matrice pesate con coefficienti pari alle componenti del vettore:
+
+\begin{defn}{\textbf{Prodotto Matrice Vettore}}
+
+\[
+	Ax := \sum_{i=1}^n{A(:,i)x_i}
+\]
+
+\end{defn}
+
+ove si è utilizzata la notazione MATLAB per indicare il vettore colonna $i$-esima della matrice $A$.
+Per quanto concerne un prodotto matrice matrice, ovvero il righe per colonne, possiamo dire che ogni colonna $i$-esima della matrice risultato è pari al prodotto matrice vettore tra la prima matrice e la colonna $i$-esima della seconda matrice. Rispettivamente:
+
+\begin{thrm}{\textbf{Interpretazione prodotto Matrice Matrice}}
+
+\[
+	C(:,i) := AB(:,i)
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+In realtà non è una dimostrazione bensì una semplice prova numerica:
+
+\[
+	\begin{bmatrix}2&6&7\\5&4&1\\3&3&3\end{bmatrix}\begin{bmatrix}5&7&2\\6&3&9\\2&4&6\end{bmatrix} = \begin{bmatrix}\begin{bmatrix}60\\51\\39\end{bmatrix}\begin{bmatrix}\mathord{\cdot}\\\mathord{\cdot}\\\mathord{\cdot}\end{bmatrix}\begin{bmatrix}\mathord{\cdot}\\\mathord{\cdot}\\\mathord{\cdot}\end{bmatrix}\end{bmatrix}
+\]
+
+\[
+	C(:,1) = \begin{bmatrix}2\\5\\3\end{bmatrix}5+\begin{bmatrix}6\\4\\3\end{bmatrix}6 + \begin{bmatrix}7\\1\\3\end{bmatrix}2 = \begin{bmatrix}10\\25\\15\end{bmatrix} + \begin{bmatrix}36\\24\\18\end{bmatrix} + \begin{bmatrix}14\\2\\6\end{bmatrix} = \begin{bmatrix}60\\51\\39\end{bmatrix}
+\]
+
+\end{proof}
+
+\subsubsection{Applicazione al calcolo della SVD}
+
+L'SVD ci dice che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&M=U\Sigma V^\top\\
+	&\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&MM^\top = U\Sigma\centernot{V^\top V}\Sigma^\top U^\top = U\Sigma\Sigma^\top U^\top\\
+	&MM^\top U = U\Sigma\Sigma^\top\\
+	&U^\top MM^\top = \Sigma\Sigma^\top U^\top
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&M^\top M = V\Sigma^\top \centernot{U^\top U}\Sigma V^\top = V\Sigma^\top\Sigma V^\top\\
+	&M^\top MV = V\Sigma^\top\Sigma\\
+	&V^\top M^\top M = \Sigma^\top\Sigma V^\top
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+dal momento che le matrici $\{\Sigma\Sigma^\top\in\R^{n\times n},\ \Sigma^\top\Sigma\in\R^{m\times m}\}$, contenenti sulla loro diagonale principale i valori singolari al quadrato, sono simmetriche definite positive, allora i loro autovettori destri coincideranno con i loro autovettori sinistri.
+
+Esaminiamo le due equazioni in virtù della proprietà esplicata ad inizio della sezione:
+
+\[
+	\left\{
+	\begin{aligned}
+	&MM^\top U = U\Sigma\Sigma^\top \implies MM^\top u_i = u_i\sigma_i^2\ \forall i\in[1,r]\\
+	&M^\top M V = V\Sigma^\top\Sigma \implies M^\top M v_i = v_i\sigma_i^2\ \forall i\in[1,r]
+	\end{aligned}
+	\right.
+\]
+
+il che prova il fatto che $u_i\ \forall i\in[1,r]$ sono gli autovettori di $MM^\top$, e $v_i$ sono gli autovettori di $M^\top M$. Gli autovalori, in ambo i casi, sono naturalmente i valori singolari della matrice originaria al quadrato. Ciò permette di comprendere come debba essere calcolata la generica SVD di una matrice, e quanto possa essere computazionalmente onerosa in casi di dimensioni molto grandi. Fortunatamente, ci sono molte tecniche algoritmiche note come reduction, tipo la \textit{householding reduction} che permettono di velocizzare l'operazione.

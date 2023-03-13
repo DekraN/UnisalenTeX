@@ -1,0 +1,1468 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Rotazioni}
+\label{cap:rot}
+%************************************************\\
+
+\section{Matrici di ROTAZIONE}
+
+L'oggetto matematico che permette di descrivere la posizione di una terna rispetto ad un'altra è la matrice di ROTAZIONE.
+
+\begin{defn}{\textbf{Matrice di ROTAZIONE}}
+
+Dati due sistemi di riferimento $\{<0>,\ <1>\}$ indicati rispettivamente dalla seguente coppia di terne di versori mutuamente perpendicolari: $\{(i_0,j_0,k_0),\ (i_1,j_1,k_1)\}$, definiamo \textit{matrice di rotazione} tra il sistema $<0>$ ed il sistema $<1>$ (l'ordine di enunciazione delle terne è importante) il seguente oggetto matematico:
+
+\[
+	^1R_0 =
+	\begin{bmatrix}^1i_0\in\R^{3\times 1}&^1j_0\in\R^{3\times 1}&^1k_0\in\R^{3\times 1}\end{bmatrix}
+\]
+
+dove, come graficamente esposto, i singoli elementi trascritti nella matrice sono dei vettori colonna. Ognuno di essi rappresenta il versore $i$-esimo, $i=1,2,3$ della terna $<0>$ espresso in terna $<1>$.
+
+\end{defn}
+
+Notiamo che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&^0i_0 =  \begin{bmatrix}1&0&0\end{bmatrix}^\top\\
+	&^0j_0 =  \begin{bmatrix}0&1&0\end{bmatrix}^\top\\
+	&^0k_0 =  \begin{bmatrix}0&0&1\end{bmatrix}^\top
+	\end{aligned}
+	\right.
+\]
+
+$i_0$ è un versore. Oggetto di grandezza unitaria (in norma), il quale esiste a prescindere dalle sue componenti! I tre numeri conservano la MEMORIA in cui li ho calcolati. La matrice descrive l'assetto. Utile perché se conosco un vettore in una terna e voglio calcolare le sue componenti in terna $<1>$, è sufficiente effettuare questa operazione:
+
+\[
+	^1p =\ ^1R_0\ ^0p
+\]
+
+\`E semplicemente un prodotto matrice vettore. Ricordiamo che tale operazione è sostanzialmente una combinazione lineare degli elementi di una matrice (colonne) pesati con coefficienti forniti dal vettore con il quale si intende essa moltiplicare:
+
+\[
+	y = Mx = x_1m_1 + x_2m_2 +\ \dots\ + x_nm_n
+\]
+
+Una tale matrice di rotazione esprime l'assetto. Come è orientata la terna $<0>$ in terna $<1>$? Se prendiamo una direzione nota in terna $<0>$, e vogliamo vedere a cosa quella direzione corrisponde in terna $<1>$, è sufficiente utilizzare: $[^1p =\ ^1R_0\ ^0p]$, che corrisponderebbe alla proiezione in terna $<1>$ del vettore $^0p$. Quindi:
+
+\[
+	^1R_0 =
+	\begin{bmatrix}{^1}i_0\in\R^{3\times 1}&^1j_0\in\R^{3\times 1}&^1k_0\in\R^{3\times 1}\end{bmatrix}
+\]
+
+Ovviamente, per via della disuguaglianza triangolare, ogni colonna deve sommare ad 1 in norma. Per essere una matrice di rotazione, i suoi elementi non saranno MAI maggiori di 1 in modulo! Tabellina di 9 numeri. Se li mettessimo random, molto probabilmente non otterremmo una matrice di rotazione! Ciascuna colonna ha esattamente NORMA 1! (Sono VERSORI!). Abbiamo tre $(1+1+1)$ vincoli relativi alla norma dei versori più tre altri vincoli $(1+1+1)$ relativi al fatto che, rispettivamente: $\{i\perp j,\ j\perp k,\ i\perp k\}$. Tabella di 9 numeri vincolata da 6 equazioni. Ne rimangono 3 altri gradi di libertà, pari quindi al numero di parametri minimi necessari a descrivere univocamente una matrice di rotazione. Rappresentazione minima: servono 3 numeri indipendenti (minimo) per (de)scrivere una matrice di rotazione. Come scegliere questi tre numeri è una storia abbastanza lunga. Alcuni ne scelgono 4 numeri al posto di 3 (QUATERNIONI). Altra caratteristica (tipicamente interconnessa alle altre): $^1p$ è una copia di $^0p$ MA in un altro sistema di riferimento. Ovviamente le componenti / orientazioni cambiano, ma la NORMA no! Dal punto di vista delle componenti, la NORMA di un vettore NON ha bisogno di loro! \`E semplicemente una funzione definita in maniera assiomatica, quindi una distribuzione in tal senso:
+
+\[
+	\norma{x}:\R^n\mapsto \R\ |\\
+	\left\{
+	\begin{aligned}
+	&\norma{x} \geq 0,\ \norma{x} = 0 \iff x=0\\
+	&\norma{x+y} \le \norma{x}+\norma{y}
+	\end{aligned}
+	\right.
+\]
+
+\`E in realtà a nostra discrezione come definirla! Se questa "turca" funzione soddisfa alle seguenti condizioni, allora è una norma! La norma euclidea è una qualsiasi norma possibile tra le tante (infinite). \`E calcolabile comodamente mediante l'utilizzo delle componenti:
+
+\begin{corl}{\textbf{Calcolo della norma di un vettore mediante componenti}}
+
+\[
+	[\norma{x}^2 = X_x^2 + X_y^2 + X_z^2]
+\]
+
+\end{corl}
+
+Ma anche le norme, ovviamente, prescindono anch'esse dalle componenti dei vettori. Infatti una definizione più pragmatica e rigorosa è la seguente, della quale il risultato precedente è infatti un corollario:
+
+\begin{defn}{\textbf{Norma di un vettore}}
+
+\[
+	[\norma{p\in\R^{3\times 1}}_2 = \sqrt{p^\top p}]
+\]
+
+\end{defn}
+
+Proviamo ad applicare la seguente definizione al vettore: $^1p$:
+
+\[
+	\norma{^1p}^2 =\ ^1p^\top\ ^1p =\ ^0p^\top\ ^1R_0^\top\ ^1R_0\ ^0p \stackrel{ISOMTRC}{=}\ ^0p^\top\ ^0p = \norma{^0p}^2
+\]
+
+Risultato che mostra che la matrice di rotazione esprime una trasformazione ISOMETRICA. Questo risultato naturalmente, wlog, vale $\forall\ ^1p$! Ciò significa che:
+
+\begin{defn}{\textbf{Unitarietà di una matrice di rotazione}}
+
+\[
+	^1R_0^\top\ ^1R_0 = I_{3\times 3}
+\]
+
+\begin{itemize}
+\item La matrice $^1R_0$ è INVERTIBILE! Ovvero ha sempre rango pieno;
+\item La sua inversa concide con la TRASPOSTA. (Definizione di matrice unitaria, la quale in campo complesso indica che l'inversa coincide con la TRASPOSTA (COMPLESSA) CONIUGATA, mentre in campo reale indica proprio la definizione appena esplicitata, e si parla di matrice ORTONORMALE).
+\end{itemize}
+
+\end{defn}
+
+Le MATRICI UNITARIE, come appena visto, sono \underline{isometriche}. Le operazioni isometriche (lineari, descritte da matrici), sono sicuramente legate a MATRICI UNITARIE. Se lo pensiamo in termini di definizione di $^1R_0$, allora il risultato è OVVIO!
+
+\[
+	^1R_0^\top\ ^1R_0 =
+	\begin{bmatrix}^1i_0^\top\ ^1i_0 = 1 & 0 & 0\\0 & ^1j_0^\top\ ^1j_0 = 1 & 0\\0 & 0 & ^1k_0^\top\ ^1k_0 = 1\end{bmatrix} = I_{3\times 3}
+\]
+
+Adoperiamo ora l'applicazione del teorema di Binet sul determinante di un prodotto: per una matrice quadrata, abbiamo che il determinante della matrice prodotto è pari al prodotto dei determinanti delle singole matrici. Inoltre sappiamo che il determinante della matrice trasposta è pari al determinante della matrice in esame. Mettendo insieme ambo le cose, otteniamo:
+
+\[
+	(\det{R})^2 = 1 \implies \det{R} = \pm 1
+\]
+
+Il determinante di $R$ è quindi: $\{+1,\ -1\}$. Tutte le matrici unitarie hanno determinante di valore assoluto pari ad 1. Riassumiamo quindi i seguenti fatti:
+
+\begin{itemize} 
+
+\item Tutte le matrici unitarie hanno sicuramente $(\det{R})^2 = 1$;
+\item Le ROTAZIONI hanno determinante della matrice di rotazione pari a $(+1)$;
+\item Le RIFLESSIONI (quando ci guardiamo allo specchio es.) hanno determinante pari a $(-1)$.
+
+\end{itemize}
+
+Non esiste difatti una rotazione che possa eseguire il mapping relativo ad un'operazione di riflessione. Anche le RIFLESSIONI però conservano la norma, sono quindi pure loro delle isometrie. Supponiamo ora di avere: $h\in\R\ |\ \norma{h}=1$ un versore (vettore di norma unitaria). Consideriamo la seguente matrice di trasformazione:
+
+\[
+	Q = I_{3\times 3} - 2hh^\top
+\]
+
+Proviamo ad applicarla ad un vettore $v$:
+
+\[
+	Qv = (I_{3\times 3} - 2hh^\top)v = v - 2hh^\top v
+\]
+
+\begin{itemize}
+
+\item Se $v=h \implies Q(v=h) = -h$ (il vettore $h$ semplicemente cambia segno);
+\item Se $(v\perp h \iff v^\top h=h^\top v=0) \implies Qv = v$;
+
+\end{itemize}
+
+Supponiamo di avere un vettore $h = \begin{bmatrix}1&2&7\end{bmatrix}^\top$. Abbiamo che:
+
+\[
+	hh^\top = \begin{bmatrix}1&2&7\end{bmatrix}^\top \begin{bmatrix}1&2&7\end{bmatrix} = \begin{bmatrix}1&2&7\\2&4&14\\7&14&49\end{bmatrix}
+\]
+
+Notiamo che tale matrice è simmetrica, ma ovviamente si poteva già vedere dal fatto che: $(2hh^\top)^\top = 2hh^\top$. Calcoliamo ora:
+
+\[
+	Q^\top Q = (I-2hh^\top)^\top (I-2hh^\top) = I - 2hh^\top - 2hh^\top + 4h(h^\top h = 1)h^\top = I_{3\times 3}
+\]
+
+$Q$ è una matrice simmetrica $\impliedby Q^\top = Q$. $Q$ è un'ISOMETRIA. Questa matrice $(Q\in\R^{3\times 3})$ conserva la norma, la lunghezza. $h$ è arbitrario. Basta che sia un versore, a norma 1. NON tutte le ISOMETRIE sono delle rotazioni! Prende un vettore e cambia soltanto il segno delle componenti lungo l'asse ortogonale al piano! Questa è proprio una riflessione!
+
+La trasformata risultante è: trasforma una terna destrorsa in una sinistrorsa. $\nexists$ modo di ruotare una terna per far diventare una terna destrorsa in una sinistrorsa. $(\det{Q}=-1)$. Non tutte le matrici ISOMETRICHE sono delle rotazioni. Esistono operazioni isometriche che non sono delle rotazioni, come appena visto.
+
+$A^\top A = I \implies A$ ISOMETRIA. Tutte le matrici ISOMETRICHE in $\R^n$ hanno determinante della matrice associata $+1$ o $-1$. Le ROTAZIONI sono delle isometrie particolari a determinante $(+1)$.
+
+\begin{defn}{\textbf{Gruppo delle MATRICI ORTONORMALI}}
+
+\[
+	\underline{\Theta(n)} = \{M\in\R^{n\times n}\ |\ MM^\top = M^\top M = I_{n\times n}\}
+\]
+
+\end{defn}
+
+Prendiamo un paniere delle tali matrici appena definite. Il termine sottolineato è l'insieme delle matrici ortonormali in $\R^n$. Tale oggetto è un gruppo. Gode delle proprietà di gruppo:
+
+\begin{itemize}
+
+\item $\exists$ elemento unitario;
+\item Il gruppo è chiuso rispetto al prodotto;
+\item associatività (possiamo "spostare" le parentesi).
+
+\end{itemize}
+
+Con i gruppi si può astrarre, ed ottenere delle proprietà particolari per degli oggetti che siano gruppi. $\Theta(n)$ è il gruppo delle trasformazioni isometriche. Un generico elemento che vi appartiene ha determinante $\{+1,\ -1\}$. Lì dentro ci sono pure le rotazioni.
+
+\begin{defn}{\textbf{Gruppo delle rotazioni $\SO(n)$}}
+
+\[
+	\SO(n) = \{M\in\R^{n\times n}\ |\ M^\top M = MM^\top = I_{n\times n},\ \underline{\det{M}} = +1\}
+\]
+
+\end{defn}
+
+Sicuramente tali matrici sono delle matrici di ROTAZIONE. Matrici speciali ortonormali di ROTAZIONE in $\R^n$. \underline{MATRICI ISOMETRICHE} a determinante $(+1)$; (conservano le lunghezze). $\SO(n)$ è ANCORA UN GRUPPO! Fondamentale. Due matrici di rotazione diverse, se moltiplicate, restituiscono in output una matrice ancora appartenente al gruppo. Eredita quindi l'elemento identico di $\Theta(n)\ (I_{n\times n}\in\R^{n\times n})$. Esiste l'INVERSA, e coincide con la TRASPOSTA, dato che le matrici in gioco sono unitarie. 
+
+Ricordiamo ora le proprietà delle trasformazione di riflessione:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&Qh = -h\\
+	&Qv = v \impliedby (v\perp h)
+	\end{aligned}
+	\right.
+\]
+
+Ricordiamo che: $^1p =\ ^1R_0\ ^0p$. Definiamo ora l'operazione di PROIEZIONE:
+
+\begin{defn}{\textbf{\underline{OPERATORE PROIETTORE}}}
+
+with: $h\in\R^{n\times n},\ \norma{h}=1$:
+
+\[	
+	M = I_{n\times n} - hh^\top
+\]
+
+\end{defn}
+
+Con la seguente matrice prendiamo un versore in $\R^n$ (vettore di norma 1) e ne tagliamo tutte le componenti lungo $h$. Abbiamo:
+
+\begin{itemize}
+
+\item $Mh = 0$;
+\item $M(v\perp h) = v$;
+
+\end{itemize}
+
+In un problema di CINEMATICA è scomodo portarsi dietro una matrice di 9 numeri. Solo 3 numeri SONO indipendenti! \`E più comodo manipolare non tutti gli elementi della matrice, ma solo i parametri MINIMI! La Scelta è però NON univoca. $\exists\infty$ modi per individuare tre parametri per descrivere una data matrice di rotazione. Bisogna introdurre una rappresentazione, la RAPPRESENTAZIONE ESPONENZIALE delle matrici di ROTAZIONE. Solo in $\R^3$ (In $SO(3)$ i suoi elementi possono essere rappresentati in tal modo).
+
+\subsection{Matrici simmetriche / antisimmetriche} 
+
+\begin{thrm}{\textbf{Decomposizione simmetrica/antisimmetrica di una matrice}}
+
+\[
+	[(M\in\R^{3\times 3}) = \frac{M+M^\top}{2} + \frac{M-M^\top}{2}]
+\]
+
+\end{thrm} 
+
+\`E un risultato interessante perché il primo termine è SIMMETRICO (matrice uguale alla sua trasposta $\iff A=A^\top$), mentre è ANTISIMMETRICO il secondo (matrice uguale a MENO la sua trasposta $\iff A=-A^\top$).
+
+Le matrici ANTISIMMETRICHE hanno una proprietà molto particolare. Mappano i vettori in tal modo:
+
+\[
+	x^\top (Ax) \stackrel{REAL}{=} (x^\top Ax)^\top \stackrel{TRANSP}{=} x^\top A^\top x \stackrel{SKEWSYMM}{=} -x^\top(Ax) = 0
+\]
+
+ove come annotato sopra l'uguale, esso vale dal momento che $(x^\top Ax)\in\R\ \forall A\in\R^{n\times n}$. Le matrici ANTISIMMETRICHE mappano il vettore ($A$ potrebbe pure non essere isometrica ovviamente) ortogonalmente ad esso. Le matrici ANTISIMMETRICHE in $\R^{n\times n}$ godono di questa particolare proprietà.
+
+\subsection{Skew-symmetry}
+
+Teniamo a mente la seguente:
+
+\[	
+	M\in\R^{n\times n}\ |\ M = \frac{M+M^\top}{2} + \frac{M-M^\top}{2}
+\]
+
+Posti $a,b\in\R,\ c=a\times b \leftarrow$ (operazione lineare). 
+
+\[
+	c\mapsto \begin{vmatrix}i&j&k\\a_1&a_2&a_3\\b_1&b_2&b_3\end{vmatrix} = \underline{i}(a_2b_3 - a_3b_2) - \underline{j}(a_1b_3 - a_3b_1) + \underline{k}(a_1b_2 - a_2b_1)
+\]
+
+Gli elementi di quella matrice sono associati a componenti del vettore. Abbiamo:
+
+\[
+	S(\underline{a}\in\R^{3\times 1})\in\R^{3\times 3}
+\]
+
+Matrice $\R^{3\times 3} \ni S(\underline{a})$ che rappresenta l'operazione di prodotto vettore (se opportunamente moltiplicato per un altro vettore, opportuno). Matrice ANTISIMMETRICA. $\underline{a}$ si chiama anche VETTORE ASSIALE della matrice ANTISIMMETRICA. Qualsiasi matrice antisimmetrica ha associato un UNICO vettore assiale. Il modo banale di vederlo è che, prendendo una qualsiasi matrice random, estraendone la parte antisimmetrica $(\frac{M-M^\top}{2})$, ha sempre 0 sulla diagonale principale. Scegliendo a caso $\{a_1,\ a_2,\ a_3\}$, allora abbiamo quindi la corrispondenza: VETTORE ASSIALE $\leftrightarrow$ MATRICE ANTISIMMETRICA. Quei 3 numeri li interpretiamo come componenti del vettore assiale associato. Dimostrazione sulle dispense più efficiente (non passa per le componenti). In realtà un OPERATORE LINEARE prescinde anch'esso dalle componenti! Ha delle particolari proprietà. La dimostrazione si può fare senza fare uso delle componenti! Il prodotto vettore in $\R^3$ definisce un unico vettore assiale di una matrice antisimmetrica (e viceversa). Il risultato di $Ax$ è esprimibile mediante prodotto vettore, e viceversa:
+
+\begin{thrm}{\textbf{Skew-symmetry Matrix and Axial Vector Mapping}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&Ax = a\times x\\
+	&a,x\in\R^{3\times 1}\\
+	&(A=-A^\top)\in\R^{3\times 3}
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+Dimostrazione costruttiva, senza componenti. Obiettivo: Dimostrare che $A$ è ANTISIMMETRICA: $\exists! \underline{a}\ |\ Ax=\underline{a}\times \underline{x}$. Utilizzando le componenti è abbastanza banale, già dimostrato.
+
+\begin{proof}
+
+\[
+	\underline{a} = \frac{1}{2}\sum_{i=1}^3{e_i\times Ae_i} = (\dots)
+\]
+
+Bisogna applicare le proprietà del prodotto vettore, e ad un certo punto ovviamente la proprietà di antisimmetria per $A$. Chiamiamo con $e_i$ il generico versore $i$-esimo dello spazio $\R^3$ (individuiamo una base ortonormale arbitraria di $\R^3$). Segue:
+
+\[
+	\underline{a}\times\underline{x} = \underline{\frac{1}{2}[\sum_{i=1}^3{(e_i\times Ae_i)]}}\times\underline{x} = \frac{1}{2}\sum_{i=1}^3{(\underline{x}\times(Ae_i\times e_i))} = (\dots)
+\]
+
+Ove abbiamo cambiato l'ordine del prodotto vettore due volte onde evitare il segno. Si rammenti la regola del TRIPLO PRODOTTO:
+
+\[
+	a\times(b\times c) = b(a^\top c) - c(a^\top b)
+\]
+
+Sempre vera. L'ordine nel prodotto vettore conta! Si effettui prima $(b\times c)$, e lo si moltiplichi secondo prodotto vettore per $\underline{a}$. Quindi, tornando a noi:
+
+\[
+	(\dots) = \frac{1}{2}\sum_i{[\underline{(Ae_i)(x^\top e_i)} - e_i(x^\top Ae_i)]} = (\dots)
+\]
+
+Ove il termine sottolineato sommato ad $i$ restituisce proprio $Ax$, per definizione. Ora applichiamo l'antisimmetria.. se anziché $x^\top Ae_i$ ne mettessimo la versione invertita, allora esso cambierebbe segno. Fino ad ora abbiamo fatto semplicemente del calcolo generico.
+
+\[
+	(\dots) \stackrel{SKEWSYMM}{=} [\frac{1}{2}(Ax + \underline{\sum_i{e_i((Ax)^\top e_i)}}] = \frac{Ax}{2}+\frac{Ax}{2} = Ax
+\]
+
+\end{proof}
+
+Ove il termine sottolineato è sempre $Ax$. Ciò chiude la dimostrazione. Questo vettore assiale $\underline{a}$ è UNICO! Dimostrazione semplice per esercizio. Non è molto standard, ma l'operazione che mappa una matrice antisimmetrica nel suo vettore assiale è la seguente, definita mediante il seguente mapping:
+
+\[
+	\Vex(A) = \underline{a}\in\R^{3\times 1}
+\]
+
+Abbastanza pesante come notazione, ma non infrequente in letteratura. Pseudo-vettore in realtà. Nell'ambito delle rotazioni il vettore assiale lo incontreremo abbastanza di frequente. $\underline{a}=\begin{bmatrix}a_1&a_2&a_3\end{bmatrix}^\top$. La matrice $A$, è quindi:
+
+\[
+	A := S(\Vex(A)) = S(\underline{a}) =
+	\begin{bmatrix}0&-a_3&a_2\\a_3&0&-a_1\\-a_2&a_1&0\end{bmatrix}
+\]
+
+Se una tale matrice $A$ fosse ad esempio: $A:=\begin{bmatrix}0&3&2\\-3&0&-1\\-2&+1&0\end{bmatrix}$, allora il suo vettore assiale sarebbe: $Vex(A):=\underline{a}=\begin{bmatrix}1&2&-3\end{bmatrix}^\top$. Sul segno vi è in realtà un po' di ambiguità, ma non relativamente al vettore assiale in sé per sé.
+
+La regola del triplo prodotto è stata molto utile, e sarà tale ancora durante il prosieguo del corso:
+
+\begin{thrm}{\textbf{Regola del TRIPLO PRODOTTO}}
+
+\[
+	\underline{a}\times(\underline{b}\times\underline{c}) = \underline{b}(a^\top c) - \underline{c}(a^\top b) = (\dots)
+\]
+
+\end{thrm}
+
+Questo fatto mette in evidenza che questa operazione tra vettori, ne freeza due e tratta il terzo come parametro (costante); l'operazione è quindi lineare. Banale dimostrarlo:
+
+\[
+	[(\dots) = (I_{3\times 3}(a^\top c) -\underline{c}\underline{a}^\top \in\R^{3\times 3})\underline{b}]\in\R^{3\times 1} = (\dots)\\
+\]
+
+Rispetto $\underline{b}$ lo posso scrivere come matice per $\underline{b}$. Se fossero $\underline{a}$, o $\underline{c}$ liberi, avremmo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&(\dots);\\
+	&(\dots) = (\underline{b}\underline{c}^\top -\underline{c}\underline{b}^\top)\underline{a};\\
+	&(\dots) = [\underline{b}\underline{a}^\top -I_{3\times 3}(\underline{a}^\top\underline{b})]\underline{c};
+	\end{aligned}
+	\right.
+\]
+
+Operatore lineare su uno dei tre argomenti. Su qualche passaggio cinematico tornerà utile. Regola del triplo prodotto banalmente dimostrabile per calcolo diretto. Mostriamo un po' di \emph{sugar calculus}:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\{\Vex(A),\ \underline{S^\top(\underline{a}) = -S(\underline{a})}\}\\
+	&[\Vex(A)=\underline{a} \implies \Vex[S(\underline{a})] = \underline{a}]
+	\end{aligned}
+	\right.
+\]
+
+\subsubsection{Proprietà di una Matrice Antisimmetrica}
+
+\`E utile sapere che la potenze di una matrice antisimmetrica hanno una particolare ricorsione. Calcolabile di nuovo per calcolo diretto:
+
+\[	
+	\{S(\underline{a})S(\underline{a}) := S^2(\underline{a}),\ S(\underline{a})S(\underline{a})S(\underline{a}) := S(\underline{a})^3,\ \dots\}
+\]
+
+Ad occhio vengono fornite le seguenti formule. Dato: $\underline{h}\in\R^{3\times 1}\ |\ \norma{h}=1$ VERSORE, abbiamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&S(\underline{h}) = \underline{h}\times\mathord{\cdot}\\
+	&S^2(\underline{h}) = hh^\top - I_{3\times 3}\\
+	&S^3(\underline{h}) = -S(\underline{h})\\
+	&S^4(\underline{h}) = -S^2(\underline{h})
+	\end{aligned}
+	\right.
+\]
+
+Possiamo generalizzare:
+
+\begin{thrm}{\textbf{Potenze di una MATRICE ANTISIMMETRICA}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&S^{2i+1}(\underline{h}) = (-1)^iS(\underline{h})\\
+	&S^{2(i+1)}(\underline{h}) = (-1)^i(\underline{hh^\top -I_{3\times 3}})
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+Ricordiamo che $(I_{3\times 3} - hh^\top)$ è il proiettore. Quindi il termine sottolineato è il proiettore cambiato di segno. Per alcune potenze pari (precisamente le potenze pari di esponente $i$ dispari), sarà proprio il proiettore, per le altre sarà il proiettore cambiato di segno, per l'appunto.
+
+$S(\underline{h})v=h\times v,\ \Tr(S(\underline{h})=0)$. La traccia delle potenze dispari continuerà quindi ad essere 0. La traccia delle potenze pari, data la traccia particolare che $hh^\top$ esibisce ovvero $\Tr(hh^\top) = h^\top h=1$, ha la seguente espressione:
+
+\[
+	[\Tr(S^{2(i+1)}(\underline{h})) = (-1)^{i+1}2]
+\]
+
+Ulteriore proprietà: stupidaggine ma fino ad un certo punto: verrà comoda più in avanti. \`E la seguente: $\forall$ matrice antisimmetrica $\mathord{\cdot}\in\{\R^{3\times 3}\}$ è associato un UNICO VETTORE ASSIALE!
+
+Ora prendiamo $\{\exists M\in\R^{3\times 3},\ \underline{x}\in\R^{3\times 1}\}$.
+Eventualmente $M$ può anche essere a simmetria non ben definita. Calcoliamo la trasposta della matrice ottenuta a valle dell'applicazione della trasformazione di similitudine:
+
+\[
+	(M\underline{S(\underline{x})}M^\top)^\top = MS(\underline{x})^\top M^\top = -MS(\underline{x})M^\top
+\]
+
+$\implies [MS(\underline{x})M^\top]$ antisimmetrica! Essendo antisimmetrica, deve ammettere un vettore assiale: 
+
+\begin{thrm}{\textbf{Trasformazione di similitudine di una Matrice Antisimmetrica}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&MS(\underline{x})M^\top = S(\underline{y})\\
+	&y = (L\in\R^{3\times 3})x
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+$(L\in\R^{3\times 3})$ è stata già calcolata. Usiamo la notazione \emph{MATLAB}, ove $M(2,:)$ indica la seconda riga (quindi in versione trasposta rappresenterebbe un vettore colonna); ad esempio il termine citato prima corrisponde alla riga selezionata della matrice $M$ così parametrizzata:
+
+\[
+	\begin{bmatrix}m_{11}&m_{12}&m_{13}\\\underline{m_{21}}&\underline{m_{22}}&\underline{m_{23}}\\m_{31}&m_{32}&m_{33}\end{bmatrix}
+\]
+
+abbiamo:
+
+\[
+	L = \begin{bmatrix}\begin{bmatrix}M(2,:)^\top\times M(3,:)^\top\end{bmatrix}^\top\\\begin{bmatrix}M(3,:)^\top\times M(1,:)^\top\end{bmatrix}^\top\\\begin{bmatrix}M(1,:)^\top\times M(2,:)^\top\end{bmatrix}^\top\end{bmatrix}
+\]
+
+$M$ è la più generale possibile. Se prendiamo per $M$ un elemento di $\SO(3)$ (matrice di rotazione), la $L$ associata è proprio $M$! Ovvero la tale matrice di rotazione scelta. A valle dell'analisi, del tutto generale, ricaviamo un utilissimo risultato particolare. Prendiamo una generica matrice di rotazione:
+
+\begin{corl}{\textbf{Trasformazione di similitudine di una Matrice Antisimmetrica}}
+
+$R\in\SO(3),\ \forall x\in\R^{3\times 1}$:
+
+\[
+	[RS(\underline{x})R^\top = S(Rx)]
+\]
+
+\end{corl}
+
+\`E un risultato abbastanza semplice. Dal punto di vista algebrico è come abbiamo detto prima. In $\SO(3),\ L=R$. Un interpretazione geometrica è molto profonda. Una rotazione, dal punto di vista geometrico, è un'ISOMETRIA (che CONSERVA le distanze), che conserva il PRODOTTO VETTORE. Le rotazioni fanno sì che le distanze relative tra due punti fissi rimangano uguali! Trasformazione di similitudine:
+
+\[
+	\underline{RS(\underline{x})R^\top = S(R\underline{x})}
+\]
+
+$\leftarrow$ le rotazioni conservano il prodotto vettore: ruotando il risultato del prodotto vettore è la stessa cosa del ruotare singolarmente, isolatamente l'operando sinistro di esso (del prodotto vettore). \`E un risultato in realtà abbastanza potente!
+
+Possiamo adesso analizzare un legame profondo e significativo tra gli elementi di $\SO(3)$ e le \underline{matrici esponenziali}:
+
+\subsection{Matrici ESPONENZIALI}
+
+\begin{defn}{\textbf{Matrice ESPONENZIALE}}
+
+$M\in\R^{n\times n}\ \theta\in\R,\ \forall i,j$
+
+\[
+	(L = \e^{M\theta}\in\R^{n\times n}) := (\underline{\sum_{l=0}^{+\infty}{\frac{M^l\theta^l}{l!}}}) < +\infty \iff e^{M\theta}_{ij} <+\infty
+\]
+
+\end{defn}
+
+Tale matrice è nientemeno che la matrice $e^{At}$ vista in TdS. $\e$ è proprio il simbolo di Nepero in tal caso, ma stavolta rappresenta una matrice intesa come autofunzione rispetto ad operatori differenziali, come vedremo dalle prossime proprietà.
+La sommatoria tra parentesi tonde CONVERGE sicuramente! La sommatoria rappresenta infinite potenze, scalate per $\frac{1}{l!}$ e sommate. Converge ad una quantità finita, ovvero in tal caso ad una matrice con elementi tutti finiti. Come già anticipato, il motivo per cui utilizziamo questa notazione è che, non solo ricorda Taylor, ma questa matrice qui gode di parecchie proprietà, molte delle quali analoghe a quelle dell'esponenziale scalare.
+
+\subsubsection{Proprietà della Matrice Esponenziale}
+
+Dal punto di vista concettuale le seguenti proprietà sono molto profonde:
+
+\begin{itemize}
+
+\item La matrice $\e^{M\theta}$ è sempre INVERTIBILE, $\forall M$ anche NON INVERTIBILE!
+\item Al posto di $M$, mettendovi $-M$, ed eseguendo l'esponenziale matriciale otteniamo l'inversa di $(\e^{M\theta})$:
+$\inv{(\e^{M\theta})} = \e^{-M\theta}$;
+\item $(\e^{M\theta})^\top = \e^{M^\top\theta}$;
+\item $[\underline{M\e^{M\theta} = \e^{M\theta}M}]$.
+
+\end{itemize}
+
+Le matrici generiche tra di loro non commutano generalmente rispetto al prodotto matriciale. L'ultima proprietà è un risultato abbastanza stupido: si ottiene semplicemente moltiplicando per $M$ ambo i membri della definizione, e vedendo cosa si ottiene nell'RHS..
+
+La matrice non è tuttavia banale da calcolare generalmente. Una delle sue possibili difficoltà è che le potenze non hanno una struttura semplice o ben definita. Ci sono alcuni casi invece semplici e banali, ad esempio nel caso di matrici $M$ NILPOTENTI (dopo alcune potenze diventano 0) oppure IDEMPOTENTI. Se è diagonalizzabile ci sono invece altri trucchi, legati alla costruzione delle cosiddette matrici di JORDAN, LAPLACE, etc.. Se $l=17$, abbiamo 17 termini nella sommatoria matriciale.
+
+Notazioni matematiche: $\{\{h\in\R^{3\times 1},\ \norma{h}=1\},\ SCALAR\ \theta\in\R\}$. Calcolando:
+
+\[
+	[\underline{\e^{\theta S(\underline{h})} \in\R^{3\times 3}}] \in\SO(3)
+\]
+
+Vi è un legame SURGETTIVO sostanzialmente. Vale un risultato fondamentale, dimostrato da Eulero nel 1700. Possiamo ricoprire tutto $\SO(3)$. $\forall$ elemento di $\SO(3)$, ammette tanti $\theta,\ \underline{h}$ tale per cui valga l'appartenenza al gruppo prima esplicitata. La ricopertura è addirittura troppo buona! Nel senso che, vi sono diversi modi (parametri) per giungere allo stesso elemento di $\SO(3)$, come vedremo più in avanti.
+
+\subsubsection{Rappresentazione esponenziale delle Matrici di Rotazione}
+
+Tale sottosezione è di una notevole importanza pratica! Praticamente ENORME! Non solo dal punto di vista teorico. Tale formula tuttavia non ci dice ancora niente. Proprio perché la matrice esponenziale è difficile da calcolare $(\e^{\theta S(\underline{h})})$. In realtà quella formula si può semplificare (RODRIGUES). Dobbiamo dimostrare anzitutto che:
+
+\begin{thrm}{\textbf{Appartenenza ad $\SO(3)$ delle Matrici Esponenziali (Speciali)}}
+
+\[
+	[\e^{\theta S(\underline{h})}\in\SO(3)]
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+
+\begin{itemize}
+
+\item{\textit{Unitarietà della matrice}}:
+
+\[
+	(\e^{\theta S(\underline{h})})^\top(\e^{\theta S(\underline{h})}) \stackrel{EXP}{=} \e^{\theta S^\top(\underline{h})}\e^{\theta S(\underline{h})} = (\dots)
+\]
+\[
+	(\dots) = \e^{\theta (S^\top(\underline{h}) + S(\underline{h}))} = \stackrel{SKEWSYMM}{=} \e^{\theta(-S(\underline{h})+S(\underline{h}))} \stackrel{EXPINV}{=} I_{3\times 3}
+\]
+
+\item{\textit{Determinante positivo unitario}}:
+
+Abbiamo anche dimostraro che, per Binet, il determinante al quadrato è 1! $(\det(\e^{\theta S(\underline{h})}) = \pm 1)\ \forall\theta\forall h$! Come facciamo a dimostrare che è proprio $+1$ e non $-1$? Il determinante di una matrice è una funzione continua dei suoi elementi. Se sapessimo scrivere $(\e^{\theta S(\underline{h})})$ (i suoi singoli elementi), ci aspetteremmo che essa sia una funzione di 4 numeri, di 4 parametri: $(\begin{bmatrix}h_1&h_2&h_3\end{bmatrix}^\top, \theta)$. Il determinante sarà o costantemente $+1$, o costantemente $-1$. \`E una funzione continua dei suoi parametri. Se prendiamo $(\theta=0)$, abbiamo:
+
+\[
+	(\e^{0S(\underline{h})} = I_{3\times 3})
+\]
+
+il cui determinante è proprio $(+1)$! In un punto quindi il determinante lo sappiamo calcolare, e lo abbiamo calcolato in maniera esatta. $+1$ ovunque. Relativamente sottile come ragionamento, ma non difficile. Tale risultato, ricapitolando, si ottiene mettendo insieme due cose:
+
+\begin{itemize}
+
+\item Determinante in modulo unitario;
+\item Determinante funzione continua degli elementi della matrice.
+
+\end{itemize}
+
+\end{itemize}
+
+\end{proof}
+
+In questa definizione non abbiamo supposto che $h$ fosse un VERSORE. VETTORE GENERICO. Per comodità (wlog), si utilizzerà $h\ |\ \norma{h}=1$.
+
+\subsubsection{Formula di Rodrigues}
+
+Se prendiamo la formula dell'esponenziale matriciale, riscrivendola:
+
+\[
+	[\e^{\theta S(\underline{h})} \in\SO(3)]
+\]
+
+Mi ricordo della definizione di matrice esponenziale. La riscrivo computandola per esteso, trovando:
+
+\begin{defn}{\textbf{FORMULA DI RODRIGUES}}
+
+\[
+	\e^{\theta S(\underline{h})} = I_{3\times 3} + \sum_{l=1}^{+\infty}{\frac{S^l(\underline{h})}{l!}\theta^l} \stackrel{REC.SKEWPOWER}{=} (\dots)
+\]
+\[
+	(\dots) = [I_{3\times 3} + \sin(\theta) S(\underline{h}) + (1-\cos(\theta))S^2(\underline{h})]
+\]
+
+\end{defn}
+
+ove si è utilizzato nell'ultimo passaggio della definizione le formule delle potenze di $S(\underline{h})$, trovando il risultato esposto per semplice pura ispezione visiva.
+
+A questo punto la matrice di rotazione la riusciremo a scrivere! Con carta e penna, MATLAB, C, Java, etc. Ad esempio: $\{h\ VERSORE\ |\ \norma{h}=1\},\ \theta=35^{\circ}$. Disponendo quindi dei seguenti elementi: $\{h,\theta\} \leftrightarrow$ \{versore dell'asse, angolo di rotazione\}, riusciamo quindi a scrivere la matrice di rotazione. La formula di Rodrigues è stata quindi ottenuta dal riconoscimento dello sviluppo in serie di Taylor delle funzioni trigonometriche applicato alla scrittura delle varie potenze della matrice antisimmetrica. Va detto che $h$ è il versore dell'asse di rotazione. Dev'essere un autovettore di $R$ con autovalore associato $1$, dal momento che abbiamo la seguente direzione preferenziale:
+
+\[
+	(\e^{\theta S(\underline{h})}\underline{h}) = \underline{h}
+\]
+
+$h$ è quindi la direzione dell'asse di rotazione. $\theta$ dev'essere necessariamente l'angolo. Ci rimane da chiederci: se prendo un generico elemento di $\SO(3)$, $\exists h\in\R^{3\times 1}\ |\ \norma{h}=1,\ \theta\in\R$ tale per cui esista una matrice esponenziale $\e^{\theta S(\underline{h})}$ che lo rappresenti? Ruotare di $(\theta=0^{\circ})$ vuol dire avere infiniti $h$ (qualsiasi asse possibile). Per scrivere problemi di controllo, ad esempio l'orientazione di un satellite, mi calcolo dei parametri delle posizioni finali. Mi calcolo la \underline{fdt $h(t)$} (se fosse lineare), la quale avrebbe matematicamente una SINGOLARIT\`A. \`E un problema di Rappresentazione, NON problema fisico. Le Rappresentazioni esponenziali delle matrici di rotazione hanno questi problemi (NON-UNIVOCIT\`A, ovvero SINGOLARIT\`A in gioco).
+
+\subsubsection{Mapping SURGETTIVO}
+
+Abbiamo un mapping surgettivo tra la matrice exp e gli elementi in $\SO(3)$. Ricordiamo che:
+
+\[
+	\e^{S(\underline{h})\theta} = I_{3\times 3} + \sin(\theta)S(\underline{h}) + (1-\cos(\theta))S^2(\underline{h})
+\]
+
+con $\underline{h}\in\R^{3\times 1},\ \norma{h}=1,\ \theta\in\R$. La sopracitata formula di Rodrigues vale $\forall\theta\forall \underline{h}$. Il problema è notare che esistono infiniti $\theta$ e $\underline{h}$ che consentono di individuare elementi in $\SO(3)$. Notiamo che scelto $(\theta\in\R)$, si potrebbe ottenere la stessa matrice exp andando a scalare $\theta$ di un fattore $2k\pi$, giacché le funzioni trigonometriche in gioco sono periodiche di periodo $2\pi$. NB: Il legame tra l'evoluzione temporale di un matrice di rotazione ed i suoi parametri $\{\underline{h},\ \theta\}$ che la descrivono non è banale! Occorre definire il fattore integrante: il vettore velocità angolare. Occorre focalizzarsi sulla posa iniziale e quella finale, ma non si hanno gli strumenti per descrivere la traiettoria.
+
+Ogni matrice quadrata $n\times n$ è decomponibile nella somma di una parte simmetrica e di una antisimmetrica, e questo si evince anche nella formula di Rodrigues. Data una matrice arbitraria $R\in\SO(3)$, abbiamo:
+
+\[
+	[\Vex(\frac{R-R^\top}{2}) = \sin(\theta)\underline{h}]
+\]
+
+Se calcoliamo la traccia di $\e^{S(\underline{h})\theta}$, noteremo che la parte antisimmetrica non dovrebbe contribuire, dal momento che tale matrice ha tutti 0 sulla diagonale principale.
+
+\[
+	\left\{
+	\begin{aligned}
+	&S^2(\underline{h}) = hh^\top - I_{3\times 3}\\
+	&\Tr(S^2(\underline{h})) = -2
+	\end{aligned}
+	\right.
+\]
+
+Eguagliamo ora la traccia di $R$ con quella di $\e^{\theta S(\underline{h})}$:
+
+\[
+	\Tr(R) = 3 + 0 -2(1-\cos(\theta)) = 1+2\cos(\theta) \implies
+	\left\{
+	\begin{aligned}
+	&\centernot{2}cos(\theta) = \frac{tr(R)-1}{2}\\
+	&\theta h = \frac{\theta}{\sin(\theta)} \Vex(\frac{R-R^\top}{2})
+	\end{aligned}
+	\right.
+\]
+
+Ma la prima equazione del sistema non è $\theta$! Dobbiamo quindi estrarre l'arcocoseno; ma quando lo estraiamo, il modulo è ben definito, ma non il segno! Il problema è che se $\theta=0$, sostituito nella seconda equazione fornisce:
+
+\[
+	\Vex(\frac{R-R^\top}{2}) = \sin(\theta)\underline{h} = 0 \implies [R=I]
+\]
+
+Non riesco quindi ad individuare un $\underline{h}$ univoco, infatti esso può essere qualsiasi con $\theta=0^{\circ}$! ($\exists\ MUL\ \underline{h}$). L'ambiguità sta in come trattiamo i parametri che sono 4: $\{h_x,\ h_y,\ h_z,\ \theta\}$. Infatti le componenti di $h$ sono dipendenti per la condizione di NORMALIZZAZIONE $\iff \norma{h}=1$; $\underline{h}$ ha due componenti linearmente indipendenti. $\underline{h}$ è un versore, le sue componenti sono scalari, e sono peraltro DIPENDENTI TRA DI LORO! Possiamo inoltre considerare un vettore:
+
+\begin{defn}{\textbf{VETTORE ASSE-ANGOLO EQUIVALENTE}}
+
+\[
+	\nu:=\begin{bmatrix}\underline{h}^\top&\theta\end{bmatrix}^\top
+\]
+
+Tali sue quattro componenti, con $\norma{h}=1$ risultano essere equivalenti a tre variabili indipendenti. Le prime tre sono quelle di $\underline{h}$, e la quarta è $\theta$.
+
+\end{defn}
+
+Data $R\in\SO(3)$, possiamo calcolare il $\theta$, estraendo direttamente il coseno; Purché $\theta\neq k\pi$ possiamo direttamente calcolare $\theta\underline{h}$:
+
+\begin{defn}{\textbf{Rotation Vector}}
+
+\[
+	[\theta\underline{h} = \frac{\theta}{\sin(\theta)}\Vex(\frac{R-R^\top}{2})]
+\]
+
+\end{defn}
+
+where $\theta\in(-\pi,+\pi)$. Se abbiamo una rotazione di un multiplo di $\pi$, non abbiamo un solo $\theta\underline{h}$ che definisce univocamente la rotazione. La singolarità quindi non sta in 0, ma in $\pi$, dal momento che la funzione reciproca del $\sinc{\mathord{\cdot}}$ è ben definita in 0 e vale 1.
+
+
+\begin{defn}{\textbf{Rappresentazioni minime in $\SO(3)$}}
+
+Si chiamano RAPPRESENTAZIONI MINIME in $\SO(3)$ qualsiasi funzione che associa a tre valori indipendenti un elemento in $\SO(3)$. Qualunque essa sia avrà almeno una singolarità.
+
+\end{defn}
+
+In questi casi stiamo considerando delle situazioni in cui una terna di riferimento (es. spigoli del muro) descrive come un oggetto è orientato nello spazio. $\underline{h}$ è l'asse di rotazione: mi dice la direzione attorno alla quale ruoto di $\theta[^{\circ}]$ rispetto al S.R. correntemente in uso.
+
+Eulero afferma che l'assetto finale dell'oggetto poteva essere raggiunto attraverso \newline\underline{UNA SOLA ROTAZIONE}! Rotazione elementare rispetto ad un particolare asse fisso, opportunamente scalato ed orientato secondo un angolo $\theta$; eventualmente anche una traslazione se l'oggetto finale si è mosso. Questa è una caratteristica intrinseca dello spazio euclideo.
+
+Per descrivere un elemento di $\SO(3)$, possiamo utilizzare alternativamente al vettore asse-angolo equivalente altri due angoli: angoli di Eulero ed angoli di Yaw, Pitch e Roll, che sono in realtà \underline{alberi} (TREE) di angoli.
+
+\subsection{Angoli di Eulero, YPR}
+
+\subsubsection{Angoli di Yaw, Pitch e Roll}
+
+L'obiettivo è trovare tre parametri in grado di descrivere un elemento di $\SO(3)$. Possiamo immaginare di usare come parametri gli angoli di rotazione utilizzati per arrivare dalla terna di partenza a quella di arrivo: gli angoli sono linearmente indipendenti, ma devo decidere se misurare la rotazione tutta rispetto a quella \underline{di partenza} (\textit{initial axis}), oppure rispetto a quella \underline{corrente} (\textit{current axis}) (quella nuova), cioè gli assi istantanei. Inoltre le rotazioni finite non contano, ma solo quelle infinitesime. Ricordiamo che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\begin{bmatrix}X=30^{\circ}&Y=45^{\circ}&Z=0^{\circ}\end{bmatrix}^\top\\
+	&\begin{bmatrix}X=45^{\circ}&Y=30^{\circ}&Z=0^{\circ}\end{bmatrix}^\top
+	\end{aligned}
+	\right.
+\]
+
+non descrivono la stessa rotazione! Quindi essi \underline{NON COMMUTANO}! Occorre quindi decidere opportunamente in anticipo l'ordine della sequenza degli angoli $X,Y,Z$, oppure $Y,X,Z$, etc. Se facessimo tre rotazioni indipendenti attorno agli assi principali della terna corrente, parliamo di angoli di Yaw, Pitch e Roll.
+
+Parliamo di angoli di Eulero quando le rotazioni avvengono attorno a sempre a due assi correnti indipendenti. Ad esempio: $\left\{\begin{aligned}&xyx\\&xzx\\&yzy\end{aligned}\right.$. Tutte queste rotazioni atomiche attorno l'asse corrente sono indipendenti purché l'angolo di rotazione dell'asse centrale sia diverso da 0. NB: Non basta dire che YAW è un angolo di rotazione rispetto a $z$, ma a seconda di come metto insieme tutte le rotazioni atomiche possiamo ottenere differenti matrici di rotazione risultanti. Entrambe le famiglie di angoli hanno almeno una singolarità, legata alla dipendenza della rotazione intorno agli assi. Le singolarità devono essere messe tipicamente a $-90^{\circ}$ (pitch), cioè lontane dall'area di lavoro; questo può essere fatto scegliendo opportunamente la sequenza di angoli.
+
+Le rotazioni attorno gli assi $(x,y,z)$ possono finalmente essere rappresentate matematicamente.
+
+\subsection{QUATERNIONI}
+
+Sono vettori di quattro componenti che possono essere utilizzati per aggirare le singolarità di rappresentazione: è singolare il legame tra la matrice di rotazione e gli angoli YPR. Quando un oggetto precipita la sua matrice di rotazione è ben definita, ma non i suoi parametri che dovrebbero identificarla! Quindi se utilizzassi delle matrici non si porrebbe il problema. Il problema delle singolarità è sostanzialmente intrinseco in $\SO(3)$, quindi non c'è speranza di individuare tre parametri che non hanno singolarità di rappresentazione. Allora ne uso quattro! Così non abbiamo problemi. Definiamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\mu := \cos(\frac{\theta}{2})\\
+	&\underline{\epsilon} := \sin(\frac{\theta}{2})\underline{h}
+	\end{aligned}
+	\right.
+\]
+
+Posta la seguente condizione di NORMALIZZAZIONE: $\mu^2 + \norma{\epsilon}^2 = 1$.
+Il primo termine $(\mu\in\R)$ è uno scalare, ed è la parte scalare o reale dei quaternioni, mentre $\epsilon$ è la parte vettoriale od ipercomplessa dei quaternioni. Viene posta la seguente condizione di NORMALIZZAZIONE: $\mu^2 + \norma{\epsilon}^2 = 1$. La ben nota formula di Rodrigues può essere riscritta in termini di $\{\mu,\ \epsilon\}$:
+
+\begin{thrm}{\textbf{Formula di Rodrigues per i QUATERNIONI UNITARI}}
+
+\[
+	[R = I_{3\times 3} + 2\mu S(\underline{\epsilon}) + 2S^2(\underline{\epsilon})]
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+\[
+	R=I_{3\times 3} + \sin(\theta)S(\underline{h}) + (1-\cos(\theta))S^2(\underline{h}) = I_{3\times 3} + 2\sin(\frac{\theta}{2})\cos(\frac{\theta}{2})S(\underline{h}) + 2\sin^2(\frac{\theta}{2})S^2(\underline{h}) = (\dots)
+\]
+\[
+	(\dots) = I_{3\times 3} + 2\mu S(\underline{\epsilon}) + 2S^2(\underline{\epsilon})
+\]
+
+\end{proof}
+
+\underline{Non ci sono singolarità}!! In tal caso non considero il vettore $\theta\underline{h}$ (asse-angolo equivalente), ma $\epsilon$! Di conseguenza non abbiamo singolarità né in $\theta=0$ né in $\theta=k\pi$. Infatti:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\{\mu=1,\ \underline{\epsilon}=\underline{0}\},\ \theta=0\\
+	&\{\mu=0,\ \underline{\epsilon}=\underline{h}\},\ \theta=\pi
+	\end{aligned} 
+	\right.
+\]
+
+Ogni parametrizzazione minima cioè a tre componenti avrebbe di fatto ALMENO una singolarità.
+
+\subsection{CINEMATICA}
+
+Fino ad ora abbiamo parlato di \underline{rappresentazioni statiche} di terne che ruotano. Quando parliamo di rotazioni qual è l'oggetto che consente di modellare il moto nel tempo? Non sono sufficienti gli angoli di Eulero; a questo scopo viene utilizzato il vettore \underline{velocità angolare}. Sappiamo che $\forall R\in\SO(3),\ RR^\top = I_{3\times 3}$. Cio infatti segue proprio dalla membership definition degli elementi di $\SO(3)$.
+
+\[	
+	\forall R\in\SO(3),\ RR^\top = I_{3\times 3} \implies \frac{d}{dt}({^0}R_1\ ^0R_1^\top) = 0 \implies\ ^0\dot{R}_1\ ^0R_1^\top +\ ^0R_1\ ^0\dot{R}_1^\top = 0 \implies
+\]
+\[
+	\implies [{^0}\dot{R}_1\ ^0R_1^\top = -{^0}R_1\ ^0\dot{R}_1^\top = -({^0}\dot{R}_1\ ^0R_1^\top)^\top]
+\]
+
+$R$ è sempre una qualsiasi matrice in $\SO(3)$, essa cambia nel tempo $\iff R := R(t)$, in modo tale che $RR^\top=I_{3\times 3}$, ma $^0\dot{R}_1\ ^0R_1^\top$ è \underline{antisimmetrica}. Ma ogni matrice antisimmetrica $3\times 3$ ammette vettore assiale (UNICO peraltro). Quindi:
+
+\begin{defn}{\textbf{Vettore velocità angolare}}
+
+$\exists!\ ^0\omega_{1/0},\ \exists\mu\in\R^{3\times 1}\ |$
+\[
+	[({^0}\dot{R}_1\ ^0R_1^\top)\ ^0\mu =\ ^0\omega_{1/0}\times\ ^0\mu] \implies \dot{R}R^\top = S(\omega)
+\]
+
+\end{defn}
+
+La suddetta equazione è in realtà un'equazione differenziale! Il calcolo dell'assetto successivo $(R)$ necessita di avere $\omega$, infatti solo attraverso l'integrazione di $\dot{R}R^\top$ potremmo ottenere $R$: sarebbe sbagliato interpretare solo $\dot{R}$ come fattore integrante: otterremmo difatti un elemento non in $\SO(3)$.
+$\omega$ è detto \underline{fattore integrante}, e non può essere definito tramite derivate di angoli, ma solo in maniera assiomatica attraverso il $\Vex(\mathord{\cdot})$!
+
+\subsection{VETTORE VELOCIT\`A ANGOLARE}
+
+Cinematica delle Rotazioni. Definizione del vettore velocità angolare:
+
+\[
+	\left\{
+	\begin{aligned}
+	&R\in\SO(3)\\
+	&\dot{R}R^\top = S(\omega)
+	\end{aligned}
+	\right.\implies [\Vex(\dot{R}R^\top) :=\ ^0\omega_{1/0}]
+\]
+
+$\dot{R}R^\top\in\R^{3\times 3}$ è antisimmetrica. Quindi $\exists! \Vex(\dot{R}R^\top)$ tale che faccia valere le precedenti relazioni. Tale è il vettore velocità angolare. Etichetta $a/b$. Etichetta che la matrice $R$ mappa due terne $<A>$ e $<B>$ tramite mapping 1-1, biunivoco. Corrispondente del vettore con componenti in terna $<B>$ espresso in funzione del frame $<A>$ (proiettato). Ricordiamo che: $^AR_B = \begin{bmatrix}^Ai_B&^Aj_B&^Ak_B\end{bmatrix}$. Se le due terne non sono ferme tra di loro, evidentemente $(\dot{R}\neq 0) \implies$ potremmo quindi scrivere l'equazione:
+
+\[
+	^A\dot{R}_B\ ^AR_B^\top = S({^A}\omega_{B/A})
+\]
+
+Pedici $B$ pesanti ma espliciti. $B/A$ indica che quella è la velocità angolare della terna $<B>$ rispetto ad $<A>$, espressa nel frame $<A>$. Dal punto di vista della notazione, nomenclatura, l'equazione $[\dot{R}R^\top = S(\omega)]$ viene in letteratura chiamata \underline{\underline{STRAP-DOWN} EQUATION}, ove il termine doppiamente sottolineato indica letteralmente legame, legatura. \`E stata iniziata ad essere utilizzata (è stata definita sempre da Eulero) negli algoritmi di navigazione, con le complicazioni aerospaziali degli anni '60 (Assetto di un aeroplano, per controllarlo). Componenti della velocità angolare a bordo del veicolo. Come sta cambiando l'orientamento rispetto ad una terna assoluta? L'osservatore dello Stato per determinare $\omega$, viene fatto mediante Filtro Osservatore. Nome in ambito di navigazione. Da questa relazione di base, soltanto una definizione, si possono dedurre delle fondamentali proprietà della velocità angolare.
+
+\subsubsection{Proprietà del vettore Velocità Angolare}
+
+Gode della proprietà di COMPOSIZIONE (la quale vale anche per le velocità lineari):
+
+\begin{thrm}{\textbf{Proprietà di COMPOSIZIONE della Velocità Angolare}}
+
+\[
+	^A\omega_{C/A} =\ ^A\omega_{B/A} +\ ^A\omega_{C/B}
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+Sfruttiamo la proprietà di chiusura e di composizione delle matrici in $\SO(3)$: $y[{^A}R_C =\ ^AR_B\ ^BR_C]$. Prendiamo $^A\dot{R}_C\ ^AR_C^\top \stackrel{DEF}{=} S({^A}\omega_{C/A})$. Questa è la definizione di vettore velocità angolare. Sostituiamo ora la decomposizione:
+
+\[
+	[\frac{d}{dt}({^A}R_B\ ^BR_C)]\ ^BR_C^\top\ ^AR_B^\top = ({^A}\dot{R}_B\ ^BR_C +\ ^AR_B\ ^B\dot{R}_C)\ ^BR_C^\top\ ^AR_B^\top = (\dots)
+\]
+\[
+	(\dots) =\ ^A\dot{R}_B\ ^AR_B^\top +\ ^AR_B({^B}\dot{R}_C\ ^BR_C^\top)\ ^AR_B^\top = S(^A\omega_{B/A}) +\ ^AR_BS(^B\omega_{C/B})\ ^AR_B^\top = (\dots)
+\]
+\[
+	(\dots) = S(^A\omega_{B/A}) + S(\underline{^AR_B\ ^B\omega_{C/B} =\ ^A\omega_{C/B}})
+\]
+
+\end{proof}
+
+\`E un risultato assolutamente non banale. Un'uguaglianza tra matrici vale elemento per elemento. Quindi abbiamo: $\implies\ ^A\omega_{C/A} =\ ^A\omega_{B/A} +\ ^A\omega_{C/B}$. Legge della composizione delle velocità angolari. In virtù della linearità delle operazioni in gioco e del mapping one-to-one, vale quindi: $S(^A\omega_{B/A}) + S(^A\omega_{C/B}) = S(^A\omega_{C/A})$. I vettori hanno una vita propria che prescinde dalle componenti. \`E la stessa cosa, ma senza riferirsi al particolare frame utilizzato:
+
+\[
+	\omega_{C/A} = \omega_{B/A} + \omega_{C/B}
+\]
+
+Dopodiché se vogliamo scriverli, ovviamente dobbiamo utilizzare le componenti relative al frame che vogliamo utilizzare per il riferimento. Uguaglianza che vale per gli oggetti fisici in gioco! Sempre giocando con le proprietà degli elementi di $\SO(3)$ e la SDE, si può dimostrare una proprietà intuitivamente elementare, ma che matematicamente va comunque dimostrata.
+
+\begin{thrm}{\textbf{Relatività delle Velocità Angolari}}
+
+Vale:
+
+\[
+	[\omega_{A/B} = -\omega_{B/A}]
+\]
+
+\end{thrm}
+
+La formula del teorema è stata volutamente scritta senza apici superiori sx. Si può dimostrare:
+
+\begin{proof}
+
+\[
+	^B\dot{R}_A\ ^BR_A^\top = S(^B\omega_{A/B})
+\]
+
+Trasponiamo la soprastante equazione, membro a membro:
+
+\[
+	^BR_A\ ^B\dot{R}_A^\top = S(-\ ^B\omega_{A/B}) = (\dots)
+\]
+
+$\impliedby$ Questo vale per definizione di matrice antisimmetrica. L'operazione di derivazione e di trasposizione commutano: (derivata $\leftrightarrow$ trasposizione): per ogni elemento di $\SO(3) \iff\forall\ R\in\SO(3),\ \underline{{^A}R_B^\top = \inv{(^AR_B)} =\ ^BR_A} \implies$
+
+\[
+	(\dots) =\ ^BR_A\underline{{^A}\dot{R}_B\ ^AR_B^\top}\ ^AR_B =\ ^BR_AS(^A\omega_{B/A})\ ^AR_B = (\dots)
+\]
+\[
+	(\dots) =\ ^BR_AS(^A\omega_{B/A})\ ^BR_A^\top \stackrel{NOBV}{=} S(^BR_A\ ^A\omega_{B/A}) = S(^B\omega_{B/A})
+\]
+
+Abbiamo dimostrato che:
+
+\[
+	S(-\ ^B\omega_{A/B}) = S(^B\omega_{B/A})  \iff -\ ^B\omega_{A/B} =\ ^B\omega_{B/A} \stackrel{GEN}{\implies} \omega_{A/B} = -\omega_{B/A}
+\]
+
+\end{proof}
+
+Il precedente risultato vale quindi $\forall\ FRAME\ <\mathord{\cdot}>$! La composizione delle velocità angolari è veramente molto utile!! 
+
+\subsection{RECAP}
+
+\{Giunti Rotazionali, Giunti Prismatici (di collegamento)\}. Su un link rotazionale, il giunto ruota solo in una direzione! Noi calcoleremo la velocità angolare nella terna locale, dopodiché dato che la velocità angolare complessiva è la stessa, effettuiamo una misura locale su terna fissa + matrici di rotazione che legano un link ad un altro. Metodi numerici ormai consolidati e standard. Si proiettano tutte le quantità sulla stessa terna, e poi ivi si effettua la somma. Fondamentale per il Controllo. Task di controllo, orientazione rispetto a terna base. Proprio la variabile che vorremmo controllare! Fondamentale per i modelli matematici che verranno alla fine utilizzati per il controllo. Controllo e Stima dello Stato sono fondamentalmente MODEL-BASED! Necessitano di poggiare su dei modelli! Lineare $\rightarrow$ filtro alla Louenberger. SISO: Metodi FdA $\{h(t),\ H(s),\ H(j\omega)\}$. Se MIMO: Metodi TDS, ACT, etc.
+
+\subsection{Legame tra Velocità Angolare e Parametri delle Rappresentazioni}
+
+Scriviamo i modelli delle cosiddette CATENE CINEMATICHE: $n$ riferimenti che vogliamo comporre, sapendo le loro interrelazioni. Dobbiamo però preliminarmente capire il legame tra $\omega$ ed i parametri normali, standard per scrivere $R$. Dal punto di vista numerico, NON conosciamo $R$, né tantomeno $\dot{R}$! Ma possiamo utilizzare le parametrizzazioni viste sinora: $\{\theta,\ \underline{h},\ (\dots)\}$, Eulero, RPY, YPR ed altri ancora. Se sono presenti tali quantità: $\dot{\theta},\ \dot{\underline{h}} \iff (\dot{R}\neq 0)$. Legame tra $\{\dot{\theta},\ \dot{\underline{h}},\ \dot{R}\}$. La stessa domanda la possiamo porre $\forall$ parametrizzazione, ad esempio una volta fissati i valori dei parametri quaternionici. $R$ è data. Ma cambia nel tempo! Istante per istante. Quindi sicuramente $\exists\omega$! Mi aspetto ovviamente che anche tali vettori cambino nel tempo. Componenti quaternionici! Legame tutt'altro che banale. Storia notevole dal punto di vista matematico. Se la parametrizzazione minima è SINGOLARE inoltre, allora ragionevolmente sarà singolare anche il legame tra $\omega$ ed i parametri utilizzati per rappresentare $R$. Problemi con il controllo. Se i parametri matematicamente sono singolari, ed il legame ha delle singolarità ($\nexists\omega,\ \theta=0^{\circ}$), ad esempio. Non abbiamo però un problema fisico! Nelle nostre formule matematiche se avessimo $\theta=0$, avremmo una divisione per 0 magari! $\underline{h}$ NON sarebbe quindi definito. Legame singolare. Utilizziamo i parametri. In un problema di Controllo si cerca di lavorare LONTANO dall'origine. Se anche fossimo sicuri di passare da lì, allora dovremmo utilizzare un SWITCH di sistemi di riferimento. Utilizziamo per i nostri scopi il Rotation Vector, che NON ha singolarità in 0. Utile nel controllo per definire l'errore, espresso quindi come $\theta\underline{h}\ |\ [R=\e^{\theta S(\underline{h})}]$. Utilizzabile sempre nelle Applicazioni di Controllo, non di STIMA!
+
+Per capire il legame, esiste un metodo brute-force. $R$ scritta come angoli Yaw, Pitch, Roll. Formula pesante (seni e coseni). Derivata rispetto al tempo: $\dot{R}$. Se si moltiplicasse per $R^\top$, quello che otterremmo è una matrice antisimmetrica, con tutti 0 sulla diagonale principale. Precisiamo che NON si applica mai perché vi sono metodi più veloci e fruibili. Ma si potrebbe fare in linea di massima $\forall$ parametrizzazione. Questi metodi invece li usiamo per calcolare il legame tra $\omega$ e $\{\dot{\theta},\ \dot{\underline{h}}\}$. Data $R=\e^{\theta S(\underline{h})}$, ne si faccia la derivata temporale e la si moltiplichi per $[R^\top = \e^{-\theta S(\underline{h})}]$. Formula di cui si può riconoscere una certa struttura. Nelle sue derivate (formula di Rodrigues) compaiono delle quantità analoghe (potenze di $S(\underline{h})$ e sue derivate). Addendi di una semplice somma, di tre termini. JORGE ANGELES insegna Robotica. Ha scritto un libro di Robotica, più orientato sulla parte meccanica.
+
+\subsubsection{Legame tra Velocità Angolare e Parametri Asse-Angolo}
+
+Il suddetto Jorge Angeles ha anche ricavato l'equazione che lega il vettore velocità angolare ed i parametri delle matrici di rotazione:
+
+\begin{thrm}{\textbf{Formula di ANGELES del legame tra Velocità Angolare e Parametri Asse-Angolo}}
+
+\[
+	[\omega = \dot{\theta}\underline{h} + (\sin(\theta))\underline{\dot{h}} + (1-\cos(\theta))(\underline{h}\times \underline{\dot{h}})]
+\]
+
+\end{thrm}
+
+ove $\{\underline{h},\ \underline{\dot{h}},\ \underline{h}\times \underline{\dot{h}}\}$ formano una BASE ORTONORMALE. Come si dimostra la tal formula? Per calcolo diretto, è ovviamente possibile:
+
+\begin{proof}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{R} = \dot{\theta}\cos(\theta)S(\underline{h}) + (\sin(\theta))\dot{S}(\underline{h}) + \dot{\theta}\sin(\theta)S^2(\underline{h}) + (1-\cos(\theta))\dot{S}^2(\underline{h})\\
+	&R^\top = I_{3\times 3} - (\sin(\theta))S(\underline{h}) + (1-\cos(\theta))S^2(\underline{h})\\
+	&\dot{R}R^\top = (\dots) = S(\underline{\omega}) \leftarrow
+	\end{aligned}
+	\right.
+\]
+
+$\leftarrow$ Si utilizzano quindi le proprietà ricorsive delle potenze di $S(\underline{h})$, ove $S(\omega)$ deriva dall'utilizzo della definizione del vettore velocità angolare. Si ricordi anche che: $[\sin^2(\theta) = 1-\cos^2(\theta)]$.
+
+\end{proof}
+
+Cosa ha di significativo la formula di Angeles? \`E la somma di tre addendi, ortogonali tra di loro per via delle proprietà del prodotto vettore. $\{\underline{h},\ \underline{\dot{h}},\ \underline{h}\times \underline{\dot{h}}\}$ come già detto in precedenza formano una base ortonormale di $R$. Istante per istante, con le seguenti componenti rispettivamente: $\{\dot{\theta},\ \sin(\theta),\ (1-\cos(\theta))\}$. Si ricordi che:
+
+\begin{prop}{\textbf{Ortogonalità tra un vettore (di modulo costante) e la sua derivata}}
+
+\[
+	h\perp\dot{h}
+\]
+
+\end{prop}
+
+\begin{proof}
+
+\[
+	h^\top h=1 \implies \dot{h}^\top h + h^\top\dot{h} = 0 \implies
+\]
+\[
+	\implies \dot{h}^\top h = -h^\top\dot{h} = -\dot{h}^\top h \implies \dot{h}^\top h = 0 \implies \dot{h}\perp h
+\]
+
+\end{proof}
+
+Notiamo che:
+
+\[
+	[\omega=\dot{\theta}\underline{h}] \impliedby (\dot{h}=0)
+\]
+
+Ovvero ciò accade se siamo in una situazione di moto piano. Il legame generale vuole invece che, a sua volta, il versore $\underline{h}$ NON sia costante:
+
+\[
+	[\omega = \dot{\theta}\underline{h} + (\sin(\theta))\underline{\dot{h}} + (1-\cos(\theta))(\underline{h}\times \underline{\dot{h}})]
+\]
+
+Rotazioni caotiche di un oggetto in 3D. Il versore ovviamente NON è il medesimo tra due istanti successivi! Se rappresentassimo le matrici di rotazione mediante Angle-Axis Vector, avremmo: $\{\nu=\begin{bmatrix}h^\top&\theta\end{bmatrix}^\top,\ \omega=\tilde{N}(\underline{h},\theta)\dot{\nu}\} \impliedby$
+
+\[
+	\tilde{N}(\underline{h},\theta) = \begin{bmatrix}(sin(\theta))I_{3\times 3} + (1-\cos(\theta))S(\underline{h})&\underline{h}\end{bmatrix}\in\R^{3\times 4}
+\]
+
+L'espressione vista prima si può invertire. Una tale matrice $\mathord{\cdot}\in\R^{3\times 4}$ diagonale è difficilmente invertibile. Ma, $\cos(\theta)\neq 1 \implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\nu} = N(\underline{h},\theta)\omega\\
+	&N(\underline{h},\theta)=\begin{bmatrix}-\frac{sin(\theta)}{2(1-\cos(\theta))}&S^2(\underline{h})&-\frac{1}{2}S(\underline{h})\\ & h^\top & \end{bmatrix}\in\R^{4\times 3}
+	\end{aligned}
+	\right.
+\]
+
+Anche qui abbiamo problemi numerici (eventualmente si potrebbe filtrare in frequenza), ma $\theta$ me lo tengo, e se $\underline{h}$ non è normalizzato viene NORMALIZZATO! Sorta di rinormalizzazione semplice peraltro. Non dobbiamo preoccuparci, sarà sicuramente un elemento di $\SO(3)$, anche se è comunque un'approssimazione.
+
+\[
+	\left\{
+	\begin{aligned}
+	&N(\underline{h},\theta)\tilde{N}(\underline{h},\theta) = \begin{bmatrix}I_{3\times 3}-hh^\top&0_{3\times 1}\\0_{1\times 3}&1\end{bmatrix}\in\R^{4\times 4}\\
+	&\tilde{N}(\underline{h},\theta)N(\underline{h},\theta) = I_{3\times 3}
+	\end{aligned}
+	\right.
+\]
+
+Sempre se $\cos(\theta)\neq 1$, ovviamente. Formula che lega il vettore velocità angolare ed i parametri Asse-angolo equivalenti. Anziché esprimere $R=\e^{\theta S(\underline{h})}$, utilizzando altri parametri, con lo stesso legame si possono individuare le interrelazioni. Se ne deducono alla fine le seguenti relazioni:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\omega = \dot{\theta}\underline{h} + (\sin(\theta))\underline{\dot{h}} + (1-\cos(\theta))(\underline{h}\times \underline{\dot{h}})\\
+	&(\dot{h}=0)\implies [\omega=\dot{\theta}\underline{h}]
+	\end{aligned}
+	\right.
+\]
+
+Il vettore velocità angolare è sostanzialmente un vettore la cui direzione / verso è dato dal verso di rotazione, ed il modulo è esattamente la velocità dell'angolo (derivata dell'angolo). Legame matriciale tra $\omega$ e $\dot{\nu},\ \cos(\theta)\neq 1 \implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\nu} = N(\underline{h},\theta)\omega\\
+	&N(\underline{h},\theta)=\begin{bmatrix}-\frac{sin(\theta)}{2(1-\cos(\theta))}&S^2(\underline{h})&-\frac{1}{2}S(\underline{h})\\ & h^\top & \end{bmatrix}\in\R^{4\times 3}
+	\end{aligned}
+	\right.
+\]
+
+L'utilizzo pratico del legame è, il più semplice, di poter integrare numericamente questa equazione differenziale. Trovati $\{\theta,\underline{h}\}$, li sostituiamo nella formula di Rodrigues $R=\e^{\theta S(\underline{h})}$ e ci calcoliamo l'assetto. Pensiamo a $\omega$ come l'ingresso di questa eq. differenziale. $\omega$ potrebbe venire fuori da una misura. Misura del vettore velocità angolare. Sarà rumorosa, come tutte le misure, ma conveniente. Risultato / Teorema / Proprietà di (\dots), anni '70. Utilizzando l'SVD per le matrici di Rotazione, ciò permette, utilizzando e sfruttando il concetto di NORMA (distanza) di MATRICI, definendo opportunamente una norma che soddisfi alle sue classiche proprietà, prendendo una matrice random $A\in\R^{3\times 3}$, di poter prendere, se $A\notin\SO(3)$, la matrice in $\SO(3)$ più vicina ad $A$. (La più vicina possibile a quella esaminata ($A$)). Se abbiamo un $\omega$ affetto da rumore (errore di quantizzazione gigante, errore intrinseco di risoluzione / integrazione), facciamo un passo di integrazione, otteniamo $R$, probabilmente non in $\SO(3)$, ed utilizziamo questo metodo per proiettarla in $\SO(3)$. Eventuale metodo di rinormalizzazione dei quaternioni ad ogni passo di integrazione. Con gli angoli YPR, sebbene messi nella rispettiva formula restituiscono un VERO elemento di $\SO(3)$, comunque è soggetto a DERIVA di misura! Però con il metodo di PROCRUSTES abbiamo un errore abbastanza buono! (Misura). Comunque è oneroso. Applicazione della SVD $\forall$ passo di integrazione! $[\dot{\nu}=N(\underline{h},\theta)\omega] \leftarrow$ Se integriamo questa, partendo da un rumore di base, potremmo ottenere $\underline{h}$ non normale (norma unitaria (1)). Ma non è un problema, lo rinormalizziamo opportunamente. Ma fino ad un certo punto! Se effettuiamo la riproiezione secondo norma condivisa (Norma di Frobenius), abbiamo che questa è una soluzione ottima! $[\dot{\nu}=N(\underline{h},\theta)\omega] \leftarrow$ Otteniamo $\{\underline{h},\theta\}$ integrandola opportunamente. Se l'$\underline{h}$ ottenuto, rinormalizzato, lo sostituiamo a Rodrigues, nessuna ci dice se $\tilde{R}$ è pari alla $R$ vera. Funziona, lo fanno tutti. Tipicamente, nell'integrare la cinematica (\underline{WORKAROUND}), viene suggerito di fare così: si utilizzino i quaternioni. Si è in $\SO(3)$ dopo la normalizzazione. OK! Ma non è molto affidabile. Il metodo di Procrustes, sebbene attuale, praticamente è poco o niente utilizzato. Molto più frequente l'utilizzo dei quaternioni con rinormalizzazione step by step. 
+
+\subsection{Legame generale}
+
+$\underline{A := \dot{R}R^\top}$. Analisi formula, calcolo analitico del legame tra $\omega$ e dei parametri $\{p\}$ qualunque che utilizziamo per parametrizzare gli elementi di $\SO(3)$. \`E sufficiente che ricordiamo la definizione del vettore velocità angolare. Sia $p=\begin{bmatrix}p_1&p_2&p_3\end{bmatrix}^\top$. Parametri qualunque. Potrebbe ad esempio essere il rotation vector $\theta\underline{h}\in\R^{3\times 1}$! Tre parametri qualunque quindi.
+
+\[
+	(\underline{(A)_{ij}}\in\R) = (\dot{R}R^\top)_{ij} = \sum_{h=1}^3{(\sum_{l=1}^3{R_{jl}\frac{\partial R_{il}}{\partial p_h}})\dot{p}_h} = \sigma^\top(ij)\dot{p}
+\]
+
+Abbiamo: $\{R_{jl}\in\R,\ \frac{\partial R_{il}}{\partial p_h}\in\R\}$. Quantità entrambe scalari. Sommando su $l$ continua a rimanere uno scalare. Ne rimangono 3 scalari ($\forall h$)! Dopodiché la matrice $S(\omega)$ (skew), ha una struttura nota (antisimmetrica, 0 sulla diagonale principale).
+
+\[
+	\Vex(A) = \omega = \frac{1}{2}\begin{bmatrix}A_{32}-A_{23}\\A_{13}-A_{31}\\A_{21}-A_{12}\end{bmatrix}
+\]
+
+$\leftarrow$ antisimmetrizzazione $\forall$ passo. Compensiamo le eventuali imperfezioni numeriche che potrebbero accumularsi con le successive integrazioni. Se fosse veramente antisimmetrica, allora avremmo una sola delle due sulle colonne! (Senza il $(-)$). E non ci sarebbe neanche l'$\frac{1}{2}$. Legame che cercavamo, generico, analitico:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\omega=M(p)\dot{p}\\
+	&\sigma(ij) = \begin{bmatrix}[\sum_{l=1}^3{R_{jl}\frac{\partial R_{il}}{\partial p_1}}]&[\sum_{l=1}^3{R_{jl}\frac{\partial R_{il}}{\partial p_2}}]&[\sum_{l=1}^3{R_{jl}\frac{\partial R_{il}}{\partial p_3}}]\end{bmatrix}^\top\\
+	&M(p) := \frac{1}{2}\begin{bmatrix}\begin{bmatrix}\sigma(32)-\sigma(23)\end{bmatrix}^\top\\\begin{bmatrix}\sigma(13)-\sigma(31)\end{bmatrix}^\top\\\begin{bmatrix}\sigma(21)-\sigma(12)\end{bmatrix}^\top\end{bmatrix}\in\R^{3\times 3}
+	\end{aligned}
+	\right.
+\]
+
+\subsubsection{Legame tra Velocità Angolare e Angoli ZYZ Euler ed YPR}
+
+In teoria con questo approccio potremmo calcolare il legame tra $\theta\underline{h}$ e gli angoli YPR. Si fa comunque un'osservazione molto più elementare, con un calcolo elementare ma significativo. Come mai è sbagliato pensare ad $\omega$ come la derivata di un angolo? ZYZ Euler Angles. Tre rotazioni elementari, sempre rispetto al \underline{CURRENT AXIS}! (Sempre rispetto a quello corrente). Tre rotazioni indipendenti $\implies$ tre parametri indipendenti. Se $\{\beta,\gamma\} = \{0,0\} \implies$ (Se non ci fossero le altre rotazioni), allora avremmo una sola componente:
+
+\[
+	^a\omega_{b/a} = \begin{bmatrix}\omega_x\\\omega_y\\\omega_z\end{bmatrix} = \begin{bmatrix}0\\0\\1\end{bmatrix}\dot{\alpha}
+\]
+
+Se invece $(\dot{\beta}\neq 0)\ \land\ (\dot{\gamma}\neq 0) \iff$
+
+\[
+	^a\omega_{b/a} = \begin{bmatrix}\omega_x\\\omega_y\\\omega_z\end{bmatrix} = \begin{bmatrix}0\\0\\1\end{bmatrix}\dot{\alpha} + R_z(\alpha)\begin{bmatrix}0\\1\\0\end{bmatrix}\dot{\beta} + R_z(\alpha)R_y(\beta)\begin{bmatrix}0\\0\\1\end{bmatrix}\dot{\gamma} = (\dots)
+\]
+
+Il vantaggio è che le matrici $\{R_x,\ R_y,\ R_z\}$ le sappiamo scrivere! Dimensionalmente non rank max.
+
+\[
+	(\dots) = \begin{bmatrix}0&-s_\alpha&c_\alpha s_\beta\\0&c_\alpha&s_\alpha s_\beta\\1&0&c_\beta\end{bmatrix}\begin{bmatrix}\dot{\alpha}\\\dot{\beta}\\\dot{\gamma}\end{bmatrix} =\ ^aT_{b/a}(\varphi)\dot{\varphi}
+\]
+
+Il vettore $\omega$ NON è legato in maniera ovvia alle derivate di un angolo! Anche se istantaneamente è legato ad un angolo, questo $\omega$ è ottenuto con rotazioni infinitesime, elementari ma fatte attorno a terne diverse! $\{\dot{\alpha},\dot{\beta},\dot{\gamma}\}$ sono dimensionalmente $[\frac{rad}{s}]$, derivate di angoli, ma il vettore che ingloba in sé stesso queste derivate, ha il problema che le tre componenti, seppur indipendenti, sono espresse in sistemi (terne) $<\mathord{\cdot}>$ diverse. Le combinazioni di Eulero sono sei. Dodici (12) sono invece quelle YPR. $^aT_{b/a}$ non ha sempre necessariamente rango pieno. Il determinante è in tal caso: $[\det{T(\varphi)} = -\sin(\beta)]$. Se invece $(\underline{\beta=k\pi})$, allora abbiamo un problema / singolarità di \underline{RAPPRESENTAZIONE}, perché avremmo sempre delle rotazioni dipendenti. Anche qui, $\omega$ può essere sicuramente ben posto! Nell'istante in cui $(\sin(\beta)=0)$, legittimo anche il valore di $\omega$, ma non possiamo scrivere l'assetto con queste particolari tre coordinate. (ZYZ Euler). $(\sin(\beta)=0)\implies$ Le due rotazioni attorno a z sono \{parallele, antiparallele\}. Esistono invece anche delle singolarità fisiche, che prescindono invece dalle rappresentazioni. YPR. Rotazioni elementari attorno assi diversi. Ma il concetto è sempre quello! 
+
+\[
+	[^a\omega_{b/a} = \begin{bmatrix}0\\0\\1\end{bmatrix}\dot{\psi} + R_z(\psi)\begin{bmatrix}0\\1\\0\end{bmatrix}\dot{\theta} + R_z(\psi)R_y(\theta)\begin{bmatrix}1\\0\\0\end{bmatrix}\dot{\phi} = \begin{bmatrix}0&-s_\psi&c_\psi c_\theta\\0&c_\psi&s_\psi c_\theta\\1&0&-s_\theta\end{bmatrix}\begin{bmatrix}\dot{\psi}\\\dot{\theta}\\\dot{\phi}\end{bmatrix}]
+\]
+
+Negli istanti temporali in cui NON è INVERTIBILE possiamo comunque calcolare l'INVERSA! Soltanto che non sarà ben definita (ben posta) in quei casi singolari prima citati.
+
+\[	
+	[^a\omega_{b/a} =\ ^aT_{b/a}(\bar{\varphi})\dot{\bar{\varphi}}]
+\]
+
+Dobbiamo conoscere $\omega$, gli angoli di \{Eulero, YPR\} \underline{iniziali}, ed \underline{invertendo} questa qui ed INTEGRANDOLA, otteniamo quei tre angoli. Possono essere sbagliati, non necessariamente giusti (errore quantizzazione, rumore, ...) ma comunque AMMISSIBILI. Sostituiti nelle formule \{ZYZ Euler, YPR\}, abbiamo un $R$ ammissibile! Non abbiamo bisogno di riproiezioni qui! Ma gli errori si accumulano, quindi l'andamento dell'errore nel tempo peggiora sempre. Vantaggi: Svolgiamo pochi conti. Soluzione NON particolarmente robusta dal punto di vista numerico.
+
+\subsubsection{Legame tra Velocità Angolare e Quaternioni}
+
+Dati: $\{\mu\in\R,\ \underline{\epsilon}\in\R^{3\times 1}\}$, qual è il legame? Se $R$ non è fissa $\iff$ si muove, il quaternione associato a quella matrice ovviamente cambierà anch'esso. Possiamo associare $\omega$ alla matrice di rotazione mediante SDE: $[\dot{R}R^\top = S(\omega)]$. Legame derivabile semplicemente. Formula di Rodrigues equivalente (per i quaternioni):
+
+\[
+	[R = I_{3\times 3} + 2\mu S(\underline{\epsilon}) + 2S^2(\underline{\epsilon})]
+\]
+
+Facciamo tutte le derivate necessarie, noiosa ma non difficile, quanto ottenuto lo si moltiplichi per $R^\top$ ed otteniamo $S(\underline{\omega})$. Da qui troviamo il legame tra $S(\underline{\omega})$ e $\{\mu\in\R,\underline{\epsilon}\in\R^{3\times 1}\}$. Troveremo le seguenti formule:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\mu} = -\frac{1}{2}\epsilon^\top\omega\\
+	&\dot{\epsilon} = \frac{1}{2}(\mu I_{3\times 3}-S(\underline{\epsilon}))\mu
+	\end{aligned}
+	\right.
+\]
+
+Che me ne faccio? Conosciamo $\underline{\omega}$, conosciamo $\{\mu,\underline{\epsilon}\}$ attuali, integrando otteniamo $\{\mu,\underline{\epsilon}\}$ nuovi, che sostituiti in $R$ ci forniscono l'assetto nuovo. $(\mu\in\R)$ sempre uno scalare, anche se comunque ammissibile. $[\underline{\mu^2+\norma{\underline{\epsilon}}^2 = 1}] \leftarrow$ CONDIZIONE DI NORMALIZZAZIONE PER I QUATERNIONI. Se non è normalizzato, lo rinormalizziamo! Metodo buono, ma non il migliore! Non è che non è robusto. Riproiezione del quaternione nello spazio dei quaternioni unitari. $\nexists$ criterio di ottimalità in $\SO(3)$. A noi non interessano i quaternioni in sé per sé, ma $(R\in\SO(3))$. 
+
+La formula di Rodrigues vale per $\norma{h}=1$. Ma si può ovviamente generalizzare, semplicemente rinormalizzando opportunamente. Abbiamo visto: $[\dot{R}=S(\underline{\omega})R]$ è facilmente integrabile in un SOLO CASO $\iff \omega\neq \omega(t)$, quindi quando la velocità angolare è \underline{costante}. Quindi $R$ sarebbe semplicemente l'esponenziale. Conoscendo $\{\omega,R_i\}$, otteniamo la soluzione semplicemente sostituendoli nella formula di Rodrigues:
+
+\[
+	R(t_f) = \e^{S(\omega)t_f}R_0
+\]
+
+Ma se $t\ll 1$ (cambia pochissimo), possiamo sfruttare una sorta di integrale alla Eulero ($\dot{x}=u,\ u=constant,\ x=u\Delta t$). Possiamo quindi confondere $t_f$ con $\Delta t$:
+
+\[
+	R(t) = \e^{S(\underline{\omega})t}R_0 = (I_{3\times 3} + \frac{\sin(t\norma{\omega})}{\norma{\omega}}S(\omega) + (1-\frac{\cos(t\norma{\omega})}{\norma{\omega}^2}S^2(\omega))R_0
+\]
+
+Se $\norma{\omega}\ll 1$, anche se $\frac{\sin(t\norma{\omega})}{\norma{\omega}} := \Sinc{\norma{\omega}}$ è ben definita, ben posta nella pratica non è detto! MATLAB per $\norma{\omega}$ piccolissimo, potrebbe lui stesso avere delle difficoltà interne implementative. Invece con i QUATERNIONI questa singolarità numeriche NON le abbiamo proprio! Se integriamo la cinematica utilizzando $\begin{bmatrix}\dot{\mu}&\underline{\dot{\epsilon}}\end{bmatrix}^\top$, allora non abbiamo alcuna divisione per 0! Se $\norma{\omega}\approx 0$ è molto conveniente dal punto di vista numerico. $[\dot{R}=S(\omega)R]$. Come utilizziamo la modellistica vista sinora per controllare l'assetto $R$ in \underline{retroazione}?
+
+\section{Cinematica elementare}
+
+Cinematica elementare che ci servirà per scrivere le equazioni dinamiche, prima di un semplice corpo rigido (corpi veicolari, aeroplani, navi), e per un manipolatore (non semplice corpo rigido), ovvero un insieme di corpi legati. Risultati derivati sulle rotazioni. Sia $p$ un punto fisso dello spazio (in $<0>$); $\rho$ il punto fisso visto da $<1>$. La FORMULA GENERALE è: $\underline{p = q+\rho}$, ove $q$ è la posizione dell'origine del frame $<1>$ rispetto al frame $<0>$. Se penso questa espressione come vettori componenti, essi devono essere espressi nella stessa terna! Quella scritta è una formula generale e vale a prescindere dalle componenti/terne. Se la volessimo esprimere in termini di componenti dovremmo utilizzare ovviamente lo stesso frame. $\rho$ posso immaginare venga acquisito direttamente dall'OSSERVATORE in movimento:
+
+\[
+	^0p =\ ^0q +\ ^0\rho =\ ^0q +\ ^0R_1\ ^1\rho
+\]
+
+(Devo sapere lui rispetto a me com'è orientato).
+
+\subsubsection{Velocità come derivata temporale della Posizione}
+
+Dal punto di vista della cinematica, dobbiamo effettuare la derivata temporale:
+
+\[
+	\frac{d\ ^0p}{dt} :=\ ^0\dot{p} =\ ^0\dot{q} +\ ^0\dot{R}_1\ ^1\rho +\ ^0R_1\ ^1\dot{\rho} =\ ^0\dot{q} + \underline{^0\dot{R}_1\ ^0R_1^\top} (^0R_1\ ^1\rho) +\ ^0R_1\ ^1\dot{\rho} =\ ^0\dot{q} + \underline{^0\omega_{1/0}\times\ ^0\rho} +\ ^0R_1\ ^1\dot{\rho}
+\]
+
+ove il termine sottolineato è il vettore velocità tangenziale. $^1\dot{\rho}$ potrebbe essere 0, il che significherebbe che il punto materiale potrebbe non muoversi per l'osservatore in $<1>$ (magari poiché incluso nella definizione di corpo rigido). A volte la velocità tangenziale la chiamiamo velocità apparente. Apparente per chi è in terna $<1>$, nel senso che a volte non la percepisce, ma effettivamente c'è. La velocità vista dall'esterno va invece combinata con questo termine. I pedici $1/0$ potremmo anche ometterli. Le terne $\{<0>,\ <1>,\ \dots\}$ le abbiamo scelte in maniera arbitraria. Quindi senza ledere di generalità, la formula è perfettamente generalizzabile, a prescindere dalle label delle terne. \`E interessante fare questo conto. Quando scriviamo l'equazione di un veicolo, poiché le grandezze del moto vengono acquisite all'interno (a bordo) del veicolo, (il vettore velocità all'interno della macchina, viene rilevato dal tachimetro), $(\vec{F}=m\vec{a})$, è un'equazione che dev'essere necessariamente espressa in una terna inerziale ("Stelle fisse" sostanzialmente). Per semplicità, una terna inerziale è quella solidale con le stelle fisse. Se vogliamo quindi pilotare un drone in maniera precisa, con i normali metodi di controllo, $\vec{F}$ sarà l'ingresso di controllo da manipolare. $\{\vec{x},\ \vec{v}\}$ sono le variabili, le grandezze (di stato) che vogliamo controllare. $\vec{x}$ è l'uscita, $\vec{F}$ è l'ingresso, ma ciò non ci spaventa (da FdA). Però dobbiamo scriverle in terna inerziale! Se le grandezze le abbiamo in terna locale (solidale col veicolo in moto), abbiamo necessità di riproiettarle in terna inerziale (per poter scrivere $\vec{a}$, l'accelerazione assoluta od inerziale).
+
+Supponiamo di voler scrivere l'equazione di un CORPO RIGIDO (il vettore posizione tra due punti arbitrari del corpo è costante). Se consideriamo il punto $p$ solidale con il $<\mathord{\cdot}>$ in movimento, allora banalmente $^1\dot{\rho}=0$ (corpo rigido) $\implies$
+
+\[
+	^0\dot{p} =\ ^0\dot{q} +\ ^0\omega_{1/0}\times\ ^0\rho + \centernot{^0R_1(^1\dot{\rho} = 0)}
+\]
+
+\subsubsection{Accelerazione come derivata temporale della Velocità}
+
+Calcoliamo la derivata temporale della velocità:
+
+\[
+	\frac{d\ ^0\dot{p}}{dt} := \underline{^0\ddot{p}} =\ ^0\ddot{q} +\ ^0\dot{\omega}_{1/0}\times\ ^0\rho +\ ^0\omega_{1/0}\times \frac{d}{dt}(^0R_1\ ^1\rho) +\ ^0\dot{R}_1\ ^1\dot{\rho} +\ ^0R_1\ ^1\ddot{\rho} = (\dots)
+\]
+\[
+	(\dots) =\ ^0\ddot{q} +\ ^0\dot{\omega}_{1/0}\times\ ^0\rho + \underline{^0\omega_{1/0}\times(^0\omega_{1/0}\times\ ^0\rho)} + \underline{2\ ^0\omega_{1/0}\times\ ^0R_1\ ^1\dot{\rho}} +\ ^0R_1\ ^1\ddot{\rho}
+\]
+
+ove il primo termine sottolineato è l'accelerazione CENTRIPETA, mentre il secondo è l'accelerazione di CORIOLIS (o di trascinamento); si è inoltre sfruttato il fatto che:
+
+\[
+	[^0\dot{R}_1\ ^1\rho =\ ^0\dot{R}_1\ ^0R_1^\top\ ^0R_1\ ^1\rho =\ ^0\omega_{1/0}\times\ ^0\rho]
+\]
+
+\underline{Explicit}. Questa espressione ci restituisce l'\underline{accelerazione assoluta} di un punto $p$ utilizzando come informazione il moto della terna in movimento rispetto a me, ed il movimento dell'oggetto rispetto a quella terna (posizione $\rho$). $\rho$ cambia nel tempo perché l'oggetto si muove $\iff \{\dot{\rho},\ \ddot{\rho}\}\neq \{\vec{0},\ \vec{0}\}$. Se utilizzando queste informazioni dovessimo scrivere le accelerazioni assolute NON in terna locale, ci serve: $\{^1\dot{\rho},\ ^0R_1,\ \underline{^0\omega_{1/0}},\ ^0\ddot{q}\}$, ove il termine sottolineato si riferisce rispetto alla terna $<0>$. Ricordiamo che $\{^1\dot{\rho},\ ^1\ddot{\rho}\}$ sono misurabili dalla terna locale. Spesso si può trascurare $^0\omega_{1/0}\approx 0$. Sono termini APPARENTI di accelerazione. $(\omega^2\rho = \omega^2 r) \leftarrow$ accelerazione centripeta. Di solito: $\{^1\dot{\rho}:=v,\ \rho:=r,\ ^0\omega_{1/0}:=\omega\}$. $^0\omega_{1/0}$ è la velocità angolare di $<1>$ rispetto a $<0>$, espressa in terna $<0>$. Ora che l'abbiamo capito (la riproiezione), possiamo dire che $^0\ddot{p}$ è l'Accelerazione assoluta in terna $<0>$. Se le volessi riproiettare su un'altra terna (inerziale ovviamente), dato che tale terna è arbitraria, dovrei semplicemente premoltiplicare a sx per l'opportuna matrice di rotazione; indi potrei semplicemente togliere dalla formula i pedici in alto a sx.
+
+\subsection{Manipolatori - Nomenclatura e convenzioni}
+
+Le accelerazioni le utilizzeremo nella dinamica di corpo rigido (equazione di Newton). La prima equazione la utilizzeremo invece per studiare la cinematica di robot, o manipolatori. Linguaggio associato ai manipolatori. Concetti di: \{Giunti, bracci\} $\mapsto$ \{parte mobile struttura cinematica, elementi rigidi che si mettono tra due giunti successivi\}. Questo se il manipolatore è a LINK (link rigidi). $\exists$ anche modelli di manipolatori a link flessibili, purtroppo eccessivamente complicati (troppo grandi, struttura che flette, termini dinamici molto piccoli). Manipolatori a link non grandi, sebbene infrequenti. Modellazione cinematica: termine locale su ciascun link. Spesso, ma non necessariamente, $<0>$ viene fissato sulla base del manipolatore. Su ciascun link posso mettere una terna. Esiste una particolare convenzione che, se adottata, semplifica leggermente l'equazione finale, e quindi la trattazione generale. Se mettiamo una terna siffatta: \{3 polsi, 3 spalle, 1 gomiti\} $\leftarrow$ gradi di libertà, angoli. Sette in tutto. Ai polsi ne associamo sempre tre. Ne basterebbero sei se volessimo risolvere il problema dell'orientazione arbitraria degli end-effector. Per le mani sono invece circa venti (una ventina) di gradi di libertà. In Italia siamo molto forti come comunità in questo ambito. Claudio Melchiorri fa mani robotiche. Progetto ADAM'S Hand ("\textit{una mano per il futuro}") (protesi a basso costo). Anche a Pisa vi sono degli esperti in manipolatori, es. Antonio Bicchi.
+
+Controllo della sola mano. L'idea è che se volessimo un'equazione che mi permetta di scrivere $\{p,v\}$ in terna base, se volessimo magari automatizzare un certo task, dovremmo esprimere due posizioni (\{INIT, FINIT\}), rispetto ad una terna base, a partire da una posizione in terna base rispetto all'end-effector. \{posizione, velocità\}. Il problema di scrivere un modello che mi dica qual è la posizione di un oggetto in terna base, è il tale.
+
+Abbiamo due tipi di giunti:
+
+\begin{itemize}
+
+\item Giunti Rotazionali;
+\item Giunti Prismatici (o telescopici)
+\end{itemize}
+
+\begin{defn}{\textbf{Problema geometrico}}
+
+Determinare le variabili lunghezza/posizione dell'end-effector in terna base: $p$ dell'end-effector.
+
+\end{defn}
+
+Stiamo solo definendo la nomenclatura.
+
+\begin{itemize}
+
+\item
+
+\begin{itemize}
+\item{\underline{Problema geometrico diretto}}: In genere è facile. \`E un "banale" problema di trigonometria. Semplicemente devo comporre i vari vettori. Ci forniscono 170 $\rho$. Dobbiamo tutte riproiettarle in 0 e poi sommarle. \item{\underline{Problema geometrico inverso}}: Vogliamo che l'end-effector vada in una certa posizione. Qual è il valore che devo dare a ciascun giunto (link) affinché si possa raggiungere questa configurazione? Tipicamente è un problema molto difficile. $\infty$ modi di posizionare/orientare i giunti. Avendo infinite soluzioni, ne posso ottimizzare. Trovarne una ottima in base ad un qualche criterio. Criterio non banale di ottimizzazione. Cosa succede quando ci si lussa una spalla? Infinite soluzioni. Proprio perché ne abbiamo infinite possiamo ottimizzare rispetto a qualche criterio. Ma dal punto di vista matematico è mal posto! Non c'è LA Soluzione, ma LE soluzioni! La soluzione ottima va bene, ma dobbiamo determinare un VINCOLO. Minor movimento possibile.
+\end{itemize}
+
+\item
+
+\begin{itemize}
+\item{\underline{Problema CINEMATICO diretto}}: versione più noiosa della prima equzione vista prima (calcolare velocità dell'end-effector sapendo tutte e sei le componenti di velocità dei vari giunti). Se ne abbiamo più di sei, nel
+\item{\underline{CINEMATICO inverso}} è ancora più difficile! Tipico problema di controllo. Definiamo la traiettoria dell'end-effector nello spazio euclideo. Quale percorso di ciascun giunto? Nel caso di Robot ridondanti questo problema ammette $\infty$ soluzioni. Posso eventualmente minimizzare l'energia cinetica. Nel farlo dovrei dare una certa energia cinetica del manipolatore. Dovremo minimizzarla.
+
+\end{itemize}
+\end{itemize}
+
+Alla base del braccio i muscoli sono più potenti! Se devo fare un movimento fisso, cerco di evitare di utilizzare eccessivamente i giunti alla base! Eventuale utilizzo di matrici di pesi. Pesi che premiano i giunti da utilizzare. Sono anche interessati ai valori estremi! Ad un certo punto utilizzeremo una PSEUDOINVERSA. Se ad un certo punto un giunto si rompe, potremmo mettergli un peso maggiore! Uno degli $n$ non sta facendo quello per cui è pensato. Invece con questo meccanismo (fault-tolerant), possiamo sfruttarlo per mettere a 0 uno dei giunti! Naturalmente la RIDONDANZA ci deve essere, sotto forma di una qualche SOVRATTUAZIONE.
+
+A proposito di nomenclatura, dobbiamo definire lo \underline{SPAZIO DI LAVORO} di una Struttura Robotica: insieme delle configurazioni che possono essere raggiunte dall'end-effector. \newline\underline{SPAZIO DI LAVORO DESTRO}: insieme di tutti i punti che possono essere raggiunti con un'orientazione arbitraria (SPAZIO DI LAVORO DESTRO $\subseteq$ SPAZIO DI LAVORO). Tutti quelli che sono sulla frontiera dello spazio di lavoro esterno appartengono allo spazio di lavoro, ma non allo spazio di lavoro destro.
+
+\subsubsection{Catena cinematica}
+
+Nomenclatura definita. L'ultima cosa da fare: sequenza di termini che si chiamano CATENA CINEMATICA. Kinematic chain. Immaginiamo di avere una cosiddetta catena cinematica. $n$ riferimenti. In realtà $(n+1)$ riferimenti (da $0$ a $n$). La terna $<0>$ la immaginiamo fissa, tutte le altre in moto. $r_{0,n}$ sulla base di $r_{k,k+1}$. Introdurremo una dipendenza solo tra termini di terne adiacenti (successive). Più che le posizioni (problema geometrico diretto), vogliamo le velocità: $v_{0,n}$. ($^0R_n$ presente, assetto della terna $n$ rispetto a $<0>$). Un \underline{ENCODER} misura la rotazione di un'asse (velocità angolare). $\underline{\dot{r}_{0,n}}$ è un termine lineare. Nei manipolatori i vari motorini hanno un encoder sull'asse di rotazione. $\dot{\theta}\underline{h}$ è solidale con l'asse. \underline{Derivata angolare} (velocità angolare nella terna locale). Definiamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\underline{r_{0,n}} = \sum_{l=1}^n{\underline{r_{l-1,l}}}]\\
+	&\underline{^0v_{n/0} :\stackrel{DEF}{=} \frac{d\ ^0r_{0,n}}{dt}} \stackrel{LIN}{=} \sum_{k=1}^n{\frac{d}{dt}(^0R_{k-1}\ \underline{^{k-1}r_{k-1,k}})} = (\dots)
+	\end{aligned}
+	\right. 
+\]
+
+ove il primo termine sottolineato rappresenta la velocità in quanto derivata della posizione, mentre il secondo è brutto a vedersi ma molto comodo da utilizzare, ed indica la posizione del link $k$ rispetto a $k-1$ espresso in coordinate $<k-1>$. 
+
+\[
+	(\dots) = \sum_{k=1}^n{(^0\omega_{k-1/0}\times\ ^0r_{k-1,k} + (\dots))}
+\]
+
+ove $^{k-1}\dot{r}_{k-1,k}$ rappresenta la velocità del punto $k$ rispetto $k-1$ espressa in $<k-1>$. Si può dimostrare alla fine che:
+
+\[
+	\sum_{k=1}^n{(\omega_{k-1/0}\times r_{k-1,k})} = \underline{(\dots)} = \sum_{k=1}^n{(\omega_{k/k-1}\times r_{k,n})}
+\]
+
+ove il termine sottolineato rappresenta dei passaggi che hanno coinvolto delle proprietà della velocità angolare. Si innestino le seguenti condizioni al contorno: $\{r_{n,n}=0,\ \omega_{0/0}=0\}$. Si ricordi che le velocità angolari si compongono: $[\omega_{n-1/0}=\sum_{h=1}^{n-1}{\omega_{h/h-1}}]$. Tale è la legge di composizione delle velocità ANGOLARI, che coinvolge una semplice sommatoria. Ad esempio: $\omega_{3/1} = \omega_{3/2}+\omega_{2/1}$. Quindi:
+
+\[
+	[^0\omega_{n/0} = \sum_{k=1}^n{^0R_{k-1}\ ^{k-1}\omega_{k/k-1}}]
+\]
+
+Alla fine avremo:
+
+\[
+	^0v_{n/0} = \sum_{k=1}^n{(^0\omega_{k/k-1}\times\ ^0r_{k,n} +\ ^0R_{k-1}\ ^{k-1}\dot{r}_{k-1,k})} = (\dots)
+\]
+\[
+	(\dots) = \sum_{k=1}^n{^0R_{k-1}(\underline{^{k-1}\omega_{k/k-1}}\times\ ^{k-1}r_{k,n} +\ ^{k-1}\dot{r}_{k-1,k})}
+\]
+
+in questo modo, avrò accesso al termine sottolineato mediante i sensori!
+
+\[
+	\omega_{k/k-1}=\begin{bmatrix}0&0&\dot{\theta}\end{bmatrix}^\top
+\]
+
+ovvero in terna $(k-1)$ metto l'asse di rotazione lungo z. Banale da scrivere come orientazione. In terna $(k-1)$, se il giunto è rotazionale, $\dot{r}=0$. Tale convenzione ha però delle singolarità, delle ambiguità. I dettagli vanno chiariti, ma concettualmente è così. $^0R_{k-1}$ è fortunatamente noto: sarà la moltiplicazione di vari termini. 
+
+Modellistica delle Catene Cinematiche, utile anche per i modelli dei manipolatori, ma non solo.
+
+\subsubsection{Trasformate Omogenee}
+
+Introduzione del concetto delle Trasformate Omogenee. Concetto di Coordinate Omogenee. Formalismo particolarmente utile per risolvere il problema geometrico diretto. Data una sequenza di tre terne: in futuro le immagineremo solidali con i vari link di un manipolatore. Posizione del punto $p$ dalla terna base:
+
+\[
+	r_{0,p} = r_{0,1}+r_{1,2}+r_{2,p} \implies (\dots)
+\]
+
+Espressione corretta perché pensiamo ai vettori omogenei, non proiettati in nessuna terna. Altrimenti dovremmo esprimerli tutti nella stessa terna $<\mathord{\cdot}>$. Nel membro di destra compaiono quantità non immediatamente note. Acquisizione delle quantità in terna $<1>$, ed eventuale riproiezione in terna base:
+
+\[
+	(\dots) = [^0r_{0,p} =\ ^0r_{0,1} +\ ^0R_1\ ^1r_{1,2} +\ ^0R_1\ ^1R_2\ ^2r_{2,p}]
+\]
+
+Questo per mettere in evidenza i vettori posizione riferiti alla terna in cui parto. DECOMPOSIZIONE che può essere utile. In maniera più compatta le possiamo scrivere utilizzando queste trasformate (Coordinate omogenee, i quali consistono nell'aumentare i vettori, posizione tipicamente, aggiungendo una quarta coordinata stabilmente unitaria). Immaginiamo due terne:
+
+\[	
+	^0r_{0,2} =\ ^0r_{0,1} +\ ^0R_1\ ^1r_{1,2}
+\]
+
+Se introduco questo vettore: $^0P_{0,2}=\begin{bmatrix}^0r_{0,2}&1\end{bmatrix}^\top$, posso riscrivere l'espressione precedente come:
+
+\[
+	^0P_{0,2} = \underline{(T = \begin{bmatrix}^0R_1&^0r_{0,1}\\0\in\R^{1\times 3}&1\end{bmatrix}\in\R^{4\times 4})}\begin{bmatrix}^1r_{1,2}\\1\end{bmatrix}
+\]
+
+ove \underline{$\underline{T}$ è la matrice di trasformazione omogenea}. Diagonale a blocchi. $^0R_1\in\SO(3)$ (matrice di rotazione). Coordinate di un vettore posizione. Notiamo che tutti gli elementi geometrici che entrano nella matrice $T$ sono riferiti alla stessa terna! A che pro introdurre queste matrici? Semplicemente per semplificare i calcoli. Se abbiamo una sequenza di prodotti riga x colonna, l'ultima riga la cacciamo via! Le "parti mobili" sono le prime tre componenti. Un'altra proprietà delle trasformazioni omogenee è che:
+
+\[
+	[\exists T\in\R^{4\times 4} \iff \ \exists \inv{T}\ |\ T\inv{T} = I_{4\times 4}\in\R^{4\times 4}]
+\]
+
+Se prendiamo due o più matrici e le componiamo, il risultato appartiene sempre al gruppo di $(T\in\R^{4\times 4})$:
+
+\[
+	\prod_{i,j}^\infty{T_iT_j}\in\R^{4\times 4}
+\]
+
+sempre definite come matrici di trasformazione; relazione sempre invertibile. Possiamo esprimere $^1P_{1,2}$ come una matrice omogenea per un vettore?
+
+\[
+	^0R_1^\top\ ^0r_{0,2} -\ ^1r_{0,1} =\ ^1r_{1,2} \implies\ ^1P_{1,2}=\begin{bmatrix}^1r_{1,2}\\1\end{bmatrix} = \begin{bmatrix}^0R_1^\top&-^1r_{0,1}\\0_{1\times 3}&1\end{bmatrix}\underline{\begin{bmatrix}^0r_{0,2}\\1\end{bmatrix}=\ ^0P_{0,2}}
+\]
+
+La matrice appena individuata è semplicemente l'inversa della precedente. Quando una matrice ha l'INVERSA, essa è UNICA! $[^0R_1^\top =\ ^1R_0] \leftarrow$ definizione di $\SO(3)$. Le matrici di trasformazione omogenee viste, presentano tutte delle uniche inverse. L'insieme delle matrici omogenee è quindi chiuso rispetto al prodotto. Si possono utilizzare per compiere varie trasformazioni.
+
+\[
+	^0P_{0,p} = \begin{bmatrix}^0r_{0,p}\\1\end{bmatrix}=[^0T_1\ ^1T_2\ ^2T_3\ \dots\ ^{p-2}T_{p-1}\ ^{p-1}P_{p-1,p}]
+\]
+
+Nel nostro caso:
+
+\[	
+	[^0P_{0,p} = \begin{bmatrix}^0r_{0,p}\\1\end{bmatrix} =\ ^0T_1\ ^1T_2\underline{^2P_{2,p}}]
+\]
+
+Cambiamento notazione apici. 
+
+Nulla di concettuale nella trattazione. Utili dal punto di vista computazionale. Sostanzialmente, in una catena cinematica di un manipolatore robotico, gli elementi individuati li sappiamo scrivere a mano! Duali: tipicamente le matrici di rotazione attorno gli assi le sappiamo scrivere molto semplicemente. Il vettore posizione tra una terna e l'altra è un parametro spesso noto dalla geometria del sistema. Scriviamo le matrici elementari $T$. 25 terne. Succede ovviamente di trattare con questi numeri. La matrice di trasformazione (tipicamente) in tel caso avrà 25 parametri dentro! Scriviamo le venticinque matrici elementari, e dopodiché ci serve $^0R_{25}$ nel caso del venticinquesimo giunto. $^0T_{25}$ sarà quella finale che avrà in alto a sinistra la vera e propria matrice di rotazione. Conti elementari. Integrazione della SDE $\dot{R}=S(\omega)R$. Integrare assetto per l'assetto finale. Funzioni MATLAB per graficare l'assetto di una matrice di rotazione. \underline{Robotics Toolbox}, disponibile gratuitamente. Non banalissima come interfaccia ma sicuramente molto esplicita. Tutte le funzioni di base per modellistica / controllo di robot sono già implementate.
+
+Questo formalismo è utile per risolvere il problema geometrico diretto. Dove sta l'end-effector rispetto alla terna base? Ciascuna delle $T$ dipende da un solo parametro di giunto. In termini di MAPPING abbiamo:
+
+\[
+	\{<0>,\ <1>,\ <2>,\ <3>\} \mapsto [^0T_1\ ^1T_2\ ^2T_3 =\ ^0T_3]
+\]
+
+L'assetto dell'end-effector rispetto alla terna base è l'elemento in alto a sinistra. Assetto dell'end-effector, praticamente. Problema geometrico diretto risolto completamente da questo metodo. Giunti sferici, con tre gradi di libertà. Problema geometrico INVERSO: quali valori ai giunti dobbiamo assegnare affinché l'assetto finale dell'end-effector sia quello che voglio io, predeterminato? Rimane ovviamente il problema della NON-univocità della soluzione. Nei Robot ridondanti il problema è mal posto: o abbiamo infinite soluzioni oppure non ne abbiamo proprio.
+
+\subsection{RECAP}
+
+$\{^2r_{2,x},\ ^2P_{2,x}\}$. Possibili sensori/attuatori per metodi robotici. Sintesi del Controllo. Prof. Alessandro De Luca \{YPR, Trasformazioni omogenee\}. ZX'Z'' Euler Angles. Individuiamo una terna finale rispetto a quella iniziale compiendo tre rotazioni successive, ogni volta prendendo l'asse locale. Utilità del metodo: le matrici elementari di rotazione le sappiamo scrivere. L'ordine conta! \`E importante:
+
+\[
+	R_{ZX'Z''}(\phi,\theta,\psi) = R_Z(\phi)R_{X'}(\theta)R_{Z''}(\psi) = \begin{bmatrix}c_\phi\ c_\psi-s_\phi\ c_\theta\ s_\psi&-c_\phi\ s_\psi-s_\phi\ c_\theta\ c_\psi&s_\phi\ s_\theta\\s_\phi\ c_\psi+c_\phi\ c_\theta\ s_\psi&-s_\phi\ s_\psi - c_\phi\ c_\theta\ c_\psi&-c_\phi\ s_\theta\\s_\theta\ s_\psi&s_\theta\ c_\psi&c_\theta\end{bmatrix}
+\]
+
+Il problema inverso è: GIVEN $R$, $(\phi,\theta,\psi)=?$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\theta = \atan2{\{\pm\sqrt{r_{13}^2+r_{23}^2},\ r_{33}\}}\\
+	&\psi = \atan2{\{\frac{r_{31}}{s_\theta},\ \frac{r_{32}}{s_\theta}\}}\\
+	&\phi = \atan2{\{\frac{r_{13}}{s_\theta},\ \frac{r_{23}}{s_\theta}\}}
+	\end{aligned}
+	\right.
+\]
+
+Si noti che l'ambiguità si ha nel segno della prima equazione del sistema, che si ripercuote inevitabilmente sulle altre due.
+
+Spesso abbiamo una terna assoluta, sulla base del manipolatore tipicamente. Spesso essa si mette in terna base. CINEMATICA DIRETTA/INVERSA. Discorso delle formule dedotte per ricavare il vettore velocità angolare di una terna $<n>$ rispetto alla terna $<0>$. Composizione di velocità angolari tra frame successivi. Formula alla base del cosiddetto Modello cinematico diretto per catene di manipolatori.
+Fondamentale distinguere tra catene cinematiche aperte e chiuse. Quelle viste sinora sono tutte aperte. Chiuse se tra due punti vi sono più modi per raggiungerli. Ad esempio due manipolatori a base fissa che si "stringono le mani". Nel momento in cui si stringono le mani abbiamo praticamente un link comune. Due vincoli anziché uno solo. Moti interni non arbitrari. I giunti li possiamo muovere purché rispettino la \underline{condizione al CONTORNO}. Non è quindi più vero che l'EE può avere orientazione arbitraria. A volte possiamo avere catene cinematiche che si chiudono prima dell'EE. Variabili non completamente indipendenti.
+
+Negli esempi visti sinora, ogni giunto può assumere dei valori delle variabili indipendenti da quelli dei giunti precedenti. Invece abbiamo dei Robot completamente chiusi. ROBOT PARALLELI (Piattaforme di Strumenti) $\rightarrow$ si può modificare sia la posizione sulla superficie che l'assetto. Si utilizzano tantissimo nei simulatori / videogiochi. Addirittura nelle Simulazioni Aeree ruotiamo proprio l'intera cabina! Catene cinematiche particolarmente complicate da studiare.
+
+Aspetto importante: si distinguono nella modellistica dei manipolatori: lo spazio operativo è lo spazio fisico all'interno del quale il robot si muove. Poi abbiamo lo spazio dei giunti, entro il quale formuliamo i comandi di \{Angolo, velocità angolare\}. Ma l'obiettivo è che l'EE alla fine faccia qualcosa. Il task / compito robotico viene formulato nello spazio operativo, ma il comando viene dato nello spazio ai giunti! Comando: \{Geometrico, Cinematico, Dinamico\}. JACOBIANO = Matrice che mappa le velocità ai giunti con la velocità nello spazio operativo. Dinamica: \{forze, coppie, accelerazioni\}. Mapping di queste grandezze tra i due spazi. JOINT Space. Può avere più o meno variabili a seconda di come è fatto il robot. Lo spazio di task è quello operativo. Al più 6 qui, in generale. I gradi di libertà fisici nello \underline{spazio dell'EE} sono sei, sebbene non tutti i task li richiedano tutti e sei. Non sono sempre sei! Dipendono ovviamente dal particolare task considerato. Es. Robot che falsifica le firme: nello spazio xy, 2D (due gradi di libertà). Al più sei comunque. Nello \underline{spazio dei giunti} invece dipende dal particolare robot. Concetto di Ridondanza del Robot rispetto al task: più gradi di libertà ai giunti rispetto a quelli ai task. \`E una cosa molto buona: implica che, sia per il problema geometrico che per quello cinematico ci sarà utile: \{Fault Tolerance, Ottimizzazione rispetto ad un criterio\}. I robot puramente attuati, ma non ridondanti, sono quelli per ccui $(n=m)$, ove: 
+
+\[
+	\left\{
+	\begin{aligned}
+	&n := dof(JOINT)\\
+	&m := dof(TASK)
+	\end{aligned}
+	\right.
+\]
+
+ove $dof(\mathord{\cdot})$ sta per \textit{degree-of-freedom}. 
+Poi abbiamo i robot sotto-attuati $(n<m)$. Sono divertenti, ma complicati. La bicicletta / automobile sono dei sistemi sottoattuati. Per un'automobile che si muove su ruote tradizionali, un task tipico è il parcheggio, ove abbiamo tre gradi di libertà ai TASK e due ai JOINT. 
+
+In ambito industriale tipicamente abbiamo ATTUAZIONE piena o SOVRATTUAZIONE addirittura. Le variabili ai giunti robotici, tipicamente le chiamiamo con $q$. $<0>$ in terna base, tipicamente. Robot tipici:
+
+\begin{itemize}
+\item PRISMATICI; 
+\item ROTAZIONALI.
+\end{itemize}
+
+Tipiche possibilità per le geometrie dei Robot come Prismatici: telescopici, tipo l'antenna. Rotazionale: vi è una rotazione, Un manipolatore antropomorfo dovrebbe avere sette tutte di tipo $R$. (RRRRRRR). I nostri sono in particolare sferici, ovvero giunti composti da tre giunti rotazionali elementari, i cui assi di rotazione NON sono paralleli tra di loro e si incontrano in un punto comune. Ecco perché un braccio antropomorfo ne possiede tre rotazionali (RRR). \{SCARA as \emph{Selective Compliance Assembly Robot Arm}: RRP\}.
+
+Compliance: in Italiano viene tradotto con il termine cedevolezza, nel contesto meccanico. Rappresenta quanto una struttura meccanica è cedevole rispetto a forze esterne. Di quanto si sposta qualitativamente rispetto alle forze esterne. L'Inglese è molto più vicino al significato corrente. Discorso puramente intuitivo. Se i link SCARA sono molto lunghi, la coppia alla base del robot è molto grande, a seguito di un'eventuale applicazione di forze relativamente basse alla punta del Robot. In tutte le applicazioni di Assembly, un modo per avere cedevolezza è non mettere poli nell'origine in un eventuale regolatore alla base del Robot. E bisognerebbe inoltre scegliere una costante di Bode $K_B$ relativamente piccola.
+
+Denavit - Hartenberg (DH). Modello geometrico diretto, tirato fuori in maniera abbastanza elementare. Metodi convenzionali. L'RT di MATLAB utilizza questa convenzione per definire una catena cinematica.
+
+Avevamo ricavato questa equazione:
+
+\[
+	^0v_{n/0} = \sum_{k=1}^n{^0R_{k-1}(\underline{^{k-1}\omega_{k/k-1}}\times\ ^{k-1}r_{k,n} +\ ^{k-1}\dot{r}_{k-1,k})}
+\]
+
+ove il termine sottolineato rappresenta la velocità angolare del frame $<k>$ rispetto a $<k-1>$ proiettato in $<k-1>$. Ricordiamo che $<0>$ è la terna base del manipolatore, terna inerziale. L'indice $k=1,n$ mi identifica le terne che costituiscono la catena cinematica. In realtà sono $(n+1)$, ivi includendo anche la terna base.
+
+\[
+	^k\dot{R}_{k-1}\ ^kR_{k-1}^\top = \underline{S(^k\omega_{k-1/k}) = -S(^k\omega_{k/k-1})}
+\]
+
+$^0\omega_{k/k-1}$ non è altro che $[\underline{^0R_k\ ^k\omega_{k/k-1}}]$. La formula precedente era stata dedotta da alcuni precedenti passaggi. Conti spiegati nelle dispense.
+
+\[
+	\underline{^0v_{n/0}} = \sum_{k=1}^n{(^0\omega_{k-1/0}\times ^0r_{k-1,k} +\ ^0R_{k-1}\ \underline{^{k-1}\dot{r}_{k-1,k}})} \stackrel{FINAL}{=} (\dots)
+\]
+\[
+	(\dots) = \sum_{k=1}^n{\underline{^0R_{k-1}}(\underline{^{k-1}\omega_{k/k-1}}\times\ ^{k-1}r_{k,n} +\ ^{k-1}\dot{r}_{k-1,k}))}
+\]
+
+ove il primo termine sottolineato (LHS) rappresenta la velocità assoluta della terna $<n>$ rispetto alla terna $<0>$ proiettata in $<0>$, mentre il secondo rappresenta la velocità con la quale si allunga / accorcia la distanza tra $k$ e $k-1$. Distanza successiva tra due terne. Il termine sottolineato dell'estremo RHS rappresenta la matrice di rotazione dal frame $<k-1>$ al frame $<0>$. Denavit - Hartenberg (DH). Al di là (a prescindere) da questa convenzione, ogni \underline{giunto rotazionale} si muove rispetto ad un asse fisso. $^{k-1}\omega_{k/k-1}$ in terna $<(k-1)>$ è semplicemente $\begin{bmatrix}0&0&\dot{\theta}\end{bmatrix}^\top$ con DH. Lo abbiamo proiettato in terna $<(k-1)>$. La parte ostica è conoscere proprio $^0R_{k-1}$. Eseguiamo il calcolo mediante matrici di trasformazione $T$ in coordinate omogenee. Altro pezzo non ovvio: $^{k-1}r_{k,n}$. Calcolare il singolo addendo della parentesi tonda. $\underline{^{k-1}r_{k,n}} \leftarrow$ è il vettore che parte da $k$ e và in $n$. Proiezione in $<k-1>$ di $r_{k,n}$, ovvero del vettore posizione che identifica l'ultima terna rispetto a quelle che ho avanti. Termine non scontato, dipende da come sono orientate le terne successive, da $k$ inclusa a $n$. $^{k-1}r_{k,n}$ non è scontato, ma se moltiplico le ultime $(n-k+1)$ matrici omogenee, le rispettive matrici di rotazione a valle della composizione contengono in alto a destra proprio quello che ci interessa. Utilizzando la convenzione \underline{DH}, troviamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&^{k-1}\omega_{k/k-1} =
+	\left\{
+	\begin{aligned}
+	&\dot{\theta}_k\underline{z} = \dot{q}_k\underline{z},\ \ revolute\ joint\\
+	&0,\ prismatic\ joint
+	\end{aligned}
+	\right.\\
+	&^{k-1}\dot{r}_{k-1,k} =
+	\left\{
+	\begin{aligned}
+	&0,\ revolute\ joint\\
+	&\dot{d}_k\underline{z} = \dot{q}_k\underline{z},\ prismatic\ joint
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Ove lo 0 riferito alla velocità angolare del frame $<k>$ rispetto $<k-1>$ è motivato dal fatto che il giunto non ruota tra $k$ e $k-1$ qualora esso fosse prismatico. Diametralmente vale il medesimo discorso per la derivata della posizione di $k$ rispetto a $k-1$: è 0 se il giunto è rotazionale. Abbiamo un allineamento della direzione del moto del giunto lungo l'asse di lavoro. Ogni addendo nella parentesi tonda della formula FINALE di $^0v_{n/0}$ ha un $\dot{q}$, che possiamo portare fuori dalla suddetta parentesi. Diventa lineare nei $\dot{q}$. $n$ giunti e $n$ di $\dot{q}$. Ogni addendo ha un solo $\dot{q}$. Somma complessiva come righe x colonne. Sia le $^0v_{n/0}$ che le $^0\omega_{n/0}$ le possiamo scrivere come righe x colonne. $^0\omega_{n/0}$ è la proiezione in terna $<0>$ di tutte le velocità angolari che formano il moto rotazionale della catena, grazie al risultato della proprietà di composizione delle velocità angolari. Vale:
+
+\[
+	[\begin{bmatrix}^0v_{n/0}\\^0\omega_{n/0}\end{bmatrix}=J(q)\dot{q}]
+\]
+
+ove tale formula rappresenta il risultato nello spazio di lavoro. $J(q)$ è un matricione detto JACOBIANO della catena cinematica. La $k$-esima $\dot{q}$ vale $1\ [rad/s]$, se $q$ è un angolo, ed $1\ [m/s]$ se invece il giunto è prismatico. Inoltre:
+
+\[
+	j_k(q) =
+	\left\{
+	\begin{aligned}
+	&\begin{bmatrix}^0R_{k-1}\underline{z}\\0\end{bmatrix},\ prismatic\ joint\\
+	&\begin{bmatrix}^0R_{k-1}\underline{z}\times\ ^0r_{k,n}\\^0R_{k-1}\underline{z}\end{bmatrix},\ revolute\ joint
+	\end{aligned}
+	\right.
+\]
+
+$k$-esima colonna dello jacobiano. Ciò dovrebbe aiutarci a fornire un'interpretazione complessiva a livello fisico! Come controllisti vogliamo appioppare all'EE un termine derivativo mediante il quale controllare la quantità base. INVERSIONE CINEMATICA non ovvia. Non è banale invertire lo jacobiano nei manipolatori ridondanti. Se è ridondante, possiamo effettuare la PSEUDOINVERSA mediante l'SVD. Pseudoinversione, se ha rango pieno la matrice non quadrata (matrice jacobiana bassa e lunga), possiamo utilizzare l'LSA (\textit{Least Squares Approximation}). Un caso semplice è un jacobiano quadrato (sei giunti). ATTUAZIONE PERFETTA. Un caso più difficile è se la matrice è stretta ed alta $\forall J(q)$ (quadrato, rettangolare (stretto/alto)), le caratteristiche dell'Inversione / pseudonversione, dipendono dal rango di $J$. $J(q)\underline{q}$ è un prodotto matrice vettore. Relazione lineare (matrice x vettore), ma la $q$ da cui dipende $J$ e la $\dot{q}$ NON sono indipendenti tra di loro! Quindi in generale il MAPPING è non lineare! $J:=J(q)$ è una matrice che dipende dalla configurazione $\iff$ mapping non lineare. Se ad un certo punto troviamo una configurazione ove $\underline{\det{J(q)}=0}$, non lo possiamo assolutamente invertire. La configurazione ove accade questo si chiama Singolarità. Di singolarità ne abbiamo di due tipi, quelle di Rappresentazione, già viste, e quelle fisiche. Le $q$ sono degli angoli, a rigore. Le quantità che compaiono in $(^0R_{k-1}\underline{z})$, oppure $^0R_{k-1}$ sono esattamente degli angoli. Le matrici di rotazione che otteniamo a valle della moltiplicazione in spazio omogeneo saranno parametrizzate rispetto a $q$. Ci potrebbero essere delle matrici mal poste! Se $\exists q\ |\ \det{J(q)}=0 \implies$ singolarità di rappresentazione. Poi abbiamo le singolarità fisiche. $\underline{\underline{J\in\R^{6\times n}}}$. Facciamo $J\in\R^{6\times 6}$ (sei dof, sei giunti). Il rango è la dimensione dei vettori che possono essere raggiunti. Qualunque $(q,\omega)$ le riusciamo a determinare con $J$. Se in una certa posa perdo rango, NON è più vero che tutte le $v$ sono RAGGIUNGIBILI. In una matrice $J\in\R^{6\times n}$, quando abbiamo rango pieno, abbiamo $\rank{J}=6$! Se ne abbiamo $rk < \rank{J}=6$, con $\nu$ la velocità dell'EE, è come se stessimo finendo a fine corsa con il braccio. Problema fisico / strutturale, non di rappresentazione. Sulla frontiera dello spazio di lavoro di un manipolatore, abbiamo sicuramente delle singolarità (fisiche), ma comunque gestibili perché tipicamente sono note a PRIORI. Quelle più gravi sono le SINGOLARIT\`A INTERNE! Quelle nontrivial che non appartengono alla frontiera. Se vogliamo implementare una $\nu$ che non possiamo raggiungere $\iff (q\to\infty\iff \norma{q}\to+\infty)$. Un altro concetto importante è che $J(q)$ è lo \underline{JACOBIANO GEOMETRICO}. Solo un nome che si utilizza per individuare / identificarlo / differenziarlo dallo \underline{\underline{JACOBIANO ANALITICO}}, matrice che dipende da $q$ sempre, ottenibile mediante trasformazione lineare dallo GEOMETRICO, e differisce dalle ultime tre righe perché non abbiamo più $^0\omega_{n/0}$, ma $\dot{\mu}$ (vettore delle derivate degli angoli), se moltiplicato per $\dot{q} \iff \begin{bmatrix}v_{n/0}&\dot{\mu}\end{bmatrix}^\top = J_A(q)\dot{q}$. 
+
+\subsection{Denavit - Hartenberg (DH)}
+
+La matrice $T^b_c(q)$ è la matrice di trasformazione omogenea. Utilizzando la nostra convenzione l'apice alto destro sarebbe invece sinistro. Tale matrice contiene i versori della terna $<c>$ riproiettati in $<b>$. Definiamo tre versori:
+
+\begin{itemize}
+\item{$a$} è l'APPROACH, la direzione con cui mi avvicino all'oggetto da prendere;
+\item{$s$} SLIDING, ortogonale semplicemente ad $a$;
+\item{$n$} completa la terna destrorsa.
+\end{itemize}
+
+\[
+	[T^0_n = A^0_1(q_1)A^1_2(q_2)\dots A^{n-1}_n(q_n)]
+\]
+
+$(x_i,y_i,z_i)\leftarrow$ sono riferiti alla terna $(i+1)$. 
+
+\begin{itemize}
+\item Terna iniziale scelta arbitrariamente;
+\item Due rette sghembe (non parallele). Normale comune, che individua due punti sui due assi di lavoro. Quella relative all'asse precedente la eliminiamo, e scegliamo $O_i$ sull'altro asse di lavoro come origine del sistema (terna) $<i+1>$;
+\item $x_i$ diretto lungo la normale comune agli assi con verso positivo VERSO $(i+1)$;
+\item $y_i$ univocamente determinata
+\end{itemize}
+
+Abbiamo quattro parametri. Dal punto di vista geometrico:
+
+\begin{itemize}
+
+\item distanza $O-O' := a_i$;
+\item $d_i$ coordinata di $z_{i-1}$ di $O_i'$;\
+\item $\alpha_i$ angolo intorno all'asse $x_i$ tra l'asse $z_{i-1}$ e l'asse $z_i$;
+\item $\theta_i$ angolo intorno all'asse $z_{i-1}$ tra l'asse $x_{i-1}$ e l'asse $x_i$.
+\end{itemize}
+
+Le ambiguità possono essere sfruttate per semplificare la procedura. I parametri di DH servono per descrivere la CATENA CINEMATICA. $a$ e $\alpha$ sono sempre costanti, le altre sono le variabili di giunto. Le variabili sono: $\{\theta_i\ ROT,\ d_i\ PRISM\}$. Legame variabili DH alle variabili delle trasformate omogenee tra una terna ed una successiva:
+
+\[
+	\{A^{i-1}_{i'},\ A^{i-1}_i\} \mapsto A^{i'}_i = \begin{bmatrix}1&0&0&\alpha_i\\0&c_{\alpha_i}&-s_{\alpha_i}&0\\0&s_{\alpha_i}&c_{\alpha_i}&0\\0&0&0&1\end{bmatrix},\ A^{i-1}_i(q_i) = A^{i-1}_{i'}\ A^{i'}_i
+\]
+
+Insomma alla fine $A^{i-1}_{i'}A^{i'}_i$ rappresenta il MAPPING tra i vari giunti passando per il sistema di riferimento ausiliario.
+
+\subsection{Digressione sull'Osservabilità}
+
+TDS. Osservabilità - Filtro osservatore (Stima dello Stato) alla Louenberger. Utilizzata in Navigazione. Se modellassimo il veicolo come un punto, il sistema sarebbe lineare. Se utilizzo il GPS, $\{y=x,\ A=I,\ B=0,\ C=I\}$. La matrice di Osservabilità è l'identica. Rimane la stessa proprietà di Osservabilità per un sistema dinamico. Stato nuovo: \{Velocità, posizione\}. L'OSSERVABILIT\`A NON dipende dall'Ingresso! Dipende dalle condizioni iniziali (CINIT) della risposta libera. Nel mondo libero può accadere che l'Osservabilità dipenda invece dall'ingresso! Localizzazione basata sulla TRILATERAZIONE. Misurazione di tre distanze da tre punti diversi. Francesco Bandiera (GPS). Il principio fisico è quello misurare tre distanze. In realtà per misurare le distanze misuriamo dei tempi (dal satellite al cellulare). Il problema è la SINCRONIZZAZIONE. L'orologio del Satellite è molto buono, il nostro no! QUATTRO Satelliti almeno. Il quarto è ridondante, ma serve per sincronizzare gli orologi e quindi per ottenere delle misurazioni delle distanze più accurate. Misurare tre distanze e successiva trilaterazione. Se misurassi una sola distanza, avrei un'incertezza sferica! Non riusciamo quindi a determinare la posizione, a meno che qualcuno non ci dia la velocità. Misuriamo il mio range dall'origine, e la mia velocità. "Persistently Exciting". Se mi muovo in maniera sufficientemente incasinata, allora il problema si risolve. Problema in cui l'Osservabilità richieda una dipendenza dall'Ingresso (velocità $u\mapsto(\dot{x}=u)$). Tale tecnica può essere sfruttata per il Controllo di Formazione. Oppure meccanismo aggiuntivo di Stima per andare magari a mediare con delle altre. Abbiamo quindi una dinamica lineare: $\dot{x}=u$, accoppiata con una uscita NON lineare: $y=\norma{x}$.
+
+Algoritmi per studiare l'Osservabilità. Utilizzati in vari contesti (Controlli coordinati), oppure sistemi del II ordine $\rightarrow$ condizioni di osservabilità ancora più complicate. Stima dello Stato in presenza di Outlier (FILTRO DI KALMAN) $\rightarrow$ simile al filtro di Louenberger (praticamente identico strutturalmente), solo che a differenza di esso è derivato da un contesto stocastico (si aggiunge rumore sia nell'equazione di Stato che nell'uscita). Introduzione di Rumori Gaussiani $(x-\hat{x})$ è a sua volta Gaussiana (stocastica). $\hat{x}$ lo costruisco utilizzando il modello dello Stato e le misure (uscite), ed ho una distribuzione di probabilità $\implies$ ho una COVARIANZA. Kalman ha messo in relazione $L$, la matrice dei guadagni (poli a parte reale negativa) con queste covarianze cercando quindi di prendere $L$ tale che questa covarianza sia possibilmente minima. Leggermente migliore di Louenberger, ove il guadagno non è però scelto a caso, ma per minimizzare queste covarianze. Se vi sono degli OUTLIER allora abbiamo dei problemi. Sviluppo del filtro basato sul concetto di Entropia. Stima dello Stato robusta agli Outlier. \{Filtro robusto agli outlier per stimare lo stato nel caso di misure di solo range\}.

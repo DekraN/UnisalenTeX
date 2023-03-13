@@ -1,0 +1,1111 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../nt.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Appendici}
+\label{cap:appendix}
+%************************************************\\
+
+\section{Velocità di Uscita e Tassi di Transizione}
+
+\subsection{M/M/1}
+
+Ricordiamo che: $\phi_i(t) = \min\{\xi_{Rt}, \eta_{Rt}\}$ è il tempo di soggiorno residuo nello stato $i$ al tempo $t$. Sappiamo che: $\phi_i(t)\sim EXP(-q_{ii})$. Nelle dispense avevamo visto il caso: $\xi_{Rt}<\eta_{Rt}$ onde valutare il relativo tasso di transizione $q_{i,i+1}$. Una volta trovato questo si poteva tranquillamente risalire all'altro tasso per differenza, dato che si conosce $-q_{ii}$, ma per esercizio ne riportiamo il calcolo indipendente anche di $q_{i,i-1}$:
+
+\[
+	\tau_{i,i-1} = \frac{q_{i,i-1}}{-q_{ii}} = \int_0^\infty{\Pr\{\eta_{Rt}<\xi_{Rt}\ |\ \xi_{Rt}=y\}f_{\xi_{Rt}}(y)dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-\mu y})\lambda\e^{-\lambda y}dy} = \int_0^\infty{\lambda\e^{-\lambda y}dy} - \lambda\int_0^\infty{\e^{-(\mu+\lambda)y}dy} =
+\]
+\[
+	= 1-\frac{\lambda}{\mu+\lambda} = \frac{\mu+\lambda-\lambda}{\mu+\lambda} = \frac{\mu}{\mu+\lambda} \implies q_{i,i-1} = \mu 
+\]
+
+Ricordiamo che sempre nell'M/M/1, l'equazione della distribuzione del ritardo di accodamento è il seguente:
+
+\[
+	F_{W}(y) = \Pr\{W\leq y\} = 1-\rho\e^{-\mu(1-\frac{\lambda}{\mu})} = 1-\rho\e^{-(\mu-\lambda)y}
+\]
+
+
+\subsection{M/M/m}
+
+Partiamo sempre da: $\phi_i(t) = \min\{\xi_{R(t)},\eta_{R(t)}\}$. Si ricordi che qui $[\eta_{R(t)}=\min_i(\eta_{R_i(t)})]$, dal momento che vi sono $m$ servitori uguali ed indipendenti, ovvero che non si influiscono a vicenda. Dal momento che hanno tempi di servizio uguali e sono v.a. i.i.d., allora il minimo di quelle variabili, onde determinare la relativa velocità totale di uscita $-q_{ii}$, è distribuito esponenzialmente con parametro dato dalla somma dei parametri.
+
+\[
+	\Pr\{\phi_i(t)>\tau\} = F_{\phi_i}^c(\tau) = \Pr\{\xi_{R(t)}>\tau,\ \eta_{R(t)}>\tau\} =
+\]
+\[
+	\Pr\{\xi_{R(t)}>\tau\}\Pr\{\eta_{R(t)}>\tau\} = \e^{-\lambda\tau}\e^{-i\mu\tau} = [\e^{-\tau(\lambda+i\mu)}] \implies -q_{ii}=(\lambda+i\mu)
+\]
+
+Calcoliamo ora i tassi di transizione, tenendo a mente che:
+
+\[
+	-q_{ii} = \left\{
+	\begin{aligned}
+	&(\lambda+i\mu),\ i< m\\
+	&(\lambda+m\mu),\ i\geq m
+	\end{aligned}
+	\right.
+\]
+
+Poniamoci nel caso $i<m$, per semplicità, ovvero nel primo caso. Notiamo che possiamo confondere la notazione $\{\xi_{R(t)},\ \eta_{R(t)}\}\rightarrow \{\xi_{Rt},\ \eta_{Rt}\}$, onde evitare di appesantire notevolmente la notazione:
+
+\[
+	\tau_{i,i+1} = \frac{q_{i,i+1}}{-q_{ii}} = \int_0^\infty{\Pr\{\xi_{Rt} < \eta_{Rt}\ |\ \eta_{Rt} = y\}\Pr\{\eta_{Rt}=y\}dy} = \int_0^\infty{(1-\e^{-\lambda y})i\mu\e^{-i\mu y}dy} =
+\]
+\[
+	= \int_0^\infty{i\mu\e^{-i\mu y}dy} - i\mu\int_0^\infty{\e^{-(\lambda+i\mu)y}dy} = 1-\frac{i\mu}{(\lambda+i\mu)}\int_0^\infty{(\lambda+i\mu)\e^{-(\lambda+i\mu)y}dy} =
+\]
+\[
+	= 1-\frac{i\mu}{(\lambda+i\mu)} = \frac{\lambda+i\mu-i\mu}{(\lambda+i\mu)} = \frac{\lambda}{(\lambda+i\mu)} \implies q_{i,i+1} = \lambda
+\]
+
+Analogamente per il tasso di transizione inverso:
+
+\[
+	\tau_{i,i-1} = \frac{q_{i,i-1}}{-q_{ii}} = \int_0^\infty{\Pr\{\eta_{Rt}<\xi_{Rt}\ |\ \eta_{Rt}=y\}\Pr\{\eta_{Rt}=y\}dy} = \int_0^\infty{(1-\e^{-i\mu y})\lambda\e^{-\lambda y}dy} =
+\]
+\[
+	= \int_0^\infty{\lambda\e^{-\lambda y}dy}-\lambda\int_0^\infty{\e^{-(\lambda+i\mu)y}dy} = 1-\frac{\lambda}{(\lambda+i\mu)}\int_0^\infty{(\lambda+i\mu)\e^{-(\lambda+i\mu)y}dy} =
+\]
+\[
+	= 1-\frac{\lambda}{\lambda+i\mu} = \frac{\lambda+i\mu-\lambda}{\lambda+i\mu} = \frac{i\mu}{\lambda+i\mu} \implies q_{i,i-1} = i\mu 
+\]
+
+Il procedimento è il medesimo anche nell'altro caso: $i\geq m$.
+
+\subsection{Server Farm Exercise}
+
+Chiamiamo rispettivamente con: $\{\xi_{Rt},\ \eta_{Rt}\}$ le v.a. tempi di guasto e di riparazione residui al tempo $t$. Abbiamo che il singolo i-esimo server ha un tempo di guasto residuo pari a:
+
+\[
+	\eta_{iRt}\sim EXP(f = f_p+f_m+f_d)
+\]
+
+Dal momento che il minimo di una v.a. esponenziale è pari ad una v.a. ancora esponenziale con parametro dato dalla somma dei parametri. Per gli stessi motivi, avendo $K$ server sempre in funzione, indipendenti tra di loro (non si pestano i piedi, sostanzialmente), avremo che: $\eta_{Rt}\sim EXP(Kf)$. Stesso discorso dicasi per i \underline{SERVER IN RIPARAZIONE}, che sono sostanzialmente $i$ (fissiamo tale notazione):
+
+\[
+	\left\{
+	\begin{aligned}
+	&\xi_{jRt}\sim EXP(\mu)\\
+	&\xi_{Rt}\sim EXP(i\mu)
+	\end{aligned}
+	\right.
+\]
+
+Calcoliamo la velocità totale di uscita: $-q_{K+M-i|K+M-i}$:
+
+\[
+	\phi_{i':=K+M-i}(t) = \min\{\eta_{Rt},\xi_{Rt}\} \implies F_{\phi_{i'}}(\tau) = \Pr\{\phi_{i'}(t) > \tau\} = \Pr\{\xi_{Rt}>\tau,\ \eta_{Rt}>\tau\} = 
+\]
+\[
+	= \Pr\{\eta_{Rt}>\tau\}\Pr\{\xi_{Rt}>\tau\} = \e^{-Kf\tau}\e^{i\mu\tau} = \e^{-(Kf+i\mu)\tau} \implies -q_{i'i'} = Kf+i\mu 
+\]
+
+Mancano ancora i tassi di transizione:
+
+\[
+	\tau_{i',i'+1} = \frac{q_{i',i'+1}}{-q_{i'i'}} = \int_0^\infty{\Pr\{\xi_{Rt} < \eta_{Rt}\ |\ \eta_{Rt}=y\}\Pr\{\eta_{Rt}=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-i\mu y})Kf\e^{-Kf y}dy} = \int_0^\infty{Kf\e^{-Kfy}dy} - Kf\int_0^\infty{\e^{-(Kf+i\mu)y}dy} =
+\]
+\[
+	= 1-\frac{Kf}{(Kf+i\mu)}\int_0^\infty{(Kf+i\mu)\e^{-(Kf+i\mu)y}dy} =
+\]
+\[
+	= \frac{Kf+i\mu-Kf}{Kf+i\mu} = \frac{i\mu}{Kf+i\mu} \implies q_{i',i'+1} = i\mu 
+\]
+
+Analogamente vale:
+
+\[
+	\tau_{i',i'-1} = \frac{q_{i',i'-1}}{-q_{i'i'}} = \int_0^\infty{\Pr\{\eta_{Rt} < \xi_{Rt}\ |\ \xi_{Rt}=y\}\Pr\{\xi_{Rt}=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-Kfy})i\mu\e^{-i\mu y}dy} = \int_0^\infty{i\mu\e^{-i\mu y}dy} -i\mu\int_0^\infty{\e^{-(Kf+i\mu)y}dy} =
+\]
+\[
+	= 1-\frac{i\mu}{(Kf+i\mu)}\int_0^\infty{(Kf+i\mu)\e^{-(Kf+i\mu)y}dy} =
+\]
+\[
+	= 1-\frac{i\mu}{(Kf+i\mu)} = \frac{Kf+i\mu-i\mu}{(Kf+i\mu)} \implies q_{i',i'-1}=Kf
+\]
+
+Sostanzialmente i tassi di transizione sono ovviamente i medesimi prendendo in considerazione la definizione di stato alternativa con la quale si è poi proseguito lo svolgimento dell'esercizio, ovvero: $N(t):=\cardinality{server\ in\ riparazione}$. Ricordiamo che differenti definizioni di stato possono poi portare allo stesso DTT.
+
+\subsection{Client-Server System Exercise}
+
+Supponiamo che il numero di clienti attuale nel sistema a coda, data la definizione di stato scelta, sia: $N(t)=i$. Utilizziamo le stesse notazioni usate nell'esercizio, ma evitando di appesantire inutilmente la notazione:
+
+\[
+	\tau_{i,i+1} = \frac{q_{i,i+1}}{-q_{ii}} = \Pr\{\xi_{Rt}<\min(\eta_{Rt},\theta_{Rt})\} =
+\]
+\[
+	= \int_0^\infty{\Pr\{\xi_{Rt} < \min(\eta_{Rt},\theta_{Rt})\ |\ \min(\eta_{Rt},\theta_{Rt})=y\}\Pr\{\min(\eta_{Rt},\theta_{Rt})=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-(M-i)\lambda y})[\mu+(i-1)\gamma]\e^{-[\mu+(i-1)\gamma]y}dy} =
+\]
+\[
+	= \int_0^\infty{[\mu+(i-1)\gamma]\e^{-[\mu+(i-1)\gamma]y}dy} - [\mu+(i-1)\gamma]\int_0^\infty{\e^{-[(M-i)\lambda+\mu+(i-1)\gamma]y}dy} =
+\]
+\[
+	= 1-\frac{\mu+(i-1)\gamma}{[(M-i)\lambda + \mu+(i-1)\gamma]} = \frac{(M-i)\lambda}{[(M-i)\lambda+\mu+(i-1)\gamma]} \implies q_{i,i+1} = (M-i)\lambda
+\]
+
+Analogamente nell'altro caso:
+
+\[
+	\tau_{i,i-1} = \frac{q_{i,i-1}}{-q_{ii}} = \Pr\{\min(\eta_{Rt},\theta_{Rt}) < \xi_{Rt}\} =
+\]
+\[
+	= \int_0^\infty{\Pr\{\min(\eta_{Rt},\theta_{Rt}) < \xi_{Rt}\ |\ \xi_{Rt}=y\}\Pr\{\xi_{Rt}=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-[(i-1)\gamma+\mu]y})(M-i)\lambda\e^{-(M-i)\lambda y}dy} =
+\]
+\[
+	=  \int_0^\infty{(M-i)\e^{-(M-i)\lambda y}dy} - (M-i)\lambda\int_0^\infty{\e^{-[(i-1)\gamma+\mu+(M-i)\lambda]y}dy} =
+\]
+\[
+	= 1-\frac{(M-i)\lambda}{[(i-1)\gamma+\mu+(M-i)\lambda]}\int_0^\infty{[(i-1)\gamma + \mu + (M-i)\lambda]\e^{-[(i-1)\gamma + \mu + (M-i)\lambda]y}dy} =
+\]
+\[
+	= 1-\frac{(M-i)\lambda}{[(i-1)\gamma + \mu + (M-i)\lambda]} = \frac{(i-1)\gamma + \mu}{[(i-1)\gamma + \mu + (M-i)\lambda]} \implies q_{i,i-1} = (i-1)\gamma+\mu 
+\]
+
+\subsection{Composite Model Exercise}
+
+Nonostante il DTT sia praticamente identico a quello della M/M/m/0, con l'unica differenza nello starting state, rieseguiamo il calcolo della velocità totale di uscita e dei tassi di transizione, onde fortificare la nostra preparazione in tal genere di calcoli:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\phi_i(t)=\min(\xi_{Rt},\eta_{Rt})\\
+	&\left\{
+	\begin{aligned}
+	&\eta_{Rt}\sim EXP(i\mu)\\
+	&\xi_{Rt}\sim EXP(\tau)
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Procediamo con il calcolo della velocità totale di uscita:
+
+\[
+	F_{\phi_i}(\tau') = \Pr\{\min(\xi_{Rt},\eta_{Rt}) > \tau'\} = \Pr\{\xi_{Rt}>\tau',\ \eta_{Rt}>\tau'\} = \underline{\Pr\{\xi_{Rt}>\tau'\}\Pr\{\eta_{Rt}>\tau'\}} =
+\]
+\[
+	= \e^{-\tau\tau'}\e^{-i\gamma\tau'} = \e^{-(\tau+i\gamma)\tau'} \implies q_{ii} = (\tau+i\gamma)
+\]
+
+Notiamo che il termine sottolineato sta ad indicare che tale possibilità è concessa dall'indipendenza delle variabili in questione. Calcoliamo ora i tassi:
+
+\[
+	\tau_{i,i+1} = \frac{q_{i,i+1}}{-q_{ii}} = \Pr\{\xi_{Rt}<\eta_{Rt}\} = \int_0^\infty{\Pr\{\xi_{Rt}<\eta_{Rt}\ |\ \eta_{Rt}=y\}\Pr\{\eta_{Rt}=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-\tau y})i\gamma\e^{-i\gamma y}dy} = \int_0^\infty{i\gamma\e^{-i\gamma y}dy}-i\gamma\int_0^\infty{\e^{-(\tau+i\gamma)y}dy} =
+\]
+\[
+	= 1-\frac{i\gamma}{\tau+i\gamma}\int_0^\infty{(\tau+i\gamma)\e^{-(\tau+i\gamma)y}dy} = 1-\frac{i\gamma}{\tau+i\gamma} = \frac{\tau+i\gamma-i\gamma}{\tau+i\gamma} = (\frac{\tau}{\tau+i\gamma}) \implies q_{i,i+1} = \tau
+\]
+
+Analogamente:
+
+\[
+	\tau_{i,i-1} = \frac{q_{i,i-1}}{-q_{ii}} = \Pr\{\eta_{Rt}<\xi_{Rt}\} = \int_0^\infty{\Pr\{\eta_{Rt}<\xi_{Rt}\ |\ \xi_{Rt}=y\}\Pr\{\xi_{Rt}=y\}dy} =
+\]
+\[
+	= \int_0^\infty{(1-\e^{-i\gamma y})\tau\e^{-\tau y}dy} =
+\]
+\[
+	= \int_0^\infty{\tau\e^{-\tau y}dy} - \tau\int_0^\infty{\e^{-(i\gamma +\tau)y}dy} = 1-\frac{\tau}{i\gamma+\tau}\int_0^\infty{(i\gamma+\tau)\e^{-(i\gamma + \tau)y}dy} =
+\]
+\[
+	= 1-\frac{\tau}{i\gamma + \tau} = \frac{i\gamma + \tau-\tau}{i\gamma + \tau} = \frac{i\gamma}{\tau+i\gamma} \implies q_{i,i-1} = i\gamma
+\]
+
+
+\section{Tips and Tricks}
+
+\subsection{MTTF in Reliability/Availability Computational Models}
+
+Talvolta potreste incappare nel dubbio che l'MTTF che si calcoli in un modello di calcolo per l'Affidabilità, magari con stati assorbenti, possa essere uguale all'MTTF calcolato in un modello di calcolo per la Disponibilità. Questo intuitivamente è vero, ma bisogna ricordarsi di partire dalle condizioni iniziali giuste nel modello di Affidabilità! Riprendiamo l'esercizio: \textbf{CMTC with Absorbing States}. Introduciamo il modello di calcolo per la Disponibilità, semplicemente partendo dal modello dell'Affidabilità e reintroducendo il ramo della riparazione dallo stato di FAILURE. Scriviamo anzitutto la distribuzione di regime, ricordandoci che nel caso in questione vi è una Single Repair Facility, e che quindi il tasso di riparazione complessivo è sempre $\mu$:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\pi_i = \pi_0(\frac{\mu}{\lambda})^i \frac{1}{i!}\\
+	&\pi_0 = \frac{1}{\sum_{i=0}^2{(\frac{\mu}{\lambda})^i \frac{1}{i!}}} = \frac{1}{1+\frac{\mu}{\lambda} + (\frac{\mu}{\lambda})^2 \frac{1}{2}}
+	\end{aligned}
+	\right.
+\]
+
+Ricordando la formula ricavata nel \textbf{Server Farm Exercise}, la quale affermava che l'MTTF si può calcolare tranquillamente effettuando la differenza tra il tempo medio di ricorrenza nello stato di FAILURE ed il tempo di soggiorno nello stato di FAILURE, corrispondente quest'ultimo al MTTR:
+
+\[
+	MTTF = \frac{1}{\pi_0\mu} - \frac{1}{\mu} = \frac{1}{\frac{\mu}{1+\frac{\mu}{\lambda} + (\frac{\mu}{\lambda})^2 \frac{1}{2}}} - \frac{1}{\mu} =
+\]
+\[
+	= \frac{2\lambda^2 + 2\lambda\mu + \mu^2}{2\lambda^2 \mu} - \frac{1}{\mu} = \frac{1}{\mu}+\frac{1}{\lambda}+\frac{\mu}{2\lambda^2} - \frac{1}{\mu} = \frac{1}{\mu} + \frac{\mu}{2\lambda^2}
+\]
+
+Notiamo che tra l'altro, tale termine non coincide assolutamente con l'MTTF ricavato nel caso di quello calcolato a lezione mediante tecnica degli Stati Assorbenti oppure la $L_i$-tecnica (mediante tempi medi di assorbimento). L'intoppo sta nel fatto che nel modello di calcolo dell'Affidabilità con stati assorbenti, siamo liberi di scegliere la condizione iniziale! Entrambe le tecniche in questo modello prenderanno in considerazione anche il transitorio e le condizioni iniziali dunque! Naturalmente avremo soluzioni diverse al variare delle condizioni iniziali, dal momento che la media è fatta lungo tutto l'asse temporale, includendo così sia situazioni di transitorio che di regime. SOLTANTO se in questo particolare caso partiamo dallo stato adiacente a quello assorbente \{1\}, vi è una coincidenza esatta tra gli MTTF calcolati nei due modelli. L'interpretazione è lasciata al lettore.
+
+Infatti, se partissimo da $\pi_1=1$, otterremmo il seguente sistema nel modello di calcolo dell'Affidabilità:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&-2L_2\lambda + L_1\mu=0\\
+	&L_1 = \frac{2L_2\lambda}{\mu}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&L_2(2\lambda)-L_1(\lambda+\mu) = -1\\
+	&L_2(2\lambda)-\frac{2L_2\lambda(\lambda+\mu)}{\mu} = -1\\
+	&L_2(2\lambda\mu)-2L_2\lambda^L_2(2\lambda\mu) = -\mu 
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.\implies\left\{
+	\begin{aligned}
+	&L_2=\frac{\mu}{2\lambda^2}\\
+	&L_1=\frac{2\mu\lambda}{\mu 2\lambda^2} = \frac{1}{\lambda}
+	\end{aligned}
+	\right.
+\]
+
+Sommando i tempi medi di assorbimento troviamo:
+
+\[
+	MTTF=MTTA=MTTA_1+MTTA_2=[L_1+L_2=\frac{1}{\lambda}+\frac{\mu}{2\lambda^2}]
+\]
+
+Proviamo a fare lo stesso esercizio supponendo che si abbia un terzo stato, onde osservare una possibile generalizzazione in questa configurazione, rappresentata dal seguente DTT:
+
+\begin{center}
+\begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+\tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+\node[state]    (3)                     {$3$};
+\node[state]    (2)[right of=3]   {$2$};
+\node[state]    (1)[right of=2]   {$1$};
+\node[state]    (0)[right of=1]   {$0$};
+\path
+(3) edge[bend left]     node{$3\lambda$}         (2)
+(2) edge[bend left]     node{$2\lambda$}         (1)
+    edge[bend left]     node{$\mu$}             (3)
+(1) edge[bend left]     node{$\lambda$}         (0)
+    edge[bend left,below]    node{$\mu$}            (2)
+(0) edge[bend left,below]    node{$\mu$}             (1);
+\node at ($(0)+(0,-0.8)$) {FAILED};
+\end{tikzpicture}
+\end{center}
+
+Calcoliamo quindi l'MTTF nei due modelli:
+
+\[
+	\left\{
+	\begin{aligned}
+	&MTTF = \frac{1}{\pi_0}-\frac{1}{\mu}\\
+	&\left[
+	\begin{aligned}
+	&\pi_0=\frac{1}{1+\frac{\mu}{\lambda}+\frac{\mu^2}{\lambda^2}\frac{1}{2}+\frac{\mu^3}{\lambda^3}\frac{1}{6}}\\
+	&\frac{1}{\pi_0\mu}=\frac{(1+\frac{\mu}{\lambda}+\frac{\mu^2}{\lambda^2}\frac{1}{2}+\frac{\mu^3}{\lambda^3}\frac{1}{6})}{\mu} = \frac{6\lambda^3+6\lambda^2\mu+3\lambda\mu^2+\mu^3}{6\lambda^3\mu}=\\
+	&\frac{1}{\mu}+\frac{1}{\lambda}+\frac{\mu}{2\lambda^2}+\frac{\mu^2}{6\lambda^3} = [\frac{1}{\pi_0\mu}:=\sum_{i=0}^n{(\frac{\mu^{i-1}}{\mu^i})\frac{1}{i!}}] 
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Riassemblando opportunamente i termini troviamo: 
+
+\[
+	MTTF = \frac{1}{\pi_0\mu}-\frac{1}{\mu} =
+\]
+\[
+	= \frac{1}{\lambda}+\frac{\mu}{2\lambda^2}+\frac{\mu^2}{6\lambda^3} := \sum_{i=1}^n{(\frac{\mu^{i-1}}{\mu^i})\frac{1}{i!}}
+\]
+
+Proviamo ora a calcolare la stessa quantità nel modello di affidabilità:
+
+\[
+	\bar{Q}=\begin{bmatrix}-3\lambda&3\lambda&0&0\\ \mu&-(\mu+2\lambda)&2\lambda&0\\0&\mu&-(\mu+\lambda)&\lambda\\0&0&0&0\end{bmatrix}
+\]
+
+Ricordando la partizione: $S=N\cup A$, restringiamo la matrice al set degli stati transitori:
+
+\[	
+	\bar{Q}_N = \begin{bmatrix}-3\lambda&3\lambda&0\\ \mu&-(\mu+2\lambda)&3\lambda\\0&\mu&-(\mu+\lambda)\end{bmatrix}
+\]
+
+Impostiamo l'equazione matriciale:
+
+\[
+	\begin{bmatrix}L_3&L_2&L_1\end{bmatrix}\begin{bmatrix}-3\lambda&3\lambda&0\\ \mu&-(\mu+2\lambda)&3\lambda\\0&\mu&-(\mu+\lambda)\end{bmatrix}=\begin{bmatrix}0&0&-1\end{bmatrix}
+\]
+
+E risolviamo il sistema che rappresenta:
+
+\[
+	\left\{
+	\begin{aligned}
+	&L_3(-3\lambda)+L_2\mu=0\\
+	&L_3(3\lambda)-L_2(\mu+2\lambda)+L_1\mu=0\\
+	&2L_2\lambda-L_1(\lambda+\mu)=-1
+	\end{aligned}
+	\right. \implies
+\]
+\[
+	\implies \left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&L_3(-3\lambda)+L_2\mu+L_3(3\lambda)-L_2(\mu+2\lambda)+L_1\mu-2L_2\lambda-L_1(\lambda+\mu)=-1\\
+	&L_2[\mu-\mu-2\lambda+2\lambda] + L_1(\mu-\lambda-\mu)=-1\\
+	&L_1=\frac{1}{\mu}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&2\lambda L_2 -\frac{\lambda+\mu}{\lambda}=-1\\
+	&2\lambda^2 L_2-\lambda-\mu=-\lambda\\
+	&L_2=\frac{\mu}{2\lambda^2}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&-3\lambda L_3 + \frac{\mu \mu}{2\lambda^2} = 0\\
+	&L_3=\frac{\mu^2}{6\lambda^3}
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Quindi assemblando i termini troviamo:
+
+\[
+	MTTF = L_1+L_2+L_3 = [\frac{1}{\mu}+\frac{\mu}{2\lambda^2}+\frac{\mu^2}{6\lambda^3}]
+\]
+
+Si può ovviamente generalizzare per una catena che abbia distribuzione di regime uguale all'M/M/m/0.
+
+\subsection{Failure Rate e MTTF in parallelo}
+
+Attenzione quando si manipolano i failure rate in concomitanza con l'MTTF in parallelo! Quando si effettua un collegamento parallelo, il suo failure rate $h(t)$ non è più il reciproco del valor medio del lifetime del sistema risultante! Infatti questo accade soltanto per sistemi che hanno distribuzione del lifetime esponenziale, come ad esempio i risultanti da configurazioni serie, i quali a valle della combinazione hanno ancora un lifetime distribuito esponenzialmente, con parametro dato dalla somma dei parametri (i failure rate $h_i(t)$ dei sistemi componenti. Con la configurazione parallelo, il sistema risultante ha un lifetime che è costituito dalla combinazione lineare di altri esponenziali, ma non è un esponenziale puro, quindi non vi è un collegamento diretto visibile con il $MTTF$. Come esempio, riprendiamo l'esercizio \textbf{MTTF of a fiber link} e proviamo a calcolare la configurazione del \textit{Partially protected link} scenario:
+
+\[
+	1-(1-\e^{-h_Ft})^2 = 1-1-\e^{-2h_Ft}+2\e^{-h_Ft} = 2\e^{-h_Ft}\e^{-2h_Ft}
+\]
+
+Quindi integrando opportunamente troviamo:
+
+\[
+	MTTF_L = \int_0^\infty{R_F(t)dt} = 2\int_0^\infty{\e^{-h_Ft}dt}-\int_0^\infty{\e^{-2h_Ft}dt} =
+\]
+\[
+	= [\frac{2}{h}-\frac{1}{2h}] = \frac{1}{h}(2-\frac{1}{2}) = \frac{3}{2}MTTF_F = \frac{3}{2}(22.78y)
+\]
+
+Tuttavia, e qui sta l'errore, non possiamo dire che il failure rate del sistema risultante sia il reciproco di questo MTTF appena trovato! $\iff h_L\neq \frac{1}{MTTF_L}$!! Supponendo che ciò fosse vero, procediamo con il calcolo del MTTF del sistema complessivo, sommando i vari failure rate (operazione lecita, dal momento che tali sistemi sono in serie), trovando:
+
+\[
+	h = 2h_P+2h_F+h_L = 0.52926y^{-1} \implies\underline{MTTF_{PP}} = \frac{1}{h}=1.8994y
+\]
+
+Alquanto basso come MTTF! \`E vero che abbiamo raddoppiato solo il link di comunicazione in fibra, dal momento che gli altri sistemi in serie costituiscono il bottleneck. Tuttavia è abbastanza improbabile che l'MTTF dell'intero sistema rispetto al caso \textit{Unprotected} migliori soltanto di qualche mese! Infatti il link in fibra ha un MTTF di gran lunga superiore a quello degli altri. Tra l'altro nemmeno coincide con l'$h$ calcolato nell'esercizio, il quale è sicuramente corretto avendo proceduto preliminarmente calcolando l'affidabilità complessiva sfruttando le proprietà dell'affidabilità in configurazione parallelo e serie, ed avendo integrato A POSTERIORI, trovando il vero MTTF del sistema \textit{Partially protected link}.
+
+
+\section{Trasformate di Laplace}
+
+\subsection{Proprietà e Trasformate di Funzioni Notevoli}
+
+Tratto da \textit{Wikipedia}:
+
+\begin{itemize}
+
+\item{\textbf{Proprietà}}:
+
+\begin{itemize}
+
+\item{Linearità}:
+
+$\lapl\{af(t) + bg(t)\} = a\lapl\{f(t)\} + b\lapl\{g(t)\}$
+
+\item{Derivazione}: 
+
+$\lapl\{f'\} = s\lapl\{f\} - f(0^+)$
+
+\item{Integrazione}:
+
+$\lapl\{\int_0^t{f(\tau)d\tau}\} = \frac{1}{s}\lapl\{f(t)\}$
+
+\item{Prodotto di Convoluzione}:
+
+$\lapl\{f\star g\} = \lapl\{f\}\lapl\{g\}$
+
+\end{itemize}
+
+\item{\textbf{Trasformate di Funzioni notevoli}}:
+
+\begin{itemize}
+
+\item{\textit{Delta di Dirac}}:
+
+$\lapl\{\delta(t)\} = 1$
+
+\item{\textit{Funzione gradino di Heaviside}}:
+
+$\lapl\{\Theta(t)\} = \frac{1}{s}$
+
+\item{\textit{Funzione esponenziale}}:
+
+$\lapl\{\e^{\alpha t}\} = \frac{1}{s-\alpha}$
+
+\item{\textit{Seno}}:
+
+\begin{itemize}
+
+\item $\lapl\{\sin(\alpha t)\} = \frac{\alpha}{s^2+\alpha^2}$
+\item $\lapl\{e^{\beta t}\sin(\alpha t)\} = \frac{\alpha}{(s-\beta)^2 + \alpha^2}$
+
+\end{itemize}
+
+\item{\textit{Coseno}}:
+
+\begin{itemize}
+
+\item $\lapl\{\cos(\alpha t)\} = \frac{s}{s^2+\alpha^2}$
+\item $\lapl\{e^{\beta t}\cos(\alpha t)\} = \frac{s-\beta}{(s-\beta)^2 + \alpha^2}$
+
+\end{itemize}
+
+\end{itemize}
+
+\end{itemize}
+
+A noi in realtà interessano le antitrasformate di Laplace, ma ovviamente viene tutto in automatico riguardandole bene.
+
+\subsection{CMTC with Absorbing States}
+
+Verifica TL:
+
+\[
+	\left\{
+	\begin{aligned}
+	&s\pi_2^\star(s) -(\pi_2(0)=1) = -2\lambda\pi_2^\star(s) + \mu\pi_1^\star(s)\\
+	&s\pi_1^\star(s) -(\pi_1(0)=0) = -(\lambda+\mu)\pi_1^\star(s) + 2\lambda\pi_2^\star(s)\\
+	&s\pi_0^\star(s) -(\pi_0(0)=0) = \lambda\pi_1^\star(s)
+	\end{aligned}
+	\right.
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\pi_2^\star(s) = \frac{\mu\pi_1^\star(s)+1}{(s+2\lambda)}\\
+	&\left[
+	\begin{aligned}
+	&\pi_1^\star(s)(s+\lambda+\mu) = 2\lambda\pi_2^\star(s)\\
+	&\pi_1^\star(s) = \frac{2\lambda[\mu\pi_1^\star(s)+1]}{(s+2\lambda)(s+\lambda+\mu)}\\
+	&\pi_1^\star(s)[(s+2\lambda)(s+\lambda+\mu)] = 2\lambda\mu\pi_1^\star(s)+s\lambda\\
+	&\pi_1^\star(s) = \frac{2\lambda}{[(s+2\lambda)(s+\lambda+\mu)-2\lambda\mu]}
+	\end{aligned}
+	\right.\\
+	&\pi_0^\star(s) = \frac{2\lambda^2}{s[(s+2\lambda)(2+\lambda+\mu) - 2\lambda\mu]}
+	\end{aligned}
+	\right.
+\]
+
+Quindi troviamo alla fine quello che ci serve, ovvero:
+
+\[
+	\pi_0^\star(s) = \frac{2\lambda^2}{s[s^2 +s\lambda+s\mu+2s\lambda+2\lambda^2+2\lambda\mu-2\lambda\mu]} = \frac{2\lambda^2}{s[s^2+s(3\lambda+\mu)+2\lambda^2]}
+\]
+
+Il seguito dell'esercizio vorrebbe che:
+
+\[
+	MTTF = \int_0^\infty{(1-\lapl^{-1}\{\pi_0^\star(s)\}(t))dt}
+\]
+
+Quindi da adesso si dovrebbe procedere espandendo $\pi_0^\star(s)$ in fratti semplici ed antitrasformando secondo Laplace membro a membro, ma non lo faremo nel seguito per brevità. Poi, ricordando che:
+
+\[
+	R(t)=\Pr\{X> t\} = 1-\Pr\{X\leq t\} = 1-\pi_0(t)
+\]
+
+Si può tranquillamente integrare e trovare l'MTTF. Si ricordi che l'ultima espressisone vale ovviamente soltanto se lo \{0\} è uno STATO ASSORBENTE!
+
+\subsection{Homeworks 2-1}
+
+Si tenti l'approccio mediante trasformate di Laplace per ricavare $\pi_0(t)$ in seguito antitrasformando opportunamente:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\frac{d \pi_2(t)}{dt} = -2\lambda\pi_2(t) +\pi_1(t)\mu\\
+	&\frac{d \pi_1(t)}{dt} = -\pi_1(t)(\mu+\lambda) + 2\pi_2(t)c\lambda\\
+	&\frac{d \pi_0(t)}{dt} = 2\pi_2(t)\lambda(1-c) + \pi_1(t)\lambda
+	\end{aligned}
+	\right.
+\]
+
+Trasformando il sistema, membro a membro per ogni equazione, otteniamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&s\pi_2^\star(s) -(\pi_2(0)=1) = -2\lambda\pi_2^\star(s) + \pi_1^\star(s)\mu\\
+	&\pi_2^\star(s) = \frac{\pi_1^\star(s)\mu + 1}{(s+2\lambda)}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&s\pi_1^\star(s) -(\pi_1(0)=0) = -\pi_1^\star(s)(\mu+\lambda) + 2\frac{(\pi_1^\star(s)\mu +1)}{(s+2\lambda)}\lambda c\\
+	&s(s+2\lambda)\pi_1^\star(s) + \pi_1^\star(s)(\mu+\lambda)(s+2\lambda) - 2\pi_1^\star(s)\mu\lambda c - 2\lambda c = 0\\
+	&\pi_1^\star(s) = \frac{2\lambda c}{[(s+2\lambda)(s+\lambda+\mu)-2\mu\lambda c]}
+	\end{aligned}
+	\right.\\
+	&s\pi_0^\star(s) -(\pi_0(0) = 0) = 2\lambda(1-c)\pi_2^\star(s) + \pi_1^\star(s)\lambda
+	\end{aligned}
+	\right.
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\pi_1^\star(s) = \frac{2\lambda c}{[(s+2\lambda)(s+\lambda+\mu)-2\mu\lambda c]}\\
+	&\left[
+	\begin{aligned}
+	&\pi_2^\star(s) = \frac{\frac{2\lambda c\mu}{[(s+2\lambda)(s+\lambda+\mu)-2\lambda\mu c]} + 1}{(s+2\lambda)} = \frac{2\lambda c\mu + (s+2\lambda)(s+\lambda+\mu) - 2\lambda c\mu}{(s+2\lambda)[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]} =\\
+	&= \frac{s+\lambda+\mu}{[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]}
+	\end{aligned}
+	\right.\\
+	&\left[
+	\begin{aligned}
+	&\pi_0^\star(s) = \frac{2\lambda(1-c)(s+\lambda+\mu)}{s[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]} + \frac{2\lambda c}{[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]} =\\
+	&= \frac{2\lambda[s+\lambda+\mu - cs - c\lambda + c]}{s[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]} =\\
+	& = \frac{2\lambda[s(1-c) - c(\lambda+\mu) + \lambda+\mu + c = [s(1-c)+(\lambda+\mu)(1-c) +c]]}{s[(s+2\lambda)(s+\lambda+\mu) - 2\lambda\mu c]}
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Si procede ovviamente allo stesso modo dell'esercizio precedente, espandendo in fratti semplici la seguente espressione di $\pi_0^\star(s)$, antitrasformandola secondo Laplace, e ciò che si ottiene lo si deve sottrarre da 1 ed integrando opportunamente, ottenendo così l'MTTF.
+
+\section{Sigle Network Technologies}
+
+Si ringrazia anticipatamente il \emph{Dott. Andrea Camisa} per il prezioso aiuto:
+
+\subsection{Sigle IEEE}
+
+\begin{itemize}
+
+\item{\textbf{IEEE 802.1: Architettura e descrizione generale delle LAN}}
+
+\begin{itemize}
+
+\item{\underline{802.1aq}} Shortest Path Bridging (SPB), evoluzione di 802.1w e 802.1s;
+\item{\underline{802.1AX}} Rettifica di 802.3ad per il Link Aggregation Control Protocol (LACP) (riposiziona alcuni livelli 802.1 come 802.1X security al di sopra del livello di Link Aggregation);
+\item{\underline{802.1D}} Funzioni dei bridge e del protocollo Spanning Tree Protocol (STP);
+\item{\underline{802.1p}} Priorità di traffico e filtraggio dei pacchetti multicast da parte dei bridge;
+\item{\underline{802.1Q}} Etichetta (tag) per la realizzazione delle VLAN e la differenziazione dei tipi di traffico (QoS di livello 2, vedi 802.1p);
+\item{\underline{802.1s}} Multiple Spanning Tree (MST) per le VLAN;
+\item{\underline{802.1v}} VLAN per porta e per protocollo;
+\item{\underline{802.1w}} Rapid Spanning Tree Protocol (RSTP);
+\item{\underline{802.1X}} Autenticazione di livello 2 nelle reti (usato anche in 802.11), definisce l’incapsulamento di Extensible Authentication Protocol (EAP) in IEEE 802.
+
+\end{itemize}
+
+\item{\textbf{IEEE 802.3: tecnologia per reti locali (LAN)}}
+
+La seguente è derivata da Ethernet. Definisce CSMA/CD. 
+
+\begin{itemize}
+
+\item{\underline{802.3ad}} Link Aggregation Control Protocol (LACP), rettificato da 802.1AX;
+\item{\underline{802.3ac}} Allungamento delle trame con etichetta VLAN (vedi 802.1Q);\item{\underline{802.3af}} Power over Ethernet (PoE).
+
+\end{itemize}
+
+\item{\textbf{IEEE 802.11: Specifiche MAC (Media Access Control) e PHY (Physical Layer) per implementare WLAN (Wireless Local Area Network)}}
+
+\begin{itemize}
+
+\item Vedi slide Wireless a pag 17;
+\item{\underline{802.11i}} Sicurezza delle WLAN;
+\item{\underline{802.11f}} Standard per lo scambio di informazioni tra AP per Handoff/Handover/Roaming;
+\item{\underline{802.11p}} Standard per VANET.
+
+\end{itemize}
+
+\end{itemize}
+
+
+\subsection{Sigle varie divise per argomento}
+
+\begin{itemize}
+
+\item{\textbf{Enti vari}}
+
+\begin{itemize}
+
+\item{IEEE}: \emph{Institute of Electrical and Electronics Engineers};
+\item{ANSI}: \emph{American National Standards Institute};
+\item{ISO}: \emph{International Standard Organization};
+\item{IETF}: \emph{Internet Engineering Task Force};
+\item{RFC}: \emph{Request for Comments};
+\item{IANA}: \emph{Internet Assigned Numbers Authority};
+\item{ICANN}: \emph{Internet Corporation for Assigned Names and Numbers};
+\item{EMEA}: \emph{Europe Middle East Africa}.
+
+\end{itemize}
+
+\item{\textbf{Sigle varie}}
+
+\begin{itemize}
+
+\item{ISO/OSI}: Modello \emph{Open System Interconnection} della ISO;
+\item{SAP}: \emph{Service Access Point};
+\item{SSAP}: \emph{Source Service Access Point};
+\item{DSAP}: \emph{Destination Service Access Point};
+\item{PDU}: \emph{Protocol Data Unit};
+\item{RTT}: \emph{Round Trip Time};
+\item{ACK}: Acknowledgement.
+
+\end{itemize}
+
+\item{\textbf{Sigle di livello 2}}
+
+\begin{itemize}
+
+\item{LACP}: \emph{Link Aggregation Control Protocol};
+\item{ATM}: \emph{Asynchronous Transfer Mode}:
+
+\begin{itemize}
+
+\item{CBR}: \emph{Constant Bit Rate};
+\item{UBR}: \emph{Unspecified Bit Rate};
+\item{AAL}: \emph{ATM Adaption Layer};
+\item{VC}: \emph{Virtual Circuit};
+\item{VCI}: \emph{Virtual Channel Identifier};
+\item{VPI}: \emph{Virtual Path Identifier}.
+
+\end{itemize}
+
+\item{MAC}: \emph{Media Access Control} (identifica un protocollo di accesso e per estensione il livello data link);
+\item{LLC}: \emph{Logical Link Control} (sottolivello del livello 2 per le trame 802.3); \item{OUI}: \emph{Organization Unique Identifier} (usato negli indirizzi MAC e nel primo campo a 3 byte dell’estensione SNAP);
+\item{SFD}: \emph{Starting Frame Delimiter} (il byte che sta dopo il preambolo nelle trame Ethernet e 802.3);
+\item{FCS}: \emph{Frame Check Sequence} (i 4 byte che stanno alla fine di una trama Eth/802.3 per il controllo del pacchetto);\
+item{IFS} \emph{Inter Frame Spacing} (terminologia 802.3);
+\item{IPG}: \emph{Inter Packet Gap} (terminologia Ethernet);
+\item{SNAP}: \emph{Subnetwork Access Protocol Extension};
+\item{BLAN}: Bridged LAN (reti locali estese per mezzo di bridge o switch);
+\item{ARP}: \emph{Address Resolution Protocol};
+\item{RARP}: \emph{Reverse Address Resolution Protocol}:
+
+\end{itemize}
+
+\item{\textbf{Spanning Tree Protocol}}
+
+\begin{itemize}
+
+\item{STP}: \emph{Spanning Tree Protocol};
+\item{RSTP}: \emph{Rapid Spanning Tree Protocol};
+\item{MST}: \emph{Multiple Spanning Tree} (MST regions: regioni con switch che supportano tutti 802.1s);
+\item{SST}: \emph{Single Spanning Tree} (SST regions: regioni con switch che non supportano tutti 802.1s);
+\item{BPDU}: \emph{Bridge Protocol Data Unit};
+\item{TCN}: \emph{Topology Change Notification};
+\item{TC}: \emph{Topology Change};
+\item{TCA}: \emph{Topology Change Acknowledgement}.
+
+\end{itemize}
+
+\item{\textbf{Virtual LAN}}
+
+\begin{itemize}
+
+\item{VLAN}: \emph{Virtual Local Area Network}:
+
+\begin{itemize}
+
+\item{VID}: \emph{VLAN Identifier};
+\item{TPID}: \emph{Tag Protocol Identifier} (il campo nelle trame Ethernet/802.3 che dice che subito dopo c’è il TCI, valore 81-00);
+\item{TCI}: \emph{Tag Control Information};
+
+\end{itemize}
+
+\item{GVRP}: \emph{GARP VLAN Registration Protocol} (una particolare istanza di GARP per definire le VLAN sugli switch);
+\item{MVRP}: \emph{Multiple VLAN Registration Protocol};
+\item{GARP}: \emph{Generic Attribute Registration Protocol} (protocollo usato dagli switch per comunicare attributi tra loro);
+\item{IVL}: \emph{Independent Virtual LAN} (IVL switch: con filtering database indipendenti per le VLAN, permettono ad un dispositivo di essere presente contemporaneamente su più VLAN):
+
+\begin{itemize}
+
+\item{\textit{Filtering Database}}, creati per ogni VLAN;
+\item{FID}: \emph{Filtering Identifier} (identificatore di un Filtering Database).
+
+\end{itemize}
+
+\item{SVL}: \emph{Shared Virtual LAN} (SVL switch: con filtering database condiviso tra le VLAN, non permettono quello che fanno fare gli IVL);
+\item{PVST}: \emph{Per VLAN Spanning Tree} (Protocollo proprietario cisco);
+\item{PVST+}: \emph{PVST Plus};
+\item{PVLAN}: \emph{Private VLAN}.
+
+\end{itemize}
+
+\item{\textbf{Sigle di livello 1}}:
+
+\begin{itemize}
+
+\item{FDDI}: \emph{Fiber Distributed Data Interface};
+\item{PHY}: \emph{Physical Layer};
+\item{CSMA/CD}: \emph{Carrier Sense Multiple Access / Collision Detection};
+\item{CSMA/CA}: \emph{Carrier Sense Multiple Access / Collision Avoidance};
+\item{DSL}: \emph{Digital Subscriber Line};
+\item{ADSL}: \emph{Asymmetric DSL};
+\item{ASIC}: \emph{Application Specific Integrated Circuit}.
+
+\end{itemize}
+
+\item{\textbf{Sigle di livello 3}}:
+
+\begin{itemize}
+
+\item{IP}: \emph{Internet Protocol};
+\item{IPX}: \emph{Internetwork Packet Exchange};
+\item{CIDR}: \emph{Classless Inter-Domain Routing};
+\item{LIS}: \emph{Logical IP Subnet} (rete logica IP);
+\item{MTU}: \emph{Maximum Transmission Unit} (dimensione max del datagramma IP);
+\item{ToS}: \emph{Type of Service} ( vecchio nome del campo di 8 bit usato dapprima in IPP e poi in DiffServ);
+\item{DS}: \emph{Differentiated Services} (nuovo nome del campo ToS in DiffServ);
+\item{IPP}: \emph{IP Precedence} (i primi 3 bit nel ToS);
+\item{DSCP}: \emph{DiffServ Code Point} (i primi 6 bit nel DS):
+
+\begin{itemize}
+
+\item{CS}: \emph{Class Selector} (da CS0 [000 000] a CS7 [111 000], mantenendo gli ultimi 3 bit a 0);
+\emph{AFxy}: \emph{Assured Forwarding} (da AF1x [001xxx] a AF4x [100xx], scegliendo per gli ultimi 3 bit: 1 [010], 2 [100], 3 [110] mantenendo l’ultimo bit a 0);
+\item{\emph{Expedited Forwarding}}: (101 000);
+
+\end{itemize}
+
+\item{ECN}: \emph{Explicit Congestion Notification} (ultimi 2 bit nel DS);
+
+\begin{itemize}
+
+\item{ECT}: \emph{ECN-Capable Transport};
+\item{CE}: \emph{Congestion Encountered}.
+
+\end{itemize}
+
+\end{itemize}
+
+\item{\textbf{Protocolli per livello 3}}:
+
+\begin{itemize}
+
+\item{AS}: \emph{Autonomous System};
+\item{IGP}: \emph{Interior Gateway Protocol};
+\item{RIP}: \emph{Routing Information Protocol};
+\item{OSPF}: \emph{Open Shortest Path First}:
+
+\begin{itemize}
+
+\item{LSA}: \emph{Link State Advertisement}
+
+\end{itemize}
+
+\item{EGP}: \emph{Exterior Gateway Protocol};
+\item{BGP}: \emph{Border Gateway Protocol};
+\item{ICMP}: \emph{Internet Control Message Protocol};
+\item{IGMP}: \emph{Internet Group Management Protocol};
+\item{TTL}: \emph{Time To Live};
+\item{NTP}: \emph{Network Time Protocol};
+\item{DHCP}: \emph{Dynamic Host Configuration Protocol};
+\item{HSRP}: \emph{Hot Standby Routing Protocol};
+\item{VRRP}: \emph{Virtual Router Redudancy Protocol};
+\item{GLBP}: \emph{Gateway Load Balancing Protocol}:
+
+\begin{itemize}
+
+\item{AVG}: \emph{Active Virtual Gateway};
+\item{AVF}: \emph{Active Virtual Forwarders};
+
+\end{itemize}
+
+\item{ECMP}: \emph{Equal-Cost Multipath}.
+
+\end{itemize}
+
+\item{\textbf{Multicast}}
+
+\begin{itemize}
+
+\item{RPF}: \emph{Reverse Path Forwarding};
+\item{DVMRP}: \emph{Distance-Vecotr Multicast Routing Protocol} (source-based with RPF and pruning);
+\item{PIM}: \emph{Protocol-Independent Multicast}:
+
+\begin{itemize}
+
+\item{PIM-DM}: \emph{PIM-Dense Mode};
+\item{PIM-SM}: \emph{PIM-Sparse Mode}.
+
+\end{itemize}
+
+\end{itemize}
+
+\item{\textbf{Sigle livello 4}}
+
+\begin{itemize}
+
+\item{UDP}: \emph{User Datagram Protocol};
+\item{TCP}: \emph{Transmission Control Protocol}:
+
+\begin{itemize}
+
+\item{Cwnd}: \emph{congestion window};
+\item{Rwnd}: \emph{receive window};
+\item{Ssthresh}: \emph{slow-start threshold};\
+\item{MSS}: \emph{Maximum Segment Size} (max dimensione del payload TCP);
+\item{AIMD}: \emph{Additive Increase, Multiplicative Decrease};
+\item{ECE}: \emph{ECN-Echo} flag;
+\item{CWR}: \emph{Congestion Window Reduced}.
+
+\end{itemize}
+
+\end{itemize}
+
+\item{\textbf{IPv6}}
+
+\begin{itemize}
+
+\item{EUI}: \emph{Extended Unique Identifier} (per gli indirizzi MAC EUI-64);
+\item{DAD}: \emph{Duplicate Address Detection};
+\item{ESP}: \emph{Encapsulating Security Payload} (header aggiuntivo IPv6);
+\item{RA}: \emph{Router Advertisements}.
+
+\end{itemize}
+
+\item{\textbf{Multimedia networking}}
+
+\begin{itemize}
+
+\item{RSTP}: \emph{Real-Time Streaming Protocol};
+\item{RTP}: \emph{Real-time Transport Protocol};
+\item{RTCP}: \emph{RTP Control Protocol};
+\item{SIP}: \emph{Session Initiation Protocol};
+\item{PSTN}: \emph{Public Switched Telephone Network};
+\item{VoIP}: \emph{Voice over IP}.
+
+\end{itemize}
+
+\item{\textbf{Quality of Service}}
+
+\begin{itemize}
+
+\item{PCP}: \emph{Priority Code Point} (nella terminologia 802.1Q/p, nella 802.1p è User Priority);
+\item{DEI}: \emph{Drop Eligible Indicator};
+\item{WFQ}: \emph{Weighted Fair Queuing};
+\item{IntServ}: \emph{Integrated Services}:
+
+\begin{itemize}
+
+\item{RSVP}: \emph{Resource Reservation Protocol}:
+
+\begin{itemize}
+\item{Tspec}: \emph{Traffic specification};
+\item{Rspec}: \emph{Resource specification}.
+
+\end{itemize}
+
+\item{ISA}: \emph{Integrated Services Architecture}.
+
+\end{itemize}
+
+\item{DiffServ}: \emph{Differentiated Services}:
+
+\begin{itemize}
+
+\item{PHB}: \emph{Per-Hop Behaviour};
+\item{CoS}: \emph{Classes of Service};
+\item{TCB}: \emph{Traffic Conditioning Block};
+\item{LLQ}: \emph{Low Latency Queuing};
+\item{RED}: \emph{Random Early Detection};
+\item{WRED}: \emph{Weighted RED};
+\item{MQC}: \emph{Modular QoS CLI} (Command Line Interface).
+
+\end{itemize}
+
+\item{SLA}: \emph{Service Level Agreement};
+\item{MPLS}: \emph{Multiprotocol Label Switching}:
+
+\begin{itemize}
+
+\item{MPLS-TE}: \emph{MPLS-Traffic Engineering};
+\item{LSR}: \emph{Label Switch Router};
+\item{LSP}: \emph{Label Switched Path};
+\item{FEC}: \emph{Forwarding Equivalence Class};
+\item{LDP}: \emph{Label Distribution Protocol} (senza MPLS-TE);
+\item{RSVP-TE}: \emph{Resource Reservation Protocol-Traffic Engineering} (con MPLS-TE);
+\item{EXP}: \emph{Experimental} (i bit di MPLS per la QoS);
+\item{CE}: \emph{Customer Edge};
+\item{C}: \emph{Customer};\
+\item{PE}:\emph{Provider Edge};
+\item{P}: \emph{Provider};
+\item{VRF}: \emph{Virtual Routing/Forwarding}
+
+\end{itemize}
+
+\end{itemize}
+
+\item{\textbf{Wireless}}
+
+\begin{itemize}
+
+\item{MANET}: \emph{Mobile Ad Hoc Network};
+\item{VANET}: \emph{Vehicular Ad Hoc Network}:
+
+\begin{itemize}
+
+\item{CBF}: \emph{Contention-Based Forwarding};
+\item{WT}: \emph{Waiting Time}.
+
+\end{itemize}
+
+\item{Tipi di reti mobile}:
+
+\begin{itemize}
+
+\item{GSM}: \emph{Global System for Mobile Communication} (in origine Groupe Spécial Mobile);
+\item{UMTS}: \emph{Universal Mobile Telecommunication System};
+\item{HSDPA}: \emph{High-Speed Downlink Packet Access};
+\item{HSPA}: \emph{High-Speed Packet Access};
+\item{LTE}: \emph{Long-Term Evolution}.
+
+\end{itemize}
+
+\item{SNR}: \emph{Signal-to-Noise Ratio};
+\item{BER}: \emph{Bit Error Rate}:
+
+\begin{itemize}
+
+\item{PSK}: \emph{Phase Shift Keying};
+\item{QPSK}: \emph{QPSK};
+\item{QAM}: \emph{Quadrature Amplitude Modulation}.
+
+\end{itemize}
+
+\item{BSS}: \emph{Basic Service Set}:
+
+\begin{itemize}
+\item{BSSID}: \emph{BSS Identifier} (MAC address dell’AP);
+\end{itemize}
+
+\item{STA}: \emph{Station};
+\item{AP}: \emph{Access Point};
+\item{DS}: \emph{Distribution System};
+\item{ESS}: \emph{Extended Service Set}:
+
+\begin{itemize}
+\item{SSID}: \emph{Service Set Identifier};
+\end{itemize}
+
+\item{IBSS}: \emph{Independent Basic Service Set} (BSS indipendenti sulla stessa frequenza nel caso di reti Ad Hoc);
+\item{EIRP}: \emph{Equivalent Isotropic Radiated Power};
+\item{WPA}: \emph{WiFi Protected Access};
+\item{WEP}: \emph{Wired Equivalent Privacy};
+\item{AES}: \emph{Advanced Encryption Standard};
+\item{EAP}: \emph{Extensible Authentication Protocol};
+\item{RADIUS}: \emph{Remote Authentication Dial-In User Service};
+\item{DCF}: \emph{Distributed Coordination Function};
+\item{PCF}: \emph{Point Coordination Function};
+\item{IFS}: \emph{Inter-Frame Space}:
+
+\begin{itemize}
+
+\item{SIFS}: \emph{Short IFS};
+\item{PIFS}: \emph{PCF IFS};
+\item{DIFS}: \emph{DCF IFS};
+\item{EIFS}: \emph{Extended IFS}.
+
+\end{itemize}
+
+\item{CCA}: \emph{Clear Channel Assessment} (segnale per capire quando un canale è libero);
+\item{CW}: \emph{Contention Window};
+\item{CRC}: \emph{Cyclic Redudancy Check};
+\item{RTS}: \emph{Request To Send};
+\item{CTS}: \emph{Clear To Send};
+\item{NAV}: \emph{Net Allocation Vector};
+\item{MIPv6} \emph{Mobile IPv6}:
+
+\begin{itemize}
+
+\item{MN}: \emph{Mobile Node};
+\item{CN}: \emph{Correspondent Node};
+\item{HA}: \emph{Home Agent};
+\item{CoA}: \emph{Care-of-Address};
+\item{BU}: \emph{Binding Update};
+
+\end{itemize}
+
+\item{WLC}: \emph{WLAN Controller};
+\item{CAPWAP}: \emph{Control and Provisioning of Wireless Access Points}
+
+\end{itemize}
+
+
+\item{\textbf{Sicurezza}}
+
+\begin{itemize}
+
+\item{VPN}: \emph{Virtual Private Network};\
+\item{IPsec}: \emph{IP security}:
+
+\begin{itemize}
+
+\item{AH}: \emph{Authentication Header};
+\item{ESP}: \emph{Encapsulation Security Payload};
+\item{SA}: \emph{Security Association}:
+
+\begin{itemize}
+\item{SPI}: \emph{Security Parameter Index} (identificatore della SA)
+\end{itemize}
+
+\item{SAD}: \emph{Security Association Database};
+\item{SPD}: \emph{Security Policy Database};
+\item{IPsec IKE}: \emph{Internet Key Exchange}.
+
+\end{itemize}
+
+\item{SSL}: \emph{Secure Sockets Layer};
+\item{TLS}: \emph{Transport Layer Security};
+\item{IPS}: \emph{Intrusion Prevention System};
+\item{IDS}: \emph{Intrusion Detection System}:
+
+\begin{itemize}
+
+\item{HIDS}: \emph{Host-based IDS};
+\item{NIDS}: \emph{Network IDS}.
+ 
+\end{itemize}
+
+\end{itemize}
+
+\end{itemize}

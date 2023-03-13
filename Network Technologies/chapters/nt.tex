@@ -1,0 +1,435 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../nt.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Network Technologies}
+\label{cap:nt}
+%************************************************\\
+
+\section{CONGESTIONE}
+
+Controllo della congestione. Problematica molto importante nelle reti. Senza questo sistema la rete non funzionerebbe. Non riuscirebbe a smaltire il traffico. Estensione TCP/IP ECN.
+
+Perché si ha la congestione? Essa riguarda i nodi di comunicazione (router). Il fenomeno si presenta quando la capacità di trasmissione è superiore alla capacità di smaltimento. Quando la velocità dei sender si approssima alla velocità di smaltimento. Il throughput è il traffico smaltito dalla rete. Numero medio di pacchetti che la rete è in grado di consegnare correttamente a destinazione. Abbiamo numerosi parametri come il \textit{Delay, delay Jitter}, etc. 
+
+Riguardo le performance, sono quindi importanti i Sistemi della congestione. Ritardi che iniziano ad aumentare. Perdita di pacchetti. Abbiamo dei buffer sui link d'uscita. Buffer in input ed in output. Quando le sorgenti iniettano tanto traffico, i router iniziano a riempirsi. La Teoria delle Code fornisce una modellazione stocastica di questi fenomeni. Ritardo di permanenza nel router $\uparrow\ \implies$ ritardo end-to-end $\uparrow$. Abbiamo diverse componenti di ritardo: \{\textit{Ritardo di trasmissione}, \textit{Ritardo di propagazione}, \textit{Ritardo di accodamento}\}. Una conseguenza drastica della congestione è lo scarto dei pacchetti. A meno che non vi siano meccanismi di priorità, ovvero delle Classi di Priorità. I tipici sintomi della congestione sono lunghi ritardi e perdita di pacchetti. Si badi bene che controllo della congestione è ben differente dal controllo di flusso, il quale alla fine rallenterà i sender troppo veloci. Entrambi lo faranno, ma per obiettivi differenti. Con il controllo di flusso, sempre si rallenta il sender, ma end-to-end! I sender inviano il carico, e se i router non ce la fanno si ha bisogno del controllo di congestione. Per ogni collegamento vi sono due buffer (Input ed Output). Nei buffer di input vi è l'elaborazione (instradamento). Fatto ciò il pacchetto sarà accodato nel relativo buffer di output associato al collegamento selezionato. Tempo di accodamento e tempo di trasmissione. I Sistemi a Coda e la relativa teoria che c'è dietro, la \textbf{Teoria delle Code} è praticamente utilizzata per modellare le reti. Un sistema a coda è un sistema composto da una fila di attesa ed un centro di servizio, all'interno del quale vi sono differenti servitori, i quali alla fine serviranno i clienti. Esistono diverse discipline. Si avrà l'arrivo dei clienti dall'esterno, e ciascun cliente dovrà sempre attendere il proprio turno.
+
+Nel nostro caso, guardando l'output buffer, possiamo immaginrlo come un sistema a coda a singolo servitore. Ritardo di accodamento e ritardo di trasmissione sono modellati dal sistema a coda. Internet tra l'altro è un insieme di code connesse tra di loro. La Teoria delle Code ci permette di valutare il delay cui sono soggetti i pacchetti, e ci permette anche conseguentemente di dimensionare in maniera corretta i link. Analisi delle prestazioni, progettazione sono quindi le tematiche principali.
+
+Un nodo comincia a congestionarsi quando la velocità di arrivo dei clienti è superiore alla velocità di smaltimento. Nel nostro caso il cliente è il pacchetto, ed il servitore è il trasmettitore. Se i buffer fossero di dimensione infinita, ed immaginando che non vi sia overhead aggiuntivo, possiamo definire il \textbf{CARICO} come rate medio con la quale i sender iniettano i pacchetti nella rete.
+
+Il \textit{throughput} è la velocità di smaltimento. Throughput e load sono stati normalizzati rispetto al massimo possibile throughput della rete. Capacità massima. Il throughput idealmente dovrebbe seguire il load. All'aumentare del carico, che oltrepassa il massimo possibile della rete, il throughput (normalizzato) rimarrebbe costante e pari ad 1. Quando il load si approccia ad 1, il ritardo se ne va invece ad infinito. Questo succede praticamente anche in una situazione ideale. Nella realtà i buffer hanno dimensione finita! Nella situazione reale, il throughput seguirà il carico fino ad un certo punto, oltrepassato il quale se il carico sale troppo, il throughput scenderà bruscamente a 0. Anche per i pacchetti correttamente ricevuti dal destinatario e riscontrati, i rispettivi taluni ACK potrebbero non tornare mai al sender, il quale in protocolli TCP ritrasmetterà (inutilmente) i pacchetti. La rete non sarà più in grado di trasmettere i pacchetti. La capacità effettiva andrà a zero. Servono quindi tecniche di controllo della congestione, attualmente implementate dal TCP.
+
+Fondamentalmente vi sono due approcci:
+
+\begin{itemize}
+\item{\textbf{Approccio end-to-end}} nel quale la rete non fornisce alcun feedback esplicito al sender dei pacchetti. La responsabilità è lasciata agli host, agli end-system;
+\item{\textbf{Network Assisted}} nel quale la rete (i nodi di commutazione) forniscono un feedback diretto.
+\end{itemize}
+
+Si avrà il setting di un eventuale bit di controllo congestione in un pacchetto. Oppure si fornisce il Rate al Sender (\textit{Rate based}). Oppure si inviano al sender quanti pacchetti inviare prima di fermarsi (\textit{Credit based}). Si parlerà di \textit{Controllo Isaritmico}. Esaurito il credito la sorgente dovrebbe fermarsi. Vi sono quindi varie possibilità. Per il momento concentriamoci sul network assisted feedback. Abbiamo detto che Internet è sostanzialmente una rete di code. In tal caso vi sono dei feedback (pacchetti della rete alla sorgente, diretti), ovvero dei pacchetti di controllo (Choke Packet). Messaggio ICMP (Source Quench), che ha sempre l'obiettivo di rallentare la sorgente quando necessario. Nella pratica non è pero usato. C'è la possibilità che il feedback arrivi alla sorgente mediante receiver. Esso va ad inserire queste informazioni in un pacchetto che lo attraversa. Tramite un apposito bit di controllo, il receiver farà l'echo al sender. In questo caso quindi serve un'AZIONE PREVENTIVA. Si noti le diverse tipologie di azioni: azione \textit{REATTIVA} nella quale la sorgente reagisce ad una situazione di congestione, ed azione \textit{PREVENTIVA} qualora si riesca in qualche modo ad evitare laddove possibile proprio il verificarsi della congestione. Vi sono meccanismi di gestione del flusso, di Prenotazione delle risorse. In tal caso la congestione non si presenta. Admission Control significa controllo dell'ammissione. Il sender contratta la sua necessità con la rete. Esso descriverà le caratteristiche dei suoi pacchetti con appositi \underline{descrittori del traffico}, che conterranno ovviamente informazioni sul rate (pacchetti x unità di tempo). Nelle chiamate telefoniche il traffico è regolare (commutazione di circuito). Nelle reti il traffico è impulsivo, intermittente (commutazione di pacchetto). Abbiamo una caratteristica di BURSTNESS. La rete si deve quindi regolare: deve capire se ci sono delle risorse necessarie. I buffer sono i relativi ammortizzatori. Evitando sempre il buffer overflow naturalmente. Capire che burstness hanno questi particolari flussi nella rete. Rate medio e burstness (livello di intermittenza del raffico) sono quindi i parametri più significativi. Se ci sono i prerequisiti, allora il contratto sarà OK ed il flusso sarà autorizzato, altrimenti verrà rigettata la richiesta. La rete si preoccuperà poi di verificare che la sorgente rispetti la policy dei descrittori. In caso contrario, agli access node controlleremo i pacchetti, scartandoli oppure marcandoli per essere via via scartati. \textit{Reservation} è però un modello non scalabile. Serve una prenotazione per ogni singolo flusso. Mantenere informazioni di stato su ogni singolo flusso della rete è ovviamente una soluzione poco scalabile. La granularità di controllo non è accettabile. \textit{IntServ}, \textit{DiffServ} (gestire flussi appartenenti a varie classi). Adesso si parla anche di Ethernet deterministico (QoS, prenotazioni). BUS CAN delle centraline veicolari. Ma non ci sono garanzie QoS!
+
+\subsection{TCP TRAFFIC CONTROL} 
+
+Si tratta di un protocollo a livello di trasporto che offre un servizio trasporto dati affidabile. Consegna corretta nella corretta sequenza. Per far ciò si basa su un meccanismo RQ. Stabilire una connessione TCP significa instaurare un 3-way handshake. Esiste il TCP full duplex (bidirezionale). Send buffer, receive buffer e variabili di stato sono gli elementi principali di una connessione. Il servizio TCP è detto \textit{by-stream}. Insieme di byte che vanno a finire nel receive buffer. Si ricordi che TCP non numera i segmenti, ma i byte! (Numero di sequenza). Il funzionamento si basa su delle finestre (Send Window e Receive Window). La \textit{Send Window} rappresenta l'insieme dei numeri di sequenza relativi a byte che possono essere mandati dall'altra parte. La prima parte della finestra contiene i cosiddetti \textit{byte-in-flight}, ovvero i pacchetti in volo, non ancora riscontrati. Poi abbiamo i gruppi di byte liberi. Oltre un certo numero di sequenza non si può inviare. Receive window: insieme di numeri di sequenza legati ai byte che possono essere ricevuti correttamente. Al di fuori, non possono essere ricevuti.
+\newline \underline{rwnd}: variabile di stato che contiene la dimensione della receive window. Molto importante per il controllo di flusso. Formato segmento TCP: campo '\textit{window}', \textit{Acknowledgement number}. Separazione prossimo byte atteso e campo del controllo di flusso. Con questi campi un receiver può limitare la velocità del sender. Un receiver metterà il valore di rwnd nel campo window. Quando l'altra entità TCP riceverà un corrispondente pacchetto TCP, allora dovrà fare in modo che la sua finestra di invio soddisfi alla seguente disequazione:
+
+\[
+	LastByteSent - LastByteAcked \leq rwnd
+\]
+
+che limita sostanzialmente la mole di dati in volo (non ancora riscontrati).
+
+In pratica, analizziamo il controllo congestione di base del TCP (end-to-end). Il TCP se ne accorge quando vi sono delle perdite dei pacchetti. Tutto si basa sulla notifica di un \textit{elemento perdita} (congestione della rete, ovvero quando qualche router ha scartato un qualche segmento, qualche buffer si è riempito). Esaminiamo più nel dettaglio:
+
+\begin{itemize}
+\item{\textbf{Timeout}}: (timer di ritrasmissione scade, meccanismo RQ del TCP): Un timeout rappresenta un elemento di perdita, ed è anche un segnale di congestione pesante;
+\item{\textbf{3-ACK}}: un altro elemento di perdita è la ricezione di 3 ACK duplicati. Un ACK duplicato è un ACK inviato da un receiver quando riceve dati fuori sequenza. Il receiver deve quindi segnalarlo. Si riscontrano nuovamente i dati correttamente ricevuti. Lato sender, il TCP non reagisce subito, immediatamente.
+\end{itemize}
+
+Le entità TCP stanno sugli host! Il sender riceve 2 ACK duplicati, ma se ne riceve un terzo, allora effettivamente (molto probabilmente) quel pacchetto è andato perso. E qui entra in gioco il meccanismo del \textit{FAST RETRANSMIT}, che sarebbe una trasmissione fatta in maniera tale da evitare il timeout del pacchetto, che sarebbe un altro elemento perdita come abbiamo già detto. 
+Si basa anche su una finestra aggiuntiva, detta di congestione (\textit{cwnd}). Tale variabile mantiene il valore della dimensione di questa finestra. Essa è legata al numero di byte in volo. Adopera un controllo di flusso congiuntamente ad un controllo di congestione. Adesso la precedente disuguaglianza diventa:
+
+\[
+	LastByteSent - LastByteAcked \leq \min(rwnd,cwnd)
+\]
+
+In realtà la Congestion Window viene misurata in MSS (\textit{Maximum Segment Size}). Viene misurata solo la parte dei dati! La MSS non considera ovviamente l'intestazioone TCP. cwnd è misurata in MSS. Sulla base di questo valore, il sender invierà i dati con un certo rate. La cwnd aumenta (gestita lato sender) alla ricezione degli ACK. Questo aumento dipenderà dalla velocità dell'arrivo degli ACK. Si parla di comportamento \underline{self-clocking}. Si sintonizza con la situazione di congestione della rete. Se c'è congestione, il TCP sender aumenterà la cwnd lentamente. La aumenta sempre fino a che non si verifica un elemento perdita. Il TCP, per far questo, esegue un \underline{bandwidth probing}. Aumenta cwnd e contemporaneamente fa il probing. Si blocca quando c'è l'elemento perdita, individuata con la sonda della banda a disposizione. Riducendo cwnd si riduce la dimensione della congestion window. Immaginiamo una connessione TCP ovviamente (3-way handshake). Il TCP inizia con un aumento esponenziale della congestion window (aumento di +1 ad ogni ACK ricevuto). Nel nostro ragionamento non prendiamo in considerazione il controllo di flusso. Ricordiamo che l'MSS è la dimensione massima del segmento. Stiamo immaginando che non vi siano errori. Lato receiver immaginiamo che non vi siano ACK ritardati (accumulati). Invio non ritardato degli ACK $\implies +1\ ACK\ \implies ++\ cwnd \implies$. aumento $2^i$ esponenziale della finestra di congestione. \textit{Slow Start} è quindi un nome abbastanza fuorviante. Ovviamente il TCP non va sempre avanti con lo slow start! Termina quando la cwnd raggiunge il valore \textit{ssthresh}, che rappresenta la soglia dello Slow Start. Si entra quindi nella fase di \underline{Congestion Avoidance}. Quando si ha un timeout (congestione pesante), la cwnd viene settata ad 1, e si imposta $[ssthresh = cwnd/2]$. Valore di ssthresh dimezzato rispetto al valore di cwnd quando si è verificato il timeout; con l'altro elemento perdita (3-ACK duplicati), avviene la ritrasmissione veloce, ed anche qui $[ssthresh = cwnd/2]$. Per la cwnd invece:
+
+\begin{itemize}
+\item SLOW START nella versione vecchia (come il timeout);
+\item Nelle nuove versioni TCP (\textit{Reno TCP}), si entra in \textit{Fast Recovery}, nel quale la cwnd riparte da un valore più alto.
+\end{itemize}
+
+Comunque transitino i segmenti, quando si entra in Congestion Avoidance, si aumenta di 1 per ogni \textit{RTT}. Adesso abbiamo un aumento non più esponenziale ma lineare $\implies (cwnd\ +=\ MSS/cwnd)$. 
+Per ogni RTT, la finestra sarà aumentata di 1! E rimaniamo in Congestion Avoidance sino a che non si ha un elemento perdita. Se l'elemento perdita è un timeout si va in Slow Start (si ricordi che quando l'elemento perdita è di questo tipo $\implies$ si va comunque in Slow Start), altrimenti nelle nuove versioni TCP si ha il seguente settaggio:
+
+\[
+	\left\{
+	\begin{aligned}
+	&ssthresh = cwnd/2\\
+	&cwnd = ssthresh + 3
+	\end{aligned}
+	\right.
+\]
+
+Il TCP aumenta quindi la finestra fino a che non vi è un elemento perdita. Più o meno l'andamento di $cwnd(t)$ nel tempo sarà un "dente di sega". Questo è il controllo di congestione end-to-end.
+
+Di recente abbiamo un meccanismo network-assisted (ove è la stessa rete che fornisce un feedback esplicito alla sorgente (sender)). Meccanismo \textit{ECN} (RFC 3168), che ha comportato delle estensioni nel TCP. Una caratteristica opzionale è la ECN - \textit{Explicit Congestion Notification}, che sarebbe un feedback diretto attraverso il ricevitore. Meccanismo opzionale se entrambe le entità lo vogliono e lo possono supportare! Valido per qualunque protocollo che sia in grado di fare l'echo. Nel TCP può essere supportato, ad esempio. Con l'ECN, nell'intestazione TCP sono stati aggiunti due nuovi flag. Per l'IP invece, due bit nell'intestazione (2 bit ECN). Nell'intestazione IP vi è il \textit{ToS} (2 byte, IPv4). Nell'IPv4 questo campo era per la QoS. Livello di servizio differente. Campo ridefinito nell'architettura DiffServ (Internet che offre dei servizi QoS). Nell'ambito della seconda architettura (DiffServ), abbiamo 8 bit, di cui 6 servono per marcare ed i restanti 2 corrispondono ai bit ECN. I 6 bit sarebbero il \textit{Differentiated Service Codepoint} (di default abbiamo \textit{best-effort}, identificato con la sigla esadecimale $0x00$).
+Gli ultimi due bit servono per l'ECN:
+
+\begin{itemize}
+\item La sigla $00$ vuol dire \textit{ECN-not-capable};
+\item $\{01,\ 10\}$ queste due cifre significano che l'entità è \textit{ECN-capable};
+\item La sigla $11$ indica invece che è stata incontrata della congestione. Questo valore non viene mai settato dagli host, ma dai router intermedi.
+\end{itemize}
+
+Quando la destinazione incontrerà questi pacchetti allora farà l'echo.
+
+Nel TCP abbiamo invece due flag: \{ECE (\textit{ECN-Echo}), CWR (\textit{Congestion Window Reduced})\}. Durante il 3-way handshake le due entità negoziano l'utilizzo dell'ECN. TCP lato client inizierà il 3WHS inviando il SYN. In questo segmento, andrà a settare entrambi i flag ECN. Se l'altro host è preparato, ritorna il SYN-ACK con ECE settato e CWR non settato. Altrimenti se non è preparato, ECE e CWR entrambi non saranno settati. Se il receiver riceve dei pacchetti congestionati, allora setterà ECE, e tali pacchetti saranno echoati secondo il relativo protocollo.
+
+Meccanismo definito di recente per il mondo TCP/IP. Meccanismo \underline{network assisted} $\neq$ end-to-end. Prevede di introdurre 2 flag nell'header TCP e 2 bit nell'header IP. Per l'IP si è dato significato a due bit del vecchio campo ToS; adesso 6 bit sono dedicati al DiffServ CodePoint (di default $0x00$), il quale indica che il pacchetto appartiene ad una certa classe di traffico. 2 bit per l'ECN: \{00 = Host not ECN capable; 01/10 se è in grado di supportarlo; 11 = congestione incontrata!\}. Un router che incontra congestione setterà il bit ad 11. Tutto è nelle mani del TCP e viene negoziato nel 3-way handshake. Per quanto riguarda il TCP, il flag ECN-Echo viene utilizzato dal receiver per dire al sender che il pacchetto è congestionato. Poi abbiamo il flag CWR (Congestion Window Reduced), il quale viene utilizzato dal sender per avvertire che ha preso provvedimenti alla ricezione di un ECE.
+
+Supponiamo che un'entità TCP ECN-capable avvii il 3WHS con un'altra entità. Si imposta $ECN = CWR := 1$. Il receiver invierà ECE a 0 o ad 1 a seconda del supporto ad ECN, e CWR non settato. Se il receiver dovrà echoare qualche pacchetto congestionato (bit 11), allora setterà ECE ad 1. Quando il sender riceve l'echo, lo notifica, lo prende come elemento di perdita; prenderà qualche provvedimento, magari riducendo la cwnd e setterà CWR ad 1. Il receiver non smetterà di inviare echo (all'arrivo di messaggi 11), sino a che non sarà ritornato un segmento TCP con CWR pari ad 1.
+
+\section{X-CASTING} 
+
+\subsection{MULTICAST}
+
+Implementazione del multicast nella rete. BROADCAST ROUTING ALGORITHMS, che vengono in seguito adattati al multicast. Partiamo dall'UNICASTING. Un solo nodo sorgente ed uno destinazione, relazione 1-1. I router lungo la rotta devono trasmettere i pacchetti solo lungo una interfaccia. Un'internetwork è una serie di reti fisiche collegate tra di loro mediante switch. Operazioni di forwarding che avvengono lungo una sola interfaccia. Il MULTICASTING prevede che un pacchetto sia da inviare ad un gruppo di destinazioni, che facciano parte dello stesso gruppo multicast. Come indirizzo mittente abbiamo sempre quello del mittente stesso. Quando un router riceverà un pacchetto multicast, dovrà mandare il pacchetto lungo le interfacce opportune per raggiungere i relativi destinatari. I router devono opportunamente ragionare con protocollo Multicast. Con esso inoltriamo un pacchetto su più di un'interfaccia. A questo punto un host che faccia parte di gruppi multicast avrà più indirizzi. n indirizzi multicast. Indirizzi che lo individueranno come una destinazione, i.e. 226.14.18.7 . Indirizzo IP che lo individua come nodo all'interno della Internet più un altro indirizzo multicast. L'indirizzo di multicast è di destinazione ovviamente. Il multicasting di default non è utilizzato su Internet. Si possono utilizzare/creare delle isole multicast. Uso non diffuso comunque. Si può emulare il multicasting (utile per streaming partite ad es.) con la tecnica del \textit{MULTIPLE UNICASTING}. In tal caso la sorgente si dovrà preoccupare di creare n pacchetti copiati per n destinazioni es. \{D1, D2, D3\}. La sorgente creerà 3 pacchetti, uno per ogni destinazione. Ovviamente questo comporta uno spreco di banda (più pacchetti di quelli necessari, al contrario di quanti ne servirebbero col multicasting). Situazione meno efficiente (si pensi anche ai ritardi, alla ridondanza (copie di pacchetti multipli)). Il multicasting ha importanza per molte applicazioni!
+
+\subsection{BROADCAST}
+
+Gli algoritmi utilizzati vengono riusati, adattati anche per il multicast. Broadcast 48 bit dell'IPv4 ad 1, oppure a livello 2 (ARP Ethernet). Algoritmo Link State (OSPF) e Distance Vector. Abbiamo nel primo caso i LSAS (\textit{Link State Advertisement}). Si parla comunque di broadcast parziale! Nelle reti P2P c'è bisogno di spedire un pacchetto a tutti i nodi che facciano parte di quella rete. Implementazione: FLOODING. (livello 2 nei bridge, rudimentale tecnica di routing). Ritrasmissione delle trame su tutte le interfacce, diverse da quella di provenienza. Viene fatto il flooding se non vi sono entry nel DB. Approccio semplice per implementare il broadcast. Un router prenderà il pacchetto e lo ritrasmetterà su tutte le interfacce eccetto quella di provenienza. Le maglie sono a rischio di cicli, per definizione. BROADCAST STORM. Il flooding, se ci sono delle maglie, così com'è non può essere assolutamente utilizzato; non senza degli accorgimenti. Dev'essere controllato! Flooding controllato. Un modo è il cosiddetto \textit{SEQUENCE-NUMBER CONTROLLED FLOODING}. In questo caso nel pacchetto broadcast viene messo l'indirizzo sorgente ed il numero di sequenza. Si tiene memoria del numero di sequenza del pacchetto, e se occorre di nuovo, allora esso non verrà floodato.
+
+RPF (\textit{Reverse Path Forwarding}). Un router, alla ricezione di un pacchetto, lo ritrasmette a tutte le interfacce (esclusa quella di provenienza), se e solo se l'interfaccia di provenienza si trova sulla rotta a minor costo per raggiungere la sorgente in unicast. Si parla sempre della SORGENTE ORIGINARIA! C'è uno spreco! Se su alcuni link viaggiano pacchetti che verranno poi scartati, ciò darà luogo ad un impiego di banda non necessario. Se si creasse invece uno \textit{Spanning Tree} (letteralmente "albero ricoprente" la rete), potremmo risolvere questo problema: dato questo albero abbiamo che su ogni link transiterebbe solo una copia di ogni pacchetto. Un drawback c'è però! Numero di reti fisiche attraversate dal pacchetto. Alcuni nodi potrebbero esser raggiunti in un minor numero di nodi: questo comporta quindi un \underline{ritardo maggiore}. Lo spanning tree viene associato ad una particolare topologia. DEVE essere poi seguito! Ci sono vari modi per costruirlo, ed uno possibile è il cosiddetto \textit{CENTER-BASED}:
+
+\begin{itemize}
+\item{1)} Un nodo centrale è definito, in base a qualche criterio;
+\item{2)} Stabilito il nodo, i vari nodi della rete si dovranno preoccupare di inviare dei messsaggi di JOIN al center node, per entrare a farne parte. Saranno delle comunicazioni unicast. I percorsi seguiti dai pacchetti di join entreranno a far parte dello spanning tree, a meno che non intercettino delle rotte già appartenenti ad esso. In tal caso la porzione di spanning tree intercettata rimarrebbe invariata. I pacchetti di join servono esclusivamente a aquesto. Questo consentirà di non sprecare banda;
+\end{itemize}
+
+
+\subsection{MULTICASTING}
+
+Il nostro focus è su Internet. Innanzitutto è un formato di indirizzamento (indirizzamento membri del multicast). IPv4. Serve un altro componente (protocollo per raccogliere informazioni a livello di appartenenza al gruppo multicast). IGMP (\textit{Internet Group Management Protocol}). Dopodiché c'è bisogno di un protocollo per coordinare i gruppi Multicast, per creare degli alberi multicast. IGMP mette in relazione un host con il first hop. I router multicast sanno mediante IGMP se qualche host all'interno delle sue reti faccia parte di un gruppo multicast. Il classful addressing prevedeva anche la classe D in IPv4 (multicast, bit iniziali 1110). Blocco 224.0.0.0/4. $32-4=28$. Ci sarebbero altri 28 bit, ma 5 iniziali di questi 28 sono praticamente \textit{unused}. 23 bit utilizzati alla fine. Primi 23 bit partendo dall'LSB. \textit{Group Identifier}.
+
+Un'interfaccia di rete elaborerà una trama se il multicast è abilitato alla ricezione. Si ragiona a livello 2. Indirizzi MAC di tipo multicast. Vi è ovviamente una relazione tra Indirizzo MAC multicast ed IP multicast. Il pacchetto IP raggiungerà la destinazione in base al livello Data Link (con opportuno imbustamento). Si parte comunque dall'indirizzo IP multicast di destinazione. Il MAC address partirà dall'LSB proprio con i 23 bit LSB. Il prefisso fisso MSB del MAC address è \underline{01005E} (fisso per MAC multicast). Indirizzamento di componente principale.
+
+IGMP = \{query, report, \dots\}. L'ultima versione IGMP v3 prevede solo questi due tipi di messaggi. Il router manderà ciclicamente dei messaggi di query. Un determinato host manderà un report alla ricezione di una query IGMP da un router.
+Se il router si accorge che un host che prima era in un gruppo multicast NON risponde ad una query, allora capisce che vuole lasciare il gruppo. Il router invia semplicemente dei messaggi di query. Si parla di \textit{SOFT STATE} per il protocollo IGMP (l'informazioni di stato viene sempre refreshata di volta in volta, e quindi non è permanente). Informazioni di appartenenza. I messaggi di report contengono informazioni sui gruppi multicast cui gli host intendono appartenere. L'ARP non viene imbustato nell'IP (così come in RARP), ma a livello 2. Mentre i messaggi ICMP ed IGMP vengono imbustati in IP: \{224.0.0.1 per query, 224.0.0.22 per report\} come indirizzo di destinazione per query ovviamente. Il protocol field sarà settato a 2 ed avrà il \underline{TTL settato ad 1}. Il router del first hop raccoglie quindi le informazioni di appartenenza. 
+
+Algoritmi di routing. Pensiamo a due approcci principali: \{group-shared tree, source-based tree\}.
+
+\begin{itemize}
+\item{\textbf{GROUP-SHARED TREE}}: $\exists!$ albero multicast condiviso da tutti i nodi della rete. Ci riferiamo al precedente Spanning Tree dei Broadcast routing protocols. Stesso approccio CENTER-BASED. Abbiamo un Multicast-tree che mette in comunicazione router che abbiano host collegati a loro facenti parte del gruppo (o gruppi) multicast. Router centrale (Router-CORE). \underline{MULTICAST-TREE}. I pacchetti di join saranno sempre trasmessi in unicast. Il multicast tree è condiviso da tutti i membri del gruppo; quindi è un unico albero;
+\item{\textbf{SOURCE-BASED TREE}}: Ci saranno diversi Multicast Tree con l'algoritmo RPF. Per come funziona il tutto, allora alberi router not-attached, comunque potrebbero ricevere i pacchetti. Soluzione: packets pruning. Il router not-attached invierà questo pacchetto al router a monte.
+\end{itemize}
+
+\textit{Distance-Vector Multicast Routing Protocol} (DVMRP) è un protocollo multicast di tipo source-based tree con quindi RPF e pruning. Il PIM è il più utilizzato (Protocol-Independent Multicast):
+
+\begin{itemize}
+\item{PIM densa (PIM-DM)}: La maggior parte dei router sono attached, quindi avranno degli host, dei membri ad essi collegati. L'approccio è analogo a quello del DVMRP (source-based tree);
+\item{PIM sparsa (PIM-SM)}: Se pochi router sono attached, allora si utilizza il group-shared tree. Situazione in cui abbiamo più efficienza. Diversamente si sprecherebbe banda per il viaggio dei messaggi di pruning.
+\end{itemize}
+
+Come può essere utilizzato il Multicasting su Internet? In Internet non è molto diffuso il Multicast. Si possono però creare delle relative isole. Quando ragiono con protocolli di routing ragiono con tutti i router multicast. Ci sarebbe il problema con il tunneling. Rotte che comprendono router non multicast. La topologia logica (rete di overlaying) che si viene a creare comprende solo i router multicast. Si prevede che il pacchetto multicast venga imbustato in un altro pacchetto IP unicast. Gli algoritmi di routing saranno utilizzati nelle reti logiche create.
+
+
+\section{IPv6}
+
+Novità rispetto ad IPv4: spazio di indirizzamento ovviamente più grande: indirizzi 128 bit. Intestazione fissa di 40 byte. I campi opzionali sono al di fuori dell'intestazione. Per semplificare il processamento (instradamento) dei pacchetti. Non c'è più un campo che riguarda la frammantazione od il checksum. I router non possono fare la frammentazione. Solo gli host possono. Attraversare una serie di reti fisiche hop-to-hop. Ricordiamo che la MTU è la \textit{Maximum Transfer Unit}, e sarebbe la massima unità di trasferimento sulla rete fisica. In IPv4 ci pensavano i router. Es. Ethernet da 64 a 1518 byte. Prima il router interfacciato a quella rete Ethernet frammentava il pacchetto. Ed ICMPv4 mandava \textit{Packet Too Big} alla sorgente, alla quale ricezione il pacchetto originario veniva scartato. Questo per velocizzare il processamento (speed-up). La checksum non c'è più. Funzionalità ridondante, dal momento che è presente anche a livello di trasporto TCP ed UDP. Anche a livello 2 è presente in realtà. In IPv4 al decremento unitario del TTL veniva di volta in volta controllata la checksum. Il TTL è ovviamente anche presente in IPv6. C'è anche il supporto QoS. Due campi: \textit{Traffic Class} e \textit{Flow Label}, come supporto alla QoS. Il Flow Label serve ad identificare un flusso con una certa etichetta. ToS IPv4, il quale è stato sostituito dal DiffServ Code Point. Ce lo ritroviamo anche qui. Il traffico viene quindi trattato in maniera diversa. Poi abbiamo anche il supporto alla sicurezza dati, tramite degli header di intestazione. Segretezza ed integrità dati possibile.
+
+Indirizzamento su 128 bit; anche per IPv6 non si identificano i nodi ma le interfacce dei nodi. Il fatto che sia così grande significa che alla fine gli indirizzi saranno sicuramente sufficienti. L'entità IP su un host si preoccuperà di inviarlo all'host di destinazione. Livello rete: end system. Livello trasporto: processi applicativi; livello comunicazione nodi adiacenti: data-link. Non si parlava di NAT, o di Application Gateway (Proxy). Prima classful addressing (basato sulle classi). Concetto di Subnetting. Dopodiché si è pensato ad indirizzi privati e tecniche di adattamento alle reti pubbliche (NAT). Queste tecniche non erano però ben viste dai puristi. Con il NAPT il router lavorano anche sulle porte (livello trasporto). In IPv6 NON c'è bisogno più del NAT. Possiamo adottare sistemi di sicurezza end-to-end (es. IPsec). Introduzione importantissima: \textit{Plug \& Play}, ovvero autoconfigurazione ed autoassegnamento indirizzi IP.
+
+Tiplogie di indirizzamento: \{UNICAST, MULTICAST, ANYCAST\}, ove al solito il multicast si riferisce ad un set di interfacce, gruppo di interfacce. In IPv6 il BROADCAST è un concetto particolare del MULTICAST. ANYCAST identifica sempre un gruppo di interfacce. Più interfacce associate a diversi host identificate con un solo indirizzo anycast. Il pacchetto arriverà soltanto all'interfaccia più vicina (the nearest one, tipicamente); es. load-sharing, misurazione certo costo di una rotta. Ci penseranno i \underline{router}. \`E la rete che si preoccupa di tutto. Più entries per la destinazione.
+Gli indirizzi Anycast NON hanno un blocco a parte di indirizzamento ma sono presi dagli Unicast (dal blocco Unicast).
+
+Tutte le interfacce dei nodi devono avere almeno un indirizzo Unicast di tipo LINK-LOCAL. LINK vuol dire Subnet IP sostanzialmente. Sempre associati agli indirizzi IP. Site = rete aziendale, es. scope differenti. Indirizzi IP con Scope Link, utilizzato per comunicare all'interno della Subnet. \`E tutto sempre autoconfigurato. Ci sono sempre le Subnet! 
+
+Gli indirizzi sono 128 bit rappresentati in esadecimale, con dei punti. Abbiamo 8 sezioni separate da due punti. Ogni sezione rappresenta 4 cifre esadecimali (4 hex digits x section). Abbiamo inoltre varie tecniche di abbreviazione: \textit{Leading zeros}, i quali possono essere omessi. Attenzione! In una URL non abbiamo un nome simbolico, ma solo l'indirizzo IPv6 tra parentesi quadre (per evitare confusione con le porte!) es. http://[IPv6]:port/index.html.
+
+es. porta 8888. Altra tecnica di abbreviazione: quando abbiamo sezioni-adiacenti fatte da zero possiamo utilizzare una SOLA VOLTA il "::". Non si può utilizzare più di due volte la \textit{ZERO COMPRESSION}!
+
+Esiste anche una Mixed Notation per il periodo di transizione: gli ultimi 32 bit fornivano l'indirizzo IPv4 (IPv4-MAPPED). La struttura, come IPv4, è gerarchica (non flat come gli indirizzi a livello 2). Notazione slash (CIDR), la quale individua un prefisso che caratterizza l'indirizzo IP. Il prefisso è quindi ben individuato da questa notazione.
+
+Sono stati già assegnati dei blocchi, assegnati in base al prefisso, che caratterizzano indirizzi speciali: \{Global Unicast, Site (rete di una certa organizzazione), Link Local, Multicast, Unique local unicast, Special addresses\}. La notazione slash individua un prefisso, Ogni gruppetto di 4 bit è una cifra esadecimale, quindi abbiamo 16 bit per sezione, per un totale di 16x8 = 128 bit in totale, come previsto.
+
+\subsection{Tipi di indirizzi}
+
+\begin{itemize}
+\item{\textbf{Global Unicast}}
+
+\textit{Global Routing Prefix}. Sta ad indicare il Site e comprenderà più Subnet preferibilmente. Questo prefisso servirà per effettuare l'instradamento. Poi c'è il \textit{Subnet Identifier}, che sarà sfruttato dai router all'interno del sito. Poi c'è l'\textit{Interface Identifier} utilizzato per comunicare con la relativa interfaccia. Raccomandazione: primo campo 48 bit, secondo campo 16 bit. (48+16) = 64 bit. E per l'ultimo campo abbiamo 64 bit, in maniera tale che 64+64 = 128 bit. Quest'ultimo campo è qundi di 64 bit tipicamente, ed ha a che fare con l'autoconfigurazione. $\implies \{n = 48\ bits,\ m = 16\ bits,\ q = 64\ bits\}$.
+
+Come viene tirato fuori l'Interface Identifier? Un'interfaccia può avere più indirizzi IP. Potrei configuarla manualmente o con un DHCP server (configurazione stateful). La configurazione potrebbe invece anche essere automatica (senza DHCP). In tal modo quel campo viene costruito a partire dall'indirizzo fisico della scheda (LAN, MAC, Ethernet). Ultima parte (ultimi 64 bits). A partire dall'indirizzo HW della scheda. Due schemi di indirizzamento fisico: \{EUI-64, MAC-48 (EUI-48)\}. Adesso si parla di EUI-48 (48 bits). Potremmo anche pensare di generare l'II tramite un generatore di numeri pseudocasuali (per far fronte ad eventuali problemi di privacy). 
+
+Gli indirizzi MAC sono di 48 bit. 6 byte in tutto. Primi 24 bit OUI (\textit{Organization Unique Identifier}) + 40 bit di \textit{extension identifier}. Ogni scheda verrà successivamente numerata con una numerazione progressiva. (5x8 = 40). 5 byte utilizzati per la numerazione progressiva della scheda. A partire dall'indirizzo fisico EUI-64 possiamo quindi derivare l'identificatore di interfaccia. Per questo scopo si parla di EUI-modificato. Si consideri il MAC a 48 bit. Il primo byte (quello che per primo viene trasmesso in rete), quello più a sinistra; si parla del bit LSB (meno significativo). Pensiamo ad un indirizzo MAC di destinazione. Ricezione della trama. L'interfaccia ricevente deve subito capire di che indirizzo si tratta (di gruppo (Multicast), od Unicast): \{9 = indirizzo individuale (UNICAST), 1 = BROADCAST $\lor$ MULTICAST\}. Bit preventivo per sapere come operare (es. switch flooding). Questo primo bit ha significato I/G. Poi c'è il secondo bit trasmesso U/L: \{0 = Universal, 1 = Local\}. Serve 0 se è quello universamente scritto sulle RAM, oppure 1 se utilizzato localmente (impostato tramite il driver della scheda di rete). Problema di elaborazione (RFC). Hanno poi modificato l'EUI-48 in EUI-64. Si chiama modificato perché l'U/L è settato ad 1 (EUI-64 modificato). Se partiamo dall'indirizzo fisico EUI-64, si setta l'U/L ad 1. Il problema nasce se ci troviamo dinanzi un EUI-48. Dobbiamo aggiungere quindi dei bit per arrivare a 64. Si aggiungono 16 bit (sequenza esadecimale FFFE). $(4x4 = 16\ bit) + 48 bit = 64 bit\ \rightarrow$ identificatore di interfaccia.
+
+\subsubsection{Examples}
+
+\begin{itemize}
+\item 2000:1456:247 4/48. Si rappresentino i primi due blocchi che si riferiscono alla prima ed alla seconda subnet (Subnet Identifier). \{$0001_{16},\ 0002_{16}$\}. (Classful Inter-Domain Routing). Nessuno impedisce di mettere la Subnet 0000;
+\item Supponiamo che questo sia l'indirizzo fisico: $(F5-A9-23-EF-07-14-7F-D2)_{16}$. Si deve modificare il penultimo del primo byte (+ FFFE padding se eventualmente partiamo da EUI-48);
+\end{itemize}
+
+\item{\textbf{Indirizzo tutti 00000\dots}}
+
+Serve durante il bootstrap (durante l'avvio in una macchina). Serve ad esempio quando si parla con il DHCP, es. interazione in 4 messaggi: \textit{Discover Message} al 255.255.255.255 (BROADCAST), come mittente 0.0.0.0. Poi c'era l'offerta, l'host ne seleziona una ed invia la richiesta (con 0.0.0.0 sempre come mittente). Poi al successivo ACK abbiamo il get. $\leftarrow$ Interazione DHCP;
+
+\item{\textbf{LOOPBACK}}
+
+Tutti 0 tranne l'ultimo che è 1 (localhost). 127.whatever, utilizzato per il testing. (es. 0000::1/128);
+
+\item{\textbf{Autoconfigurazione / Link Local}}
+
+FE80:0:0:0:[interface identifier]. Può essere utilizzato da un host quando deve comunicare all'interno della subnet; oppure quando NON ci sono router. Attenzione: lo scope è LOCAL (livello subnet). La validità è la Subnet. I router non inoltreranno pacchetti del genere;
+
+\item{\textbf{MULTICAST}}
+
+indirizzo \{permanente o transitorio\}. Multicast si riferisce ad un grupppo di interfacce: \{0: P, 1: T\}.
+Vari tipi di indirizzi Multicast:
+
+\begin{itemize}
+
+\item{\textit{Link-local all nodes}}: FF02::1;
+\item{\textit{Link-local All-router}}: FF02::2; 
+\item{\textit{Site-local All-router}}: FF05:2;
+\item{\textit{Link-local con Solicited Node}}: FF02::1:FFXX:XXXX;
+\end{itemize}
+
+\end{itemize}
+
+In IPv6 a livello Network NON vediamo ICMP, IGMP, ARP e RARP. L'ARP non prevedeva l'imbustamento a livello Network (IP). In IPv6 abbiamo invece l'ICMPv6. Non abbiamo più IGMP e l'ARP (risoluzione indirizzi data-link). Esso ingloba tutte le restanti funzionalità rimosse. Sono stati aggiunti anche nuovi messaggi. Ciò che faceva l'ARP ora lo fa l'ICMPv6. \{ARP request: ICMPv6 \textit{Neighbor Solicitation}, ARP reply: ICMPv6 \textit{Neighbor Advertisement}\}. Nell'ARP request, l'indirizzo logico sta nella parte TARGET. Quello che vanno a vedere i vari nodi; anche nel neighbor solicitation ci sarà il campo TARGET. I messaggi NS e NA sono imbustati in ICMPv6 in IPv6. Nell'ARP veniva utilizzato il BROADCAST. Qui invece si scomoda solo un gruppetto più piccolo di nodi (\textit{Solicited-Node Group Multicast}) per migliorare (ridurre) il tempo di elaborazione. Ne sprecheremmo infatti parecchi utilizzando FF02::1. Si prevede quindi il meccanismo Solicited Node. Ogni sistema IPv6, per ogni indirizzo IPv6 deve entrare a far parte del gruppo solicited-node multicast, fatto dagli ultimi 24 bit dell'indirizzo IPv6 e da un prefisso fisso (FF02: 0:0.0.0 :1:FF). Più nodi potranno far parte di questo gruppo ovviamente. ICMPv6 Neighbor Solicitation. Tutto ciò serve per la risoluzione di indirizzi a livello 2 (scopo dell'ex ARP). Con l'ARP si sollecitavano tutti gli indirizzi. ICMPv6 è quindi ora imbustato in IP.
+
+I moderni switch importanti hanno il supporto per l'IGMP (IGMP Snooping). Uno switch (\textit{IEEE 802.11d}) fa il flooding comunque. Ma sarebbe bene non inviare a tutte le stazioni quando è Multicast. Riescono a capire quali stazioni sono associate le interfacce verso le quali troviamo host attached. Quindi non si fa un flooding a priori con le trame multicast.
+
+A livello 2 cosa succede? Con IPv4 abbiamo anche un Multicast a livello 2. Si prendono gli ultimi 32 bit dell'IP multicast IPv6 e si aggiungono al prefisso 33-33. Multicast IPv6 $\rightarrow$ Multicast-Ethernet (previsto nella trama Ethernet).
+
+\subsection{AUTOCONFIGURAZIONE}
+
+Quando un host parte deve assumere un indirizzo Link-local. Parte da FE80:0:0:0:[ii]. Un computer vede dall'indirizzo hardware l'II e lo appiccica a quello di prima. Deve però accertarsi che sul Link sia l'unico ad avere quell'indirizzo a livello Link-local. Gli indirizzi hardware si possono modificare! Quindi l'unicità non è più garantita. Procedura per assicurarsi l'unicità necessaria richiesta. Si avvia la procedura DAD (\textit{Duplicate Address Detection}). Si basa sul Neighbor Solicitation. Poi si avrà il \textit{Router Solicitation} (per il GLOBAL UNICAST), ai quali messaggi i router risponderanno con dei \textit{Router Advertisement} (RA). Comunque i messaggi RA sono periodici. Nei RA vi sono i prefissi! Ed a quel punto (prefissi associati a quel link), avremo: $\forall \underline{prefix}:<ii>$. DAD è utilizzata anche per autoconfigurare gli indirizzi di Global Unicast. SOLO gli host si configurano automaticamente con i Global! In IPv6 i router giocano un ruolo molto importante! Autorizzeranno loro stessi gli host ad autoconfigurarsi.
+
+\subsection{Formato del pacchetto}
+
+Si è previsto di avere una lunghezza dell'header costante. Versione del protocollo settata a (6). Anche in IPv4 c'è (4). Poi ci ritroviamo due campi (Traffic Class e Flow Label). Con quest'ultimo si può etichettare un flusso; sulla base di questo campo un flusso potrà essere trattato in una certa maniera. Il flusso non è ben definito (es. pacchetto TCP, sessione multimediale). Identificazione del flusso per la QoS. Traffic Class equivalente al ToS (In IPv4 ToS è stato ridefinito nell'ambito dell'architettura DiffServ). Ciò detto per l'IPv4 vale per IPv6 nel Traffic Class. Questi due campi servono quindi per la QoS. Nell'IPv4 c'è l'IHC (\textit{Internet Header Length}), dato che l'intestazione è variabile. Nell'IPv6 l'intestazione è fatta da 40 byte fissi, non ce n'è quindi bisogno. In IPv6 c'è il campo \textit{Payload Length} direttamente, anziché il \textit{Total Length} dell'IPv4. La frammentazione riguarda l'elaborazione a monte nell'IPv6. In IPv4 abbiamo il \textit{Protocol}, che codifica il protocollo (servizio multiprotocollo, TCP, UDP, es ICMP anche); perché a destinazione dovrà essere correttamente deimbustato. \textit{Next Header} in IPv6 sarà per il protocollo. Non è detto che ci possano essere solo TCP, UDP (es. \textit{Extension Header}, la quale aggiunge nuove funzionalità come la frammentazione). Next Header codifica l'intestazione successiva. Ma se ci sono degli header di estensione, next header punterà piuttosto a dei nuovi header imbustati nel payload IPv6. IPv6 supporta la sicurezza con IPSec. L'extension header ha sempre un puntatore all'header successivo. Necessitiamo di conoscere quindi la lunghezza. Altre opzioni disponibili, es: \textit{Source Routing} (decisione dei router da attraversare a monte), ESP, etc.. Il payload potrebbe quindi contenere questi header aggiuntivi. Fino a massimo 6 intestazioni. Il campo Protocol ce lo ritroviamo in IPv4. In IPv6 abbiamo quindi il Next Header. All'interno del pacchetto TCP troviamo quindi i numeri di porta, per spedire i dati al corretto processo applicativo. IPv6 non permette la frammentazione ai router intermedi $\rightarrow$ aumenta le prestazioni. L'oltrepassamento dell'MTU non è oggigiorno molto frequente. In qualche RFC è definita la MTU minima.
+
+Nel passaggio IPv4 $\rightarrow$ IPv6, a livello Network abbiamo in IPv4 dei protocolli di supporto (IGMP, ICMP, ARP e (RARP)). In IPv6 è stato tutto inglobato in ICMPv6. Vari messaggi dell'ICMPv6. Quello che prima chiamavamo ARP Request e ARP Reply sono sostituiti rispettivamente da Neighbor Solicitation e Neighbor Advertisement, per i Link-local. Per ottenere un indirizzo Global Unicast, ci si serve invece dei \textit{Router Solicitation} e \textit{Router Advertisement}. Poi abbiamo anche il \textit{Redirect Message}, il quale serve nel caso in cui ad una rete fisica siano collegati due o più router. Se un host è stato configurato con un certo Default Gateway, e l'host manda un pacchetto al di fuori della rete, vi sarà una CONSEGNA INDIRETTA. Se per raggiungere una certa destinazione è presente un altro router a costo minimo, allora il router suggerisce un altro Default Gateway con il messaggio di Redirect. Nei router CISCO può essere disattivata questa opzione comunque. Poi abbiamo \{\textit{Echo Request}, \textit{Echo Reply}\}. Serve per segnalare anomalie, oppure per verificare la raggiungibilità di host e router. Messaggio \textit{Time exceeded}. Il TTL è stato sotitutito dall'\textit{Hop Limit}. TTL fa pensare ad un tempo. Ma in realtà è sempre decrementato unitariamente! Proprio per questo è stato rinominato Hop Limit. Il limite lo sceglie l'host di default. 8 bit, quindi massimo 255 hop. [ICMPv6].
+
+Router Advertisement. I router periodicamente inviano questo messaggio. Ma lo inviano anche quando ricevono un Router Solicitation da un host. Nel RA ci sono vari campi. Uno è il \textit{Source-Link-Layer Address}. Il router annuncia il proprio indirizzo MAC. Senza scomodare meccanismi di Neighbor Solicitation da parte degli host. Poi abbiamo il \textit{prefix information}, che include il prefisso vero e proprio, l'AAC (\textit{autonomous address configuration}), che se settato l'host può creare un indirizzo accodandovi l'Interface Identifier. Poi abbiamo il \textit{Valid Lifetime} ed il \textit{Preferred Lifetime}. Quando una macchina parte si configurerà il suo Link Local Address. Dopodiché sulla base di RA riceverà dei prefissi: proverà a configurarsi (prefix + ii) per formare il Global Unicast. Supponiamo che la DAD abbia avuto successo. Partiranno quindi dei timer. Quando scade il PL quell'indirizzo sarà deprecato (spirato). Se scade questo timer, questo indirizzo IPv6 diventa deprecato. A questo punto, nuove sessioni di comunicazione non potranno essere fatte. Le nuove sessioni faranno riferimento ad indirizzi non deprecati. Se spira anche il Valid Lifetime (VL), allora anche le connessioni già esistenti che utilizzano indirizzi deprecati verranno "immediatamente" abbattute. Molto utile quando bisogna riconfigurare le interfacce (es. cambio di provider). Se un sito quindi dovesse voler cambiare l'ISP, in IPv4 tutto si baserebbe sull'LPM (\textit{Longest Prefix Match}). Eventuale rinumerazione delle interfacce (nuovi indirizzi IP). Se quindi in IPv6 ad un certo punto vogliamo riconfigurare le interfacce, nei router advertisement da mandare, settiamo i PL a 0, automaticamente! Per le nuove sessioni di comunicazione, si utilizzeranno quindi i nuovi indirizzi. Più RA ovviamente, in base al numero di reti logiche. Ricordiamo che l'Autoconfigurazione spetta soltanto agli host! I \{Router Solicitation, Router Advertisement\} fanno parte dell'ICMPv6. L'indirizzo Ethernet multicast si costruisce partendo con 3333 ed accodandovi gli ultimi 32 bit dell'indirizzo multicast. Nel Router Advertisement abbiamo Prefix Information, VL e PL. Nei messaggi Neighbor Solicitation abbiamo il \textit{Target Address} (sempre messaggio ICMPv6). La checksum è presente in ICMPv6.
+
+\subsection{TRANSIZIONE IPv4-IPv6}
+
+Approcci Dual-Stack. I sistemi del genere IPv6 hanno anche lo stack IPv4. Se in mezzo a due router IPv6 vi è un nodo IPv4, abbiamo IPv6-IPv4, ed il router IPv6 effettuerà una trasformazione IPv6-IPv4. Si perderanno dei campi però. Non si può fare altrimenti senza cambiare lo stack. Per evitare tutto questo esiste anche un'altra soluzione: il \textbf{Tunneling}, IPv4 header che conterrà sostanzialmente IPv6 header ed il relativo payload. Questo permette che non vengano alterate delle cose nell'intestazione.
+
+
+\section{MULTIMEDIA e QoS}
+
+Multimedia networking. Dobbiamo parlare di applicazioni multimediali, i quali hanno requisiti diversi dalle applicazioni che hanno traffico elastico (es. Web, http, email, etc.). Traffico che si adatta abbastanza bene al cambiamento del throughput. Le applicazioni multimediali sono invece NON elastiche! (Non si adattano bene alle variazioni di throughput, es. VoIP) es. PCM (codifica con frequenza pari al doppio della frequenza di Nyquist, Filtraggio a 4kHz). Meglio risparmiare in banda, filtrando sullo spettro del segnale. Un'applicazione VoIP, 64 kbit/s non ha bisogno di moltissima banda! Ma dev'essere assolutamente quella. Requisito minimo sul throughput. Applicazioni del genere sono molto sensibili al throughput, al ritardo ed al delay jitter, altrimenti l'interattività non è ovviamente usufruibile. Sono altamente sensibili a variazioni sul ritardo ed al delay jitter ma al contempo tolleranti nei confronti del Data Loss.
+
+\subsection{Multimedia}
+
+I requisiti di servizio delle applicazioni multimediali sono: elevata sensibilità al ritardo end-to-end ed alle variazioni sul ritardo (delay jitter). Sono tolleranti a perdite occasionali di dati. Sono molto differenti dai requisiti delle tradizionali applicazioni \underline{elastiche}, tipo e-mail, Web, FTP, i quali sono tolleranti ai ritardi ma ovviamente intolleranti alle perdite dati.
+
+Abbiamo tre ampie classi:
+
+\begin{itemize}
+
+\item{\textit{\textbf{Streaming-stored} audio/video}};
+\item{\textit{\textbf{Streaming live} audio/video}};
+\item{\textit{\textbf{Real-time interactive} audio/video}};
+
+\end{itemize}
+
+
+\subsubsection{Classi di applicazioni multimediali}
+
+\begin{itemize}
+
+\item{\textbf{Streaming-stored audio/video}}
+
+Gli utenti richiedono i file video compressi on-demand, immagazzinati sui server (es. Youtube). Il contenuto multimediale è pre-registrato ed immagazzinato su un server.
+
+\begin{itemize}
+
+\item{\textit{Interattività}}: Dal momento che il file multimediale è pre-registrato, l'utente può pausare, posizionarsi in avanti, all'indietro, fare fast forward et similia sul contenuto multimediale (un protocollo, come l'RTSP (\textit{Real-Time Streaming Protocol}) è richiesto);
+
+\item{\textit{Streaming}}: L'utente tipicamente inizia a riprodurre il video pochi secondi dopo che inizia a ricevere il file. Lo streaming evita che si debba interamente scaricare il file prima che si possa iniziare a riprodurlo;
+
+\item{\textit{Riproduzione continua}}: La riproduzione dovrebbe avvenire in maniera tale da rispettare l'originale temporizzazione della registrazione. La riproduzione continua è possibile utilizzando \textit{client-side buffering} o \textit{prefetching}.
+
+\end{itemize}
+
+L'ammontare di ritardo aggiunto per ogni pacchetto dovrebbe fare in modo che il ritardo totale per pacchetto rimanga costante.
+Il client-side buffering ed il ritardo di playout compensano le variazioni sul ritardo (delay jitter). I dati \underline{devono essere ricevuti in tempo} per il suo tempo di playout. \`E possibile fornire un continuos playout anche quando abbiamo delle fluttuazioni sul throughput, se il throughput medio (mediato su 5-10 secondi) rimane \underline{al di sopra del video rate}.
+
+I vincoli di ritardo end-to-end sono meno stringenti che quelli per applicazioni streaming live o real-time interactive.
+
+\item{\textbf{Streaming-live audio/video}}
+
+Un utente riceve in maniera live audio/video attraverso Internet (es. Internet radio o Internet TV).
+
+La distribuzione di audio/video live a molti riceventi può essere efficientemente conseguita utilizzando IP multicast. Al giorno d'oggi, le distribuzioni multicast sono conseguite per mezzo di un application-layer multicast o tramite unicasting multiplo.
+Come negli streaming-stored multimedia, il throughput medio dovrebbe essere più grande del tasso di consumazione del video.
+
+
+\item{\textbf{Real-time interactive audio/video}}
+
+Gli utenti in tal caso utilizzano Internet per comunicare interattivamente con degli altri. Esempi sono il \textit{Voice over IP} (VoIP), conferenze video.
+Ovviamente sono altamente sensibili al ritardo end-to-end ed al delay jitter.
+I dati real-time su una rete switchata richiedono la preservazione delle relazioni di tempo tra i pacchetti della sessione. 
+Il jitter può essere rimosso da questi tre meccanismi:
+
+\begin{itemize}
+
+\item Preponendo ad ogni chunk di dati un \textit{numero di sequenza}. Viene incrementato di uno per ognuno dei pacchetti che il trasmettitore genera. Verrà utilizzato al ricevitore per rilevare pacchetti persi od out-of-order;
+
+\item Preponendo ad ogni chunk di dati un \textit{timestamp}. Il trasmettitore "incolla" questo timestamp ad ogni chunk con il tempo al quale il chunk è stato generato;
+
+\item Ritardando il playout dei chunk al ricevitore. \`E richiesto un \textit{playout buffer}, ed il tempo di arrivo è così separato dal tempo di riproduzione
+
+\end{itemize}
+
+\end{itemize}
+
+
+\subsubsection{Protocolli per Applicazioni Interattive Real-Time}
+
+\begin{itemize}
+
+\item{\textit{\textbf{Real-Time Transport Protocol} (RTP)}}
+
+L'\textit{RFC 3550} definisce il protocollo RTP ed il suo compagno RTCP. RTP permette di avere un formato di pacchetto \underline{standardizzato} che includa campi per i dati audio/video, numeri di sequenza e timestamp. RTP risiede tra l'UDP e l'applicazione multimediale. I pacchetti RTP non sono limitati all'unicasting ovviamente, ma possono essere mandati sfruttando un albero multicast uno-a-molti o molti-a-molti. Gli stream RTP emanati da sender multipli in una videoconferenza appartengono ad una \textit{sessione RTP}.
+
+Abbiamo quattro campi principali nel pacchetto: \{\textit{payload type}, \textit{sequence number}, \textit{timestamp} e \textit{source identifier}\}:
+
+\begin{itemize}
+
+\item{\textit{Payload type}}:
+
+Il payload type sono 7 bits, ed indicano il tipo di codifica \underline{correntemente} in uso. Il sender può cambiare la codifica on-the-fly durante una sessione;
+
+\item{\textit{Sequence number}}:
+
+Sono 16 bit, utilizzati dal ricevitore per rilevare pacchetti persi o fuori sequenza, per l'appunto;
+
+\item{\textit{timestamp}}:
+
+Sono 32 bit, e vengono utilizzati per ricreare la temporizzazione adibita lato ricevente utilizzando un playout buffer. Corrisponde al tempo quando il primo byte dei dati nel pacchetto è stato campionato. Il "timestamp clock" aumenta di uno per ogni periodo di campionamento. Ad esempio,per un PCM con 8 kHz di frequenza di campionamento (periodo di campionamento pari a $125 \mu sec$), si avranno 160 campioni in un chunk.
+
+Il timestamp aumenta di 160 per ogni pacchetto RTP quando la sorgente è attiva;
+Il timestamp clock continua ad aumentare anche se la sorgente è inattiva.
+
+\item{\textit{Source Identifier (SRRC)}}:
+
+Sempre 32 bit. Valore generato in maniera random che identifica univocamente la sorgente di uno stream RTP.
+
+\end{itemize}
+
+\item{\textit{\textbf{Real-Time Control Protocol} (RTCP)}}
+
+L'RTCP lavora congiuntamente con l'RTP. Ogni partecipante in una sessione RTP invia periodicamente dei pacchetti di controllo RTCP. I pacchetti RTCP contengono sender/receiver reports. Riporta delle statistiche utili per l'applicazione: numero di pacchetti inviati, pacchetti persi, jitter di interarrivo etc.
+
+I feedback possono essere utilizzati per controllare le performance. Il sender può modificare i suoi parametri di trasmissione basandosi sui feedback.
+
+Per una sessione RTP, tipicamente abbiamo un singolo indirizzo IP multicast. Tutti i pacchetti RTP/RTCP appartenenti ad una certa sessione utilizzano il relativo indirizzo multicast. I pacchetti RTP/RTCP vengono distinti dagli altri mediante numero di porta: La porta RTCP DOVREBBE essere settata a quella RTP più uno (\textit{RFC 3550}).
+
+RTCP \textit{bandwidth scaling}: L'ammontare del traffico RTCP aumenta linearmente con il numero di riceventi. RTCP provvede a limitare il suo traffico a circa 5\% della bandwidth della sessione.
+
+\item{\textit{\textbf{Session Initiation Protocol} (SIP)}}
+
+Il SIP (\textit{Session Initiation Protocol}) è un protocollo application layer simile all'HTTP. SIP prevede meccanismi:
+
+\begin{itemize}
+
+\item per stabilire una sessione multimediale su una rete IP;
+\item per stabilire un accordo tra i partecipanti sulla codifica da utilizzare;
+\item per il chiamante per determinare l'indirizzo IP del callee;
+\item per la gestione delle chiamate (per esempio l'aggiunta di nuovi stream multimediali durante la chiamata, cambiamento della codifica durante la chiamate, invito di nuovi partecipanti, trasferimento chiamate e hold delle chiamate).
+
+\end{itemize}
+
+Può essere utilizzato su UDP o TCP con la relativa well-known port: 5060.
+
+
+\subsubsection{Impostare una chiamata ad un indirizzo IP noto}
+
+Il messaggio SIP INVITE di Alice indica il suo numero di porta, indirizzo IP, codifica che preferisce utilizzare (es. PCM $\mu$law). Il messaggio di Bob 200 OK indica il suo numero di porta, indirizzo IP e codifica preferita (GSM). Si supponga che Bob non abbia modo di utilizzare la PCM $\mu$law a causa della mancanza del relativo encoder. Bob quindi replicherà con un messaggio \textit{606 Not Acceptable Reply}, elencando le sue codifiche disponibili. Alice quindi può adesso inviare un nuovo messaggio INVITE, proponendo una nuova codifica. Naturalmente Bob può sempre rifiutare la chiamata. 
+
+Tipicamente, Alice conosce solo il well-known address di Bob, e non il suo indirizzo IP. Sono quindi necessari server SIP intermedi, che forniscano un servizio di traduzione. Quando un messaggio SIP passa attraverso un dispositivo SIP (includendo il sender), il dispositivo attacca una linea aggiuntiva di header, denominata \textit{Via}. Il messaggio INVITE di Alice specifica nell'header che il SIP user agent invia/riceve messaggi SIP su UDP.
+
+Ogni utente SIP è associato con un SIP Registration Server (\textit{SIP registrar}). Quando un utente lancia un'applicazione SIP su un dispositivo, l'applicazione manda un messaggio di \textit{SIP register} ad un SIP registrar, informandolo del suo indirizzo IP corrente. Il registrar informa del successo della registrazione inviando una risposta che specifica per quanto tempo la registrazione è valida (parametro \textit{expires}). Spesso i SIP registrar ed i \textit{SIP proxy servers} girano sulla stessa macchina (host).
+
+\subsubsection{Traduzione di nomi e Posizione Utenti}
+
+Alice manda il messaggio INVITE al suo SIP proxy. Il messaggio contiene l'indirizzo: \textit{sip:bob@poly.edu}. Il server proxy è responsabile per l'inoltro del messaggio al chiamato. Il proxy ritorna il messaggio di SIP response di Bob ad Alice. Il messaggio contiene l'indirizzo IP di Bob. Il SIP proxy effettua una richiesta DNS (DNS lookup) sul SIP proxy per "poly.edu" e quindi inoltra il messaggio INVITE ad esso. Basato sulle informazioni correnti di registrazione per Bob, il SIP proxy per \textit{domain.com} può inoltrare la richiesta a Bob. In aggiunta a questo scenario, vi è anche il meccanismo di \textit{SIP acknowledgements}.
+
+Un \textit{SIP Gateway} è un'applicazione che interfaccia una rete SIP con una rete che utilizzi un altro diverso protocollo di segnalazione. Un SIP gateway termina il percorso segnalativo e termina anche il percorso media. Un gateway SIP to PSTN termina sia il signaling che il media path. Gli user agent SIP e terminali H323 possono ad esempio scambiarsi direttamente informazioni multimediali RTP.
+
+\end{itemize}
+
+\subsection{QoS - Quality of Service}
+
+Si tratta di fornire un differente livello di servizio ai vari flussi; sulla rete abbiamo pacchetti con requisiti differenti. Parametri: ritardo end-to-end, delay jitter, rate loss dei pacchetti, throughput (ritardo smaltito). Reti con supporto alla QoS. Classificazione e marcatura. Abbiamo una marcature di livello 3 (Architettura DiffServ). Marcatura di lvl 2, e vi deve essere matching tra le due. Il pacchetto IP hop-by-hop dovrà attraversare delle reti fisiche. Imbustamento in trame. Ethernet, rete switched. Gli switch dovranno inoltrare le trame guardando le intestazioni di livello 2.
+Scheduling, Disciplina di coda. Insieme delle regole di base alla quale viene trasmesso il prossimo pacchetto. Sistema a coda: fila di attesa + 1 servitore. I clienti arrivando nel sistema a coda, o verranno trasmessi (serviti), oppure dovranno attendere il loro turno. Regolazione dei servizi da erogare ai clienti. Disciplina di coda. \`E possibile adottare dei sistemi a coda per modellare i ritardi: \{Ritardo di elaborazione (processing), ritardo di accodamento, ritardo di trasmissione, ed eventualmente anche il ritardo di propagazione (fuori dal router)\}. Queste componenti di ritardo possono essere quindi modellate con dei sistemi a coda. Privilegiare alcuni flussi rispetto ad altri. \`E questa la QoS. Ad esempio (\textit{First-Come-First-Served}) (FCFS). Coda + trasmettitore (servitore). I pacchetti sarebbero i clienti. La coda è tipicamente di dimensioni limitate (come nella realtà). I pacchetti in arrivo possono essere discardati, scartati se la coda è piena. Non è una disciplina che può evidentemente supportare la QoS. Non ci può essere un trattamento speciale per un determinato flusso. Eventuale drawback per il ritardo associato ai piccoli pacchetti. Pacchetti piccoli che seguono pacchetti grandi saranno fortemente penalizzati. I grandi utilizzeranno una maggiore banda. Non ci sarà un trattamento imparziale, mentre noi vogliamo per l'appunto la QoS, ottenibile utilizzando una disciplina a priorità. In tal caso i clienti, all'arrivo del sistema a coda, sono divisi tra N classi di priorità, alle quali sono associati N sistemi a coda (N file di attesa), in base alle classi di priorità. Quando il servitore termina l'erogazione del servizio per un certo cliente, dovrà selezionarne un altro. Il primo cliente sarà quello in fila (in testa) alla classe di maggior priorità non vuota. Se non c'è nessuno passa alla prossima classe di priorità. Sistemi di tipo \textit{work conserving} (non viene sprecato del lavoro in questo sistema). Se ci sono dei pacchetti (clienti), questi vengono serviti (Il servitore non rimane mai idle). Due classi di priorità es. Quando i pacchetti arriveranno al sistema a coda, verranno inizialmente classificati e successivamente inseriti nella coda associata alla classe di priorità cui effettivamente appartengono, purché essa non sia piena. All'interno della singola classe di priorità si agisce in FCFS. Servizio non-preemptive (senza interruzioni), ovvero il servizio di un cliente (la trasmissione di un pacchetto) non viene interrotto se durante l'erogazione di questo servizio arriva un cliente a più alta priorità. Potenziale drawback: starvation. Se c'è un flusso continuo di pacchetti ad alta priorità, quelli a più bassa priorità rimarranno sempre in attesa! Se vi è una modalità severa, si avrà il dropping dei pacchetti a bassa priorità. Alla fine i nuovi pacchetti a bassa priorità, incontrando una coda piena verranno quindi eventualmente droppati.
+
+\subsubsection{Round-robin Discipline}
+
+
+I pacchetti in arrivo sono suddivisi in un certo numero di classi (non di priorità). Il servitore servirà le classi ciclicamente. Disciplina sempre work conserving, ma qui non c'è una disciplina a priorità. In maniera ciclica serve le varie classi di pacchetti. Ma privilegia qualche classe in particolare? NO. Il sistema è fair a patto che la dimensione media dei pacchetti sia la stessa. I pacchetti di maggiori dimensioni consumeranno più banda. WEIGHTED FAIR QUEUING (WFQ). Verranno privilegiati alcuni flussi rispetto agli altri senza avere starvation. Abbiamo sempre delle classi di elementi, però associamo questa volta un peso alle varie file di attesa. Generalizzazione del round-robin. Pesi maggiori verranno associati a classi con maggior priorità. $\frac{w_i}{\sum_i{w_i}}$ sarà la frazione della banda relativa alla i-esima classe. Se abbiamo capacità di trasmissione di $R\ pkt/s$, il throughput sarà: $(R\frac{w_i}{\sum_i{w_i}})$. Eliminiamo la starvation con questo sistema, utilizzando il round-robin ma generalizzandolo introducendo degli appositi pesi.
+
+\subsubsection{POLICING e SHAPING}
+
+Supporto alla QoS. Meccanismi di regolazione del traffico. Il policing è una funzionalità di controllo da parte della rete. Accordo tra il Customer ed il Provider. Il customer richiederà dei pacchetti QoS (traffico con determinate caratteristiche con certi parametri da rispettare). Il provider dovrebbe impegnarsi a conseguire quella richiesta. Ovviamente il provider dovrà effettuare POLICING! Naturalmente sui suoi router. Rate alla quale un flusso inietta pacchetti sulla rete. Di seguito alcune definizioni:
+
+\begin{itemize}
+
+\item{\textbf{AVERAGE RATE}}: rate (rate medio a lungo termine) alla quale i pacchetti vengono inviati nella rete es. $6000\ pkt/min$ VS $100\ pkt/s$. Il flusso 2 sarà più vincolato. Entrambi hanno però il medesimo average rate;
+\item{\textbf{PEAK RATE}}: velocità di picco. Vincola la velocità su un periodo di tempo più piccolo. Peak rate di $1500\ pkt/s$;
+\item{\textbf{BURST SIZE}}: Burstness (periodo di tempo piccolissimo). Prende in considerazione un tempo quasi istantaneo. Numero di pacchetti limitatissimo. Non sarà mai istantanea però la trasmissione. (e.s un burst di pacchetti NON deve essere superiore a 250 pacchetti);
+\end{itemize}
+
+SHAPING: \`E sempre una funzione di controllo, ma dalla parte del Customer. Si tratta di sagomare il proprio profilo di traffico in base a quanto dichiarato. Rispettare l'accordo. Smussamento dei picchi. Lo può fare in vari modi: un modo è ritardando opportunamente i pacchetti. Un policer tipicamente scarta i pacchetti in eccesso. Marcatura di QoS a livello minore. Lo SHAPER invece ritarderà i pacchetti. Come implementare il POLICING \& SHAPING? \underline{TOKEN BUCKET} è una possibile soluzione. I pacchetti non conformi saranno OUT-OF-PROFILE, diversamente IN-PROFILE. Un POLICER può scartare o marcare con QoS a più basso trattamento. TOKEN BUCKET. Regolare, implementare il POLICING o lo SHAPING. Controllare la velocità media a lungo termine e la burstness. Immaginiamo di avere un secchio con capacità c. Token (gettoni). Supponiamo che i gettoni vengano generati alla velocità di $R\ token/s$. Se il secchio si riempie i token generati vengono buttati via. Immaginiamo una coda di trasmissione. Un pacchetto può essere processato solo se c'è un token disponibile per lui. Per ogni pacchetto processato, viene eliminato un token. R è quanti token vengono generati al secondo. Modellazione dell'average rate. c è la dimensione massima della burstness permessa. c limita quindi il burst di pacchetti. Con questi due parametri possiamo fare Policing e Shaping. L'accordo tra Customer e Provider si baserà sulla Token Bucket. Un Customer dichiarerà dei parametri Token Bucket, e se il Provider accetta istanzierà un Token Bucket con questi parametri R e c. P \& S. Fase di accordo (Customer contratta con il provider). \`E importante che si accordino. Se i pacchetti sono IN-PROFILE, allora avranno sempre dei token a disposizione! Diversamente non saranno conformi (OUT-OF-PROFILE). Per questo pacchetto si ha la possibilità di marcarlo o scartarlo. SHAPING possibile: controllo del traffico inviato. Con questi meccanismi, ad un intervallo temporale T, l'ammontare dei pacchetti NON potrà essere superiore ad $(RT + c)$. Nella pratica sarà utilizzato Average Rate (velocità a lungo termine) + Burstness. Flusso a lungo termine. La velocità di generazione dei token limita la velocità a lungo termine (AR). Limiterà quindi il ritardo di accodamento e quello di trasmissione. Weighted Fair Queuing: $(R (frazione\_contemplata(garantita) = \frac{w_i}{\sum_i{w_i}}))$. n classi alle quali sono associate delle code in uscita. Code HW nei router della CISCO. Meccanismo Token bucket. Un token bucket $\forall$ classe. Bisogna ovviamente prevedere le file di attesa. Parametri $r_i$ e $c_i$. Accodamento + trasmissione. Ritardo massimo $d_{max} = ?$ In particolare per la classe i la banda a disposizione del flusso è $(\frac{w_i}{\sum_i{w_i}})$. Il caso peggiore è quello che vede un burst di pacchetti che consta di $c_i$ pacchetti, ove questa è la dimensione dell'i-esimo secchio (bucket). I $c_i$ pacchetti entreranno tutti in coda di attesa se abbiamo a disposizione $c_i$ token. L'ultimo pacchetto sarà quello soggetto ad un ritardo più grande: $(d_{max} = \frac{c_i}{R*w_i/{\sum_i{w_i}}})$. Velocità di servizio $>$ velocità di arrivo $\iff$ teoria delle code in generale. Qui invece abbiamo guardato al singolo sistema a coda. Qui abbiamo il controllo del ritardo massimo. I router di Internet adottano la RED  (\textit{Random Early Discard}). Quando la dimensione del buffer supera una certa soglia, casualmente vanno a scartare dei pacchetti. Riducono il rate a qualche segmento TCP ("chiudono dei rubinetti"). 
+
+\subsection{IntServ model}
+
+Sarebbe il QoS nelle reti IP. Internet viene utilizzato con diversi requisiti. IETF ideò \textit{IntServ}, basato sul flusso. Prevede di andare a riservare la QoS desiderata $\forall$ flusso nella rete. Ma parliamo di Reservation, in termini di buffer, banda a disposizione. Il protocollo di prenotazione richiesto è il RSVP (\textit{Resource Reservation Protocol}). Ci sarà una fase di Admission Control, durante la quale l'RSVP invierà dei messaggi di segnalazione. Cos'è un flusso? Stream di dati unidirezionale tra due applicazioni. Il flusso del Flow Label dell'IPv6 presenta il medesimo problema di ambiguità. Si basa su una certa architettura (ISA) che comprenderà alcuni componenti. Funzioni di supporto in background, e quelle di Forwarding (es. \textit{Classification} e \textit{Route Selection}). Dopodiché dovrà fare l'operazione di instradamento, per fare la quale bisogna fare preliminarmente l'operazione di interrogazione (previa creazione) delle tabelle di routing. Nelle funzioni di Background troviamo: \{Admission Control, Reservation Protocol, Traffic Control Database, Management Agent\}. Qui stiamo nella fase di elaborazione. Elaborazione di un pacchetto (dove un pacchetto dev'essere inoltrato). Qui bisogna tenere in conto tutti i parametri del QoS. L'OSPF consente di tener conto di questi parametri! A quel punto, quando arriva un pacchetto deve essere classificato! 4 based mechanism:
+
+\begin{itemize}
+\item{1)} Classificazione;
+\item{2)} Dominio del link al quale inoltrarlo;
+\item{3)} A quale coda devo mandarlo?
+\end{itemize}
+
+Classificator \& Route Selection. Una volta classificato e deciso dove esser trasmesso, entra in gioco il \textit{Packet Scheduler} con le varie discipline di coda. L'RSVP include una specifica del flusso fatta da: Specifica del traffico (\textit{TSpec}). Ha a che fare con la specifica del traffico (parametri del token bucket, Average Rate e Burstness). Poi abbiamo \textit{RSpec} (\textit{Resource Specification}), che riguardano i parametri della QoS, delay, delay jitter, loss rate, throughput. Infine abbiamo la \textit{Service Class}. Sono presenti diverse tipologie di servizio:
+
+\begin{itemize}
+
+\item{\textbf{Servizio garantito}}: es. VoIP, con il quale si garantisce il delay jitter, la banda ed il loss rate per un certo flusso (garantito); 
+\item{\textbf{Controlled Load}}: \underline{A patto che il carico non sia pesantissimo}, riesce a dare un servizio migliore rispetto al:
+\item{\textbf{Best Effort}}: servizio di default sulla Internet;
+\end{itemize}
+
+Servizi del modello QoS. Molto complesso, presenta diversi drawbacks. I router devono ragionare con l'RSVP; poi Admission Control (dove si cercherà di riservare le risorse); mantenere informazioni di stato per ogni flusso. Refresh di queste informazioni, e questo comporta un elevato traffico di controllo. Soft-states. Messaggi RSVP pesanti quando $\cardinality{pacchetti} \gg some\_threshold$. Architettura evidentemente NON scalabile. Nella pratica non funziona a causa della sua complessità. 
+
+\subsection{DiffServ model}
+
+Non si guarda più al singolo flusso, ma alle classi di traffico (\textit{DiffServ}). Viene fatta QoS per le varie classi. Pacchetti marcati. Entra in gioco lo SLA (\textit{Service Level Agreement}). Anche qui c'è la specifica del traffico con parametri associati al Token Bucket. Si daranno le risorse alle varie classi! NON c'è garanzia per il singolo flusso ma per le classi di traffico. Soluzione che funziona, sebbene sia però poco granulare.
+
+\subsection{RECAP}
+
+QoS. Modello IntServ definito dalla comunità di Internet. Flow-Based Architecture. Riserva le risorse per il singolo flusso. Protocollo RSVP, mediante il quale il terminale invia la richiesta di prenotazione. \{TSpec, RSpec, Service Class\}. Tre classi di servizio. Successiva fase di Admission Control, durante la quale ogni router lungo la path verificherà la disponibilità delle risorse. Le risorse già impegnate per flussi precedentemente ammessi non le può toccare. Dev'essere fatto per ogni router lungo la path. Internet è quindi una rete datagram che supporta la QoS. Questa tecnica Stateful NON è però scalabile (i router devono mantenere informazioni di stato $\forall$ router). Riguarda il singolo flusso, e se il numero di flussi è troppo grande, ci saranno troppi messaggi di controllo da elaborare ogni volta. Il job principale è quello di inoltrare pacchetti dati. Si è quindi poi optato per l'architettura DiffServ, la quale è molto più scalabile. In tal caso (servizi differenziati) esso è un modello Class-Based. Il traffico è classificato in CoS (\textit{Class of Services}), e l'appropriata QoS è applicata alle differenti classi. I router faranno parte di un dominio DS. Dovranno semplicemente adoperare un certo trattamento ai determinati pacchetti appartenenti ad una certa CoS. DS domain. IPv4 ToS field, adesso è stato ridefinito nell'ambito dell'architettura DiffServ. Ci dovranno essere dei router di frontiera che dovranno classificare e marcare i pacchetti. Sulla base del DiffServ CodePoint i router intermedi (interior) attueranno un PHB (\textit{Per-Hop Behaviour}). NO informazioni di stato. Bisognerà avere un accordo tra il Provider del servizio ed il Customer (SLA = Service Level Agreement). Parametri QoS (parametro Token Bucket) + classe di servizio. I customer possono essere delle organizzazioni, ma anche altri provider di differenti domini DS. I router che non si interfacciano ai customer saranno chiamati \textit{Interior router}. Molto più semplici. Regole di queueing e di scarto. I router di confine dovranno invece classificare, marcare, ma anche effettuare delle funzioni di policing! Devono non solo implementare il PHB (queueing sulla base della CoS), ma anche classificare il traffico, marcarlo, controllare che sia conforme all'accordo SLA, e se c'è del traffico non conforme, potrà scartare questo pacchetto oppure marcarlo con QoS minore. Un router boundary potrebbe fare funzioni di Shaper. Marcatura del pacchetto. Il nodo di confine dovrà quindi fare il marking, ma dovrà anche implementare il PHB. Tecnica LLQ (\textit{Low Latency Queueing}). Tecniche WRED (un router inizia a buttare qualche pacchetto a caso. Agisce quindi in maniera preventiva). Un provider può diventare un customer per un altro provider! SLA tra vari provider. Il gestore del secondo dominio proporrà un certo traffico al terzo dominio. Eventuali funzionalità di SHAPING sui boundary nodes.
+
+PHB definiti:
+
+\begin{itemize}
+
+\item{\textbf{EF (\textit{Expedited Forwarding})}}: Top del servizio. es. VoIP. Richiede basso ritardo, basso jitter, banda garantita, basso loss-rate. DSCP raccomandato: 46;
+\item{\textbf{AF (\textit{Assured Forwarding})}}: (AF xy). $x \in\{1,2,3,4\}$. Parliamo di classi di servizio AF1, AF2, AF3, AF4 (best service). AFx. y: precedenza nel discard qualora si verificassero situazioni di congestione: \{AF41, AF42, AF43\}. Il peggiore di tutti è praticamente l'AF13. Massima precedenza nel discard. AF corrisponde più o meno al Controlled Load dell'IntServ;
+\item{\textbf{Best Effort}}: PHB di default. (0x00 DiffServ CodePoint);
+\item{\textbf{Class Selector}}: inserito per retrocompatibilità nel ToS (old IPv4). Primi 3 bit degli 8 bit. IP precedence old field (vecchio campo). Questo Class Selector prevede dei CodePoint fatti in questa maniera (XXX000). Possibile presenza all'interno di un dominio di un vecchio router eventualmente ToS enabled.
+\end{itemize}
+
+Sarà fatto un adeguato mapping tra marcatura lvl 2 e lvl 3. Marcatura lvl 2 della trama Ethernet: \{PCP, DE, VLAN ID\} = TAG di 4 byte. PCP: \textit{Priority CodePoint}, Standard implementato nell'802.1Q/p. Mapping semplice (primi 3 bit a lvl 3) = PCP del lvl 2. Top del servizio;

@@ -1,0 +1,173 @@
+\select@language {english}
+\select@language {italian}
+\select@language {italian}
+\select@language {italian}
+\select@language {english}
+\select@language {english}
+\select@language {italian}
+\contentsline {chapter}{Prefazione all'edizione italiana}{iii}{chapter*.5}
+\contentsline {chapter}{Introduzione}{iv}{chapter*.6}
+\contentsline {chapter}{\numberline {1}Network Technologies}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}CONGESTIONE}{1}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}TCP TRAFFIC CONTROL}{3}{subsection.1.1.1}
+\contentsline {section}{\numberline {1.2}X-CASTING}{5}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}MULTICAST}{5}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}BROADCAST}{6}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.3}MULTICASTING}{7}{subsection.1.2.3}
+\contentsline {section}{\numberline {1.3}IPv6}{8}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}Tipi di indirizzi}{9}{subsection.1.3.1}
+\contentsline {subsubsection}{Examples}{10}{section*.7}
+\contentsline {subsection}{\numberline {1.3.2}AUTOCONFIGURAZIONE}{11}{subsection.1.3.2}
+\contentsline {subsection}{\numberline {1.3.3}Formato del pacchetto}{11}{subsection.1.3.3}
+\contentsline {subsection}{\numberline {1.3.4}TRANSIZIONE IPv4-IPv6}{13}{subsection.1.3.4}
+\contentsline {section}{\numberline {1.4}MULTIMEDIA e QoS}{13}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}Multimedia}{13}{subsection.1.4.1}
+\contentsline {subsubsection}{Classi di applicazioni multimediali}{13}{section*.8}
+\contentsline {subsubsection}{Protocolli per Applicazioni Interattive Real-Time}{14}{section*.9}
+\contentsline {subsubsection}{Impostare una chiamata ad un indirizzo IP noto}{16}{section*.10}
+\contentsline {subsubsection}{Traduzione di nomi e Posizione Utenti}{16}{section*.11}
+\contentsline {subsection}{\numberline {1.4.2}QoS - Quality of Service}{16}{subsection.1.4.2}
+\contentsline {subsubsection}{Round-robin Discipline}{17}{section*.12}
+\contentsline {subsubsection}{POLICING e SHAPING}{17}{section*.13}
+\contentsline {subsection}{\numberline {1.4.3}IntServ model}{19}{subsection.1.4.3}
+\contentsline {subsection}{\numberline {1.4.4}DiffServ model}{19}{subsection.1.4.4}
+\contentsline {subsection}{\numberline {1.4.5}RECAP}{20}{subsection.1.4.5}
+\contentsline {chapter}{\numberline {2}TEORIA DELLE CODE}{22}{chapter.2}
+\contentsline {section}{\numberline {2.1}PROCESSI STOCASTICI}{22}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}CATENE DI MARKOV}{22}{subsection.2.1.1}
+\contentsline {subsubsection}{Tassi di Transizione}{25}{section*.14}
+\contentsline {subsection}{\numberline {2.1.2}Probabilit\IeC {\`a} a regime}{27}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}ERGODICIT\`A}{29}{subsection.2.1.3}
+\contentsline {subsubsection}{ERGODICIT\`A (RECAP)}{30}{section*.15}
+\contentsline {subsection}{\numberline {2.1.4}CMTC Nascita e Morte}{31}{subsection.2.1.4}
+\contentsline {subsection}{\numberline {2.1.5}PROCESSO DI POISSON}{35}{subsection.2.1.5}
+\contentsline {subsubsection}{RECAP}{35}{section*.16}
+\contentsline {subsection}{\numberline {2.1.6}RITARDO NELLE RETI DI DATI}{36}{subsection.2.1.6}
+\contentsline {section}{\numberline {2.2}SISTEMI A CODA}{37}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Sistema a coda M/M/1}{40}{subsection.2.2.1}
+\contentsline {subsubsection}{RECAP}{40}{section*.17}
+\contentsline {subsubsection}{Valutazione (calcolo) dei tassi di transizione}{41}{section*.18}
+\contentsline {subsubsection}{Distribuzione a regime}{42}{section*.19}
+\contentsline {subsubsection}{Quantit\IeC {\`a} medie tipiche}{43}{section*.20}
+\contentsline {subsubsection}{TDM, FDM e TDM statistico}{44}{section*.21}
+\contentsline {subsubsection}{Exercise}{45}{section*.22}
+\contentsline {subsubsection}{M/M/1/k}{50}{section*.24}
+\contentsline {subsection}{\numberline {2.2.2}Sistemi a coda M/M/m}{52}{subsection.2.2.2}
+\contentsline {subsubsection}{Calcolo dei tassi (velocit\IeC {\`a}) di transizione}{53}{section*.25}
+\contentsline {subsubsection}{Quantit\IeC {\`a} medie tipiche}{55}{section*.26}
+\contentsline {subsubsection}{Confronto tra tre sistemi MARKOVIANI}{57}{section*.27}
+\contentsline {subsubsection}{M/M/m/0}{58}{section*.28}
+\contentsline {subsubsection}{Typical scenario}{59}{section*.29}
+\contentsline {subsubsection}{Exercise}{60}{section*.30}
+\contentsline {subsection}{\numberline {2.2.3}Sistemi a coda M/M/inf}{62}{subsection.2.2.3}
+\contentsline {chapter}{\numberline {3}Affidabilit\IeC {\`a} e Disponibilit\IeC {\`a}}{63}{chapter.3}
+\contentsline {section}{\numberline {3.1}Starting Point}{63}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Exercise}{63}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Ridondanza}{66}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}Affidabilit\IeC {\`a}}{70}{section.3.2}
+\contentsline {section}{\numberline {3.3}Disponibilit\IeC {\`a}}{73}{section.3.3}
+\contentsline {section}{\numberline {3.4}RBD (Reliability Block Diagram)}{75}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Struttura SERIE}{75}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Struttura PARALLELO}{77}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}Struttura k-out-of-n}{79}{subsection.3.4.3}
+\contentsline {subsubsection}{Workstation and File Servers (Exercise)}{80}{section*.35}
+\contentsline {subsection}{\numberline {3.4.4}Network Lecce-Torino (Exercise)}{81}{subsection.3.4.4}
+\contentsline {subsubsection}{Network Lecce-Torino with Key-Item Method}{83}{section*.40}
+\contentsline {subsection}{\numberline {3.4.5}SYSTEM RELIABILITY}{86}{subsection.3.4.5}
+\contentsline {subsection}{\numberline {3.4.6}ABD (Availability Block Diagram)}{87}{subsection.3.4.6}
+\contentsline {section}{\numberline {3.5}CMTC e Affidabilit\IeC {\`a}}{87}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Stati Assorbenti}{88}{subsection.3.5.1}
+\contentsline {subsubsection}{Exercise}{92}{section*.45}
+\contentsline {section}{\numberline {3.6}Markov Reward Model (MRM)}{95}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Markov Reward Model (MRM)}{95}{subsection.3.6.1}
+\contentsline {subsection}{\numberline {3.6.2}Analisi Combinata}{96}{subsection.3.6.2}
+\contentsline {subsubsection}{Composite Model / Server Farm}{97}{section*.46}
+\contentsline {subsubsection}{Approccio gerarchico}{98}{section*.47}
+\contentsline {subsection}{\numberline {3.6.3}RECAP}{100}{subsection.3.6.3}
+\contentsline {chapter}{\numberline {4}Reti di Code}{103}{chapter.4}
+\contentsline {section}{\numberline {4.1}Starting Point}{103}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Client-Server System Exercise}{103}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}RECAP}{108}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}RETI DI CODE}{108}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}RETE DI CODE APERTA}{110}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Feed-Forward (Reti di code ACICLICHE)}{113}{subsection.4.2.2}
+\contentsline {subsubsection}{SEARCH ENGINE - MOTORI DI RICERCA}{113}{section*.50}
+\contentsline {subsection}{\numberline {4.2.3}Reti di code CICLICHE}{116}{subsection.4.2.3}
+\contentsline {subsubsection}{JACKSON NETWORK}{116}{section*.52}
+\contentsline {subsubsection}{Exercise}{119}{section*.53}
+\contentsline {subsection}{\numberline {4.2.4}Reti BCMP}{120}{subsection.4.2.4}
+\contentsline {subsubsection}{Teorema BCMP}{123}{section*.55}
+\contentsline {subsection}{\numberline {4.2.5}RECAP}{124}{subsection.4.2.5}
+\contentsline {section}{\numberline {4.3}Reti di dati}{124}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Exercise}{126}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Response-Time Blocks (RTB)}{129}{subsection.4.3.2}
+\contentsline {chapter}{\numberline {5}Network Technologies 2}{131}{chapter.5}
+\contentsline {section}{\numberline {5.1}(Rapid)STP - Spanning Tree Protocol}{131}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Funzionamento STP}{131}{subsection.5.1.1}
+\contentsline {subsubsection}{Spiegazione FASI STP}{133}{section*.58}
+\contentsline {subsubsection}{RECAP}{135}{section*.59}
+\contentsline {section}{\numberline {5.2}LAN Virtuali (VLAN)}{135}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Configurazione}{136}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Private Virtual LAN (PVLAN)}{138}{subsection.5.2.2}
+\contentsline {section}{\numberline {5.3}NETWORK DESIGN}{138}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Progettazione di rete ad Alta Disponibilit\IeC {\`a}}{138}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}FAULT-TOLERANCE}{139}{subsection.5.3.2}
+\contentsline {subsubsection}{HSRP}{139}{section*.60}
+\contentsline {subsubsection}{Multi-HSRP}{140}{section*.61}
+\contentsline {subsubsection}{Sicurezza in HSRP}{141}{section*.62}
+\contentsline {subsection}{\numberline {5.3.3}Network Design in pratica}{141}{subsection.5.3.3}
+\contentsline {subsubsection}{NO-FAULT TOLERANT NETWORK}{142}{section*.63}
+\contentsline {subsubsection}{FAULT-TOLERANT NETWORK}{143}{section*.64}
+\contentsline {subsection}{\numberline {5.3.4}Progettazione Gerarchica}{144}{subsection.5.3.4}
+\contentsline {subsubsection}{RECAP}{145}{section*.65}
+\contentsline {subsubsection}{Dimensionamento Link}{146}{section*.66}
+\contentsline {section}{\numberline {5.4}Parte Wireless}{146}{section.5.4}
+\contentsline {subsubsection}{RECALL}{146}{section*.67}
+\contentsline {subsection}{\numberline {5.4.1}Funzionamento}{147}{subsection.5.4.1}
+\contentsline {subsection}{\numberline {5.4.2}CSMA-CA (Collision Avoidance)}{149}{subsection.5.4.2}
+\contentsline {subsubsection}{Funzionamento}{150}{section*.68}
+\contentsline {subsection}{\numberline {5.4.3}Mobilit\IeC {\`a} in IPv6}{151}{subsection.5.4.3}
+\contentsline {subsection}{\numberline {5.4.4}Architetture}{152}{subsection.5.4.4}
+\contentsline {subsubsection}{Architettura Autonoma}{152}{section*.69}
+\contentsline {subsubsection}{Architettura Centralizzata}{152}{section*.70}
+\contentsline {subsection}{\numberline {5.4.5}Progettazione}{152}{subsection.5.4.5}
+\contentsline {subsection}{\numberline {5.4.6}Reti Wireless AdHoc}{153}{subsection.5.4.6}
+\contentsline {subsection}{\numberline {5.4.7}VANET}{155}{subsection.5.4.7}
+\contentsline {section}{\numberline {5.5}MPLS}{155}{section.5.5}
+\contentsline {subsection}{\numberline {5.5.1}Funzionamento}{155}{subsection.5.5.1}
+\contentsline {subsubsection}{Label MPLS}{156}{section*.71}
+\contentsline {subsection}{\numberline {5.5.2}QoS}{157}{subsection.5.5.2}
+\contentsline {section}{\numberline {5.6}Security}{158}{section.5.6}
+\contentsline {subsection}{\numberline {5.6.1}IPSec}{158}{subsection.5.6.1}
+\contentsline {subsection}{\numberline {5.6.2}Firewall}{160}{subsection.5.6.2}
+\contentsline {subsection}{\numberline {5.6.3}IPSec e Firewall}{160}{subsection.5.6.3}
+\contentsline {subsection}{\numberline {5.6.4}Sicurezza nelle Applicazioni}{161}{subsection.5.6.4}
+\contentsline {chapter}{\numberline {6}Training Facility}{162}{chapter.6}
+\contentsline {section}{\numberline {6.1}Homeworks 1}{162}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Esercizio 1}{162}{subsection.6.1.1}
+\contentsline {subsection}{\numberline {6.1.2}Esercizio 2}{163}{subsection.6.1.2}
+\contentsline {subsection}{\numberline {6.1.3}Esercizio 3}{163}{subsection.6.1.3}
+\contentsline {section}{\numberline {6.2}Homeworks 2}{165}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Esercizio 1}{165}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Esercizio 2}{168}{subsection.6.2.2}
+\contentsline {subsection}{\numberline {6.2.3}Esercizio 3}{172}{subsection.6.2.3}
+\contentsline {section}{\numberline {6.3}MTTF of a fiber link}{175}{section.6.3}
+\contentsline {section}{\numberline {6.4}Response Time Distribution 2}{178}{section.6.4}
+\contentsline {section}{\numberline {6.5}Server Load Balancer}{180}{section.6.5}
+\contentsline {chapter}{Appendici}{183}{chapter*.81}
+\contentsline {section}{\numberline {6.6}Velocit\IeC {\`a} di Uscita e Tassi di Transizione}{183}{section.6.6}
+\contentsline {subsection}{\numberline {6.6.1}M/M/1}{183}{subsection.6.6.1}
+\contentsline {subsection}{\numberline {6.6.2}M/M/m}{183}{subsection.6.6.2}
+\contentsline {subsection}{\numberline {6.6.3}Server Farm Exercise}{184}{subsection.6.6.3}
+\contentsline {subsection}{\numberline {6.6.4}Client-Server System Exercise}{185}{subsection.6.6.4}
+\contentsline {subsection}{\numberline {6.6.5}Composite Model Exercise}{186}{subsection.6.6.5}
+\contentsline {section}{\numberline {6.7}Tips and Tricks}{186}{section.6.7}
+\contentsline {subsection}{\numberline {6.7.1}MTTF in Reliability/Availability Computational Models}{186}{subsection.6.7.1}
+\contentsline {subsection}{\numberline {6.7.2}Failure Rate e MTTF in parallelo}{189}{subsection.6.7.2}
+\contentsline {section}{\numberline {6.8}Trasformate di Laplace}{190}{section.6.8}
+\contentsline {subsection}{\numberline {6.8.1}Propriet\IeC {\`a} e Trasformate di Funzioni Notevoli}{190}{subsection.6.8.1}
+\contentsline {subsection}{\numberline {6.8.2}CMTC with Absorbing States}{191}{subsection.6.8.2}
+\contentsline {subsection}{\numberline {6.8.3}Homeworks 2-1}{191}{subsection.6.8.3}
+\contentsline {section}{\numberline {6.9}Sigle Network Technologies}{192}{section.6.9}
+\contentsline {subsection}{\numberline {6.9.1}Sigle IEEE}{192}{subsection.6.9.1}
+\contentsline {subsection}{\numberline {6.9.2}Sigle varie divise per argomento}{193}{subsection.6.9.2}

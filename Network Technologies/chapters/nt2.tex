@@ -1,0 +1,733 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../nt.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Network Technologies 2}
+\label{cap:nt2}
+%************************************************\\
+
+\section{(Rapid)STP - Spanning Tree Protocol}
+
+\{M/M/1, M/M/$\infty$\}. (STP)$\rightarrow$(RSTP) rapida. La RSTP (Rapid) è la versione veloce dell'STP. \`E un protocollo che consente di trasformare una topologia magliata in una ad albero (bridge). L'STP porta a dei tempi di convergenza molto elevati. \textit{IEEE 802.1D} è lo standard che va a definire i \textit{Transparent Bridge}. Oggi i bridge sono HW (lvl 2). Prima erano a livello SW. Oggi abbiamo i router HW ASIC elettronici (matrici ASIC).
+
+L'STP serve per evitare che vi siano dei loop a lvl 2. Queste maglie esisteranno per via dei link ridondanti, introdotti per aumentare l'Affidabilità/Disponibilità. Dato che gli switch/bridge IEEE 802.1D non tollerano topologie magliate, allora serve l'STP. Il pericolo è quando loro fanno il flooding. Fase di forwarding, MAC Multicast/Broadcast $\implies$ flooding su tutte le altre porte. MAC Unicast $\implies$ funzioni di forwarding, previa consultazione delle sue tabelle di forwarding/routing. Si possono creare dei LOOP ad esempio, con il flooding. Tante copie dello stesso pacchetto. Gli switch lvl 2 NON tollerano topologie magliate. Una rete Fault-Tolerant richiede invece topologie magliate. Ma alla fine dobbiamo avere quella ad albero. Switched LAN. $\forall$ porta $\exists!$ LAN. Come l'STP si occupa di effettuare questa trasformazione? Trasforma alcune porte dello switch in \textit{BLOCKING}, altre in modalità \textit{FORWARDING}. Ogni interfaccia dello switch è numerata. Una porta bloccata non potrà forwardare/ricevere trame $\iff$ No elaborazione. Esiste anche lo stato \textit{DISABLED}. Quando è disabilitata, è come se non ci fosse proprio nella topologia ai fini dell'STP. Disabilitata quando o c'è un guasto, o viene disabilitata da un \textit{Network Manager} oppure non è collegata a nessun dispositivo. Esistono anche switch remoti! Che interconnettono LAN geografiche. A scala geografica ci potrebbe essere un enorme spreco, se disabilitassimo alcune porte. Link di comunicazine geografici $\implies$ bridge remoti. Se NON utilizzassimo un link geografico, avremmo un notevole spreco di banda. DRAWBACK. Le path risultanti dall'STP potrebbero essere più lunghe rispetto ad altre path che si potevano scegliere. L'STP converge via via in caso di guasti a nuovi ST (\textit{Spanning Tree}). Switched LAN = reti LAN interconnesse tra switch. Quando c'è qualche guasto, alcune altre porte che stavano in Blocking potrebbero tornare in Forwarding. Con le nuove convergenze riusciamo a farle comunicare.
+
+\subsection{Funzionamento STP}
+
+Modi di funzionamento: tre fasi principali. \underline{Alta Disponibilità} $\implies$ rete fault-tolerant $\implies$ ridondanza. VLAN (\textit{Virtual LAN}). Se le VLAN attraversassero più piani in tal caso, ci sarebbe bisogno dell'STP. Cosa accade quando una VLAN rimane confinata in un solo piano/od attraversa più piani? RSTP possibile. Abbiamo tre fasi principali:
+
+\begin{itemize}
+
+\item{\textit{Elezione del \textbf{ROOT BRIDGE}}}: $\exists!$ "highlander", root bridge. Tutte le porte del root bridge saranno settate a \underline{forwarding};
+\item{\textit{Selezione della \textbf{ROOT PORT}}}: $\forall$ bridge $\neq$ root, seleziono la porta verso la quale giunge a costo minimo al \underline{root bridge}. La ROOT PORT di ogni bridge viene settata in FORWARDING;
+\item{\textit{Selezione del \textbf{BRIDGE DESIGNATO} e della \textbf{DESIGNATED PORT}}}: $\forall$ segmento LAN alla quale saranno collegati due o più bridge, viene selezionato un bridge detto \textit{BRIDGE DESIGNATO}. Sarà quello più vicino al ROOT BRIDGE. La porta del bridge designato con la quale quel bridge è collegato a quel segmento viene detta \textit{PORTA DESIGNATA}. Solo il BRIDGE DESIGNATO sarà autorizzato ad inoltrare le trame dati!
+
+\end{itemize}
+
+ Un segmento LAN. LAN = rete locale che si basa su un canale Broadcast (canale ad accesso multiplo ad accesso circolare). Si risolve col protocollo MAC (Nell'Ethernet abbiamo il \textit{CSMA/CD}). Il canale è a diffusione circolare ma la trasmissione non sarà inviata in Broadcast. Sentiranno tutti ma lo elaborerà solo uno quel determinato pacchetto. Una stazione è un dispositivo che implementa almeno il sottolivello MAC. Un ripetitore NON è una stazione! (Implementa solo il Physical). Anche il ROOT BRIDGE è collegato a segmenti LAN. Ma tutte le sue porte sono in Forwarding $\implies$ tutte le porte del root bridge sono designate. La porta designata sarà ovviamente messa in stato di Forwarding. $\forall$ segmento abbiamo il bridge designato. 
+
+Perché funzioni l'STP abbiamo bisogno di scambiare dei messaggi di controllo (BPDU) - \textit{Bridge Protocol Data Unit}. Parliamo di un protocollo standardizzato dall'ISO. Problema del supporto multiprotocollo. Ogni livello ha il problema del multiprotocollo (es. LLC per 802.1). Ma l'IP non è stato standardizzato dall'ISO $\implies$ serve lo SNAP. Codici per l'LLC abbiamo 042H sia per il DSAP che il SSAP. \`E l'LLC che trasporta la BPDU. Le BPDU possono essere di due tipi:
+
+\begin{itemize}
+
+\item{\textbf{\textit{Configuration BPDU}}} utilizzata per la definizione della topologia loop-free (ad albero);
+\item{\textbf{\textit{Topology Change Notification BPDU} (TCN BPDU)}} con l'obiettivo di scatenare nuovamente l'STP per far convergere ad un nuovo albero;
+\end{itemize}
+
+Il campo \textit{BPDU type} fa la differenza tra i due tipi \{CONFIG, TCN\}. Quelle di CONFIG hanno anche altri fondamentali campi dell'STP. \{TC/ \dots /TCA\}. servono per lo scatenamento delle reazioni alle notifiche TCN (C)BPDU $\implies$ hello messages!
+
+\begin{itemize}
+
+\item{\textit{Root Bridge ID}}: identificativo del bridge che \newline \underline{si assume} sia il ROOT BRIDGE \{REAL/SUPPOSED\}, per via della presenza di una fase transitoria;
+\item{\textit{Root Path Cost}}: Path a minor costo verso il root bridge a partire dallo switch che sta trasmettendo questo messaggio di configurazione. Inviato ovviamente NON significa che l'abbia generato lui!
+Messaggi di Hello = CBPDU. Costo della path a minor costo;
+
+\item{\textit{Bridge ID}}: identificativo del transmitting bridge;
+\item{\textit{Port ID}}: analogamente per questo transmitting bridge: la porta dalla quale STA INVIANDO il messaggio;
+\item{\textit{\{Message Age, Max Age, Hello Time, Forward Delay\}}} sono impostati dal ROOT BRIDGE. Nell'\textit{Hello Time} imposterà il tempo di inter-ricezione dell'hello message. Di default pari ad (1s). Ogni 1s hello time da parte del root bridge. Passato l'hello time si aspetta un altro \textit{Max Age}. Scaduto anche questo tempo, manda delle TCN BPDU. Forward delay (default 15s);
+
+\end{itemize}
+
+Identificativi (IDS):
+
+\begin{itemize}
+
+\item{\textit{\textbf{Bridge Identifier e Root Identifier}}}: (\textit{Bridge Priority + Bridge MAC Address}). Di default la priorità è settata a 32768. Viene settata (incrementata o decrementata a steps di 4096 unità);
+\item{\textit{\textbf{ID di porta}}}: (\textit{Port priority + Port number}). default 128 la priorità. Passi di 16 unità possibili. Dividiamo in due la rappresentazione decimale (es. 128.21). 1 byte per la priorità ed 1 byte per il numero di porta;
+\end{itemize}
+
+\{Root ID, Bridge ID, Port ID\}. Poi avevamo il Root Path Cost. Alla porta di uno switch è associato un costo, settato manualmente da un Network Manager oppure sono dei costi raccomandati dalla IEEE, a seconda della velocità della porta (es. Ethernet). 16 bit per il costo. Fino a 65535 (Unsigned). Fino a 10Tb/s. (Revised \textit{802.1D}) (Switched LAN). Alle porte sono associate dei costi. Un bridge sarà in grado di calcolare il root path cost a partire dalle porte sulle quale sta ricevendo. Costo porta di ricezione + costo che troviamo nel messaggio di hello. Additività. Bisognerà preoccuparsi ovviamente di aggiornare via via il Root Path Cost per inviare a valle (ad un livello più basso della topologia).
+
+\subsubsection{Spiegazione FASI STP}
+
+\begin{itemize}
+
+\item{1)} Elezione del ROOT BRIDGE. Parte la rete. Ogni switch pensa di essere il root bridge. Nel Root Path Cost metteremo ovviamente 0! Root ID = Bridge ID inizialmente. Se un bridge riceve su una certa porta un messaggio di Hello, farà un confronto con il proprio Root ID. Vince l'ID più basso! (Bridge ID più basso). Root/Bridge ID. Il bridge con maggior Bridge ID tra questi ora non invierà più messaggi di hello, e setterà il proprio Root Path Cost a partire dal costo della porta dalla quale sta ricevendo. Se la priorità è lasciata di default, il confronto verrà fatto a livello di indirizzo MAC. In questo modo $\exists!$ alla fine Root Bridge, con il (Bridge ID) = (Root ID) più basso. Prima di forwardare un messaggio di hello, un bridge non root modificherà opportunamente il Root Path Cost. Alla fine uno soltanto sarà eletto. ID: \{Bridge Priority + Bridge MAC\}. Ad uno switch è associato un indirizzo MAC. Avrà un MAC $\forall$ porta. Per la sua operatività non serve il MAC in realtà. Per quanto riguarda le trame dati difatti, gli indirizzi MAC sono \underline{trasparenti}! Da qui il nome \underline{\underline{TRANSPARENT BRIDGE}}. Prima abbiamo l'elezione del \underline{Root Bridge};
+
+\item{2)} fase successiva: elezione della \underline{Root Port}. $\forall$ bridge non root dovrà selezionare la Root Port. $\exists$ certa sequenza di condizioni che devono essere verificate in caso di condizioni di parità:
+
+\begin{itemize}
+
+\item{-)} Supponiamo che si verifichi una situazione di parità sulla porta (Rotta a minor costo);
+\item{-)} Selezioniamo come Root Port quella sulla quale i messaggi hanno il Bridge ID più basso;
+\item{-)} Se abbiamo stessi Bridge ID abbiamo il confronto con la Port ID. Porta dalla quale si riceve il messaggio di hello con il più piccolo Port ID. Porta di INVIO. Porta tramite la quale quel transmitting bridge sta inviando il messaggio di hello;
+\item{-)} Alla fine si passa alla quarta condizione discriminante: identificativo della porta di ricezione. Vince quella minore;
+\end{itemize}
+
+La prima condizione prevede la discriminante come Least Cost (Root Path Cost);
+
+\item{3)} Selezione della PORTA DESIGNATA. $\forall$ segmento LAN ci sarà da selezionare un bridge designato. Quale sarà il bridge designato? Quello che sta comunicando su quel segmento LAN delle BPDU a più basso costo;
+
+\end{itemize}
+
+Se una porta è bloccata NON vi è inoltro. Un Hub (ripetitore) è come se non ci fosse (è trasparente per loro). Un hub NON potrebbe interconnettere LAN a differenti velocità, né LAN a differenti MAC (avrebbe bisogno dello stack data layer a lvl 2). Ci sarebbe inoltre bisogno dello \textit{STORE \& FORWARD} (S\&F). Quest'ultimo lo possono fare switch, router (logica di elaborazione lvl 2, lvl 3).
+
+Alla fine sarà il Root Bridge ad inviare messaggi di hello. Valori dettati dal Root Bridge. Se un Bridge non root si aspetta di ricevere messaggi di hello con quella temporizzazione, aspetta un pochino di tempo (pari a Max Age). Passato anche questo tempo (tipicamente 20s), il suddetto bridge scatena l'STP, mandando TCN. Se una porta, prima in stato di Blocking (per evitare i loop), deve passare a Forwarding, tutto ciò non avviene immediatamente. Prima quella porta viene messa in \textit{LISTENING STATE} per evitare loop. Quella porta si potrebbe accorgere che il Root Bridge è "obsoleto". Passato un quantitativo di tempo pari a Forward Delay, entra in \textit{LEARNING STATE}, nella quale sarà autorizzata ad utilizzare il \textit{Backward Learning}. Dopo un altro tempo pari al Forward Delay, finalmente la porta entrerà in \underline{\textit{Forwarding State}}. Durata massima (pensando ai tempi di default), $20+15+15=50s$. Si è quindi definito l'RSTP. Se avessimo più switch naturalmente avremmo dei transitori molto lunghi, e questi valori temporali potrebbero essere pesanti, soprattutto se si parla di una rete di grandi dimensioni! Potrebbe creare lei stessa dei loop. Pericolo di \textit{Broadcast Storm} (invocazioni troppo frequenti dell'STP):
+
+TCA settati (\textit{Topology Change Acknowledgements}) dal notifier del cambiamento della topologia. Modifica dell'Aging Time (Apprendimento Annullato). La convergenza è pesante, ed è stata risolta \underline{dall'RSTP}. \textit{IEEE 802.1AX}. Raggruppare link paralleli tra stazioni. Quattro link a $100\ Mbit/s$ ad esempio. Raggruppare ad un link logico con banda più o meno costante (grossomodo $400\ Mbit/s$) (LACP) = \textit{Link Aggregation Control Protocol}. In parallelo NON abbiamo il problema della convergenza (non se ne accorgerà l'STP). Il costo del Link cambierà ad un guasto, aumenterà di preciso. Il costo del Link Logico invece diminuisce al raggruppamento. Il protocollo lavora soltanto con Full-Duplex alla stessa trasmissione.
+
+RSTP = \textit{Rapid STP}, definito nell'\textit{IEEE 802.1W}. Lavora come l'STP, ma cambia la terminologia: \textit{Discarding} $\supset$ \{Blocking, Listening, Disabled\}. Si può scendere giù di 10s, oppure di 12 o 2s in alcuni casi. Con l'STP abbiamo la selezione della Root Port. Se una root port viene meno, viene scelta la porta \textit{Alternative} a minor costo. Meccanismi aggiuntivi che lo rendono molto più veloce. Se ci sono degli Hub Repeater ivi prevediamo solo dei link punto-punto! Altrimenti stessi tempi dell'STP;
+
+Agire sulla topologia modificando il campo \textit{Priorità}.
+
+VLAN = Virtual LAN. Configurare su una Switched LAN diverse sotto-LAN logiche. Configurazione LAN virtuali. Differenti VLAN comunicano tra di loro solo sfruttando il lvl 3. L'STP non andrà a guardare le LAN virtuali. Prima avevamo quindi l'esecuzione di una sola istanza dell'STP. Per effettuare \textit{Load Balancing} si è introdotto l'MST (\textit{Multiple STP}). C'è da pensare a vari parametri $\forall$ VLAN (Virtual LAN). Quindi è stato modificato il campo Bridge Priority (primi 16 bit). Bridge ID: (Priority ID + Bridge MAC). BP non più di 16 bit. 12 bit = identificativo della VLAN. 4 bit più a monte: valore effettivo della priorità. Il campo di 16 bit è stato quindi diviso in 2: 32768 default priority. Incrementi consigliati sempre di 4096. (4 bit = BP + 12 bit = \textit{System ID Extension}). 4 bit $\implies$ 16 valori di priorità possibili. Non è comunque limitativo. L'intero Bridge Priority sarà quindi modificato MA sarà comunque da affiancare all'indirizzo MAC per formare il Bridge ID ed eventualmente Root ID.
+
+
+\subsubsection{RECAP}
+
+STP. Strategie per evitare che un malintenzionato possa collegarsi ad uno switch di piano ed alterando la BPDU con priorità molto basse, modificando quindi lo Spanning Tree. Oltre ad alterare lo Spanning Tree potrebbe anche intercettare il traffico. Se lui fosse il ROOT, il traffico transiterebbe tutto verso di lui. Potrebbe di conseguenza anche creare una situazione DoS. Due opzioni, proposte in ambito CISCO:
+
+\begin{itemize}
+
+\item Configurare \textit{fast port} (generalmente user port), ma non va bene perché toglierebbe la possibilità di avere un PC con meccanismi di switching;
+\item \textit{Root Guard} disabilita una porta che diventerebbe STP root port;
+
+\end{itemize}
+
+L'STP di default è sempre attivo sugli switch. Si può disattivare ma è meglio tenerlo prevalentemente attivo.
+
+All'avvio di una rete switchata parte l'STP a lavorare (vedasi \textit{Cisco Packet Tracer}). Di default sugli switch lvl 2 o multilayer è configurato sulla VLAN 1 (sulla quale sono associate tutte le porte). ID Bridge: \{Priorità + Indirizzo MAC\}. Con l'avvento delle VLAN adesso abbiamo la suddivisione della Priorità in: \{BPV: \textit{Bridge Priority Value} di 4 bit + \textit{System ID Extension}\} $\leftarrow$ relativo al Multiple Spanning Tree (MST). Gli ultimi 12 bit sono l'identificativo delle VLAN. es. Bridge Priority: 32769: priorità effettiva: 32768 + (1 = VLAN ID). Link punto-punto. Costo 19 porte \textit{Fast Ethernet}. Se cambiamo priorità, l'algoritmo si riavvia. Bisogna specificare la VLAN. Ci vuole un certo tempo perché converga l'algoritmo (STP).
+
+\section{LAN Virtuali (VLAN)}
+
+Un'organizzazione ha bisogno di avere LAN parallele (indipendenti). Come realizzarle? Si utilizzino degli apparati come switch per collegare le varie stazioni interessate ai rispettivi switch. La tecnologia delle LAN virtuali consente questa configurazione a livello SW, mediante VLAN, anche se i dispositivi sono fisicamente collegati. Una certa serie di VLAN può esserci anche con un singolo switch, con un'operazione opportuna di configurazione. Ma le stazioni LAN potrebbero non essere separate fisicamente! Sono separate logicamente. Potrebbero anche esserci due o più switch $\implies$ le VLAN in questo caso si estendono su più switch $\iff$ stazioni collegate a switch diversi fanno parte della stessa VLAN. VLAN che si estendono su più piani, su più switch. Essenzialmente una VLAN è un dominio di \textit{BROADCAST} $\neq$ dominio di \textit{COLLISIONE}. Nel primo se una stazione trasmette un pacchetto in broadcast, nonostante tutti possano sentirlo, un meccanismo di arbitraggio virtuale del canale fa in modo che giunga a destinazione e venga elaborato solo da uno. Si ricordi che uno switch è una stazione! (Almeno lvl 2). \{Stazioni = Router, Host, Switch\}. Attraverso il full-duplex il MAC è bypassato. \`E lo switch che stabilisce il dominio di BROADCAST. Gli switch separano i domini di collisione. Se tutte le stazioni di una LAN fossero collegate ad un Repeater, allora otterremmo un unico dominio di collisione, più grande, che coincide in tal caso con il dominio di BROADCAST. Un dominio di BROADCAST contiene uno o più domini di collisione.
+
+Una LAN virtuale corrisponde ad un dominio di BROADCAST. Possiamo già pensare ad una motivazione per le VLAN. Contenere le dimensioni dei domini di broadcast. Far fronte ai protocolli \textit{Broadcast Intensive} (ARP utilizza il Broadcast, ma non è BI!). Altre motivazioni: VLAN per raggruppare gli utenti in Gruppi di Lavoro. Esigenza di avere LAN separate $\iff$ motivazioni di sicurezza. Evitare che il traffico di una certa serie di utenti transiti, riguardi altre VLAN. Due VLAN comunicano tra di loro solo se vi è un dispositivo lvl 3 che le interconnette (router IP con Subnet IP). Controllano il traffico mediante le ACL, diversamente le due VLAN non potrebbero comunicare.
+Conflitto di competenze: Mantenere dispositivi sensibili, importanti su una LAN virtuale. Separare determinate tipologie di traffico. \textit{Telecommunication Outlet} nella stessa stanza. Si sfrutta un'unica presa di rete (es. telefono VoIP con L2 switch incorporato). Questioni di convenienza (es. TAG VLAN). Nel TAG ci saranno i Campi di \textit{Priorità}. Marcatura a lvl 2, parlando di priorità delle trame appartenenti ad un certo flusso.
+
+
+Si aggiunge un cosiddetto \textit{Tag} per le VLAN. Sorta di francobolli che identificano la VLAN alla quale la stazione appartiene. Sulla base di questi tag lo switch ricevente capirà come gestirlo. Un link tra due switch attraverso il quale viaggiano trame taggate viene chiamato \textit{TRUNK}. E le porte agli estremi del collegamento si chiamano \textit{porte TRUNK}.
+
+Configurazione di VLAN. Operazione di configurazione. Ci sono due tipologie di porte: \{\textit{ACCESS}, \textit{TRUNK}\}:
+
+\begin{itemize}
+
+\item{\textbf{\textit{Access}}}: Le prime trasmettono e ricevono trame NON taggate. Una porta ACCESS potrà gestire una sola VLAN alla quale essa corrisponde. Tipicamente alle porte access ci collego gli host;
+\item{\textbf{\textit{Trunk}}}: A queste porte invece possono essere configurate differenti VLAN. A quale VLAN è permesso attraversare la linea trunk è deciso in fase di configurazione;
+\end{itemize}
+
+La VLAN 1 è quella di default e $\forall$ port $\in$ VLAN 1. La VLAN nativa normalmente corrisponde alla VLAN 1, e le trame associate alla VLAN nativa NON sono taggate! Anche le ACCESS in realtà possono collegare due switch. Associazione: \{porte $\leftrightarrow$ VLAN\}. Un link trunk tra due switch può essere sempre sostituito con $n$ link access, ove $n$ è il numero di VLAN che viaggiano normalmente sul link trunk. Link Access associato alla VLAN. In questi casi NON abbiamo più trame taggate, ma ci stiamo giocando $n$ link! E costano un bel po' sugli switch. 
+
+\subsection{Configurazione}
+
+Configurazione. Comandi CISCO:
+
+\begin{lstlisting}[language=CISCO]
+show VLAN brief
+\end{lstlisting}
+
+VLAN1 = VLAN di default. Per aggiungere delle VLAN devo anzitutto crearle:
+
+\begin{lstlisting}[language=CISCO]
+Sw#vlan database
+Sw(vlan)#vlan 2 name Ammin
+VLAN 2 added:
+	Name: Ammin
+\end{lstlisting}
+
+Si creino le nuove VLAN. Dopodiché dobbiamo cominciare ad associare le porte:
+
+\begin{lstlisting}[language=CISCO]
+Sw(config)#int GigabitEthernet 0/1
+Sw(config-if)#switchport access vlan 2
+Sw(config-if)#exit
+\end{lstlisting}
+
+Porta di tipo ACCESS associata alla VLAN 2. Per la modalità trunk invece, nel link trunk viaggeranno trame taggate:
+
+\begin{lstlisting}[language=CISCO]
+Sw(config)#interface GigabitEthernet 0/1
+Sw(config-if)#switchport mode trunk
+Sw(config-if)#switchport trunk allowed vlan 1,4,5
+Sw(config-if)#exit
+\end{lstlisting}
+
+Prima entriamo nell'interfaccia delle porte ovviamente. Di default le porte sono tutte ACCESS per la VLAN 1. Oppure:
+
+\begin{lstlisting}[language=CISCO]
+Sw(config-if)#switchport trunk allowed vlan all
+\end{lstlisting}
+
+Le reti \textit{Token Ring} sono state create dall'IBM, ma non ebbero molto successo per via dei costi elevati. Preferibile oggigiorno l'Ethernet perché più semplice con il suo potentissimo CSMA/CD.
+
+Standard che specificano le LAN virtuali: \textit{IEEE 802.1Q - 2005}. VLAN specificate da questi standard. Ma questi standard prevedono le VLAN per porta (\textit{Per-port VLAN}). Tutte le stazioni collegate allo switch mediante quelle porte faranno parte alle VLAN associate a quelle porte. Si abbassa però la Flessibilità. Richiede un certo peso per il Network Manager. Bassa flessibilità su maggior controllo da parte del Network Manager. I produttori possono anche fornire soluzioni alternative, ma non rispettano ovviamente gi standard i quali servono per interoperare invece. L'802.1-Q specifica anche il formato per il tag, i quali servono per identificare la VLAN di appartenenza quando i pacchetti attraversano i link trunk. Il TAG consiste in 4 byte. 2 byte \textit{Type/Length} che si differenziano sulla base dell'\textit{IEEE 802.3}. Per il PADDING serve il Length. Per far sì che la trama abbia una certa lunghezza minima.
+
+[64,1518] byte. Il TAG consiste in 4 byte (2 byte + 2 byte). Primi 16 bit (2 byte) TPID (\textit{Tag Control Protocol Identifier}); se codice 81-00 significa che dopo vi sarà il Tag della VLAN: TCI (\textit{Tag Control Information}) $\supset$ \{PCP (\textit{Priority Code Point}): priorità della trama a lvl 2 per la QoS. 7 livelli di priorità: Il 7 è il più alto, mentre il più basso è l'1, mentre quello 0 è di default. Tramite questa priorità si differenzia il servizio fornito; DEI (\textit{Drop Eligible Indicator}) di 1 bit. Qualora si verifichino fenomeni, situazioni di congestione, sono i primi frame (quelli preferibili, candidati) a venire scartati; \textit{VLAN} ID (VID), valore di 12 bit. Le VLAN sono numerate da 1 a 4095 (esattamente 4095 VLAN diverse possibili). Ma il VID può valere anche 0 (quella trama NON è associata a nessuna VLAN). Quel TAG è stato scritturato solo per fornire priorità alla trama (nel PCP)\}. La VLAN 1 è spesso utilizzata per una VLAN di gestione (\textit{management VLAN}). I vari apparati dovranno ovviamente essere gestiti.
+
+L'\textit{IEEE 802.1-V} va invece a definire le VLAN per protocollo. Si immagini di configurare un protocollo ad una VLAN. Lo switch, ricevendo una trama, va a vedere la rispettiva PDU. Prevale la IEEE 802.1-V su quella Port-Based. Prima avevamo un solo \textit{Filtering Database}. Adesso i moderni switch supportano l'IVL (\textit{Independent Virtual LAN}): $\forall$ VLAN $\exists!$ Filtering Database. Con questa modalità possiamo associare ad una stazione più VLAN.
+
+Configurazione link trunk. Transitano le trame relative a quelle VLAN permesse. MVRP (\textit{Multiple VLAN Registration Protocol}). Gli switch stessi capiscono quali trame VLAN possono transitare. In base alle VLAN che vi sono agli estremi. Può coesistere una situazione mista. Le trame che partono da una VLAN 1 NON sono taggate su un link trunk. Importante in alcuni scenari. Le BPDU viaggiano NON taggate! 
+
+Più istanze STP. Originariamente si poteva creare una sola istanza dell'STP. L'STP NON vede le VLAN! Più recentemente si è data la possibilità di avere più istanze dell'STP $\rightarrow$ (MST) per \textit{Multiple Spanning Tree}. Decidere le associazioni VLAN - Spanning Tree. Tipicamente uno Spanning Tree può coinvolgere più VLAN quindi. Load balancing a lvl 2. \{PVST, PVST+\} sono protocolli proprietari Cisco. Mentre l'MST è uno standard. LO standard IEEE è comunque stato derivato dall'MST.
+
+\subsection{Private Virtual LAN (PVLAN)}
+
+LAN Virtuali. VLAN Private. Non vi sono degi standard dietro. I produttori si sono inventate le PVLAN. Molto utili. Suddividere una VLAN già esistente in ulteriori sottodomini di BROADCAST, sebbene le subnet IP rimangano sempre quelle di partenza. Ogni sottodominio ha una: \{VLAN Primaria, VLAN Secondaria\}. La primaria è condivisa da tutti i sottodomini. La VLAN secondaria è quella che fa la differenza. \`E costituita da \textit{Porte Isolate} che possono comunicare con le cosiddette \textit{Porte Promiscue}. Le \textit{Porte COMMUNITY} possono comunicare solo con le porte nella stessa Community VLAN e con le porte promiscue. \{porte promiscue\}: porte della VLAN primaria. Una porta promiscua può comunicare con tutte le porte: \{$\exists!$ VLAN ISOLATA $\land\ \exists$ VLAN COMMUNITY (multiple)\} $\leftarrow$ VLAN secondarie. \`E una tecnologia che gioca un ruolo importante nelle DMZ. Queste VLAN private possono estendersi su più switch. Esiste anche qui il concetto di link TRUNK. Suddivisione in sottodomini. Le porte promiscue le gioco per firewall, router. Attraverso le VLAN viaggiano le trame appartenenti alla stessa VLAN community.
+
+\begin{itemize}
+
+\item{-)} In una VLAN regolare il broadcast raggiunge tutte le porte della VLAN;
+\item{-)} Si ricordi che le porte VLAN isolate comunicano soltanto alle porte promiscue, oppure alle porte trunk se esse permettono di raggiungere una porta promiscua. Le porte promiscue sono utilizzate per accedere al mondo esterno mediante router. Sul link trunk abbiamo il tagging. Accedendo verso una porta promiscua non abbiamo più bisogno di TAG (PVLAN).
+
+\end{itemize}
+
+Si ricordi che qui non abbiamo più il concetto standardizzato di \{ACCESS, TRUNK\}. Dominio delle PVLAN. I produttori si sono inventati questa furba tecnologia.
+
+Quindi, per quanto riguarda il broadcast, adesso esso raggiunge solo porte isolate, link trunk (o porte promiscue). Mentre per il broadcast delle VLAN Community, essi raggiungono porte Community (della stessa community), link trunk ed al solito porte promiscue. Questa tecnologia bloccante a lvl 2 serve per proteggere interi blocchi lvl 2 di DMZ.
+
+\section{NETWORK DESIGN}
+
+Design di una rete di Campus ad Alta Disponibilità (\underline{High Availability}). Gli Access Point sono tipicamente Lite. Architettura basata sul controllore. Unico controllore per tutto il campus (SPoF e bottleneck). $\forall$ access point ho un tunnel verso un unico controllore. C'è un tunnel dall'access point al controllore. Unico tunnel. Possibilità di Controllo ridondante.
+
+\subsection{Progettazione di rete ad Alta Disponibilità}
+
+\begin{itemize}
+
+\item{\textbf{Analisi dei Requisiti}}: Prima fase. Requisiti legati al Business di un'Azienda, alla Mission di un'Organizzazione. Requisiti tecnici: \{throughput, delay, delay jitter\} che consentono di ottenere gli obiettivi della mission. \{Disponibilità, Sicurezza dei Dati. Strettamente legati alla Disponibilità\};
+\item Caratterizzare la rete esistente (che tipo di HW, SW è presente). Magari ci saranno delle applicazioni già presenti (flussi di traffico presenti, correnti e quelli futuri);
+\item{\textbf{PROGETTAZIONE LOGICA}}: Topologia rete, protocolli di routing, strategia di sicurezza e strategia di management (http). Progettata logicamente la rete si passa al: 
+\item{\textbf{livello fisico}}:
+
+\begin{itemize}
+
+\item Tecnologie e dispositivi per reti di campus;
+\item Tecnologie e dispositivi per WAN.
+\end{itemize}
+
+Ci si può avvalere di programmi tipo Packet Tracer per testare il progetto della rete. Si possono (devono) ovviamente applicare delle variazioni in retroazione.
+
+\end{itemize}
+
+\subsection{FAULT-TOLERANCE}
+
+Una rete può essere progettata per le performance, per la sicurezza, per la Disponibilità. Alcuni requisiti ovviamente vanno in conflitto tra di loro. Adesso ci occupiamo di \textit{Fault-Tolerance}. Bisogna pensare alla ridondanza. Abbiamo diversi tipi di Ridondanza:
+
+\begin{itemize}
+\item{\textit{Backbone}};
+\item{\textit{Device}};
+\item{\textit{ITB (In The Box)}};
+\item{\textit{Interfaccia di Rete}};
+\item{\textit{Stazione duale (tandem, watch dog)}};
+\item{\textit{Sistemi Cluster}}
+\end{itemize}
+
+La soluzione fault-tolerant dev'essere la più semplice possibile. Ridondanza del default router. Molto importante! Sicuramente il router di default va ridondato! Il primo protocollo proposto ed utilizzato è l'HSRP (\textit{Hot Standby Router Protocol}) della CISCO (proprietario ovviamente). Poi abbiamo il VRRP, LGBP;
+
+\subsubsection{HSRP}
+
+L'HSRP fa sì che si crei un \underline{router virtuale} (detto anche router fantasma). L'\textit{Active Router} e lo \textit{Standby Router} sono router fisici! Il fantasma no! A quello fantasma corrisponde un indirizzo IP e MAC. Ogni host nella rete avrà come default gateway l'indirizzo di quello fantasma. Più di due router possibili, ma router attivi e standby saranno soltanto due! Tutti apparterranno allo stesso gruppo comune. $\exists$ FASE di elezione, basata sul concetto di priorità (100 di default). Qui il router con la più alta priorità diventa quello Attivo. In caso di parità, diventa Attivo quello con l'indirizzo IP più grande. Alla fine della fase di elezione, quello Attivo avrà il ruolo del router virtuale (fantasma), ed assumerà anche IP e MAC (indirizzi) di quello fantasma. Quindi l'interfaccia del router attivo avrà due indirizzi IP! Sempre lui dovrà rispondere alle richieste ARP per il router di default (Manderà la \textit{ARP reply}).
+
+Al termine dell'elezione, periodicamente l'Attivo e lo Standby manderanno dei messaggi di hello. Se il router attivo va down, subentra lo standby come quello Attivo. Ma bisogna eleggere quello di standby tra i router del gruppo HSRP. Se cade quello di standby, di nuovo bisogna eleggerne un altro di standby. Ci saranno dei timer opportuni. I messaggi HSRP sono inviati all'IP multicast 224.0.0.2 sulla porta UDP 1985. Se appropriamente tunato, converge in 1 secondo. Il MAC del router virtuale può essere configurato manualmente oppure creato automaticamente come well-known. Per quanto riguarda l'indirizzo IP, bisognerà configurare opportunamente le interfacce dei router Standby ed Attivo:
+
+\begin{lstlisting}[language=CISCO]
+Router-X> interface ethernet 0
+Router-X> ip address 10.1.1.1 255.255.255.0
+Router-X> standby 24 ip 10.1.1.5
+\end{lstlisting}
+
+(24 è l'HSRP Group!) A questo punto la elezione che, si basa sull'indirizzo IP qualora la priorità sia la medesima, avrà sicuramente successo. Una volta che un router è diventato Attivo, non molla l'asso anche se subentra qualcuno migliore di lui (Priorità od IP). Ma può subentrare con la funzionalità \textit{preempt}, se opportunamente configurata con:
+
+\begin{lstlisting}[language=CISCO]
+Router-X> interface ethernet 0
+Router-X> ip address 10.1.1.1 255.255.255.0
+Router-X> standby 24 preempt
+Router-X> standby 24 priority 105
+Router-X> standby 24 ip 10.1.1.5
+\end{lstlisting}
+
+Naturalmente sono le interfacce che devono gestire il gruppo HSRP. Funzionalità \textit{TRACK}. Se entrambi i router (Standby ed Attivo) sono collegati in Seriale ad un altro router, e la tratta Active - Router $\mathit{Z}$ va in down, allora entra in funzione Track che va automaticamente ad abbassare la Priorità del Router "down":
+
+\begin{lstlisting}[language=CISCO]
+R-X>interface ethernet 0
+R-X-if>ip address 10.1.1.5 255.255.255.0
+R-X-if>standby 1 preempt
+R-X-if>standby 1 priority 105
+R-X-if>standby 1 ip 10.1.1.10
+R-X-if>standby 1 track Serial 0
+R-X-if>no shutdown 
+R-X-if>exit
+R-X>interface serial 0
+R-X-if>ip address 10.6.2.5 255.255.255.0
+\end{lstlisting}
+
+Se va giù quell'interfaccia si diminuisce la priorità (di default vi sono decrementi di 10). Naturalmente si opererà sull'interfaccia. \textit{1} qui indica il relativo gruppo HSRP, mentre \textit{Serial 0} è l'interfaccia di interesse. La track ha senso ovviamente solo se c'è la Preempt!
+
+\subsubsection{Multi-HSRP}
+
+l'HSRP normale porta ad uno spreco della banda! Il Router di Standby NON è autorizzato a forwardare pacchetti IP che arrivano dagli host! Il router Standby non farà niente per instradare verso l'esterno! $\iff$ banda sprecata. I link geografici devono essere adeguatamente sfruttati. Sull'Internet ci sono dei protocolli di routing dinamici (ECMP - \textit{Equal Cost Multipath Routing}). Nelle tabelle di routing ci potrebbero essere path col medesimo costo. Load balancing. Con il \textit{multi-HSRP} faremo \textit{load Sharing} (Balancing). Un router può essere attivo per un gruppo e standby per un altro. Paradigma a stella. Per fare il Load Sharing bisognerà configurare opportunamente gli host, ovviamente. Operazione molto scomoda. Si utilizza nella pratica VLAN+DHCP. Si configuri lo switch con due VLAN (metà parte VLAN 10 e l'altra metà VLAN 20). Per-port VLAN. Le due VLAN corrispondono ad IP differenti. Stiamo pensando all'utilizzo del DHCP. Ovviamente i link switch-router saranno link TRUNK. Settare opportunamente le VLAN ID di appartenenza dopo l'accesso alle interfacce.
+
+Attenzione ad utilizzare l'HSRP su reti switchate! Se va giù il link di comunicazione TRA switch ci sono problemi in entratata con l'ECMP. Sorgono dei problemi di irraggiungibilità (\textit{reachability problem}) per gli host. Il problema si risolve raddoppiando il link di comunicazione (facendo girare STP opportunamente per i loop), oppure si aggregano quei due in un unico link mediante LACP - Link Aggregation Control Protocol. \underline{\textit{IEEE 802.1AX}} per aggregare i link. Nella realtà non sono collegati questi switch! Ma sono messi in stack tra di loro.
+
+Poi abbiamo il VRRP - \textit{Virtual Router Redundancy Protocol}. Definito in \textit{RFC 2338}. Molto simile all'HSRP (Master $\rightarrow$ Active, Slave $\rightarrow$ Standby); GLBP \textit{Gateway Load Balancing Protocol}. Ci consente di evitare il multi-HSRP. Si crea un unico gruppo GLBP, nel quale entreranno a far parte le interfacce. Unico gruppo. Tutti gli host saranno configurati con l'IP del virtual router. L'AVG (\textit{Active Virtual Gateway}) viene eletto, ed è lui l'elemento preposto a rispondere alle \textit{ARP Request}. In maniera ciclica (round-robin) verranno scelti i MAC dei restanti membri del gruppo, denominati AVP (\textit{Active Virtual Forwarder}). 
+
+\subsubsection{Sicurezza in HSRP}
+
+Problema della Security. Indirizzi IP multicast alla quale vengono mandati i pacchetti HSRP: 224.0.0.102 sulla porta UDP 1985. Problema della sicurezza dati. C'è la possibilità che venga sferrato un attacco DoS qualora vi sia \textit{Spoofing HSRP}. Stazione utilizzata da un hacker che manda dei pacchetti hello HSRP con priorità 255 (max priority). Molto probabile che esso diventi il router Attivo. Enhancement necessari. Di default lo schema di autenticazione è un testo in chiaro nel messaggio di hello. Il router accetta il pacchetto solo se corrisponde questo campo di \textit{Authentication}. Molto debole, soggetto a possibili sniffing. La stringa di default è "cisco". Ma un hacker potrebbe ugualmente sniffare con un \textit{Packet Sniffer}. Troubleshooter per problemi di rete, utile ai Network Manager. Switch lvl 2 (bridge). Per la trama broadcast e multicast esso farebbe un flooding. A lvl 2 ci sarebbe un MAC Multicast. Rilevazione trama + Spoofing. Supporto dell'\textit{IGMP Snooping} per le trame Multicast (hello HSRP nel messaggio IP). Ma con questo protocollo si riesce a capire mediante quale porta si riescono a raggiungere determinati gruppi multicast. Abbiamo un enhancement MAC (\textit{Message Authentication Code}) con MD5. Facciamo vedere i comandi rispettivamente quello di default e l'enhancement MD5:
+
+\begin{lstlisting}[language=CISCO]
+...
+Router-X> interface ethernet 0
+Router-X> ip address 10.1.1.1 2
+Router-X> standby 24 authentication text string
+Router-X> standby 24 authentication md5 key-string string
+...
+\end{lstlisting}
+
+
+Ove 24 è al solito l'identificativo del gruppo HSRP. \textit{string} $\rightarrow$ password mediante la quale vengono hashati i messaggi (in questo caso gli hello HSRP). Possibile pure un filtraggio a livello MAC (switch avanzati). Access List a livello più basso (\textit{ACL lvl 2}). La versione HSRPv2 supporta l'MD5.
+
+\subsection{Network Design in pratica}
+
+Switched LAN. Rete ad alta disponibilità. Fault-Tolerant $\rightarrow$ Ridondanza. Abbiamo visto ridondanza sul default router. Ridondanza sulle dorsali verticali. Certo numero di piani. Su ogni piano, nel Telecommunication Closet (centro-stella di piano) ci si mette uno switch lvl 2 (switch di piano) che raccoglierà le istanze di piano. Switch di accesso. Poi abbiamo l'\textit{Equipment Room} (locale tecnico), ove abbiamo il centro stella di edificio (S1-P, S1-S). Apparati attivi nelle ER. La maggior parte dei flussi di traffico passa da qui. Bisogna quindi ridondare opportunamente. Devono essere abbastanza potenti! Poi abbiamo le dorsali verticali. Cavi, a rigore. LIU (\textit{Lightguide Interconnection Unit}). Apparati di centro-stella. \textit{CAVEDIO} (primaro \& secondario). Le due dorsali scorrono in cavedi differenti. I produttori consigliano di mettere negli ER degli switch multilayer (lvl 2 - lvl 3). Centro-stella. Apparati molto più potenti. Switch di distribuzione. \textit{Livello distribuzione}. Ridondanza sulle dorsali. Si creano dei possibili LOOP $\rightarrow$ STP $\rightarrow$ (R)STP ovviamente. Root bridge S1-P, ma interviene S1-S se malfunziona il primo. Modifica automatica della priorità (previo identificativo). In particolare si avrà il decremento della priorità. 32768 di default, a decrementi di 4096. Confronti sul Root Path Cost. Path a stesso costo $\implies$ link alla stessa velocità. Spanning-Tree.
+
+Ridondanze sull'interfaccia (fault-tolerant). Si fa girare l'HA-Linux (High Availability). Si ha lo switching in automatico qualora l'interfaccia (una delle due) vada giù. Se va giù uno switch del lvl distribuzione, con questo sistema è tutto OK. Switch $\leftarrow$ bridge. Oggi gli switch sono in HW (ASIC). Pensare anche alla capacità elaborativa! Gli switch del livello distribuzione devono essere ben potenti. Utilizzo delle VLAN (LAN virtuali). Per far comunicare host appartenenti a VLAN differenti abbiamo bisogno necessariamente del lvl 3. Possibilità 3 porte access al posto di 1 trunk la quale richiederebbe che il router soprastante sia \textit{VLAN-Aware}. Link geografico che porta dal Router alla vera e propria Internet. Dobbiamo pensare anche eventualmente alla ridondanza dei link geografici. Pensare all'utilizzo dell'HSRP e del VRRP in questo caso. ECMP (Equal Cost Multipath Routing). Il discorso HSRP ha a che fare solo con il traffico in uscita. Pensare a più gruppi HSRP! ($\forall$ VLAN $\exists!$ HSRP), tipicamente.
+
+Switch livello distribuzione lvl 2. Multi-layer switch. I router tradizionali lavorano non in hardware, ma con le CPU. I multilayer lavorano a lvl hardware! Matrice ASIC. I multilayer lavorano a lvl 3 come dei router! Lavorano in HW solo per il protocollo IP! Commutano ad altissima velocità a livello IP per reti di campus. Per i link geografici non ne avremmo bisogno (capacità trasmissiva bassa). Il multilayer lavora in HW per gli IP (maggioranza dei pacchetti). \{IPX, AppleTalk\} $\leftarrow$ legacy lvl 3 protocols. Multilayer switch. I router tradizionali vanno bene quando il $\cardinality{VLAN} \ll +\infty$, il traffico è basso e le ACL sono limitate.
+
+\subsubsection{NO-FAULT TOLERANT NETWORK}
+
+Immaginiamo che le varie entità organizzative siano disposte per piani, su reti differenti.
+
+\begin{itemize}
+
+\item Le VLAN non attraversano i piani. Associare ai vari piani differenti Subnet IP, configurate $\forall$ piano. Indirizzo IP specifico x piano (SW-1) multilayer. Non c'è bisogno che lavoriamo a lvl 2. Qui abbiamo domini di broadcast differenti. In questo caso non abbiamo bisogno che lavori a lvl 2 $\rightarrow$ lvl 3 $\leftarrow$ router. Router che fa L'Internetworking tra host associati alla stessa Subnet IP. Ogni interfaccia dà verso una rete fisica differente. Con un router normale andrebbe tutto bene! Ma con un multilayer dovrei ragionare con LAN virtuali! (VLAN). \textit{vlan database $(\dots)$} etc. Dobbiamo creare l'associazione VLAN $\rightarrow$ Subnet IP. Trattiamo le interfacce VLAN come se fossero fisiche! In questo caso le porte diventano Access VLAN. Bisogna creare delle LAN Virtuali nel Multilayer. Prima si associa la porta alla VLAN, con il corrispettivo tipo. Quindi:
+
+\begin{itemize}
+
+\item{1)} Creare VLAN;
+\item{2)} Associazione porta-VLAN;
+\item{3)} Assegnare indirizzo IP $\forall$ VLAN $\leftrightarrow$ utilizzando il comando \textit{interface VLAN 2, ip address};
+
+\end{itemize}
+
+Questo se ragiono con le VLAN! Siamo su un Multilayer, che mi impone di ragionare con le VLAN. Bisogna fornire un indirizzo IP alle VLAN! Comando switch lvl 2. Complichiamo ora la situazione:
+
+\item VLAN interpiano. Adesso le entità organizzative si trovano su più piani! In questa situazione (SW-1) dovrà funzionare anche a lvl 2! NON solo a lvl 3. Sui vari piani potremmo avere lo stesso dominio di broadcast. Una VLAN corrisponde ad un dominio di broadcast. Adesso le porte saranno trunk! Le trame adesso viaggeranno taggate. Dobbiamo pensare anche a VLAN aggiuntive host/Router. Switch multilayer = \{Router con $\cardinality{interfacce}=\cardinality{VLAN}$ + switch lvl 2\}. La VLAN 1 è sempre presente (default VLAN). Fasi:
+
+\begin{itemize}
+
+\item{1)} Creare VLAN che servono;
+\item{2)} $(\dots)$ TRUNKING;
+\item{3)} Associare indirizzo IP ALLA VLAN! Come se fosse un'interfaccia fisica;
+
+\end{itemize}
+
+Tipicamente su un link trunk c'è sempre quella di default. La si aggiunge per sicurezza. La VLAN 1 è utilizzata per la Gestione della Rete. \`E quindi importante che passi la 1 $\iff$ (\textit{Network Management}): \textit{switchport trunk allowed $(\dots)$}.
+
+\end{itemize}
+
+\subsubsection{FAULT-TOLERANT NETWORK}
+
+Prevediamo ridondanza nell'ER (Multilayer switch ridondato) e ridondanza di dorsale verticale. Se VLAN NON attraversano i piani $\iff$ entità organizzative separate $\forall$ piano. Lavoreremo in HW però. \{\{HSRP, VRRP\}, GLBP\}. Ma anche se ragioniamo con Router devo comunque lavorare con le VLAN!
+
+OSPF possibile per convogliare il traffico Internet (WAN) $\rightarrow$ Server. High Availability.
+
+\begin{itemize}
+
+\item Fault-tolerant network con entità organizzative non spalmate sui piani. Porte switch multilayer. Accesso ed associazione VLAN alle varie porte. Prima si creano le VLAN (\textit{vlan database $(\dots)$}). Si associano le VLAN alle varie porte dello switch. Poi si associano gli indirizzi IP (Subnet IP) alle interfacce VLAN. Modalità configurazione VLAN (\textit{interface VLAN 4, ip address $(\dots)$}). Lo stesso dicasi per le altre interfacce. Presenti i router virtuali (HSRP in gioco, uno sarà Active e l'altro Standby). All'interfaccia virtuale VLAN 4 ad esempio dovremmo alzarle la priorità HSRP. Lo stesso per le altre VLAN ed agli altri gruppi HSRP associati. Si potrebbe utilizzare routing statico per convogliare il traffico sulla WAN (\underline{consegna indiretta}). L'OSPF è invece gerarchico, suddiviso in aree. Le aree rappresentano i domini di routing. Dobbiamo decidere per i router a che aree apparterranno. Supponiamo che il costo di default sia 10. I costi sono associati alle interfacce! Parliamo delle interfacce che collegano i due multilayer! \textit{interface vlan 5} $\iff$ dobbiamo sempre ragionare con le VLAN! Comandi OSPF. Complementare i bit della Submask (\textit{Subnet Mask}). Gli IP rimangono i medesimi. Bisogna annunciare tutti i prefissi! Altrimenti ad esempio il server NON sarà raggiungibile. Comando \textit{redistribute connected}. Il prefisso deve comunque essere annunciato! Però vogliamo che il server non appartenga al dominio di routing, dato che è un punto terminale. Quindi è opportuno che non viaggino su quell'interfaccia pacchetti di controllo OSPF (OSPF algoritmo \textit{Link-State} (LS)). Nel caso del secondo multilayer, quello collegato al Router verso la WAN, dovremo sia annunciare che entrare a far parte del dominio di routing.
+
+\item Caso più complicato. Rete fault-tolerant, ma le stazioni di una stessa entità organizzativa dell'azienda possono risiedere su piani diversi! I multilayer devono adesso lavorare anche a lvl 2! (Problematiche relative ai domini di broadcast). Link lvl 2 anziché lvl 3. Significa che i multilayer dovranno comportarsi sia da router che da switch. HSRP/VRRP richiesto. In questo caso dovremmo per forza utilizzare l'STP! Spanning Tree Protocol. Possibili maglie a lvl 2. Collegamenti raddoppiati per problematiche dell'Affidabilità. STP va gestito opportunamente. Imponiamo che SW-1 sia il Bridge Active per tutte le VLAN, e che sia contemporaneamente Root Bridge per l'STP. Decrementi di priorità per l'STP di 4096. Le porte adesso saranno Trunk! ($\iff$ Link Trunk). Adesso bisognerà creare tutte le VLAN (\textit{vlan database}). Dopodiché si iniziano ad assegnare gli indirizzi IP alle varie LAN virtuali (VLAN). Vogliamo utilizzare HSRP/VRRP. SW-1 deve essere Router Active per tutte le VLAN! Ci deve ovviamente essere corrispondenza con i gruppi HSRP anche sul SW-2! Multilayer = (Router + switch collegato). Anche in questo caso possiamo pensare all'OSPF. Dobbiamo fare in modo che il traffico uscente verso l'esterno (WAN Internet) viaggi verso il link tra i due multilayer.
+
+\end{itemize}
+
+\subsection{Progettazione Gerarchica}
+
+Modelli proposti per la progettazione della rete di Campus ad Alta Disponibilità. \`E bene basarsi sulla \textit{progettazione gerarchica}. Vantaggi in termini di costo. Il costo dell'apparato dipende ovviamente dalle funzionalità interne. Possiamo avere una topologia modulare. I cambiamenti NON hanno impatto sugli altri dispositivi. \underline{Scalabilità assicurata} e troubleshooting favorito. Comprensione migliore dei pattern di traffico. Riduce il numero di adiacenze delle CPU. Con una rete switchata a lvl 2 non abbiamo gerarchie. Un pacchetto broadcast a lvl 2 viene floodato su tutte le interfacce (CPU degli switch sprecate). Algoritmi di routing gerarchici (protocolli interior ed exterior). \textit{Intra-domain} (Link State OSPF oppure DV), oppure \textit{Inter-domain} (BGP). Il BGP è di tipo Exterior.
+
+I produttori utilizzano la \textit{three-layer Architecture}: \{\textit{\textbf{Core}}, \textit{\textbf{Access}}, \textit{\textbf{Distribution}}\}. Alcune volte Core e Distribution sono collassate. Disponibilità 5-9. Downtime annuo di circa 5 minuti. Massimo downtime (come servizio di rete). Leggasi a tal proposito: \textit{h-campus White-paper CISCO}. PIX Firewall CISCO. Livello \{Access $\rightarrow$ Distribution $\rightarrow$ Core\} in ordine. 
+
+\begin{itemize}
+
+\item Il livello \underline{\textit{Core}} rappresenta il Backbone della rete. Dev'essere molto veloce e resiliente! Estremamente pronto a riprendersi dai cambiamenti. Il Core è un livello cruciale! Da lui dipende la connettività di tutta la rete. Filosofia "\underline{less is more}". Molto snello ma veloce. Come è implementato? Tramite due switch ML collegati tra di loro. Segmenti LACP (\underline{802.11-AX} IEEE). Due ML molto potenti. Ognuno di questi è collegato con due link ai due ML di edificio (Building). Nell'ER ci saranno due ML. Un ML del livello Core sarà collegato (in fibra monomodale) a quelli ER. Meglio costruire triangoli anziché quadrati (Si utilizzi ECMP per redistribuire il traffico). L'ECMP prevede di fare Load Sharing tra queste path. Qualora si dovesse avere qualche malfunzionamento i tempi di convergenza sono ben differenti rispetto alle costruzioni di quadrati. (ECMP - Equal Cost Multi-Path). Schema ben meditato dai vari produttori;
+
+\item{\underline{Livello Distribuzione}}: Aggregare switch di accesso dello strato di accesso. Tipicamente il livello Distribution è una coppia di ML (Il funzionamento router/switch dipende dalla localizzazione delle VLAN se sono su più piani o meno). Stacked switch possibili eventualmente. A livello Distribution è molto importante il supporto a meccanismi QoS (per eventuali applicazioni Real-Time). I ML dovranno supportare questi meccanismi. Due ML per ridondare il dispostivo (per problematiche di disponibilità): HSRP/VRRP;
+
+\item{\underline{Livello ACCESS}}: Raccoglie le utenze dei vari piani. Switch lvl 2 NON ridondati fisicamente ma con la IBR (In The Box Redundancy). Ridondanze: \{Ventole, Hyervisor, Alimentazione\}. Se i ML del livello distribuzione lavorano come router, non ci sarà bisogno dell'STP e tutti i link potranno trasportare traffici. Diversamente potrebbe non essere così per via dell'STP. Ridondanza IBR necessaria per il livello Access;
+
+\end{itemize}
+
+Gli switch lvl 2 dovranno supportare il QoS. \textit{Confine di fiducia}, idealmente posto sui terminali, ai fini della QoS. Terminali come host, VoIP. Così marcheranno le trame a piacimento. Manipolazione opportuna maligna del DiffServ. Implementazione di servizi di sicurezza. \textit{IEEE 802.1X Access Control}. Sia in rete Wireless (Access Point) che anche in reti Switchate (Autenticazione, Autorizzazione e ...). Ovviamente è presente anche la Crittografia. Controllo degli Accessi (a switch lvl 2). Altri meccanismi di sicurezza possibili. Redirezione su un Web Server che farà da proxy. Configurazione liste di accesso MAC (MAC filtering e DHCP Snooping, IGMP Snooping). \textit{DHCP Snooping}. Meccanismo per evitare che qualcosa a caso possa diventare server DHCP. IGMP Snooping per ottimizzare le prestazioni se giunge un pacchetto Multicast. Suddiviso in gruppi. PoE (\textit{Power over Ethernet}). Alimentazione tramite Ethernet dei VoIP oppure Access Point. Gli Access Point sono messi in posti difficili da raggiungere. \textit{Wireless Access Point} (WAP) dotati tipicamente di PoE. Tra PoE e PoE+ cambia il livello di tensione.
+
+\subsubsection{RECAP}
+
+Prevedere a livello Distribution e Core ridondanze, ma non IBR (Best Practice). Meglio di no, ai fini del Convergence-Time. Meglio la ridondanza del dispositivo (esterna). Se si guasta un hypervisor ridondato, i tempi di convergenza sono maggiori. Reti ad Alta Disponibilità (100-200 ms senza IBR, 1-3 secondi con IBR). Downtime massimo di 5 minuti annuo. [SCALPING pacchetti di azioni. Trading estremo. Tick]; per il livello di Accesso è presente la IBR, anche per problemi di risparmio (il costo potrebbe cominciare ad aumentare, NON si ridonda il dispositivo di accesso), a meno che non ci troviamo nel \textit{Data Center}, ove non ci sono le stazioni host utenti ma Server! Qui potrebbe essere utile ridondare esternamente. Il Server, contrariamente agli host, deve essere quanto più raggiungibile possibile.
+
+ECMP permette di fare Load-Sharing. Più next hop possibili. Attuazione del load-sharing. Il Core lavora a lvl 3. \`E il Distribution che può lavorare anche a lvl 2. Due Next Hop possibili a livello Distribution, dal livello Core. Se vi sono dei guasti a livello HW (dei link), ce ne si accorge molto velocemente $\implies$ (tempi di convergenza estremamente veloci). \`E la scheda HW che si accorge del malfunzionamento a livello fisico. Nel caso della topologia a quadrato, i malfunzionamenti faranno sì che perderemmo molti più pacchetti ed i tempi di convergenza saranno inevitabilmente maggiori (sia per la via di convergenza dell'algoritmo di routing che tempi maggiori per via di costi maggiori! Non abbiamo DIAGONALI (Abbiamo algoritmi di routing, IGRP (CISCO) che permette Load-Sharing per link a differenti costi).
+
+Importanza del link di collegamento (uno o più, utilizzo LACP) che collega gli ML del livello Distribution. Switch lvl 3. Subnet IP. Problemi di ridondanza. Se le VLAN attraversano i piani (ML lavorerà anche a lvl 2), Il link sarà di tipo trunk! Se NON ci fosse quel link di collegamento, si creerebbero degli strani pattern di traffico! Abbbiamo l'STP in gioco, ricordiamo. Due ML a livello Distribution e VLAN spalmate su più piani. Lvl 3 + lvl 2. Utilizzo HSRP/VRRP. Serve l'(R)STP. Se non ci fosse il collegamento, pacchetti di un piano viaggerebbero su switch di piani differenti. All'interno di un Telecommunication Closet (ER, livello distribuzione), il dispositivo lvl Access avrà gli switch collegati ad entrambi (con due collegamenti) gli ML del rispettivo lvl distribuzione. Bisogna però vedere quanta utenza per piano c'è! Dipende dalle porte dello switch. NON si collegano in cascata! Se uno di questi va giù, la rete verrebbe splittata in due! L'HSRP/VRRP riguarda solo il traffico in uscita. In entrata abbiamo la problematica ECMP. La rete IP verrebbe splittata. Non ci sarebbe più una rotta possibile! ICMP ritornerebbe il messaggio (\textit{destination unreachable}), ed il pacchetto verrebbe scartato. Tutto questo si può risolvere utilizzando la tecnologia Stacked, non utilizzando quindi la porta di rete. Come se tutti fossero un UNICO switch. Possibile utilizzo LACP (IEEE 802.1AX).
+
+\subsubsection{Dimensionamento Link} 
+
+Dimensionamento capacità Link. Access \& Distribution. \textit{Over Subscription}. Ogni 20 porte al Gigabit, si aggiunge un Gigabit dall'Access $\rightarrow$ Distribution (20:1). Invece livello Distribution $\rightarrow$ Core rapporto 4:1, preferibilmente 1:1 nei Data Center. Attenzione che con l'Over Subscription andremo a contemplare la congestione! Si risolve il tutto con meccanismi QoS in caso di congestione.
+
+
+\section{Parte Wireless}
+
+\textit{IEEE 802.11}. Standard alla base del Wi-Fi; progettare una rete di Accesso. \textit{CAPWAP} protocollo con la quale gli access point comunicano con il controller. Architettura centralizzata! Elementi di una rete wireless: \{smartphone, tablet, PC, notebook\} $\leftarrow$ host wireless mobile e non. Normalmente tutti gli host wireless sono mobile. Link wireless: canale per comunicare con un altro host wireless oppure con una base station. Gli host wireless devono comunicare. Rete infrastrutturale (presenza di base station). Anche la Rete Cellulare (3G e 4G) è basato su modalità infrastruttura. Tutte le comunicazioni devono comunque passare per l'Access Point. Le diverse stazioni possono comunicare tra di loro mediante \textit{infrastructured network}. \textit{Coverage Area} e \textit{Raggio di Trasmissione}. Mediante il raggio di trasmissione si può ricavare l'Area di Copertura, entro la quale tutte le stazioni riescono a ricevere pacchetti dalla loro station, se non vi sono interferenze. Esistono differenti tipologie di raggi:
+
+\begin{itemize}
+
+\item{\textit{Raggio di trasmissione}};
+\item{\textit{Raggio di Carrier-Sensing (o di Detection)}};
+\item{\textit{Raggio di Interferenza}};
+\end{itemize}
+
+Il Wireless è broadcast, quindi è richiesto un protocollo MAC che gestisca le collisioni. \textit{HANDOFF} (o \textit{HANDOVER}). In modalità infrastruttura gli host devono essere associati ad una base station (ripetitore nel caso del cellulare). Roaming nel caso cellulare $\implies$ passare da una base station alla successiva. Altra modalità prevista: \textit{\textbf{AdHoc}}. \textit{Wireless AdHoc Network}, ove non abbiamo più la base station. NO infrastruttura. In tal caso tutte le facilities devono supportare le tecnologie di comunicazione. Ma bisogna sempre tener conto della Coverage Area! Quindi è richiesta una certa capacità di instradamento! Tutte le stazioni (host, end-system) dovranno comportarsi anche da router (funzioni di forwarding). La rete dev'essere auto-informante. Più hop wireless eventualmente richiesti. Tassonomia wireless: (\{Infrastructured, not Infrastructured\} x \{Single Hop, Multi Hop\}). \textit{Wireless Mesh Network} $\in$ infrastructured $\land$ multi-hop. Le \textit{VANET} sono un particolare esempio di rete MANET \textit{Mobile AdHoc Network}. Nel caso VANET i nodi mobili sono i veicoli.
+
+A seconda della tecnologia avrei diverse Aree di Copertura e Data Rate. La Coverage Area sferica (circolare) è solo ideale: ci sono degli ostacoli. Versioni diverse di Wi-Fi l'\textit{802.11ae} è quello attuale. Differenti Data Rate (Mbps). Utilizzando parabole riesco a raggiungere distanze molto elevate (PPP technologies). Decine di km. Tecnologie cellulari (4G, LTE, etc.). Si parla già di 5G (2019-2020 come possibile data di uscita, in Giappone).
+
+\subsubsection{RECALL}
+
+Vi è un canale radio tra $u$ e $v$ se la potenza di irradiazione è superiore ad un certa soglia $\beta$ (threshold) $\iff (P_r)\ |\ [P_r > \beta]$. Più è alto il Data Rate più alta sarà la soglia! Più è alto il Data Rate, più l'impatto del rumore sarà maggiore. Il rumore ha un impatto che aumenta all'aumentare del Data Rate. Costellazioni troppo vicine e fitte. La potenza ricevuta sarà legata alla potenza trasmessa ed alla \textit{Path Loss} dalla famosa
+
+\begin{defn}{\textbf{Equazione di Trasmissione di Friis}}
+
+\[
+	[P_r(d) = \frac{G_tG_r\lambda^2}{(4\pi)^2 d^2}P_t]
+\]
+
+\end{defn}
+
+La potenza ricevuta è quindi inversamente proporzionale al quadrato della distanza. $d$ è la distanza, $G_r$ è il Guadagno Antenna in ricezione, e $G_t$, analogamente è il guadagno Antenna in trasmissione. Si suppone il LoS (\textit{Line of Sight}).
+
+Effetti atmosferici, Meccanismi che dipendono anche dalla frequenza del segnale. Ostacoli lungo la LoS, Atmosferici, Riflessione del segnale sui vari ostacoli (oggetti di dimensioni molto maggiori della lunghezza d'onda del segnale). \{\textit{Shadowing} + \textit{Reflections}). Effetti della degradazione del segnale. Più è alta la frequenza, più il segnale tende a comportarsi come la luce (effetto negativo) $\implies$ shadowing aumentato. \{\textit{Scattering}, \textit{diffrazione}\}. Segnale incidente che viene splittato in sottosegnali multipli (Splitting). Diffrazione legata agli spigoli degli oggetti (piccole dimensioni). Differenti sottocopie che si propagano. Diffrazione possibilmente utilizzata in maniera costruttiva.
+
+Con lo scattering, diffrazione, riflessione abbiamo in ogni modo tante repliche del segnale che avranno seguito differenti path, e saranno quindi stati soggetti a diversi ritardi. Ovviamente più lunga è la Path, più il ritardo sarà maggiore. \textit{MultiPath Propagation}. Improbabile ricevere lungo la LoS! LoS + repliche ricevute, Bisognerà vedere come giocano questi fattori! Dipende dagli argomenti. Normalmente pensiamo ad una deformazione, degradazione del segnale. \underline{Interferenza intersimbolica}. Sovrapposizione di impulsi LoS e multipath, magari anche di segnali diversi. Allargare gli impulsi per far fronte a queste interferenze. Distanziarli nel tempo $\implies$ abbassare il data rate $\implies$ abbassare la banda. Limitare il data rate necessario.
+
+Se il trasmettitore e ricevitore fossero vicini, si potrebbe sfruttare una \textit{sequenza di training} nota al ricevitore (ORIGINALE) ed inviata dal trasmettitore, e si potrebbe sfruttare una procedura di \textit{Equalizzazione} per correggere, compensare la propagazione MultiPath. Dipende dalla velocità di mobilità. Tecnica basata sugli equalizzatori va bene in ASSENZA di mobilità. Il MultiPath  è collegato ovviamente all'Ambiente Circostante. Modello del canale che varia costantemente. Potenza in ricezione che varia molto velocemente al valor medio. \textit{FADING}: dissolvenza del segnale \{short-term fading, long-term fading\}. Valor medio che varia nel tempo = long-term fading. Si può correggere.
+
+\textit{Antenna Diversity}. In posti molto vicini, il campo elettromagnetico potrebbe essere naturalmente differente! \{RX1 e RX2\}. Antenna Diversity. Access Point. In realtà quelle antenne si sfruttano anche in trasmissione. Tecnologie MIMO (\textit{Multiple Input Multiple Output}).
+
+\subsection{Funzionamento}
+
+Ad ogni Access Point è associato un BSS (\textit{Basic Service Set}). Set di stazioni minime che devono comunicare tra di loro. SNR fattore importante, per il calcolo della probabilità di errore sul simbolo. Data una certa modulazione digitale, affinché decresca il BER (\textit{Bit Error Rate}), aumentiamo anche l'SNR aumentando la potenza in gioco. Data una modulazione digitale $\implies \{P\uparrow, SNR\uparrow, BER\downarrow\}$. Dato invece un certo SNR (e BER), quindi non avendo la possibilità di variare la potenza, posso però scegliere la modulazione digitale più opportuna! Variare la modulazione digitale, che va a codificare \underline{meno bit per simbolo} onde diminuire il BER. Dipende il tutto dall'Ambiente di Propagazione. Se l'Access Point non va al massimo dipende molto probabilmente dall'Ambiente Circostante.
+
+Protocollo MAC CSMA-CD (\textit{Carrier Sensing Multiple Access, with Collision Detection}). Sente sempre il canale anche quando trasmette. Se ciò che sente coincide con quanto trasmette è tutto OK, diversamente abbiamo una COLLISIONE! Sequenza di JAMMING. \underline{Effetto cattura}. Anche se vi è una collisione, può essere che comunque tutto vada in porto! Dipende sempre dalle potenze in gioco. NO velocità differenti. Anche se sono parzialmente sovrapposte, non è detto che tutte e due vengano scartate $\iff$ \textit{effetto CATTURA} (Fenomeno non deterministico, dipende dall'elettronica delle schede).
+
+Il CSMA-CD NON funziona in ambienti wireless. Difficile gestire la collisione $\implies$ trasmissione + ricezione contemporanea $\implies$ \textit{hidden terminal problem}. Per le reti Wi-Fi Infrastruttura abbiamo un rimedio per questo terminale nascosto. Con il CSMA-CD non si spreca più banda quando è rilevata una collisione! Nelle reti wireless invece il segnale continua inevitabilmente ad esser trasmesso. La COLLISIONE si verifica al RICEVITORE! \`E il ricevitore che riceve le trasmisioni! (Raggio di comunicazione = Raggio di trasmissione). In Wi-Fi si è trovato un rimedio. Per le VANET (reti AdHoc in realtà) è veramente cruciale. A rigore si dovrebbe parlare di \textit{Carrier Sensing Range} $>$ raggio di trasmissione, entro il quale si potrebbe decodificare il contenuto informativo. Esiste anche un problema aggiuntivo, quello del \textit{Terminale Esposto}. Non abbiamo collisione, ma abbiamo comunque spreco di banda. Referring. Rimanda la trasmissione. Spreco di banda.
+
+WiFi. Vari standard che si riferiscono al Wi-Fi (\textit{IEEE 802.11}), in Legacy che prevedeva 1-2 Mbps \{b/a/g/ac\}. \{Frequenza, Data Rate, Layer Fisico, Modulazione e Compatibilità\}. ISM = \textit{Industrial Scientific Medical} è una Banda ad Accesso Libero, sostanzialmente. Quella del 2,4 GHz è molto intasata come tecnologia di banda. Quale Data Rate sarà supportato dipende realmente dall'SNR, BER e dalla modulazione scelta \{FHSS, DSSS\}. Si riesce a far fronte al problema delle Interferenze. FHSS utilizzato in ambito militare. A seconda degli standard abbiamo tutte le caratteristiche sopracitate. L'\textit{IEEE 802.11-D} (2009) utilizza la tecnologia MIMO (\underline{4x4 in TX ed RX}). Con l'\textit{IEEE 802.11-ac} (2013) si arriva addirittura sino a 6,9 Gbps (con MIMO 8x8). Attualmente siamo alla seconda generazione.
+
+\{Stazione, Access Point (per riferirsi alla base station)\}. Parliamo di modalità Infrastruttura. BSS = gruppo di stazioni che lavorano con lo stesso Access Point. BSSID corrisponde normalmente con il MAC dell'Access Point. Più BSS possono essere messi insieme per formare un \textit{Extended BSS} (Extended Service Set), identificato da un certo SSID consistente di 32 caratteri alfanumerici. Un \underline{sistema di distribuzione} collega diversi Access Point (quindi differenti BSS) a formare un unico ESS.
+
+\{Portale: bridge per un'altra rete\}. Alla fine tutto l'ESS è un dominio di broadcast. Protocollo MAC richiesto: CSMA-CA (\textit{Collision Avoidance}).
+Nelle reti AdHoc mancano le base station (Access Point), ma non è supportato il multi-hop. 802.11 in modalità AdHoc single-hop. Il multi-hop non fa parte dello standard (\textit{Relaying}). Terminologia:
+IBSS = \textit{Independent BSS}. \`E imposto da quella stazione che inizia la comunicazione. Stazione che inizia la rete ed impone eventualmente l'IBSS. Canali 802.11 b/g parzialmente sovrapposti.
+
+FDMA (\textit{Frequency Division Multiple Access}). Accesso Multiplo. Sorgenti distribuite nello spazio. Banda affettata in sottocanali. Sottocanali della banda. NO interferenze. Invece nell'802.11 b/g abbiamo canali sovrapposti. Se sono dei canali distanti si può fare. Throughput aggregato maggiore, ovviamente, se i BSS lavorano su canali differenti. \textit{Maximum EIRP}, potenza minima ($dbM \sim mW \implies (100 mW = 20 dbM \land 50 mW = 10dbM)$).
+
+BSS, modalità infrastruttura. Le stazioni si devono associare ad un certo Access Point! Si deve fare lo \textit{SCANNING}. Le stazioni (base) inviano un \textit{BEACON} ogni 100 ms normalmente. Questi BEACON contengono un \textit{timestamp} per sincronizzare le trasmissioni (e quindi anche le varie stazioni che vogliamo comunicare); conterrà anche il \{\underline{Beacon Interval}; tutte le trasmissioni passeranno dall'Access Point. Questo avviene anche attraverso il \textit{Traffic Indicator Map} (lista di trame bufferizzate per una certa lista di stazioni), parametri di trasmissione che consentono l'effettiva associazione\}.
+
+Ricerca reti wireless: scanning per i beacon!
+
+\begin{itemize}
+
+\item{\textit{SCANNING PASSIVO}} $\iff$ una stazione aspetta un beacon;
+\item{\textit{SCANNING ATTIVO}} probe da parte della stazione. Viene sollecitato un AP mediante questa sonda: 
+
+\begin{itemize}
+
+\item{\textit{Directed Probe}} nella quale cercheremo un certo SSID;
+\item{\textit{Broadcast Probe}} utile per Service Discovery.
+\end{itemize}
+
+\end{itemize}
+
+C'è bisogno di una fase di Autenticazione. \underline{Captive Portal}, Website redirection, oppure IEEE 802.1X
+
+Richiesta di associazione. L'Access Point tipicamente blocca le richieste da parte delle stazioni wireless. Autenticazione \textit{Shared-Key} (with nonce). L'approccio tipico è però quello basato sullo standard \textit{IEEE 802.1X}. Anziché del WEP ora si utilizza il WPA2-PSK con AES (\textit{Advanced Encryption Standard}). IEEE 802.1X + EAP (\textit{Extensible Authentication Protocol}). L'EAP prevede tanti metodi di autenticazione (proprietari \& non proprietri). L'802.1X mette in comunicazione stazione ed AP. Il \textit{RADIUS} è il protocollo che mette in comunicazione AP e server RADIUS. Roaming + handover: Esiste uno standard, l'\textit{IEEE 802.1F} che consente di mettere in comunicazione due AP in contesa per una stazione. Nella realtà molte cose sono proprietarie! Protocolli proprietari.
+
+\subsection{CSMA-CA (Collision Avoidance)}
+
+IEEE 802.11 MAC (CSMA-CA) \textit{Collision Avoidance}. Funzionalità protocolli MAC: accesso al mezzo. C'è la possibilità di effettuare una prenotazione della risorse virtuale mediante pacchetti \{RTS, CTS\}. MAC PDU, controllo errori, segmentazione e reassembly delle trame. Tre tipologie di frame: \{Controllo, Data Transfer, Management\}. Gli \{RTS, CTS\} consentono di far fronte al problema del terminale nascosto. Tre metodi per l'Accesso la canale. Uno obbligatorio. Non funziona qui il CSMA-CD! Serve il CSMA-CA (Collision Avoidance). \{Problema del \underline{terminale nascosto} e quella del \underline{terminale esposto}\}; metodo opzionale con RTS, CTS, ed un altro metodo \textit{Contention Free} basato sulla tecnica del Polling (applicazioni Real-Time). L'Access Point fa il polling alle differenti stazioni. Polling: richiedere loro se hanno qualcosa da trasmettere. Passato a livello di definizione. Non implementato. DCF (\textit{Distributed Coordination Function}) ingloba i primi due metodi. PCF è il terzo (\textit{Point Coordination Function}).
+
+Le stazioni devono essere SINCRONIZZATE! Il tempo è suddiviso in slot. Lo slot time può essere differente per via delle diverse varianti. Nella modalità Infrastruttura sono gli Access Point a sincronizzare le varie stazioni con i beacon (pacchetti) che contengono il timestamp. Nelle AdHoc c'è un meccanismo che permette la mutua sincronizzazione. "Mobile Communication".
+
+Sistemi sincronizzati. Il protocollo MAC prevede che quando si deve accedere al canale una stazione debba aspettare un certo tempo. Controllato attraverso differenti IFS (\textit{Inter Frame Space}), ciascuno con differenti priorità. L'IFS più piccolo è il SIFS (\textit{Short IFS}). Priorità più elevata. Utilizzato quando c'è da inviare gli ACK, CTS, polling response (DCF). PIFS per il PCF = (SIFS + 1 slot time). Il DIFS (\textit{Distributed IFS}) è a priorità più bassa $\iff$ DIFS = SIFS + 2 slot time. La priorità NON è legata al traffico, ma è la priorità nell'Accesso al canale. Al SIFS è legata la priorità più alta, al DIFS quella più bassa.
+
+\subsubsection{Funzionamento}
+
+CSMA/CA (Collision Avoidance). C'è una versione leggermente modificata. Quando una stazione (host od access point) ha bisogno di accedere al canale, deve prima ascoltarlo! Deve basarsi sul CCA (segnale \textit{Clear Channel Assessment}). C'è la possibilità di ritrasmettere i pacchetti dati. Qualora il canale fosse libero per almeno DIFS unità di tempo, può trasmettere immediatamente il pacchetto. Se invece risulta occupato oppure occupato prima di DIFS, allora quella stazione deve attendere un tempo aggiuntivo dopo che si è liberato. Aspetterà DIFS ulteriore tempo, poi la stazione entrerà in \underline{contesa} (Contention). Questa fase impone di aspettare un ulteriore tempo aggiuntivo, espresso in slot. (\underline{Random backoff time} (multiplo dello slot time)) scelto all'interno della finestra di Contesa (\textit{Contention Window}). es $[0,7]$. 5 può essere il mio numero di contesa. Decremento lo slot time. Quando lo slot time arriva a 0, allora la stazione è libera di trasmettere. Decrementi unitari di slot time $\forall$ slot. Se durante la fase di decremento il canale si occupa, si freeza il tempo, e si riprenderà a decrementarlo solo quando si libererà di nuovo il canale.
+
+Con questo meccanismo si evita la Collisione, e se il canale è libero per almeno DIFS si può trasmettere immediatamente, questo dà l'idea di un canale abbastanza vuoto. Traffico basso come intensità. Se il canale si occupa prima, il canale è abbastanza congestionato (fase di contesa necessaria). CA = Collision Avoidance. Meccanismo di attesa aggiuntiva. CCA = Clear Channel Assessment: segnale di canale libero. Sempre nel Range di Sensing. Meccanismo di Basic DCF. Quando il backoff time arriva a 0, la stazione trasmette immediatamente. Se alla fine vi è una collisione, questa viene rilevata con gli ACK, e se qualche ACK non è riscontrato (ricevuto) allora vi è una ritrasmissione. Dopo la Collisione, la CW viene raddoppiata. Ha senso, perché evidentemente ci sono molti tentativi di accesso al canale. Ad ogni ritrasmissione (a collisione avvenuta), viene raddoppiata la CW (Contention Window).
+
+ACK (acknowledgements). Immaginiamo trasmissioni dati. Se una destinazione ha ricevuto correttamente un pacchetto dati, dovrà riscontrarlo con un ACK. Dopo un SIFS dall'avvenuta ricezione. Maggiore priorità nell'Accesso al canale $\iff SIFS < DIFS$. Maggior priorità. Se un'altra stazione rileva il canale occupato da un ACK, comunque deve entrare in contesa (fine trasmissione + DIFS + Backoff time). Il protocollo è di tipo S\&W (Stop and Wait), di tipo Unicast in relazione ai pacchetti dati. Se il pacchetto è Broadcast, allora gli ACK non servono.
+
+Backoff esponenziale (2-exp). CW si raddoppia $\forall$ collisione. Probabilità di Collisione Wireless elevata. Il MAC funziona così: $\exists$ numero max di ritrasmissioni. $\forall i,\ CW_i\leq CW_{max}$. Ci si basa tutto sul sistema degi ACK. Protocollo S\&W.
+Pacchetti RTS/CTS per far fronte al problema del \underline{terminale nascosto}. Sender/Receiver ed altre stazioni. RTS = \textit{Request to Send}; campo \textit{duration} che si riferisce alla durata dell'intera trasmissione. Una volta trasmesso l'RTS, il destinatario dovrebbe replicare con un CTS = \textit{Clear to Send} dopo un SIFS. Il ricevitore è prioritario rispetto ad altre stazioni (SIFS). Ricevuto il CTS, dopo un SIFS il sender è pronto ad inviare. Ricevuto il pacchetto dati, il ricevitore aspetta SIFS e poi manda l'ACK. La collisione si può verificare nell'RTS! Il pacchetto RTS contiene il campo duration. Ogni stazione che riceva l'RTS, estrapola il valore del campo duration, e lo mette nella sua NAV (\textit{Net Allocation Vector}). Quindi questa stazione aspetta per NAV (RTS) e per NAV (CTS), inclusivamente. Questo meccanismo fa fronte al problema del \underline{terminale nascosto}. Il Raggio di Carrier Sensing è molto più grande di quello di trasmissione. Basato sulla rilevazione della portante, e si basa sul fatto che sappiamo, rileviamo che qualcuno sta parlando (sua portante). Carrier-Sensing Range o Detection Range. Raggio di trasmissione $\neq (\mathord{\cdot})$ (più piccolo). Con l'RTS/CTS abbiamo il problema risolto (meccanismo aggiuntivo). Tutte le trasmissioni (dati) passano per l'Access Point. Non si possono inviare pacchetti dati direttamente alle altre stazioni. RTS. Tutte le stazioni che riceveranno l'RTS, guarderanno al campo duration e faranno il deferring (settaggio del NAV e successivo idling). Nel mondo delle AdHoc questo meccanismo non funziona più (es VANET, reti veicolari). Nelle AdHoc abbiamo problemi con il raggio di interferenza / area di interferenza, centrata sul ricevitore. L'Area di Interferenza dipende dalle distanze sender/receiver. Tutti i nodi all'interno dell'Area di Interferenza sono per definizione \underline{nodi nascosti}! Con le reti infrastrutturali invece non si pone proprio il problema! Infatti nodi nascosti facenti parte dell'Area di Interferenza e non coperti dall'Area RTS/CTS non saranno associati! Lavoreranno a frequenze differenti.
+
+La collisione si può verificare nell'invio dell'RTS! Ma se il pacchetto dati ha delle dimensioni confrontabili con l'RTS, non ha senso! Sempre meglio avere collisioni sull'RTS che su un pacchetto dati! Threshold utilizzata (Soglia). Se i pacchetti dati superano questa soglia, allora si utilizza effettivamente il meccanismo aggiuntivo RTS/CTS. 
+
+Struttura frame \textit{IEEE 802.11}. [frame control, duration, \textit{address 1}, \textit{address 2}, \textit{address 3}, seq control (utile per gestire i duplicati, quando l'ACK si perde, ad esempio), payload, CRC]. Altri campi di controllo: (type, subtype, etc.). Il significato dei campi indirizzo dipende dai campi \textit{To AP} e \textit{From AP}. Gli Indirizzi 1 e 2 hanno a che fare con il ricevitore fisico della trama ed il trasmettitore fisico della trama, rispettivamente. FISICO $\neq$ LOGICO, a meno che non stiamo nelle AdHoc. \textit{address 3} contiene invece il router logico, Access Point, BSSID.
+
+\subsection{Mobilità in IPv6}
+
+Lo standard al riguardo dell'\textit{Architettura Centralizzata} è l'\textit{IEEE 802.1d} Backward Learning. Handover sulla stessa Subnet IP non causa problemi. Quando un nodo mobile passa da una rete IP ad un'altra, il suo indirizzo IP cambierebbe! Possibile abbattimento delle connessioni TCP. MIPv6 soluzione adottata: \textit{Mobile IPv6}. Parliamo di un Mobile Node che si muove. \textit{Correspondent Node}: qualche altro nodo che comunica con il Mobile Node. Il Correspondent Node utilizzerà un indirizzo IP basato su quello del Mobile Node, chiamato \textit{Home Address}. Il Mobile Node avrà una sua \textit{Home Link}: rete fisica alla quale è agganciato. \textit{Home Address Prefix}. Subnet IP sulla Home Link (Subnet A) indirizzata dal prefisso Home Address Prefix (HAP). Home Address corrispondente al Mobile Node. A questa Subnet sarà collegato un Router detto \textit{Home Agent}, e funzionerà come proxy, e redirigerà le connessioni (traffico) destinate al Mobile Node qualora questo non risieda più nella Home Link. Supponiamo che il Mobile Node si sia spostato in una \textit{Foreign Link}. Associatosi a questo nuovo abbiamo Access Point, ascolterà i Router Advertisement della nuova Foreign Link (mondo IPv6). Acquisirà un certo indirizzo IPv6 nuovo (CoA - \textit{Core of Address}). Bisogna fare in modo di recapitare questo CoA all'Home Agent per redirigere correttamente il traffico. Tutta questa procedura viene fatta dal Mobile Node mediante \textit{Binding Update} (BU). L'Home Agent dovrà intercettare tutti i pacchetti dedicati all'Home Address del Mobile Node. Dopo il BU il messaggio sarà autenticato dall'Home Agent e processato. Successivamente farà il \textit{Binding Ack} al Mobile Node, e l'informazione sarà inserita nella sua \textit{Binding Cache} (BC). Inviato l'ACK ed inserita la Entry, invierà un PNA (\textit{Proxy Neighbor Advertisement}) (il quale sostituisce l'ARP). Neighbor Solicitation + Neighbor Advertisement.
+
+Si viaggerà col tunnel IP! Tutto transiterà tramite l'Home Agent! I pacchetti nel tunnel viaggeranno in maniera sicura tramite \textit{IPSec}. Il routing NON è ottimizzato perché si passa per l'Home Agent di volta in volta (banda sprecata)! Si può ottimizzare il routing una volta che si è fatta l'Associazione ed il Tunneling, comunicando direttamente al Correspondent Node l'associazione CoA / Home Address (Binding Cache sul CN) (sul Corresponding Agent).
+
+\subsection{Architetture}
+
+\subsubsection{Architettura Autonoma}
+
+L'Access Point (\textit{FatAP}) implementa completamente e termina le funzioni dell'802.11, in maniera tale che i frame sulla wired LAN siano frame 802.3. Ogni AP è gestito indipendentemente. I FatAP possono prevedere \textit{VLAN Tagging}, basato sull'SSID che i client usano per associarsi all'AP (\textit{\textbf{Multiple SSID}}), e fornisce anche funzioni router-like, tipo come server DHCP.
+
+I FatAP hanno anche altre capacità, come ad esempio le \textit{Access Control Lists} (ACL), funzioni QoS, collegate alla priorità IEEE 802.1p. Il principale punto debole del FatAP è la complessità, che lo rende utile solo in piccole installazioni di rete.
+
+\subsubsection{Architettura Centralizzata}
+
+Una motivazione importante è la locazione degli AP. Mirando a fornire una connettività radio ottimale per le end stations, gli AP sono tipicamente installati in aree  \underline{difficili da raggiungere}. I Network Manager preferiscono installare gli AP \newline\underline{solo una volta e che non vi sia bisogno di intervenire con complesse manutenzioni}.
+
+Gli AP sono per questo collegati ad un \textit{WLAN Controller} (WLC) mediante l'utilizzo di un \textbf{tunnel sicuro}. Questo tunnel deve assicurare un basso ritardo su questi pacchetti. Il protocollo utilizzato per comunicare è il CAPWAP - \textit{Control And Provisioning of Wireless Access Points}. CAPWAP è responsabile per la scoperta e l'elezione di un WLC da parte di un AP. I pacchetti di controllo CAPWAP sono criptati. Il carico wireless 802.11 degli AP verso il WLC è incapsulato in pacchetti CAPWAP. Anche questi pacchetti dati possono essere criptati, ma questo porterebbe ad una degradazione del throughput. 
+
+Con l'architettura \textit{Split Mac} l'implementazione delle funzioni MAC è divisa tra l'AP ed il WLC. GLi AP sono leggeri, nel senso che detengono solo una minima parte delle funzionalità del MAC. I vendor si comportano differentemente al riguardo. Tipicamente, gli AP:
+
+\begin{itemize}
+
+\item Gestiscono funzioni MAC real-time, tipo la generazione dei beacon, risposta alle sonde, processazione di frame di controllo (RTS, CTS)...\
+\item Lasciano tutte le funzioni NON real-time (autenticazione, associazione) da processare al WLC. 
+
+\end{itemize}
+
+Gli AP forniscono crittografia wireless mentre utilizzano WLC per scambiarsi le chiavi.
+
+Il WLC invece, gestisce i firmware e le configurazioni degli AP controllati, effettua RRM - \textit{Radio Resource Management}, basata sulla configurazione e sul monitoraggio degli AP controllati. Attraverso i messaggi di controllo CAPWAP, gli AP mandano statistiche (numero di tentativi di trasmissione, numero di frame erronei, ...) al WLC;
+Per esempio, se due AP controllati da un WLC si interferiscono l'uno con l'altro, il WLC può mandare un segnale ad un AP per ridurre la sua forza.
+
+Il WLC gestisce il rinforzo del QoS e fornisce un filtraggio ACL-based. Gestisce la mobilità a livello 2 e livello 3; in altre parole funge da Mobile IP Home Agent. Comunque l'estensione delle varie funzionalità dipende anche dalle implementazioni dei vendors.
+
+
+\subsection{Progettazione}
+
+La prima generazione dei prodotti 802.11ac supportano data rate fino a 1.3 Gbps. La seconda generazione di prodotti 802.11ac supportano data rate fino a 3.5 Gbps. Operando alla massima capacità, le apparecchiature 802.11ac sono capaci di superare di gran lunga le prestazioni fornite da un 1000BASE-T uplink. Le prossime tecnologie forse permetteranno di utilizzare 10GBASE-T, o possibilmente dual (od anche quad) 1000BASE-T uplinks, per supportare il multi-gigabit.
+
+Dovrebbe essere utilizzato il cablaggio di categoria 6A. Si potrebbero considerare fibre multimodali OM3/OM4 laddove i data rates siano superiori a 10 Gbps e per locazioni esterne dove le distanze siano superiori a 100 m. 
+
+L'\textit{ISO/IEC TR-24704} ha proposto ciò che è considerato un ottimo schema di posizionamento degli access point wireless. La progettazione è basata su un array di celle esagonali (tight-fitting hexagonal cells). L'Area di Copertura di ogni cella è limitata ad un raggio di 12 metri. \textit{TR-24704} raccomanda di terminare il cavo per ogni cella ad un armadio ubicato quanto più possibile al centro della cella.
+\textit{TIA TSB-162-A} suggerisce un una griglia quadrata delle aree di cablaggio, ognuna larga circa 18 metri. In previsione dell'evoluzione dell'802.11ac, la revisione di questo standard propone un cablaggio di categoria 6A.
+TIA-4966 raccomanda che la densità di AP all'interno di grandi spazi indoor debba essere basata sull'occupazione media.
+
+La progettazione dell'architettura di cablaggio deve essere attentamente basata sull'ambiente RF, i livelli di interferenza e le sorgenti, capacità/bisogni futuri, requisiti di cablaggio e di potenza richiesti. Idealmente, l'architettura di cablaggio e l'analisi di copertura dovrebbero lavorare a braccetto per fornire la massima capacità e flessibilità per soddisfare le necessità correnti/future degli utenti. Quando si ha posizionato un AP, è fortemente consigliato effettuare un'indagine RF per ottimizzare la posizione dell'AP all'interno della cella. Un analisi dell'ambiente RF è quindi molto consigliata. In ambienti di minima capacità e bassi requirements, una semplice valutazione della propagazione RF può essere sufficiente. Alcuni programmi permettono ai progettisti di reti di fornire in input il layout del sito, di condurre modellazione degli AP, e di comparare simulazioni ed ispezioni RF.
+
+La debolezza del segnale può essere dovuta a numerose variabili, tipo la presenza di un materiale ostacolante per la RF, come ad esempio armadi, oppure proprio degli impedimenti fisici come dei grandi muri. Aggiungere AP molto spesso vuol dire migliorare significativamente la copertura.
+
+Oltre ad assicurare un adeguato segnale RF, dovrebbe essere considerato anche il \textit{throughput aggregato}. Lo spazio deve essere diviso in celle rettangolari, come raccomandato dall'\textit{TIA TSB-162-A} o dall'\textit{ISO/IEC TR 24704}. Le posizioni degli AP e la densità possono essere modificati in virtù dell'analisi dell'occupazione.
+
+\`E consigliato fornire almeno due cablaggi da ogni cella, dal momento che ogni cella della griglia potrebbe anche avere due o più AP. Oltre alla progettazione dell'ambiente RF e della gestione della capacità, c'è un vasto numero di fattori in gioco da considerare nel cablaggio e nel posizionamento degli access point wireless (accessibiltà, requisiti di potenza, estetica, ...).
+
+\subsection{Reti Wireless AdHoc}
+
+\`E un insieme di mobile host capaci di formare una rete temporanea senza il supporto di un'infrastruttura fissa: \{\textit{infrastructureless}, \textit{selforganizing}, \textit{self-configuring}\}.
+Le operazioni di network, come routing e gestione delle risorse, sono effettuate in maniera \textit{\textbf{cooperativa}} e \textit{\textbf{distribuita}}.
+
+A causa del range di trasmissione limitato, il \textit{routing multi-hop} è tradizionalmente utilizzato. Ogni nodo può comportarsi da host e da router: un pacchetto è forwardato da un nodo ad un altro fino a che non raggiunge la destinazione.
+
+Importanti scenari di utilizzo:
+
+\begin{itemize}
+
+\item Applicazioni militari;
+\item Operazioni di emergenza;
+\item \textit{\textbf{Comunicazioni veicolari}};
+\item Comunicazioni subacquee
+
+\end{itemize}
+
+A causa della \textit{mobilità} associata ai nodi, la topologia di rete può sperimentare \textit{continui cambiamenti}: Differenti livelli di potenza tra i nodi introduce \textit{link asimmetrici}. Le risorse sono tipicamente limitate, vincolate (larghezza di banda, potenza batteria, etc.).
+
+Principali problemi delle reti Wireless AdHoc:
+
+\begin{itemize}
+
+\item Schema di accesso al mezzo;
+\item Routing;
+\item Multicasting;
+\item Protocollo a livello di trasporto;
+\item Fornitura QoS;
+\item Auto-organizzazione;
+\item Sicurezza;
+\item Gestione dell'energia;
+\item Indirizzamento e service discovery;
+\item Scalabilità
+
+\end{itemize}
+
+L'efficacia degli handshake RTS/CTS è basata sull'assunzione che i nodi nascosti siano all'interno del \underline{raggio di trasmissione dei ricevitori} (in modo tale che essi possano riceverlo correttamente). Qualche nodo fuori dal range di trasmissione del ricevitore \underline{potrebbe comunque} interferire con il ricevitore. I nodi all'interno del \textit{raggio di interferenza} ($R_i$) del ricevitore sono chiamati \textit{nodi nascosti}.
+
+Abbiamo tre raggi radio per quanto riguarda le comunicazioni wireless:
+
+\begin{itemize}
+
+\item{\textit{\textbf{Raggio di Trasmissione}} ($R_{tx}$)}: rappresenta il raggio all'interno del quale un pacchetto è correttamente ricevuto se non ci sono altre interferenze da altre stazioni radio. Il raggio di trasmissione è principalmente determinato dalla potenza di trasmissione e dalle proprietà di propagazione radio, come ad es. l'attenuazione;
+\item{\textit{\textbf{Raggio di Carrier Sensing}} ($R_{cs}$)}: raggio all'interno del quale un trasmettitore può iniziare la carrier sense detection. Questo raggio è principalmente determinato dalla \underline{antenna sensitivity} e dalla potenza di trasmissione;
+\item{\textit{\textbf{Raggio di Interferenza}} ($R_i$)}: definisce l'\textit{area di interferenza}:
+
+\[
+	A_i = \pi R_i^2
+\]
+
+\underline{attorno al ricevitore}. Tutti i nodi localizzati in quest'area sono i nodi nascosti del ricevitore. Quando il ricevitore sta ricevendo un pacchetto, se un nodo nascosto comincia una trasmissione, avverrà una collisione al ricevitore;
+
+\end{itemize}
+
+Il raggio di trasmissione e quello di Carrier Sensing sono \underline{fissi} e sono infuenzati dalle proprietà radio. Il raggio di interferenza \underline{non è fisso} ma è relativo alla distanza trasmettitore-ricevitore e può andare \underline{ben oltre il raggio di trasmissione}.
+
+\subsection{VANET}
+
+Le VANET non sono nient'altro che reti AdHoc ove i nodi sono però veicoli. L'\textit{IEEE 802.11p} è l'emendamento approvato per il supporto alle comunicazioni veicolari. Il principale problema delle VANET è il routing. L'alta velocità dei veicoli causa frequenti cambiamenti della topologia. Sarebbe molto difficile mantenere aggiornate le tabelle di routing. Il traffico sul canale wireless incrementerebbe a causa dello scambio dei messaggi di controllo. IDEA: \textit{Routeless Routing} $\rightarrow$ \textit{\textbf{Intelligent Broadcasting}}.
+
+\textit{Contention Based Forwarding} (CBF). Solo un nodo è il contenitore dei pacchetti. Tutti i nodi che ricevono un dato pacchetto e sono nella direzione \textit{\textbf{source}} $\rightarrow$ \textit{\textbf{destination}} calcolano il \textit{waiting time} e partecipano al processo di contesa. Il nodo al quale per primo scade il timer inoltra il pacchetto in avanti. Ogni nodo che ascolta la conversazione abbandona i pacchetti (discard con ACK implicito).
+
+
+
+\section{MPLS}
+
+MPLS. Principi di progetto QoS. MPLS fornisce QoS. C'è un campo della sua intestazione con il quale è possibile fornire QoS: rete in grado di fornire un differente livello di servizio in base alle varie applicazioni. Meccanismi QoS: \{classification and marking, disciplina di coda, POLICING \& SHAPING = serve a sagomare il traffico in modo da rispettare il profilo di traffico dichiarato\}. Resource reservation (IntServ, definito dall'IETF). Es. Fase di Admission Control (controllare che vi siano risorse). Marcatura lvl 3: CodePoint DiffServ, lvl 2: PCP CodePoint. Marcatura ulteriore a livello 2: MPLS. MPLS EXP (Experimental). MPLS è una rete fatta da router. Problematiche di routing... DiffServ (PHB, Per-Hop Behavior). IntServ non era \underline{scalabile}. Riguardava i vari flussi. DiffServ definisce invece delle classi di servizio. I flussi appartenevano alle varie classi di servizio. Per-Hop Behavior (PHB): comportamento vario nel forwarding del pachetto. Vari PHB: \{Expedited Forwarding (EF) $\rightarrow$ DSCP = 46, Assured Forwarding: \{AFxy: AF1, AF2, AF3, AF4. Caso peggiore: AF13, Caso migliore: AF41\}, Default: best effort (rete Internet), Class Selector. Questo PHB è stato definito per avere retrocompatibilità con il vecchio servizio ToS\}.
+
+\subsection{Funzionamento} 
+
+Essa è una tecnologia di Internetworking basata su delle label, mediante le quali si può fare forwarding. Reti Internet a commutazione di pacchetto: \{Datagram, Virtual Circuit (VC)\}. Le ultime si basano sulla presenza di circuiti virtuali, instaurati a priori. \textit{Label Swapping}. Tabella di instradamento: quale label utilizzare nel prossimo hop. MPLS lavora così. MPLS nell'ambito di Internet: fornisce delle sembianze connection-oriented alla normale Internet. La label è un indice che viene utilizzato per accedere ai campi delle tabelle di forwarding. Oggi i router sono molto veloci! Potrebbe essere vista come falsa motivazione di utilizzo per MPLS. Utilizzo alternativo: VPN, Traffic Engineering. Normalmente si sceglierebbe la Path a minor costo nel forwarding/routing. Ci potrebbero essere delle path non utilizzate! Sfruttare altre path. Bisognerebbe però fare \textit{Source Routing} (SR). \`E la \underline{sorgente} che poi alla fine sceglie la path da utilizzare. Questo consente di sfruttare altri link, tipicamente costosi in ambito metropolitano. \`E bene utilizzarli al meglio!
+
+Con MPLS si possono emulare degli switch lvl 2 virtuali! \textit{Virtual Private LAN}. Si realizza una \underline{Switched LAN} ove non c'è questo dispositivo lvl 2! Switch lvl 2 virtuali. Switched LAN a livello metropolitano / urbano. Interconnettere due nodi sfruttando uno switch lvl 2. Sedi eventuali che sono separate da suolo pubblico. Bridge remoti per interconnettere LAN differenti, in remoto. VPN con MPLS, pensando al routing (lvl 3). Rete che commuta a lvl 2, senza protocolli di routing lvl 3. 
+
+Con MPLS possiamo trasportare pacchetti (frame) \{IPv4, IPv6, \underline{Ethernet} (con VPLAN), PPP\}. Dominio MPLS: \{insieme contiguo di router che parlano MPLS\}. \textit{Label Switch Router}. LSR \textit{Ingress/Egress} node, A dei pacchetti che giungono sull'Ingress Node LSR, si appiccica una label (od eventuale stack di label). Rete che si basa su delle label, conservate a lvl 3, sulla base delle quali viene fatta la commutazione (con Label Swapping). Qui accade la stessa cosa delle reti VC. \textit{Label Switched Path} (LSP). \{Ingress LSR, Egress LSR\}. Quando si riceve un pacchetto all'ingresso, bisognerà capire che path seguire. \textit{Forwarding Equivalence Class} (FEC), classe che raggruppa flussi di pacchetti che seguono tutti una stessa certa rotta (vengono trattati allo stesso modo per quanto riguarda l'instradamento). FEC: gruppi/flussi di pacchetti. Stessi parametri QoS. Definire Path e parametri QoS = FEC. Se parliamo di Path, dobbiamo pensare ad una serie di etichette (\underline{locali}!). FEC, Path, serie di etichette, label. Queste etichette sono distribuite utilizzando il protocollo LDP (\textit{Label Distribution Protocol}). Nel caso TE, viene utilizzata un'estensione dell'RSVP, detto RSVP-TE (utilizzato nell'ambito dell'architettura DiffServ). Bisognerà configurare tutti i router lungo una certa path. Sarà importante verificare che vi siano le risorse necessarie! La FEC si riferisce ad un gruppo di pacchetti che sono trattati alla stessa maniera (parametri QoS) e seguono una stessa rotta. Nodi MPLS-Aware. Cosa farà un nodo di ingresso? Quando riceve un pacchetto, deve capire a quale FEC associare quel pacchetto. Saranno utilizzate alla fine delle label (o stack di label) da appiccicare, sulla base del FEC. Si ricordi che le label hanno un significato \underline{LOCALE}! Si utilizzeranno per il Label Swapping (LS). Significato locale ma univoco! Con le VC non è il caso di scegliere delle label con significato globale! Sarebbe difficile da gestire il controllo sull'univocità in particolare. Con il significato locale la SCALABILIT\`A è garantita.
+
+\subsubsection{Label MPLS}
+
+Le label sono di 32 bit. Primi 20 bit effettivi. 3 bit per il \underline{supporto QoS} (EXP). Bit S: vale 1 per l'entry più vecchia, 0 altrimenti. Campo TTL (\underline{time-to-live}) $\rightarrow$ stessa funzione del campo TTL dell'IP.
+Stack di label possibile. Problema di fissare dei valori nel campo \textit{Protocol Type} del lvl 2. Immaginiamo che vi sia un pacchetto che attraversi una rete Ethernet. PT che riflette il protocollo delle PDU trasportato. Se aggiungiamo un pacchetto IP, dobbiamo considerare l'MPLS! 8847. \textit{Ethertype Value}. Ethernet v2. Se si sfrutta il sottolivello MAC, il supporto è fornito dall'LLC, con l'estensione SNAP (SNAP/LLC). Se invece viaggiano \underline{su PPP, il codice è 0281} (\underline{sempre trasporto MPLS}).
+
+VPL (\textit{Virtual Private LAN}). Organizzazione che deve interconnettere le sedi. Potrebbe dotarsi di una rete privata: \{Apparato attivo + link di comunicazione\}. Acquisto dell'Infrastruttura e costi di manutenzione. Tutto ciò sarebbe estremamente costoso. VPN (\textit{Virtual Private Network}). Emulazione di una rete privata mediante Internet, il quale è una rete condivisa. Sulla rete privata i traffici andranno poi separati. Customer che si rivolge ad un fornitore di servizio VPN. Il provider si deve preoccupare della separazione del traffico sulle diverse VPN.
+
+MPLS in termini di VPN. Service Provider al centro (MPLS VPN). Terminologia associata al servizio MPLS VPN. PE = \textit{Provider Edge}, ovvero il router collegato al \textit{Customer Edge} (CE). Servono come collegamento al lato provider. Gli altri router del provider che non son connessi ad un CE sono detti (P) \textit{Provider} router. Esiste un altro modello, detto \textit{ATM Relay}. VPN con ATM o Frame Relay (lvl 2 technologies). 
+
+\begin{itemize}
+
+\item{\underline{Overlay Model}}. ATM è una rete a commutazione di pacchetto VC (Virtual Circuit). Si stabiliscono dei circuiti virtuali, tra i nodi del Customer. Nodi da interconnettere eventualmente tramite ATM. Connessioni \underline{Full-Meshed}. 53 byte, lunghezza fissa dei pacchetti ATM. Si noti l'assenza dell'amministratore di rete ATM. La rete ATM offrirebbe un servizio lvl 2 (Comunicazione di nodi adiacenti), nonostante vi siano problematiche di routing (a lvl 3). Tutti i CE vengono visti come Nodi Adiacenti. Modello VPN Overlay. I nodi di commutazione ATM (ATM Switch) NON vengono proprio visti dal mondo IP. L'amministratore si dovrebbe però preoccupare di instaurare $(n-1)$ circuiti virtuali, qualora si aggiunga un nuovo CE. Overlay Network. Router CE visti come Router IP. Algoritmo DS (\textit{Distance Vector}) oppure LS (\textit{Link State}). ROUTER ADIACENTI! Anche se ovviamente non lo sono.
+
+Advertisement dei prefissi della VPN. VPN (rete privata virtuale che inerconnette le varie sedi del customer) con:
+
+\item{MPLS P2P VPN}. Con il modello MPLS P2P (peer-to-peer) adesso vi sarà adiacenza tra Customer Edge (CE) e PE. Servono BGP di tipo Interior (iBGP). Non abbiamo più il modello Overlay. Dobbiamo sfruttare i PE, i quali tramite iBGP trasporteranno questi prefissi. Distribuzione dei prefissi. Non c'è più tutto quell'onere a carico dell'amministratore di rete. Se il Customer deve aggiungere un nuovo sito (CE), sarà sufficiente collegarlo (fare il peering) con un PE. Penserà il BGP a trasportare tutti i prefissi (verranno annunciati tutti tramite BGP). \underline{SCALABILE}.
+
+\end{itemize}
+
+Rete MPLS condivisa da più Customer. Creare/configurare diverse VPN ai vari Customer. Diverse istanze VRF (\textit{Virtual Routing/Forwarding}). VPN: rete privata virtuale. Si dovrà comportare come una rete privata! Traffici separati, ed eventualmente cifrati! Serve separazione. Se vogliamo anche cifratura utilizziamo IPSec. I traffici dovranno subire diverse \underline{routing instances}. Diverse tabelle di routing a seconda delle VPN. \`E un must il collegare un sito allo stesso PE con differenti interfacce! $\forall VPN\ \exists!$ interfaccia sul PE. Per ogni interfaccia dovrà esistere quindi un unico VRF $\iff \forall interface\ \exists! VRF \iff \forall VPN\ \exists!VRF$. VRF servirà a capire, per quella VPN, cosa fare di un determinato pacchetto IP. Il tutto si comprenderà mediante IP di destinazione. L'LSR Ingress dovrà appicccare le label rispettive! Appiccicare al pacchetto IPv4 due etichette: \textit{VPN Label} ed \textit{IGP Label}. Quest'ultima collega i due PE attraveso router di tipo P, fino a giungere sul PE detto Egress LSR, che "strapperà" le etichette. Eventualmente con Label Swapping $\forall$ attraversamento di un router P. Sulla base di queste etichette il pacchetto viaggerà mediante un protocollo Interior. Arrivato il pacchetto a destinazione, si sfrutterà la VPN Label per identificare la VPN (associazione del pacchetto ad una certa VPN).
+
+\subsection{QoS}
+
+MPLS che consente di fornire QoS tramite quei 3 bit EXP (Experimental). QoS: dobbiamo idealmente pensare ad una QoS end-to-end. Ma non è così semplice! Perché è difficile andare a fidarsi degli utenti della rete. Dovrebbe essere l'utente a marcare/classificare il traffico generato. SLA (\textit{Service Level Agreement}), con il DiffServ es. PHB (AF41). Problema di fiducia: si definiscono dei \textit{Trust Boundaries}: punti ove è consentito che si marchino i pacchetti. Altre considerazioni: QoS in ambito di campus. Non solo applicabile a link geografici, ove la banda è bassa. Over Subscription 20:1 (Campus). La congestione entra in gioco! Traffico contemporaneo. I meccanismi di congestione sono quindi importanti anche a livello locale (Campus) $\leftrightarrow$ Trust Boundaries: punti ove la marcatura lvl 2 / lvl 3 è accettata. Idealmente il Trust Boundaries dovrebbe essere sugli endpoint. VoIP giustificabile (EF necessario). Marcatura diretta del telefono. Problema generale comunque di fiducia. Marcatura a livello Access di Campus. Bisogna dotarsi di apparati che supportino questi meccanismi QoS (CISCO ex). Potrebbero marcare anche a lvl 3! \`E importante fare il policing alla sorgente, ed intervenire in casi di attacchi maligni (SCAVENGER: Più basso livello possibile. Anche minore rispetto al Best-Effort).
+
+Raccomandazioni presenti su documenti CISCO (basati su RFC), basati sulle varie classi di servizio. 11 classi di servizio, al quale associare un certo PHB. CodePoint associabile. La Best Effort corrisponde a tutto a 0. Vecchio sistema IPP (IP-\textit{Precedence}). La voce ha dei requisiti ancora più stringenti della videoconferenza!
+
+Valori anche per la marcatura a lvl 2. Raccomandazioni per il PCP dell'IEEE 802.1Q. Debba coincidere con il MPLS EXP. Marcatura a lvl 2. Valori scelti in modo tale che potessero esser tirati fuori direttamente (valori uguali all'IPP). Lo 0000 non corrisponde alla più bassa priorità. Coerenza tra servizio QoS lvl 3 e quello lvl 2: disciplina di accodamento importante \{inf, sup\} per le bande associate alle varie Classi di Traffico. 25\% della banda di un link per best effort e max 33\% per il traffico Audio/Video (Weighted Fair Queueing) con WFQ. Range di traffico indicato per le varie bande. $\forall$ link di uscita $\exists$ molteplici code HW! es. 5 code HW per il link di uscita. Se ne avessimo 11, potremmo scegliere proprio le raccomandazioni in atto. Capability in termini di code HW sui link di uscita. QoS livello end-to-end. Paramtri QoS da rispettare (SLA). Service Level Agreement. Ad esempio due sedi da interconnettere con \{latenza 150 ms, packet loss probability 1\%, jitter 30 ms\}. Latenza end-to-end! Latenza tipicamente inferiore a quella massima end-to-end!
+
+Mapping tra marcature (ciò che abbiamo pensato come CoS e ciò che è possibile fare nella rete del provider). $\cardinality{CoS}$ del provider $\neq \cardinality{CoS}$ customer, tipicamente. Mapping non banale, non indifferente. Tutto questo mapping sarà incluso, deciso nello SLA (Service Level Agreement):
+
+
+
+\section{Security}
+
+\subsection{IPSec}
+
+Security (\textit{IPSec}). Criterio di progettazione per la sicurezza delle applicazioni. VPN = Virtual Private Network. Un'organizzazione può interconnettere diverse sedi con delle reti private. \`E possibile emulare delle reti private con una rete condivisa come Internet. Si tratta sempre di un'emulazione. Attraverso questa rete condivisa saranno trasportate più VPN. Necessità di separazione. Possibilmente il traffico dev'essere cifrato. MPLS con sistema VRF. Idealmente la crittografia ci dovrebbe essere, altrimenti il traffico potrebbe essere sniffato.
+
+IPSec e SSL/TLS. Realizzazione di VPN mediante IPSec. Due tipologie di VPN: \{\textit{Site-to-site}, \textit{Remote User}\} VPN.
+
+\begin{itemize}
+
+\item{\textit{Site-to-site VPN}}: Le prime sono utilizzate per interconnettere due gateway (anche chiamata gateway-to-gateway). Diversi router presenti durante il percorso. IPSec è in esecuzione sui gateway. Qui tutte le comunicazioni sono cifrate prima che attraversino la VPN. Potremmo basarci anche su degli ISP (Internet Service Provider). Message Authentication (es. MD5). I benefici che IPSec fornisce non sono necessari a livello host-to-host;
+
+\item{\textit{Remote User VPN}}: Il processo VPN non starà sul router di confine dei vari siti (gateway), ma sarà in esecuzione proprio sul computer che invierà dei messaggi all'azienda. Computer che utilizzerannno per collegarsi alla sede principale. \textit{VPN Gateway} sulla sede principale, ove saranno concentrate tutte le connessioni. Remote User VPN. In questo caso il dipendente è come se fosse dentro la rete aziendale! Host-to-gateway VPN. Due tipologie di tunnel (virtuali).
+
+\end{itemize}
+
+IPSec ha a che fare con una suite di protocolli:
+
+\begin{itemize}
+
+\item{\textit{Authentication Header} (AH)}, che non fornisce sicurezza. Quindi non molto utilizzati. MAC (\textit{Message Authentication Code}). Messaggio inviato da una CERTA sorgente ed indica che il messaggio non sia stato alterato;
+
+\item{\textit{Encapsulation Security Payload} (ESP)};
+\end{itemize}
+
+IPSec a livello network! La AH viene lasciata perdere. \textit{Security Association} (SA). UNIDIREZIONALE! Half duplex. IPSec opera in: \{\textit{Transport Mode}, \textit{Tunnel Mode}\}:
+
+\begin{itemize}
+
+\item In Transport, IPSec NON protegge l'intestazione del pacchetto. Lo utilizziamo quando vogliamo delle comunicazioni end-to-end. Endpoint A e B. A ha in esecuzione IPSec e B pure. SA A $\rightarrow$ B. Su A ci sarà un software che si preoccuperà di mantenere le Informazioni di Stato necessarie. A livello di cifratura, un pacchetto IP viene concatenato con un \textit{ESP trailer}. Payload IP + ESP trailer cifrato. Viene aggiunto nell'intestazione tra header IP ed il resto, una porzione chiamata \textit{ESP Header}. Tutto dall'ESP header sino all'ESP trailer viene hashato per l'appunto nell'\textit{ESP Auth Trailer}, finale;
+
+\item In Tunnel Mode, supponendo di essere un site-to-site, viene cifrato tutto quanto! Adesso l'header IP originario associato all'IP Payload viene cifrato! Viene aggiunto un nuovo header IP contenente informazioni sul tunnel! Come prima, dall'ESP header all'ESP trailer viene tutto hashato. \{IP SRC = R1, IP DST = R2\} esternamente. A metà abbiamo: \{IP SRC = A, IP DST = B\}.
+
+\end{itemize}
+
+Se avessimo un VPN host-to-gateway, il tunnel partirebbe dall'host A! Adesso l'unica differenza in tunnel mode è che la configurazione di indirizzi è: \{IP SRC = A, IP DST = R2\} nell'header esterno, mentre \{IP SRC = A, IP DST = B\} nell'header più interno (cifrato). Algoritmo MAC (Message Authentication Code). Tutte queste informazioni sono informazioni di stato! Un'entità IPSec magari ha più SA associati! Vengono mantenute nel SED (\textit{Security Association Database}). Occorrerà sapere pure quali pacchetti dovranno basarsi sull'IPSec e quali no! (SPD) - \textit{Security Policy Database}. In questo SPD si dice se un pacchetto ad una certa destinazione ha bisogno o meno dell'IPSec. Ci sarà un protocollo, detto IPSec IKE che si occuperà di automatizzare il processo di configurazione (\textit{Internet Key Exchange}).
+
+
+Site-to-site. Altre informazioni importanti: SPI (\textit{Security Parameter Index}). Sia su R1 che su R2 dovranno essere memorizzate. Accedendo al SAD, R1 capirà che cosa fare (favorirà opportunamente il pacchetto da inviare). A destinazione, bisognerà capire a quale SA appartiene quel determinato pacchetto! Nell'ESP header ci saranno SPI e Seqno (numero di sequenza). R2 ha tutte le informazioni di stato per quelle SA nel suo SAD. Nell'intestazione abbiamo quindi SPI e Seqno, quest'ultimo per evitare attacchi Replay. Nel trailer vi sono: \{Padding, padding length + next header\}. I cifratori agiscono per blocchi di una predeterminata lunghezza. Quindi ci vuole padding, ed anche mantenere traccia della sua lunghezza! Nel next header ci sarà il protocollo che ha generato quel payload IP. Nel next header più esterno ci sarà il protocol type dell'ESP. Nel next header invece ci sarà l'informazione del protocollo \{IPv4, IPv6\}. Relativo quindi alla tipologia del pacchetto IP (od IPv4 od IPv6).
+
+La struttura dati che IPSec gestisce è l'SPD, contiene le regole per dire quali pacchetti sono trattati con IPSec e quali con IPvX. SPLIT TUNNELING utilizzato: il traffico verso Internet passa sempre \textit{unencrypted}. Per un mobile worker, l'accesso verso Internet viene rediretto sempre verso la rete aziendale! NO accesso diretto verso Internet. Maggior controllo di ciò che fanno i dipendenti. Questo discorso vale sempre per Remote User. Dispositivi blindati. Comunque bisogna passare dalla rete aziendale; VPN Gateway e VPN Concentrator.
+
+\subsection{Firewall}
+
+Firewall: "tagliafuoco" sul confine della rete aziendale. Tipicamente abbiamo dei firewall distribuiti. Varie tipologie di firewall:
+
+\begin{itemize}
+
+\item{\textit{Stateless Firewall}}: SLPF Stateless packet filter. Sono soggetti ad IP Spoofing;
+\item{\textit{Stateful Packet Filter}}: Check della connessione TCP. Lo stateless agisce solo in base agli indirizzi del pacchetto. Gli stateful tengono invece conto della connessione TCP, al loro SYN infatti vengono create delle informazioni di stato. Ma anche gli stateful hanno dei problemi! Sono soggetti al DoS. Tabelle con un numero max di entries. Attacco DoS possibile. Non vanno oltre a lvl 4!
+\item Esistono anche tipologie di firewall a livello applicativo;
+
+\end{itemize}
+
+RFC2827 per proteggere le ACL da attacchi IP Spoofing. Replicazione eventuale anche nel router dell'ISP. \textit{Application Gateway} = Proxy. Drawback: problemi di prestazioni. Firewall a livello applicativo: $\forall$ applicazione $\exists$ proxy. Proxy server HTTP Software, processo applicativo che potrebbe costituire un bottleneck. Il proxy agirà da Server nei miei confronti. \textit{Origin Server}. Il proxy si comporterà come client nei confronti dell'Origin Server (OS) e stabilirà una connessione TCP con esso. Si sfrutta il servizio DNS per eventuali associazioni.
+
+IDS (\textit{Intrusion Detection System}), Deep inspection (Probe utilizzate) fino a livello applicativo. Possono accorgersi di un attacco e generare un allarme che invieranno al Network Manager che eventualmente potrebbe anche prendere delle contromisure. NIDS. Network IDS. Se ne mettono tipicamente più di uno. Sensore IDS centrale che manderà alla fine l'allarme.
+I router possono fungere da firewall con le ACL. Nella DMZ vi sono i Server pubblici. Alla fine non ci sarà un solo firewall! Vi sarà un firewall distribuito tipicamente, onde evitare persino attacchi interni! Parametri di sicurezza.
+
+J2EE (Java EE). Firewall tra L3 e la server farm (Application, Web e Data). Well-firewall capability. PIX della CISCO, adesso sono chiamati ASA. Oppure un SW da installare su un host. Firewall 1 della CheckPoint.
+
+\subsection{IPSec e Firewall}
+
+\begin{itemize}
+
+\item{\textbf{\textit{TRUSTED}}}:
+
+VPN Gateway. IPSec Gateway avrà un'interfaccia collegata al WAN Router, ed un'altra alla Intranet aziendale (Intranet). Problema legato all'eventuale troppa fiducia data ai Remote User ed ai Remote Site. Variante possibile: IPSec collegato al firewall anziché al WAN Router. No vantaggi in termini di sicurezza, ma possibile Logging. Con l'ulteriore variante:
+
+\item{\textbf{\textit{UNTRUSTED}}}:
+
+Abbiamo un controllo aggiuntivo. Una volta decifrato il traffico, passa dall'Internet Firewall e poi c'è un Optional NIDS! Come prima abbiamo la variante Logging, che non aggiunge particolari vantaggi in termini di sicurezza. Eventuale collo di bottiglia sull'Internal Firewall.
+
+\item
+
+In alcuni casi la funzionalità firewall è già inclusa nell'IPSec Gateway (VPN Gateway), ad esempio il CISCO ASA. In ogni caso serve comunque il Corporate Firewall. Tipicamente esso sarà anche ridondato. Adesso non costituisco più colli di bottiglia. (RAS = NAS) serve per l'accesso remoto NON gestito da VPN.
+
+\end{itemize}
+
+\subsection{Sicurezza nelle Applicazioni}
+
+Progettazione per la sicurezza nelle applicazioni. Posta (email) \& http. Nel primo caso, abbiamo un Corporate Firewall che gestisce il traffico Internal $\rightarrow$ External. Esso dovrà prendere le mail ricevute da un \textit{Outside SMTP Server} e le collocherà su un \textit{External SMTP Server}, che le immagazzinerà opportunamente prima di inviarle all'\textit{Internal SMTP Server} (SMTP, POP3 o IMAP) e viceversa. Eventuale replicazione degli antivirus su tutti gli SMTP. Eventuale dedica di alcune macchine per lo SCANNING.
+
+A livello web, tipicamente in un'architettura Java EE, abbiamo un Web Server nella DMZ ed i server Application e Database in Server Interni. (Eventualmente collassati). Si configurino le ACL opportunamente.

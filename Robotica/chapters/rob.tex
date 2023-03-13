@@ -1,0 +1,202 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Robotics}
+\label{cap:rob}
+%************************************************\\
+
+Un ambito molto recente di Robotica è quello della Robotica Cooperativa, ove l'interesse non è il controllo di un veicolo, ma di controllarne tanti! Anche in ambito di controllo del moto robotico vi sono dei problemi in questo senso. Studiamo i vari sottosistemi di cui si compone un sistema robotico:
+
+\section{NGC - Navigation, Guidance, Control}
+
+\begin{itemize}
+
+\item{\underline{NAVIGAZIONE}}: tutti i metodi e tecniche per produrre una Stima dello Stato;
+\item{\underline{CONTROLLO}}: sistemi quanto più vicini possibili agli attuatori. Algoritmi di basso livello che gestiscono il motore. Sostanzialmente sono dei PID che regolano la pressione con la quale entra il fluido di carburante nel motore. Gli anelli di controllo in HW girano a frequenze abbastanza alte;
+\item{\underline{GUIDA}}: sottosistema di più alto livello. Può essere paragonato all'autista di una macchina. Fornisce comandi di alto livello agli altri sottosistemi.
+\end{itemize}
+
+Tutti questi livelli possono ricevere comandi od informazioni dall'esterno, da un livello superiore. Ad esempio, la spia del carburante, oppure le gomme forate. Queste variabili potrebbero influire sugli altri sistemi.
+La GUIDA in ambito robotico può essere automatizzata, mediante l'utilizzo dell'Autopilota. Gran parte di quel che faremo nel corso sarà incentrato sulla \underline{GUIDANCE}. Il livello di MISSIONE è quello che genera i TASK. COMPITO ROBOTICO: macroattività. Se il robot è un veicolo, i task di moto più comuni sono:
+
+\begin{itemize}
+
+\item{Inseguimento di cammino};
+\item{Inseguimento di traiettoria};
+\item{Inseguimento della POSA};
+\end{itemize}
+
+Problemi di controllo: mandare l'errore a 0 $\iff e \tendsto{t\to+\infty} 0$. Nei problemi di inseguimento di cammino, l'errore è proprio una quantità geometrica. L'inseguimento di traiettoria è simile, ma non uguale! \`E parametrizzato dal tempo. Nei problemi di Path Following NON vi è necessariamente il concetto temporale! [PATH FOLLOWING]. La TRAIETTORIA invece è un cammino parametrizzato nel tempo! Ricapitolando:
+
+\[
+	\left\{
+	\begin{aligned}
+	&f(s),\ f(x,y)\ \rightarrow [PATH\ FOLLOWING]\\
+	&f(s,t),\ f((x,y),t)\ \rightarrow [TRAJECTORY\ TRACKING]!\\
+	&\underline{INSEGUIMENTO\ POSA}
+	\end{aligned}
+	\right.
+\]
+
+ove nell'ultimo caso il CAMMINO degenera in un punto. Il tipico problema rappresentativo è quello del parcheggio.
+
+MISSION LEVEL: scheduling dei vari sottoproblemi. Modi di intraprendere questo comportamento. I problemi di Path Following possono essere visti come successioni di problemi di Inseguimento POSA. Va fatto nel continuo, ovviamente. Esempio: Regolazione della temperatura (PID con zero nell'origine (\underline{attrattore puro})): Se la facessimo entro la banda passante, è chiaro che mi sto muovendo. La dinamica con cui sposto la macchina per effettuare il "parcheggio" deve essere compatibile comunque con la banda che era stata progettata per l'\underline{inseguimento della POSA}.
+
+\section{Robotica}
+
+Bisogna distinguere il tipo di applicazione robotica. I Robot manipolatori sono stati i primi ad essere impiegati in ambito industriale. MANIPOLAZIONE. Si studia la modellistica ed il controllo di robot manipolatori. Modellistica naturalmente relativamente complicata. Dinamica più complessa dei robot comuni. L'abilità in questo caso implica abilità in temi di veicoli, droni, etc. 
+
+\subsection{PWM: Pulse Width Modulation}
+
+Segnale periodico con solo due livelli. Se l'utilizzatore è modellabile come un passabasso, e forniamo in input questo segnale PWM a questi sistemi, allora l'utilizzatore vede solo il valor medio. 
+
+\[
+	\left\{
+	\begin{aligned}
+	& [f_{CHAR}] \sim [kHz]\\
+	& T = \frac{1}{f_{CHAR}}\\
+	& V = V(t)
+	\end{aligned}
+	\right.
+\]
+
+Abbiamo che:
+
+\[	
+	\E[V] = \bar{V} = (\underline{Duty\ Cycle})\ V_{MAX}
+\]
+
+ove il termine sottolineato è una frazione percentuale. Oggigiorno non è frequenta la circuiteria elettrica analogica! Si utilizzano proprio i PWM. Abbiamo dei transistor che commutano. Se la frequenza di base è nell'udibile, i circuiti vibrano letteralmente, specie quelli di più bassa qualità.
+
+\`E bene avere PWM con frequenza di gran lunga maggiore a quella della banda passante dell'utilizzatore! ($f \gg 20\ kHz$). Il segnale PWM verrebbe udito altrimenti. [PWM = \emph{Pulse Width Modulation}].
+
+\subsection{Robot}
+
+Proprio perché i tipi di robot sono così tanti, è utile capire cosa intendiamo per robot in senso lato, generico. Forniamo quindi una METADEFINIZIONE. Robot: dispositivo artificiale che raccoglie, elabora e genera informazioni con meccanismi legati al proprio moto. \{DINAMICA, \{ELABORAZIONE, RACCOLTA e PRODUZIONE di INFORMAZIONI\}\}. In tal senso, una bicicletta dotata di computer con attuatori può essere definita \underline{robot}.
+
+CIBERNETICA: Come avviene / a che livello / in che modalità si combinano l'aspetto cibernetico e quello dinamico è una grande panoramica. Aspetto informatico/cibernetico. Non è possibile fornire un elenco esaustivo. Abbiamo due aspetti:
+
+\begin{itemize}
+\item Aspetto di elaborazione d'informazioni;
+\item Aspetto di mobilità.
+\end{itemize}
+
+Non sono indipendenti! Anzi sono \underline{strettamente CORRELATI}. I vari sistemi di locomozione di un robot sono diversi tra di loro. Ad esempio possiamo avere robot su ruote, robot su gambe, (ruote magnetiche $\leftrightarrow$ ispezioni su pareti metalliche).
+
+Il ROVER è un veicolo a ruote. La Robotica almeno all'inizio, ha avuto applicazioni alimentate rispettivamente dall'esigenza di acquisire e raccogliere immagini / dati ambientali in zone pericolose. Ambienti difficili: Vulcani, pianeti, etc. Per quanto concerne i tipici veicoli marini, come accennato nella precedente sezione e capitolo, troviamo:
+
+\begin{itemize}
+
+\item{ROV}: \emph{Remotely Operated Vehicle};
+\item{AUV}: \emph{Autonomous Underwater Vehicle}.
+\end{itemize}
+
+Gli AUV, contrariamente ai ROV, non sono Open Frame! Nei ROV i vari componenti / sottosistemi sono fissati sulla struttura portante. Sono scafandrati, protetti dall'acqua. Negli AUV, l'involucro non sempre protegge il veicolo! Abbiamo gli AUV bagnati che non sono resistenti all'acqua, e gli AUV asciutti che invece lo sono.
+
+Esiste un ambito robotico generale: BIO - MIMETIC - ROBOTICS. Prevede l'utilizzo di robot, nell'accezione di prima, che siano ispirati alla biologia. Si prenda ad esempio il pesce. Il "motivo" di fondo è che in generale i sistemi naturali sono particolarmente buoni dal punto di vista dell'efficienza energetica. Un pesce, per muoversi con agilità, lo fa con un'efficienza molto grande! Poca forza esercitata in relazione al peso. \`E un approccio significativo che vanta di una convincente giustificazione. Troviamo uno spinto impiego di meccanismi sensoriali. Sensori ispirati alla natura, molto significativi ed efficienti.
+
+Un esempio di veicolo di superficie è invece il CATAMARANO del CNR. I colleghi portoghesi sono stati i primi a svilupparlo. Sebastian Thrun è un prof tedesco negli Stati Uniti, conosciuto per aver vinto la \emph{DARPA Grand Challenge}. \`E stato, dopo la  GC, quattro - cinque anni a lavorare per Google. Si è dedicato ad un'iniziativa didattica aperta. Corsi Open su Internet, accessibili a tutti. Alberto Broggi è invece un professore di informatica. Visione artificiale applicata nell'ambito della Robotica. La difficoltà maggiore in questo tipi di applicazioni è la RESPONSABILIT\`A. Nell'ambito della Robotica Mobile vi è una notevole ricerca. Telecamere Omnidirezionali ad esempio: telecamere standard il cui obiettivo è puntato su uno specchio conico. Visione, visuale a $360^{\circ}$. Non si ha quindi la necessità di orientare il sensore. Svantaggi: risoluzione molto bassa. Campo di vista solitamente limitato. Se si utilizzano tre pixel per un'orientazione a $360^{\circ}$, naturalmente la risoluzione è minore. La visione viene quindi così distorta. I tradizionali algoritmi di riconoscimento non funzionano così bene. Servono quindi delle opportune trasformate (es. trasformata di Hug).
+
+\{Payload, Veicoli\}. Alcuni veicoli spesso hanno un payload che è a sua volta un insieme di sensori atti ad acquisire informazioni utili per la missione. Una distizione nella tassonomia / nomenclatura di robot, un altro criterio, al di là dei meccanismi di locomozione, è l'ambiente in cui essi si muovono:
+
+\begin{itemize}
+
+\item{Ambienti Strutturati}, i quali sono ambienti noti e predicibili, magari perché artificialmente impostati;
+\item{Ambienti non Strutturati}, che possono essere lo spazio, l'acqua;
+\item{Ambienti parzialmente Strutturati}, come degli aeroporti, strade.
+
+\end{itemize}
+
+Un esempio di ambiente completamente strutturato è la catena di montaggio. Il robot in tal caso, salvo guasti ed impedimenti, conosce tutto ciò che lo circonda. Dal punto di vista della Gestione del Moto, questo fa un enorme differenza ovviamente. Bisogna gestire il problema degli ostacoli (\emph{Obstacle Avoidance}) con tecniche più o meno già collaudate.
+
+Manipolatori Cooperanti: hanno un compito da fare ben preciso, legato ad un altro robot, Ad esempio due braccia che cooperano tra di loro. COOPERATIVO = COORDINATIVO. Nomenclatura legata alle strutture robotiche. Link / bracci, oppure GIUNTO: parte mobile di un manipolatore. BRACCIO o LINK: collegamento tra giunti. Si classificano in base alla tipologia di giunti che vi sono.
+
+Magazzini autonomi: grandi magazzini dove vengono stoccate merci sugli scaffali, con veicoli più o meno automatizzati. VEICOLI AGV (\emph{Automated Guided Vehicle}) $\leftarrow$ veicoli su ruote di cui si riesce a controllare il moto perché vengono seppellite sul pavimento delle guide magnetiche. Dei binari sarebbero meglio. Le guide magnetiche sono invece dei binari virtuali. I veicoli hanno dei sensori che misurano il campo magnetico generato da queste guide, dalla corrente che scorrono in esse. \emph{Smoov ASRV}. \emph{KIVA Systems}: i magazzini di Amazon hanno comprato questa tecnologia per creare KIVA. ASRV aveva un mercato particolarmente ricco (avevano persino il Giappone come cliente).
+
+EDOTAINMENT: neologismo anglosassone che mette insieme i termini: Education \& Entertainment $\leftarrow$ utilizzo piattaforme robotiche per delle applicazioni che possano anche divertire. Es. \emph{LEGO Mindstorm}, etc. Oppure ad esempio il progetto \emph{ROBERTA} dei colleghi tedeschi (Fraunhofer Institute). Pacchetti didattici per licei, od eventualmente anche per scuole medie. \`E basato sui Lego Mindstorm. Ritroviamo vari aspetti estetici, musicali etc. in questi progetti. Ebbe un enorme sucesso! Talmente tanto che un libro associato è stato addirittura tradotto e distribuito gratuitamente nelle scuole.
+
+Il progetto [\underline{ROBOCUP}] è stato inventato da un giapponese negli anni '80. Riguardava lo sviluppo di una squadra di robot che possa competere con una vera squadra umana entro il 2050. Sembra molto ambizioso (lo è sicuramente), ma spesso l'evoluzione tecnologica, sulla scala dei tempi, ha delle dinamiche non lineari, con delle notevole accelerazioni! Sicuramente ambizioso ma non irragionevole. Spesso quelli di ROBOCUP sono elettrici. All'epoca (2003) erano tutti ad attuazione elettrica, oggi sono quasi tutti ad attuazione idraulica (pneumatica). Vi devono essere degli sforzi sulla parte algoritmica (SW). La parte meccatronica ovviamente dev'essere tenuta in conto in queste competizioni. Nella prima competizione il campo era delimitato dai bordi sul muro. Degli algoritmi sono successivamente stati impiegati per ricreare il confine del campo, rendendoli di fatto inutili. Servono inoltre degli algoritmi, soluzioni più efficienti per il riconoscimento della palla reale! All'epoca l'aspetto meccatronico era abbastanza noioso, quasi fastidioso.
+
+Nell'ambito della Robotica non si sviluppano soltanto algoritmi, ovviamente: motori, ma anche sensori! Protesi es. ESOSCHELETRO (EXOSKELETON in inglese). Sensori ed algoritmi per mantenere in piedi una persona. Soluzioni precoci. Ma progrediscono in maniera molto veloce. Analogamente tutte le tecnologie legate all'interfacciamento dei sensori con il nostro cervello sono molto importanti. EEG: campo elettrico generato da sensori nel cervello, ed utilizzo questi segnali per manovrare dei dispositivi esterni, eventualmente senza l'ausilio delle mani.
+
+\begin{defn}{\textbf{[Intelligenza \& Autonomia]}}:
+
+Mobilità e capacità di acquisire informazioni. La tale nozione di Autonomia ed Intelligenza è parecchio importante. Robot AUTONOMO, INTELLIGENTE;
+
+\begin{itemize}
+
+\item{AUTONOMO}: un sistema in grado di gestire da solo delle situazioni impreviste (ostacoli, ambienti non strutturati, etc.);
+\item{INTELLIGENZA}: sistemi di sensoristica e conseguente gestione delle informazioni per fronteggiare gli imprevisti e supportare quindi l'AUTONOMIA.
+
+\end{itemize}
+
+\end{defn}
+
+Ma in base a questa definizione anche lo scoglio di Torre dell'Orso potrebbe esser benissimo definito autonomo ed intelligente! Questa definizione ha ovviamente senso se applicata ad un sistema mobile, che si muove di fatto.
+
+Note su [\emph{H2020 WiMUST Project}].
+
+\subsubsection{Scenari di impiego}
+
+Oggigiorno la sola maggiore attività che utilizza la tecnologia SONAR è l'esplorazione petrolifera. Abbiamo dei cavi addirittura di $12\ km$. Non esiste nulla di più grosso nel pianeta che si muova. LAWN MOWING. Geometrie giganti. ESPLORAZIONE GEOFISICA. Parliamo di streamer lunghi $10m\ -\ 20m$. La profondità operativa è ovviamente molto più piccola. In mare siamo anche sui $4000m\ -\ 6000m$ di colonne d'acqua. In tale SETUP grande la risoluzione è piccola, mentre nel SETUP piccolo (Geotechnical Surveys) la profondità è anche qui di qualche decina di metri, ma abbiamo una RISOLUZIONE più alta. Abbiamo dei generatori eolici, in acqua. Si parla di robot cooperativi al posto di streamer ancorati / fissati sulla nave. Viene fatta una sorta di ecografia sul fondale. \`E necessario conoscere le caratteristiche della sorgente. Quello che noi misuriamo è una differenza di pressione per caratterizzare il fondo. Bisogna comunque conoscere molto bene il SUONO MANDATO, che "illumina" il fondo. Nel SETUP di WiMUST, la sorgente è ancora presente sulla nave. Dispositivo molto energivoro. Non è ovviamente alimentabile con le normali batterie di robottini. Mentre i ricevitori stanno sui Robot. Vi è la necessità di SINCRONIZZARE trasmettitori e ricevitori. I tedeschi (produttori di modem acustici) avevano pensato che la sincronizzazione potesse essere possibile, ma l'accuratezza effettivamente riscontrata era incompatibile con la precisione in gioco. Soluzione: CLOCK ATOMICI. Precisioni del nanosecondo. Sicuramente superiori alla necessità del progetto WiMUST. Ma l'elettronica, la circuiteria di questi dispositivi / schede è ultrasensibile! Si pensi che $\max{T} = 30^{\circ}$. L'interesse è comunque il controllo combinato. \{Localizzazione, controllo della posizione in maniera conseguente\}. Vi sono altri progetti europei di robotica marina sullo scenario ovviamente. Entrambi legati a ROV, non ad AUV. Robot manipolatori.
+
+Uno SPARKER è un generatore di suoni subacquei. Un AIRGUN è un generatore di suoni, esattamente come lo SPARKER, ma utilizza una tecnologia differente. L'AIRGUN sostanzialmente fa scoppiare una bolla d'aria sott'acqua, a pressioni veramente elevate. Si crea così un'ONDA ACUSTICA che poi torna indietro, della quale possono quindi esserne misurate le caratteristiche informative. Lo SPARKER invece è sostanzialmente una BOA. Alimentato da un generatore che risiede su un camion terrestre. Sorta di spazzole per capelli. Viene fatta scoccare una scintilla su queste coppie di filamenti. Viene generata un'onda, una pressione acustica che si propaga verso il fondale; poi torna indietro. La potenza generata in acqua è molto elevata! Dal punto di vista ambientale gli streamer è meglio che siano molto vicini al fondale! Parliamo di potenze in gioco veramente molto elevate.
+Questa tecnologia verrà probabilmente utilizzata su veicoli molto più grandi dei Folaga / Medusa, che sono degli AUV. Vanno a circa $v_{AUV} \in [0.7-0.8][m/s]$. Meno di due nodi marini sostanzialmente, che per una barca è veramente pochissimo! La nave che porta la sorgente è veramente difficile / impensabile che vada così lentamente! Si è quindi cambiato il paradigma, facendo risiedere lo SPARKER non sulla nave, ma su un CATAMARANO. La sorgente deve seguire un \underline{cammino} con precisione possibilmente sotto il metro. Si mantiene quindi la sorgente su questi catamarani autonomi. I veicoletti (AUV) dovrebbero quindi seguire il catamarano, anziché la sorgente. In superficie gestire il posizionamento è molto facile! Sott'acqua le onde elettromagnetiche NON si propagano! O comunque si propagano molto poco. Il GPS differenziale vanta della precisione del centimetro. \`E necessario del [processing di segnali acustici].
+
+Si possono pensare a delle tecniche per facilitare il compito di inseguimento da parte del pilota della barca. Il vero problema rimane comunque l'ALIMENTAZIONE. Si potrebbe mettere un gruppo elettrogeno ridotto sul catamarano.
+
+Lo STREAMER consiste in dei gruppi di idrofoni. Vi sono delle varianti digitali / analogiche. Il digitale è preferibile sugli streamer lunghi, per via della presenza di un BUS. GeoMarine utilizza microfoni analogici. Solitamente si utilizzano più microfoni analogici! Ed in questi AUV dovrebbero quindi entrare circa 20 / 10 CAVI. Adesso si utilizzano streamer di $8\ m$ anziché $16\ m$ per problemi di attrito.
+
+\section{Cinematica}
+
+Dal punto di vista del controllo l'interesse maggiore è disporre di un modello. Sviluppare schemi per la Navigazione / Controllo. Il seguente è uno schema molto semplificato:
+
+
+Logico più che funzionale, ma descrive sufficientemente bene l'architettura concettuale di un robot veicolare. Ci concentreremo su GUIDA, NAVIGAZIONE. Gli elementi principali della Navigazione sono gli Osservatori. Stimatori dello stato del sistema a partire dall'osservazione diretta delle uscite. La GUIDA è l'insieme di tecniche e metodi alla Lyapunov. Metodi di controllo / guida. Per impostare qualcosa, l'elemento di partenza è un modello. Un'equazione matematica che descriva lo stato del sistema e la sua evoluzione nel tempo. Dinamica. Essendo i robot dei sistemi meccanici vi è da studiare la loro meccanica (Meccanica Razionale per la precisione). Meccanica applicata alle macchine. Bisognerebbe partire dalle basi prima. La prima cosa è l'equazione di dinamica dei robot (Metodi alla Lagrange / Hamilton). Vedremo in maniera approfondita prima la parte sulla cinematica. Banalmente, la CINEMATICA è lo studio geometrico del sistema. Studio della velocità (e derivate di ordine più alto) di un sistema. Punti materiali che si muovono perché soggetti a delle forze. Per un punto materiale abbiamo sostanzialmente due equazioni:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{p} = v\\
+	&\dot{v} = a
+	\end{aligned}
+	\right.
+\]
+
+Queste equazioni descrivono come cambia nel tempo la posizione del punto. $v$ è una variabile che potrebbe essere di qualunque tipo (costante, determinata da una particolare formula, etc.). Se non vado avanti nel descrivere $v$, allora parliamo di un modello cinematico. Vi è anche il JERK, che sarebbe la derivata dell'accelerazione. \`E tale quantità a causare il MAL DI MARE, oppure il MAL DI MOTO più in generale. Potremmo andare avanti e fare anche la derivata del jerk.. descriviamo le variabili senza coinvolgere l'equazione di Newton. L'equazione di Newton fornisce una descrizione aggiuntiva del sistema! $\vec{F} = m\vec{a}$ è un'equazione indipendente! L'aver messo a punto questa equazione è un'informazione aggiuntiva, indipendente! IMPORTANTISSIMA. Finché descrivimo la geometria del punto, l'evoluzione temporale del punto materiale, allora siamo in un modello cinematico. Se assieme alla descrizione geometrica mettiamo a sistema le equazioni di Newton, allora abbiamo effettivamente un modello DINAMICO. Per applicare questi metodi, molto spesso si ricorre alle equazioni di Lagrange / Hamilton / Jacobi. Sono tutte formulazioni matematiche più complesse per introdurre l'equazione (legge) di Newton al modello meccanico / cinematico. Per studiare la CINEMATICA (prerequisito per descrivere poi la dinamica), ci sono degli strumenti matematici molto utili ed interessanti. Dobbiamo conoscere molto bene l'algebra lineare, in particolare vettori e matrici. Introdurremo il concetto di matrice di rotazione, e strumenti vari matematici per descrivere l'evoluzione di questa matrice di rotazione. Concettualmente l'elemento complicato è il vettore VELOCIT\`A ANGOLARE. La spiegazione di Fisica 1 si riduce alla formulazione come derivata di un angolo. In 3D non è affatto vero! Non è difficile, ma è matematicamente evoluta la cosa. Ma per capirla in maniera semplice e concisa, bisogna ovviamente prima partire dalle basi. Sfrutteremo anche i QUATERNIONI, che sono delle variabili che servono a descrivere come cambia nel tempo una matrice di rotazione, senza ricorrere necessariamente al vettore velocità angolare.
+
+\subsection{VETTORE}
+
+Bisogna sempre distinguere un vettore dalle proprie componenti. Lavoreremo in $\R^3$, oppure in $\R^n$. Ma sarà raro durante il corso vedere vettori a componenti complesse. Un sistema con $n$ gradi di libertà può essere utile visualizzarlo invece su $\R^{(n>3)}$. Vettori nello spazio tridimensionale. FRECCIA: \{modulo, direzione, verso\}. Un vettore dispone quindi di una certa lunghezza, orientazione e direzione. Il vettore da solo prescinde dalla descrizione delle sue componenti. Un conto è un vettore, un conto sono le terne sulle quali questo viene proiettato!
+ 
+Prendiamo ad esempio:
+
+\[
+	^0p = (x,y,z)^\top
+\]
+
+Si noti che d'ora in avanti i vettori senza il simbolo di trasposizione saranno sempre colonna. Il vettore $p$ esiste a prescindere! Il vettore è sempre lo stesso. Le sue compnenti dipendono invece dal particolare sistema di riferimento adottato. In un manipolatore abbiamo tante terne quanti sono i giunti, almeno. Per indicare, ad esempio, la terna 0, si appone un apice sinistro: $^0\mathord{\cdot}$. Per esempio, prendiamo la descrizione di un prodotto scalare e vettoriale tra due vettori. Sono delle operazioni su oggetti che prescindono dalle terne!
+
+\[
+	\left\{
+	\begin{aligned}
+	& u \mathord{\cdot} v = \frac{\norma{u}\norma{v}}{\cos{\alpha}}\\
+	& \norma{u \times v} = \frac{\norma{u}\norma{v}}{\sin{\alpha}}
+	\end{aligned}
+	\right.
+\]
+
+Per quanto concerne il prodotto vettoriale, che fornisce in output un vettore, ricordiamo che il verso è dato dalla regola della mano destra.
+
+Le componenti sono un prodotto aggiuntivo! Anche il prodotto $u\times v$ si può benissimo calcolare con le componenti. Ma le definizioni di queste operazioni NON dipendono intrinsecamente dalle componenti! Un'altra notazione, che useremo in realtà poco, è la cosiddetta [NOTAZIONE DI GRASSMANN]:
+
+\[
+	[v = P_2 - P_1]
+\]
+
+\`E una notazione che permette di pensare un vettore come differenza tra due oggetti che prescindono dalle componenti. Un'altro strumento che utilizzeremo, come già detto precedentemente, è la matrice di rotazione. Parleremo quindi più approfonditamente di terne / sistemi di riferimento nel seguito.
+
+\underline{ROBOT}: sistema abbastanza complicato in generale. Ma dal punto di vista meccanico si possono semplificare. ROBOT: terne. Sistemi di riferimento solidali con l'oggetto di cui vogliamo studiare il moto. SR solidali con quel link. CATENA CINEMATICA: sequenza di sistemi di riferimento che nel tempo si dispongono in maniera differente tra di loro. La POSIZIONE è un concetto più o meno semplice. L'ASSETTO è invece un concetto complicato da trattare.

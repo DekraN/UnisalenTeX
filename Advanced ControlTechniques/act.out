@@ -1,0 +1,57 @@
+\BOOKMARK [0][-]{chapter*.5}{Introduzione}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Systems' Theory}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Systems' Classes}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.1}{TIME-VARYING vs TIME-INVARIANT SYSTEMS}{section.1.1}% 4
+\BOOKMARK [2][-]{subsection.1.1.2}{NONLINEAR \(NL\) vs LINEAR \(L\)}{section.1.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.3}{PROPER vs STRICTLY PROPER}{section.1.1}% 6
+\BOOKMARK [2][-]{subsection.1.1.4}{FORCED vs UNFORCED}{section.1.1}% 7
+\BOOKMARK [1][-]{section.1.2}{TRAJECTORIES and EQUILIBRIA}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.2.1}{TRAJECTORIES}{section.1.2}% 9
+\BOOKMARK [2][-]{subsection.1.2.2}{State-Space FRAMEWORK examples}{section.1.2}% 10
+\BOOKMARK [2][-]{subsection.1.2.3}{EQUILIBRIA}{section.1.2}% 11
+\BOOKMARK [0][-]{chapter.2}{Systems' Stability}{}% 12
+\BOOKMARK [1][-]{section.2.1}{INTERNAL STABILITY}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.1.1}{Equilibria Stability}{section.2.1}% 14
+\BOOKMARK [2][-]{subsection.2.1.2}{counterexamples}{section.2.1}% 15
+\BOOKMARK [2][-]{subsection.2.1.3}{Trajectories Stability}{section.2.1}% 16
+\BOOKMARK [2][-]{subsection.2.1.4}{Lyapunov's Theorem}{section.2.1}% 17
+\BOOKMARK [2][-]{subsection.2.1.5}{Instability and Inverse Theorem's}{section.2.1}% 18
+\BOOKMARK [2][-]{subsection.2.1.6}{STABILITY OF DISCRETE TIME SYSTEMS}{section.2.1}% 19
+\BOOKMARK [2][-]{subsection.2.1.7}{LINEARIZATIONS}{section.2.1}% 20
+\BOOKMARK [2][-]{subsection.2.1.8}{STABILITY OF LTI SYSTEMS \(T.INV\) \(RECAP\)}{section.2.1}% 21
+\BOOKMARK [2][-]{subsection.2.1.9}{DESIGN OF A FEEDBACK ASYMPT. STABILIZER SYSTEM FOR AN EQUILIBRIUM}{section.2.1}% 22
+\BOOKMARK [2][-]{subsection.2.1.10}{LINEARIZATION OF A NONLINEAR FORCED SYSTEM}{section.2.1}% 23
+\BOOKMARK [2][-]{subsection.2.1.11}{LINEARIZATION AT THE EQ. PAIR}{section.2.1}% 24
+\BOOKMARK [2][-]{subsection.2.1.12}{STABILITY OF TIME-VARYING SYSTEMS}{section.2.1}% 25
+\BOOKMARK [2][-]{subsection.2.1.13}{EXPONENTIAL STABILITY}{section.2.1}% 26
+\BOOKMARK [2][-]{subsection.2.1.14}{FEEDBACK LINEARIZATION}{section.2.1}% 27
+\BOOKMARK [0][-]{chapter.3}{Distributed Systems}{}% 28
+\BOOKMARK [1][-]{section.3.1}{Starting Point}{chapter.3}% 29
+\BOOKMARK [2][-]{subsection.3.1.1}{SCENARIO}{section.3.1}% 30
+\BOOKMARK [2][-]{subsection.3.1.2}{Propriet\340 e definizioni dei grafi}{section.3.1}% 31
+\BOOKMARK [2][-]{subsection.3.1.3}{NETWORK OF A PROCESSOR for a distributed algorithm}{section.3.1}% 32
+\BOOKMARK [2][-]{subsection.3.1.4}{DISCRETE-TIME DYNAMICAL SYSTEMS}{section.3.1}% 33
+\BOOKMARK [1][-]{section.3.2}{LINEAR DISTRIBUTED ALGORITHM}{chapter.3}% 34
+\BOOKMARK [0][-]{chapter.4}{\(Distributed\) Optimization's Algorithms}{}% 35
+\BOOKMARK [1][-]{section.4.1}{Starting Point}{chapter.4}% 36
+\BOOKMARK [2][-]{subsection.4.1.1}{NECESSARY CONDITIONS OF OPTIMALITY}{section.4.1}% 37
+\BOOKMARK [1][-]{section.4.2}{ITERATIVE ALGORITHMS}{chapter.4}% 38
+\BOOKMARK [2][-]{subsection.4.2.1}{DESCENT ALGORITHMS}{section.4.2}% 39
+\BOOKMARK [2][-]{subsection.4.2.2}{EQUALITY CONSTRAINED OPTIMIZATION}{section.4.2}% 40
+\BOOKMARK [2][-]{subsection.4.2.3}{\(INEQUALITY CONSTRAINTS\)}{section.4.2}% 41
+\BOOKMARK [2][-]{subsection.4.2.4}{COMPUTATION METHODS FOR EQUALITY AND INEQUALITY CONSTRAINED PROBLEMS}{section.4.2}% 42
+\BOOKMARK [1][-]{section.4.3}{Problemi di Controllo Ottimo}{chapter.4}% 43
+\BOOKMARK [2][-]{subsection.4.3.1}{DISCRETE-TIME OPTIMAL CONTROL}{section.4.3}% 44
+\BOOKMARK [2][-]{subsection.4.3.2}{CONTINUOS-TIME OPTIMAL CONTROL}{section.4.3}% 45
+\BOOKMARK [1][-]{section.4.4}{DUALITY \(FOR PARALLEL AND DISTRIBUTED OPTIMIZATION\)}{chapter.4}% 46
+\BOOKMARK [2][-]{subsection.4.4.1}{DUAL ALGORITHMS: DUAL ASCENT}{section.4.4}% 47
+\BOOKMARK [2][-]{subsection.4.4.2}{DISTRIBUTED OPTIMIZATION}{section.4.4}% 48
+\BOOKMARK [0][-]{chapter.5}{Training Facility}{}% 49
+\BOOKMARK [1][-]{section.5.1}{EXERCISE\)}{chapter.5}% 50
+\BOOKMARK [2][-]{subsection.5.1.1}{SISTEMA TEMPO-VARIANTE}{section.5.1}% 51
+\BOOKMARK [1][-]{section.5.2}{EXERCISE}{chapter.5}% 52
+\BOOKMARK [2][-]{subsection.5.2.1}{EXERCISE}{section.5.2}% 53
+\BOOKMARK [2][-]{subsection.5.2.2}{EXERCISE}{section.5.2}% 54
+\BOOKMARK [1][-]{section.5.3}{EXERCISE}{chapter.5}% 55
+\BOOKMARK [1][-]{section.5.4}{EXERCISE}{chapter.5}% 56
+\BOOKMARK [1][-]{section.5.5}{EXERCISE}{chapter.5}% 57

@@ -1,0 +1,331 @@
+% --- DATABASE ---
+% ------------------------------------------------------
+% Corso di Laurea Magistrale in: Ingegneria Informatica - Università Del Salento
+% Titolo: Database
+% Autore: Dott. Marco Chiarelli
+% Relatore: Prof. Mario Alessandro Bochicchio
+% Data: 11/03/2017
+% Anno Accademico 2016/2017
+% Consultazione Consentita
+
+%INIZIO PREAMBOLO
+
+\documentclass[11 pt,a4paper,twoside,openany]{book}
+
+% Preambolo codifica
+\usepackage[utf8x]{inputenc}
+
+%Preambolo lingue
+\usepackage[english,italian]{babel}
+
+
+% Preambolo formattazione
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{indentfirst} %indentazione}
+
+% Preambolo stile pagina
+\usepackage{fancyhdr}
+
+%Preambolo matematica
+\usepackage{xfrac}
+\usepackage{amsmath}
+\usepackage{amsthm} % dopo amsmath!
+
+% Preambolo grafico
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage[pages=some]{background}
+\usepackage{transparent}
+
+% Preambolo contenuti LoremIpsum
+\usepackage{lipsum}
+
+%hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
+
+%Preambolo bibliografia
+
+\usepackage[numbers,sort&compress]{natbib}
+
+%Preambolo licensa
+%\usepackage{creativecommons}
+\usepackage{ccicons}
+
+
+%Preambolo testo
+\usepackage{setspace}
+\usepackage{epigraph}
+\usepackage{ragged2e}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Preambolo schema a blocchi
+\usepackage{verbatim}
+
+% Preambolo matematica
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{centernot}
+\usepackage{accents}
+\usepackage{mathdots}
+
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{blindtext,expdlist}
+
+
+\usepackage{tikz}
+\usepackage{tikz-er2}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shadows}
+
+\tikzstyle{every entity} = [top color=white, bottom color=blue!30, 
+                            draw=blue!50!black!100, drop shadow]
+\tikzstyle{every weak entity} = [drop shadow={shadow xshift=.7ex, 
+                                 shadow yshift=-.7ex}]
+\tikzstyle{every attribute} = [top color=white, bottom color=yellow!20, 
+                               draw=yellow, node distance=1cm, drop shadow]
+\tikzstyle{every relationship} = [top color=white, bottom color=red!20, 
+                                  draw=red!50!black!100, drop shadow]
+\tikzstyle{every isa} = [top color=white, bottom color=green!20, 
+                         draw=green!50!black!100, drop shadow]
+
+\lstdefinelanguage{CISCO}
+{
+sensitive=true,
+morekeywords=[1]{},
+}
+
+\lstset{
+    defaultdialect=[Visual]Basic
+    ,frameround=fttt
+    ,language=SQL
+    ,numbers=left
+    ,breaklines=true
+    ,showstringspaces=false
+    ,basicstyle=\small
+}
+
+\lstdefinelanguage{Ini}
+{
+    basicstyle=\ttfamily\small,
+    columns=fullflexible,
+    tag=[s]{[]},
+    tagstyle=\color{Orchid}\bfseries,
+    usekeywordsintag=true,
+    morecomment=[l]{;},
+    commentstyle=\color{gray}\ttfamily,
+    alsoletter={=},
+    ndkeywords={=},
+    ndkeywordstyle=\color{green}\bfseries
+}[html]
+
+\usepackage{mathtools}
+
+\newcommand{\cardinality}[1]{\left\vert{#1}\right\vert}
+
+% Preambolo Inclusione Capitoli
+\includeonly{chapters/intro,%
+			 chapters/mdlng,%
+			 chapters/logical,%
+			 chapters/dw,%
+			 chapters/appendix}
+
+% Preambolo caption, subfig, etc...
+\usepackage{caption}
+\usepackage{subfig}
+
+%FINE PREAMBOLO
+
+
+%FINE PREAMBOLO
+
+\selectlanguage{english}
+\selectlanguage{italian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\newpage	
+\begin{titlepage}
+\begin{center}
+	
+\begin{figure}
+	\centering
+	\includegraphics[height=6cm]{unigold.jpg}
+\end{figure}		
+
+\begin{center}
+\begin{LARGE}
+	\textsc{UNIVERSIT\`A DEL SALENTO}\\
+	[0.2cm]
+	\textsc{Department of Innovation Engineering}
+\end{LARGE}
+\end{center}	
+	
+	\
+	\line(1,0){270} \\
+	[0.25cm]
+	
+	\textsc{Master's degree in Computer Engineering}\
+	
+	\textsl{}\\
+	[1cm]
+	\textsc{Database}\
+	
+	\bigskip 
+	\huge{\bfseries Database}\
+
+	
+	\bigskip
+	\textsl{}\\
+	[2cm]
+	
+
+
+\begin{LARGE}
+	
+	Dott. Marco Chiarelli
+	
+\end{LARGE}
+
+\vspace{5cm}
+	
+\line(1,0){150} \\
+\begin{small}
+	Academic Year 2016/2017 \\
+\end{small}
+\end{center}
+\end{titlepage}
+
+
+\pagenumbering{arabic}
+
+\newpage
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\newpage
+Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 3.0 Unported. Per leggere una copia della licenza visita il sito web http://creativecommons.org/licenses/by-nc-sa/3.0/ o spedisci una lettera a Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.\par \ccbyncsaeu
+	\vfill
+	Questi appunti sono stati scritti utilizzando \LaTeX\ tramite la distribuzione MiKTeX\ \url{http://miktex.org/}  
+	
+	Come editor è stato usato TeXMaker 4.5\ \url{http://www.xm1math.net/texmaker/}
+	\vfill
+	Dei contenuti rielaborati in questa opera, salvo esplicitamente scritto il contrario, il prof. Mario Alessandro Bochicchio non se ne assume alcuna responsabilità. 
+	\vfill
+	Tali contenuti sono stati scritti INTEGRALMENTE dagli studenti di Ingegneria Informatica at UNISALENTO, II anno 2016/2017. Marco Chiarelli, seppure l'unico redattore di tale manodopera, NON ne è in alcun modo il suo autore principale.
+
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\thispagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\vspace{2cm}
+
+\selectlanguage{english}
+
+\noindent
+\selectlanguage{italian}
+\tableofcontents
+
+\frontmatter
+
+\cleardoublepage\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\bfseries Ringraziamenti
+\end{center}
+\bigskip
+
+Un grazie particolare va ai miei compagni\\
+d'università, Dino Sbarro, Gabriele Accarino, Giampiero D'Autilia, Matteo Settembrini, Paolo Panarese ed Emanuele Costa Cesari.
+
+\vspace*{\fill}
+\pagebreak
+
+%************************************************
+% Chapter 0: INTRODUCTION
+%************************************************
+\include{chapters/intro}
+
+\mainmatter
+
+%************************************************
+% Chapter 1: MODELING
+%************************************************
+\include{chapters/mdlng}
+
+%************************************************
+% Chapter 2: MODELLO LOGICO
+%************************************************
+\include{chapters/logical}
+
+%************************************************
+% Chapter 3: DATA WAREHOUSE
+%************************************************
+\include{chapters/dw}
+
+\backmatter
+%************************************************
+% Capitolo: APPENDICI
+%************************************************
+\include{chapters/appendix}
+
+\newpage
+
+\section*{Thanksgiving}
+
+Si ringrazia:
+
+\begin{itemize}
+
+\item Naturalmente in primis alla nostra fantastica classe del II anno di Ingegneria Informatica at UNISALENTO, anno 2016/2017;
+
+\item il prof. \emph{Mario Alessandro Bochicchio} per il corso di Database tenutosi in AA 2016/2017 del corso di laurea in Ingegneria Informatica at UNISALENTO, ed anche per disponibilità e chiarimenti. Contatto: \emph{mario.bochicchio@unisalento.it};
+
+\item me stesso, \emph{Marco Chiarelli}, studente del II anno di Ingegneria Informatica at UNISALENTO. Contatti: \{\emph{marco\_chiarelli@yahoo.it}, \emph{marcochiarelli.nextgenlab@gmail.com}, \emph{marco.chiarelli @studenti.unisalento.it}\};
+
+\item La mia squadra di studio: \{\emph{Gabriele Accarino}, \emph{Matteo Settembrini}, \emph{Paolo Panarese}, \emph{Emanuele Costa Cesari}, \emph{Dino Sbarro}\};
+
+\item Google, ovviamente.
+
+\end{itemize}
+
+\newpage
+
+\section*{Credits}
+
+\begin{figure}[h]
+\includegraphics[width=3cm]{figures/marco.jpg}
+\vspace{0.3cm}
+
+\raisebox{-0.35ex}{\includegraphics[width=4ex]{figures/link.png}}%
+\hspace{0.05cm} /marcochiarelli
+
+\end{figure}
+
+
+
+%BIBLIOGRAFIA - redatta con il relativo ambiente
+\begin{thebibliography}{100}
+\bibitem{rif1} R. Elmasri, S. Navathe, \emph{Fundamentals of Database Systems, seventh edition}, Pearson International
+\bibitem{rif2} M. Golfarelli, S. Rizzi \emph{Datawarehouse Design-Modern Principles and Methodologies}, McGraw-Hill
+\end{thebibliography}
+\end{document}
+

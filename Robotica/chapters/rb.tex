@@ -1,0 +1,625 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Dinamica di Corpo Rigido}
+\label{cap:rb}
+%************************************************\\
+
+DINAMICA DI CORPO RIGIDO. Quella sulla base della quale si costruisce la dinamica dei Robot. In robotica marina i robot sono sommergibili principalmente.
+
+\section{Dinamica di Corpo Rigido}
+
+CINEMATICA: studio delle derivate del vettore posizione (se voglio prendo quelle di qualsiasi ordine finché servono), ma non metto mai il concetto di FORZA nel modello. Descrizione puramente geometrica del moto. DINAMICA: $\{\vec{a}\}$. Introduciamo la legge di Newton (del II ordine). $\vec{a}$ è pur sempre una derivata (seconda) della posizione, ma è collegata ad una nuova grandezza indipendente chimata FORZA. \`E nel modello dinamico che compaiono gli ingressi veri e propri (forze generalizzate (forze/coppie)). Bisogna imparare a scrivere le FORZE. $\vec{F}=m\vec{a}$ per un punto materiale in un sistema inerziale. Per i CORPI RIGIDI si utilizza la seguente equazione che praticamente vale per tutto il corpo rigido. Equazione che verrà con più termini aggiuntivi, complessi. $\vec{a}$ NON verrà scritto in terna inerziale! Se l'accelerazione la scrivo in TERNA CORPO allora verranno fuori tutti i termini già visti precedentemente (Coriolis, centripeta, etc.). In realtà noi acquisiamo queste informazioni in TERNA LOCALE! Sono questi termini che dobbiamo legare alle forze generalizzate. Se siamo davvero il pilota, allora dobbiamo arrangiarci con la terna locale. Caratteristiche principali: due terne, quella assoluta $<0>$, e quella BODY, solidale con il corpo rigido. "Patatoide". La terna $<1>$ ha un origine $u$. $c$ è la posizione del CENTRO DI MASSA! Punto speciale del corpo rigido. \`E conveniente che sia proprio $u$, ma generalmente non è proprio così. Corpo rigido caratterizzato da una \underline{densità di massa} $[\rho=\frac{dm}{dV}]$, $[m := \int_V{\rho(r_{u,p})dV}]$. dove $u$ è l'ORIGINE della terna locale $<1>$. Diamo la definizione di:
+
+\begin{defn}{\textbf{[CENTRO DI MASSA]}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&[mr_{u,c} := \int_V{\rho(r_{u,p})r_{u,p}dV}]\\
+	&[T := \frac{1}{2}\int_V{\rho(r_{o,p})v_{p/0}v_{p/0}dV}]
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+dove $o$ è l'ORIGINE della terna assoluta $<0>$. $v_{p/0}$ è la velocità del punto $p$ misurata in terna assoluta. $r_{u,c}$ è la posizione del centro di massa rispetto ad $u$. L'integrale va sempre fatto nel volume del corpo rigido: $\int_V{(\mathord{\cdot})}$. Definiamo la decomposizione della velocità in moto rototraslazionale:
+
+\begin{thrm}{\textbf{FORMULA DI PROPAGAZIONE delle VELOCIT\`A}}
+
+\[
+	[v_{p/o} = \underline{v_{c/o}} + \underline{\omega_{c/o}\times r_{c,p}}]
+\]
+
+\end{thrm}
+
+Si può descrivere utilizzando la notazione di Grassmann ed il trucchetto per far comparire la velocità angolare. Il primo termine sottolineato è la velocità di traslazione ed il secondo la rotazione del vettore $r_{c,p}$ rispetto al centro di massa. Se il corpo rigido mentre trasla, ruota attorno al centro di massa, allora tutti i punti del corpo rigido hanno questi due contributi di velocità. Somma della velocità traslazionale comune a tutti i punti più il termine di rotazione attorno a quel punto.
+
+\subsection{Energia Cinetica e Momento d'Inerzia}
+
+\subsubsection{Energia Cinetica}
+
+Interessante andare a calcolare l'Energia Cinetica. Decomponibile anch'essa come somma di due termini:
+
+\[
+	\left\{
+	\begin{aligned}
+	&T = \frac{1}{2}\int_V{\rho(r_{o,p})v_{p/0}v_{p/0}dV} = (\dots)\\
+	&[mr_{c,c} := \int_V{\rho r_{c,p}dV}] = 0
+	\end{aligned}
+	\right.
+\]
+
+ove la seconda equazione vale per definizione del centro di massa, mentre la prima è la definizione di ENERGIA CINETICA. Quindi abbiamo:
+
+\[
+	(\dots) = \frac{1}{2}\int_V{\rho v_{c/o}v_{c/o}dV} + \frac{1}{2}\int_V{\rho (\underline{\omega_{c/o}\times r_{c,p}})(\underline{\omega_{c/o}\times r_{c,p}})dV} = (\dots)
+\]
+
+Ove i termini sottolineati possono essere riscritti utilizzando la proprietà del prodotto vettore. Giustificazione matematica vettoriale del prossimo passaggio:
+
+\[
+	(\underline{\omega_{c/o}\times r_{c,p}}=a)^\top ((\underline{\omega_{c/o}}=b)\times (r_{c,p}=c)) = [a^\top(b\times c)]
+\]
+
+Vale inoltre la triangolare per prodotto misto:
+
+\[
+	[a^\top(b\times c) = c^\top(a\times b) = b^\top(c\times a)]
+\]
+
+ORDINE CICLICO. Se applichiamo questo, possiamo quindi riscrivere la formula integranda: 
+
+\[
+	b^\top(c\times a) \stackrel{PRAGMA}{=} \omega_{c/o}^\top (r_{c,p}\times (\omega_{c/o}\times r_{c,p}))
+\]
+
+Proprietà CICLICA. L'elemento di velocità può essere inoltre portato fuori dall'integrale:
+
+\[
+	(\dots) = \frac{1}{2}v_{c/o}^2\int_V{\rho dV} + \frac{1}{2}\omega_{c/o}^\top\int_V{\rho r_{c,p}\times (\omega_{c/o}\times r_{c,p})dV} = (\dots)
+\]
+
+Remember that:
+
+\[
+	[a\times(b\times c) = b(a^\top c) - c(a^\top b)]
+\]
+
+it follows that:
+
+\[
+	(\dots) = \frac{1}{2}v_{c/o}^2\int_V{\rho dV} + \frac{1}{2}\omega_{c/o}^\top(\int_V{\rho(\omega_{c/o}(r_{c,p}^\top r_{c,p}) - r_{c,p}(r_{c,p}^\top \omega_{c/o}))dV} = (\dots))
+\]
+\[
+	(\dots) = \int_V{\rho \{I_{3\times 3}(r_{c,p}^\top r_{c,p}) - r_{c,p}r_{c,p}^\top\}\omega_{c/o}dV}
+\]
+
+ove la parentesi graffa è una matrice $\mathord{\cdot}\in\R^{3\times 3}$ che dipende SOLO dalla posizione. Quindi alla fine abbiamo:
+
+\[
+	T = \frac{1}{2}mv_{c/o}^2 + \frac{1}{2}\omega_{c/o}^\top\underline{I_c\omega_{c/o}}
+\]
+
+\subsubsection{Momento di Inerzia}
+
+Tale è la definizione di MOMENTO DI INERZIA, ove:
+
+\begin{defn}{\textbf{Momento di Inerzia}}
+
+\[
+	I_u\omega := \int_V{\rho r_{u,p}\times (\omega\times r_{u,p})dV} = (\int_V{\rho[I_{3\times 3}(r_{u,p}^\top r_{u,p}) - r_{u,p}r_{u,p}^\top]dV})\omega
+\]
+
+\end{defn}
+
+ove naturalmente $I_u\omega := I_u\omega_{u/o}$. L'oggetto in parentesi tonda dipende in maniera profonda dalla natura dell'oggetto (massa e forma) $\rightarrow$ (distribuzione di massa e struttura geometrica). Attenzione che l'operatore vale RISPETTO ad un arbitrario punto $u$! MOMENTO DI INERZIA è sostanzialmente l'equivalente rotazionale delle masse. Attribuibile ad un qualsiasi corpo rigido (significato fisico del momento di INERZIA).
+
+Due formule diverse ove compaiono le masse:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\underline{\vec{F}=m\vec{a}}\\
+	&\underline{F = \frac{Gm_1m_2}{r^2}}
+	\end{aligned}
+	\right.
+\]
+
+ove la prima è NEWTON, la seconda è la GRAVITAZIONE UNIVERSALE. Entrambe sono comunque state formulate da Newton. Nella formula inferiore compare il prodotto delle due masse. Due fenomeni fisici diversi! Nella equazione di Newton la prima massa è INERZIALE, quella della gravitazione universale è gravitazionale. Per avere un modello fisico che giustifichi le loro uguaglianze, serve la Relatività Generale di Einstein.
+
+Il momento di INERZIA è l'analogo della massa per un corpo rotazionale. \newline $\{(x^\top Mx),\ (\omega^\top I\omega)\}$ sono forme quadratiche definite positive. $I$ definita positiva. $I$ è l'operatore definito positivo che messo nella formula restituisce l'energia. $I$ è quindi legato alla massa inerziale in termini rotazionali. Dipende dalla scelta di $u \leftarrow$ POLO rispetto al quale calcoliamo il momento di inerzia. $\underline{I_c\omega_{c/o}}$ è necessario nella decomposizione $\leftarrow$ calcolato rispetto al centro di massa.
+
+Nulla di concettuale. Possiamo ricalcolare la $I$ (momento di inerzia) tramite:
+
+\[
+	[r_{u,p} = r_{c,p} - r_{c,u}] \implies I_u = \underline{I_c} + m[I_{3\times 3}(r_{c,u}^\top r_{c,u}) - r_{c,u}r_{c,u}^\top]
+\]
+
+ove $I_c$ è rispetto al centro di massa. Gli oggetti $I$ sono degli OPERATORI! Equazione matriciale $\iff (m\in\R\ \land\ [\mathord{\cdot}]\in\R^{3\times 3})$. Così come per le velocità abbiamo espresso la decomposizione rototraslazionale, si può fare lo stesso anche per le accelerazioni. Accelerazione assoluta (in $\vec{F}=m\vec{a}$, la $\vec{a}$ che compare è l'accelerazione rispetto ad una terna assoluta, INERZIALE.
+
+\[
+	a_{p/o} = \frac{d_{<1>}}{dt}v_{u/o} + (\frac{d_{<1>}}{dt} \omega_{1/0})\times r_{u,p} + \underline{\omega_{1/0}\times v_{u/o}} + \underline{\omega_{1/0}\times (\omega_{1/0}\times r_{u,p})}
+\]
+
+ove il primo termine sottolineato è CORIOLIS, che nel piano collassa in $\omega^2r$, ed il secondo è la CENTRIFUGA / CENTRIPETA. Sarebbe il prezzo che pago per non essere in terna assoluta ma in terna locale. 
+
+GIROSCOPI LASER: molto costosi, ma molto precisi / accurati. Sistemi molto compatti.
+
+\subsection{Review sull'Accelerazione}
+
+CORPO RIGIDO. Review sull'accelerazione. L'idea era di ricavare $a_{p/o}$. Abbiamo: $p\in$ corpo rigido, $u$ è l'origine della terna $<1>$. Vettori: $\{r_{o,u},\ r_{u,p},\ r_{o,p}\}$. $v_{p/o}$ è la velocità del punto $p$ rispetto ad $o$. Abbiamo:
+
+\[
+	[r_{o,p} = r_{o,u} + r_{u,p}]
+\]
+
+Fin qui è esatta. Relazione vettoriale che prescinde dalle terne. Proiettiamola in un sistema e facciamone la derivata:
+
+\[
+	\left\{
+	\begin{aligned}
+	&^0r_{o,p} =\ ^0r_{o,u} +\ ^0R_1\ ^1r_{u,p}\\
+	&[^0\dot{r}_{o,p} =\ ^0\dot{r}_{o,u} +\ ^0\dot{R}_1\ ^0R_1^\top\ ^0R_1\ ^1r_{u,p} +\ ^0R_1\ ^1\dot{r}_{u,p}] \iff (\dots)
+	\end{aligned}
+	\right.
+\]
+
+\[
+	\left\{
+	\begin{aligned}
+	&\{^1\dot{r}_{u,p} = 0,\ ^0\dot{r}_{o,u} :=\ ^0v_{u/o}\}\\
+	&(\dots) = [^0\dot{r}_{o,p} =\ ^0v_{u/o} +\ ^0\omega_{1/0}\times\ ^0r_{u,p}]
+	\end{aligned}
+	\right.
+\]
+
+Perché la derivata del vettore posizione è fatta in terna $<0>$ (assoluta), la battezziamo velocità: $\implies [^0\dot{r}_{o,p} :=\ ^0v_{p/o}]$. Si utilizzi: $[\underline{^0v_{p/o} :=\ ^0R_1\ ^1v_{p/o}}]$. Non aggiunge informazione. Permette solo di far comparire termini $^1\mathord{\cdot}$. Ne facciamo quindi la derivata:
+
+\[
+	[a_{p/o} = \frac{d\ ^0v_{p/o}}{dt} = \frac{d\ ^0R_1\ ^1v_{p/o}}{dt} = (\dots)
+\]
+\[
+	(\dots) =\ ^0\dot{R}_1\ ^0R_1^\top\ \underline{^0R_1\ ^1v_{p/o}} +\ ^0R_1\frac{d\ ^1v_{p/o}}{dt} \stackrel{ORDER\ BY}{=} [^0R_1\ \frac{d\ ^1v_{p/o}}{dt} +\ ^0(\omega_{1/0}\times v_{p/o})]
+\]
+
+Questa espressione è la primissima riga delle slide. Corretta, ma a livello di notazione è meno esplicita. Potrebbe suggerire che l'RHS, espresso in $<1>$, faccia sì che al LHS l'accelerazione sia anche valutata in $<1>$. Sostituendo ora nell'equazione al posto di $v_{p/o}$ la sua rispettiva espressione, troviamo:
+
+\[
+	^0a_{p/o} = \underline{^0R_1}\frac{d}{dt}[^1v_{u/o} +\ ^1\omega_{1/0}\times\ ^1r_{u,p}] + \underline{^0\omega_{1/0}\times\ ^0[v_{u/o} + \omega_{1/0}\times r_{u,p}]} = (\dots)
+\]
+
+ove la seconda parte sottolineata evidenzia che dato che non abbiamo esplicitato la matrice di rotazione siamo in terna $<0>$. A questo punto si sviluppa il calcolo:
+
+\[
+	(\dots) =\ ^0R_1[\frac{d\ ^1v_{u/o}}{dt} + \frac{d\ ^1\omega_{1/0}}{dt}\times\ ^1r_{u,p} +\ ^1\omega_{1/0}\times (\frac{d\ ^1r_{u,p}}{dt}=0)] + (\dots)
+\]
+\[
+	(\dots) = \underline{^0\omega_{1/0}\times\ ^0v_{u/o}} +\ ^0\omega_{1/0}\times (^0\omega_{1/0}\times\ ^0r_{u,p})
+\]
+
+Ove il termine sottolineato è CORIOLIS. L'ordine dei prodotti vettori conta. Ricavati in maniera esplicita in terna $<0>$. Se valgono in terna $<0>$ valgono in terna qualunque $<\mathord{\cdot}>$! L'espressione rimane valida. La terna più valida ove misurare l'accelerazione è comunque la terna inerziale! Così come il vettore velocità. Termini TUTTI misurabili! Se vogliamo esprimere tutto in terna $<1>$, i termini sono tutti gratis. $\{\omega_{1/0},\ v_{u/o}\}$ sono delle misurazioni tipicamente fatte a bordo, quindi vanno bene.
+
+Rilevanza dei metodi automatici per gestire situazioni border-line. Nonostante i progressi dell'Informatica / Tecnologia, la capacità di decisione ultima è sempre meglio lasciarla all'uomo.
+
+L'equazione di Newton, almeno per le variabili lineari, è finita. L'equazione di Newton in realtà non è quella $\vec{F}=m\vec{a}\iff d(mv) \neq m(dv)$ generalmente! Espressione più corretta:
+
+\begin{defn}{\textbf{Legge di Newton generalizzata}}
+
+\[	
+	\frac{d_{<0>}}{dt}\int_V{\rho(r_{u,p})v_{p/o}dV} = \sum_i{F_i^{external}}
+\]
+
+\end{defn}
+
+Analisi in frequenza. I modelli dei problemi fisici sono ragionevolmente validi su scala spaziale / temporale scelte opportunamente. Sistemi a masse variabili. $\rho$ la modelliamo come indipendente dal tempo, sicuramente. Potrebbe però non esserlo a livello spaziale. Camere di allagamento del FOLAGA. La massa del veicolo cambia. Meccanismo che in acqua serve a modificare l'assetto / quota del veicolo. $[\underline{\underline{S_A = \rho V g}}]$. Il volume spostato è sempre quello, ma la massa cambia! \{ARCHIMEDE vs GRAVIT\`A\}. In quel caso non sarebbe vero che la massa è costante.
+
+\subsubsection{A little bit of notation}
+
+Notazione navale:
+
+\[
+	\left\{
+	\begin{aligned}
+	&^1(v_{u/o}) = \begin{bmatrix}u&v&w\end{bmatrix}^\top\\
+	&^1(\omega_{1/0}) = \begin{bmatrix}p&q&r\end{bmatrix}^\top
+	\end{aligned}
+	\right.
+\]
+
+Le tre direzioni del vettore velocità si chiamano rispettivamente:
+
+\begin{itemize}
+
+\item per la \textbf{\textit{velocità lineare}}:
+
+\begin{itemize} 
+\item $u$ = \textit{surge};
+\item $v$ = \textit{sway};
+\item $w$ = \textit{heave}.
+\end{itemize}
+
+\item mentre quelle del \textbf{\textit{vettore velocità angolare}}:
+
+\begin{itemize}
+\item $p$ = \textit{roll};
+\item $q$ = \textit{pitch};
+\item $r$ = \textit{yaw}.
+\end{itemize}
+
+\end{itemize}
+
+\[
+	^1(\frac{d_{<1>}}{dt} v_{u/o}) = \begin{bmatrix}\frac{du}{dt}&\frac{dv}{dt}&\frac{dw}{dt}\end{bmatrix}^\top
+\]
+
+\subsection{Bilancio di Forze e Coppie Generalizzate}
+
+Per caratterizzare in maniera esplicita il moto di un corpo rigido, abbiamo appiccicato una terna $u$ al corpo rigido, ed espresso il moto in termini rototraslazionali:
+
+\[
+	\sum_i{N_{u,i}^{external}} = \int_V{(r_{u,p}\times \frac{d_{<0>}}{dt}v_{p/o})\rho(r_{u,p})dV} = \int_V{(r_{u,p}\times a_{p/o})\rho(r_{u,p})dV}
+\]
+
+$u$ è il polo rispetto al quale calcolare le coppie. Noi vogliamo però utilizzare questa equazione in terna $<1>$! Conto precedentemente fatto: $a_{p/o} = (\dots) \stackrel{use\ this}{\leftarrow}$. Utilizzando le proprietà dei prodotti vettori (triplo prodotto) e definizione di momento d'INERZIA.
+
+L'espressione finale è:
+
+\begin{thrm}{\textbf{Bilancio delle coppie esterne espresse in termini di velocità ed accelerazioni calcolate in terna $<1>$}}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[M\frac{d_{<1>}}{dt}\nu + C(\omega_{1/0})\nu = \tau^{ext}]\\
+	&[\nu = \begin{bmatrix}v_{u/o}^\top&\omega_{1/0}^\top\end{bmatrix}^\top\in\R^{6\times 1}]
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+	
+$C$ è la matrice di CORIOLIS e delle forze centrifughe (centripete), ove:
+
+\[
+	\left\{
+	\begin{aligned}
+	&M := \begin{bmatrix}mI_{3\times 3}&-mS(r_{u,c})\\mS(r_{u,c})&I_u\end{bmatrix}\in\R^{6\times 6}\\
+	&C(\omega_{1/0}) := \begin{bmatrix}mS(\omega_{1/0})&-mS(\omega_{1/0})S(r_{u,c})\\mS(r_{u,c})S(\omega_{1/0})&-S(I_u\omega_{1/0})\end{bmatrix}
+	\end{aligned}
+	\right.
+\]
+
+le rappresentazioni sono NON univoche! Questa rappresentazione dipende da $\omega$ ma NON dipende da $v$! Generalmente in tutte le altre rappresentazioni abbiamo invece ambedue le variabili come dipendenze funzionali! Altra osservazione: $C$ è ANTISIMMETRICA $\iff C=-C^\top$. Più esplicita possibile. Sia per le forze che per le coppie, come posizione della terna body, il punto $u$ era un qualunque punto del corpo rigido. Ma se $c := u$ (posizione centro di massa), allora ambedue le espressioni si semplificano di molto! $\{M,C\}$ diventano matrici diagonali. Altrimenti la descrizione del moto, sebbene essa sia la stessa, sarebbe un po' troppo complicata. Disaccoppiamento delle tre componenti della velocità lineare dalle tre componenti della velocità angolare.
+
+Enfatizzazione di ulteriori considerazioni: La espressione vale $\forall$ VEICOLO! Quello che cambia è il membro di destra (RHS) di ogni equazione ($\tau^{ext}$ dipende dalla geometria del veicolo). Ricordiamo che: $\tau^{ext} := \begin{bmatrix}F^{\top\ ext}&N^{\top\ ext}\end{bmatrix}^\top$. Ricordiamo che l'ATTRITO $\neq$ MASSA AGGIUNTA. Il secondo fenomeno riguarda il fatto che per spostarmi, per accelerare verso una particolare velocità, devo spostare anche il fluido che mi circonda.
+
+\section{Veicoli e Fenomeni Marini}
+
+\subsection{SCENARIO}
+
+Equazioni dinamiche di corpo rigido. Essendo generiche possono essere adottate per modellare un qualsiasi sistema robotico. Solo corpo rigido $\implies$ eq. dell'altra volta. RHS risultante delle forze esterne. \`E lui che cattura la fisica della particolare applicazione, $\forall$ sistema robotico. Termini di attuazione (forze che genero io più forze naturali). $\vec{F}=m\vec{a}$.
+
+Riadattamento di un lavoro precedente. Modello di singolo corpo rigido in acqua (Robot). I modelli di Robot dinamici in qualunque ambito diventano più complicati se diventano Robot articolati (Manipolatori tipicamente). In tal caso i singoli link genericamente scambiano forze interne tra di loro. Metodi analitici (fisica matematica) per descrivere questi modelli e metodi numerici (apparentemente più complicati, dal punto di vista delle formule, più facilmente implementabili).
+
+\{ROV, AUV, Veicoli di superficie\} $\rightarrow$ ROV = Remotely Operated Vehicle, tipicamente oggetti che hanno una struttura OpenFrame. NON ottimizzato dal punto di vista dell'idrodinamica. Equivalente dell'elicottero. Manovre limitate, velocità basse. Precisione alta. SPESSO SONO FILOGUIDATI (TETERE). Il tetere trasporta energia / dati. Spesso equipaggiati con manipolatori; AUV = Autonomous Underwater Vehicle. Hanno uno scafo. Progettati per grandi distanze, velocità elevate. ROV: ci sono quelli grossi come pacchetti di sigarette oppure grandi come un container. ROMEO è $1m^3$ voluminoso. Forse i ROV che sono come taglia di $1m^3$ sono più comuni (WORKING CLASS). Più sono grandi e più è complessa la logistica, ovviamente, per non parlare del deployment. I più piccoli si usano molto più frequentemente. Scatole di scarpe, equipaggiate tipicamente con telecamere. Ispezioni generiche per manutenzioni generali. Cavo che trasporta sia dati che energia. Tali oggetti sono molto energivori. Hanno bisogno di parecchia energia ($400W$, tipicamente). I gruppi elettrogeni sono abbastanza grandi. In genere i cavi sono abbastanza corti. Più è grande, più è spesso $\implies$ più flette. Disturbi meccanici sul veicolo. Effetto vela, sostanzialmente, dovuto alla superficie. Pilotato da un umano a terra, con il JOYSTICK. Compito difficile. Non è banale pilotare un ROV. \underline{Più è spesso, più dà fastidio}. Tra $0m$ e $500m$, di profondità. Quelli industriali, tipicamente vanno molto più giù, ma non oltre i $1000m$, generalmente, a meno di casi eccezionali (indagini di tipo scientifico, $[7000,8000]m$). La lunghezza del cavo è più o meno il doppio (es. $12\ km$ di cavo). Di energia non ne mandano per niente! Dobbiamo averne molta a bordo, sostanzialmente; AUV: Dal punto di vista del codice dell'Intelligenza NON sono tanto diversi come veicoli. Anche i ROV hanno anelli di autopilota abbastanza evoluti. Es. tenuta della profondità, mantenimento angolo di bussola. Stesse funzioni che hanno gli AUV, anche se questi ultimi non hanno il tetere. Comunque collegato alla centrale / base acusticamente, con modem acustici, la cui banda è abbastanza limitata ($\sim Kbit$, come ordine). Comandi / telemetria. AUV $\rightarrow$ i più piccoli sono dell'ordine del $[m]$ ($\sim 80cm$). I più grandi hanno invece dimensioni importanti. \textit{Southampton, EN. AutoSUB}. Prima versione ricavata da un SILURO militare. $\sim 7-8m$ come ordine di grandezza. Molto utilizzato in ambito militare. Si sa che hanno veicoli di questa tipologia ($\sim 10m$, come ordine). \underline{Veicoli di superficie}: CATAMARANO. Uno dei problemi della ricerca in questo ambito è che la legislazione della Navigazione Marittima è molto rigida. NON sono ammessi veicoli marini di superficie senza PILOTA! Tecnicamente sono alla DERIVA. Ce ne si può appropriare senza problemi. Problemi importanti di responsabilità. Le imbarcazioni di superficie per applicazioni di ricerca tendono ad essere tipicamente piccole. Ad esempio un materassino autonomo. LHS: termini di corpo rigido, RHS: interazioni idrodinamiche, NON tanto differenti tra ROV ed AUV. Differenti invece nel caso dei veicoli di superficie. Struttura del modello comunque \underline{molto simile}. Cambiano i sistemi di attuazione, ovviamente. Altra categoria: GLIDER (Aliante). Veicoli subacquei. AUV ($\nexists$ tetere, forze idrodinamiche, affusolata). Differenti sistemi di attuazione rispetto all'AUV (i quali hanno le eliche. I glider NO!). I glider modificano il peso ed hanno delle grandi superfici di comando.
+
+\begin{defn}{\textbf{Classificazione VEICOLI MARINI}}
+
+\begin{itemize}
+
+\item{NEUTRO} se la Spinta di Archimede eguaglia la Forza Peso;
+\item{POSITIVO} se tende a venire a galla (leggeri tipicamente) $\iff S_A > F_p$;
+\item{NEGATIVO} se al contrario tende ad affondare $\iff S_A \leq F_p$.
+\end{itemize}
+
+\end{defn}
+
+Non accade mai che un oggetto che si possa fare neutro a tavolino. Alla fine non viene mai preciso, con infinita precisione. Anche il calcolo del peso è corruttibile (misura). L'effetto più rilevante è che $\rho_{H2O}$ NON è nota a priori! $\rho = \mathord{\cdot}(T=\mathord{\cdot}(SALINITA'))$; La salinità cambia da mare a mare. $\{\mathord{\cdot},+,-\}$. La perfetta neutralità a tavolino è impossibile da raggiungere. I ROV, per esempio, che si muovono a velocità basse, si calibrano sperimentalmente. Più facile aggiungere peso, ovviamente. I glider in genere hanno un meccanismo di regolazione del \underline{Galleggiamento}, simile alla vescica natatoria dei pesci. \{Pompa per cacciare acqua, fessura per riempirla\}. Poca energia da utilizzare. Oggetti che vengono ormai utilizzati da molti anni. Campagne di acquisizioni oceanografiche. Dati sui cambiamenti climatici. Glider che vanno su e giù per misurare delle temperature (per generare delle time series) $\iff$ la missione può durare mesi addirittura.
+
+$\{p,q,r\}$ hanno le dimensioni di una velocità angolare! NON sono gli omonimi angoli! A parte la matrice $M\in\R^{6\times 6}$. Sempre a rango pieno, e costante peraltro in tal caso. Potrei toglierla via di mezzo moltiplicando a sx e a dx per $\inv{M}\ (\exists\inv{M}\in\R^{6\times 6}),\ (B := \inv{M})$. Il termine $Ax$ NON è costante, ma $(A:=A(x))x$. Affine nella coppia $(Bu,\ \exists Bu)$, ma il termine di stto (evoluzione libera), dipende anch'esso dallo stato! Forma più fastidiosa di NON linearità. Numerosi accoppiamenti presenti nella formula. $\exists$ termini misti. $(m\in\R)$, ed è proprio la massa dell'oggetto. Quando scriviamo l'equazione di un corpo rigido nudo e crudo nel vuoto ho un termine inerziale di struttura molto semplice:
+
+\[
+	\left\{
+	\begin{aligned}
+	&M\frac{d_{<1>}}{dt}\nu + C(\omega_{1/0})\nu = \tau^{ext}\\
+	&M := \begin{bmatrix}mI_{3\times 3}&-mS(r_{u,c})\\mS(r_{u,c})&I_u\end{bmatrix}
+	\end{aligned}
+	\right.
+\]
+
+\subsection{Froude Number e Reynolds Number}
+
+Numeri adimensionali che si utilizzano per caratterizzare problemi idrodinamici. Le unità di MISURA sono assolutamente importanti! Domanda: se abbiamo un oggetto che si muove in condizioni statiche (velocità costante, fluido ideale, senza effetti di frizione), come facciamo a caratterizzarne \{Interazioni inerziali ($m\vec{a}$), Interazioni VISCOSE\} l'ordine di grandezza delle forze inerziali rispetto a quelle viscose? $[\mathord{\cdot}] = (\frac{\sim INERT}{\sim VISCOUS})$. Rapporto che, dimensionalmente è adimensionato. Si costruisca utilizzando l'Analisi dimensionale: 
+
+\begin{defn}{\textbf{Numero di Reynolds}}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[U] = [m/s] \leftarrow\ SPEED\\
+	&[F] = [\frac{kg\ m}{s^2}]\\
+	&R := \frac{\rho\ U^2\ l^2}{U\mu\ l} = \frac{inertial\ force}{viscous\ force} = \frac{\rho\ U\ l}{\mu} = \frac{Ul}{\nu}
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+ove $U$ è la velocità, $\mu$ il coefficiente di attrito viscoso, e $\nu$ il coefficiente di viscosità cinematica.
+
+Per sapere invece l'ordine di grandezza delle interazioni inerziali rispetto a quelle gravitazionali, definiamo il:
+
+\begin{defn}{\textbf{Numero di Froude}}
+
+\[
+	\sqrt{F} := \frac{\rho\ U^2\ l^2}{\rho\ l^3\ g} = \frac{inertial}{gravitational} = \frac{U^2}{gl}
+\]
+
+\end{defn}
+
+In molte applicazioni dell'Ingegneria è utile fare un'applicazione in SCALA (Modellino). Il problema banale ci dice semplicemente che se scalo $l$, l'ordine di grandezza (Froude vs Reynolds) scala in maniera diversa! Rapporti che scalano in maniera differente. Se scalassero alla stessa maniera sarebbe meglio (es. Froude costante). Nella Galleria del Vento lavorano modificando il fluido, addirittura! Difficile rendere contemporaneamente i coefficienti \{Froude, Reynolds\} costanti entrambi. Le interazioni fisiche scalano in maniera diversa (con la geometria $l$ e con la cinematica del sistema). Analisi affidabili vanno fatte sul modello vero, non in scala. \underline{NAVIER - STOKES} (bilancio delle forze su elementi infinitesimi). Se prendiamo un corpo rigido e modello la dinamica del fluido associata al corpo rigido, in conseguenza dell'accelerazione, introduciamo il fenomeno di ($dp$, dynamic pressure. NO effetto viscoso. Interazione inerziale). [(Added Mass)] (forze e coppie). che stanno nell'RHS. \{Control + hydrodynamics + disturbance\}.
+
+\begin{defn}{\textbf{FLUIDO IDEALE}}
+
+Si definisce \textit{fluido ideale} un fluido infinitamente esteso, NO viscoso, irrotazionale (senza mulinelli, vortici). INCOMPRIMIBILE.
+
+\end{defn}
+
+Ipotesi molto forte. Si riesce a dimostrare che le forze generate dal veicolo le possiamo modellare con delle apposite formule, utilizzando delle matrici di massa $(\mathord{\cdot}\in\R^{3\times 3})$. Contributi energetici (cinetici) aggiuntivi per spostarmi (spostamento veicolo più spostamento acqua).
+
+\subsection{Masse Aggiunte}
+
+Nel corpo rigido il \underline{termine inerziale} sulle accelerazioni lineari era $mI_{3\times 3}$. Adesso abbiamo: $\begin{bmatrix}M_{11}&M_{12}\end{bmatrix}$ i quali coefficienti dipendono dalla geometria dell'oggetto, ed ovviamente dalla densità del fluido ($\rho$ + parametri geometrici). NON si calcolano arbitrariamente, ma si misurano mediante setup operazionali i coefficienti della massa aggiunta.
+
+Se mi muovo a velocità costante, gli effetti delle masse aggiunte sono NULLI! \newline(Forze di massa aggiunta nulle) $\rightarrow$ \textit{D'ALEMBERT PARADOX}.
+
+\[
+	[\underline{T_{fluid} = \frac{1}{2}v^\top M_A v}]
+\]
+
+Per accelerare verso quella velocità, abbiamo dovuto spendere questa energia (del fluido). \newline\underline{Added Mass Terms}. In queste formule, i termini di velocità che compaiono (quelle che modellano le interazioni di pressione dinamica, e l'operatore di massa aggiunta (tensore, matrice partizionata in due matrici $\R^{3\times 3}$)), si riferiscono tutti alla velocità relativa, ovvero la velocità del veicolo nel fluido ipotizzando che il fluido stesse fermo. In tutta questa derivazione, abbiamo ipotizzato tacitamente che il fluido fosse fermo, immobile. Aspetto gestibile dal controllo: effetti della corrente. L'acqua NON è ferma, per definizione. Comparirà nella massa aggiunta un fattore sottratto a $\nu$! (velocità relativa tra veicolo e fluido). Se vi è una velocità comune, NON c'è nessun effetto di massa aggiunta, ovviamente.
+
+\[
+	[F_{dp} = -\begin{bmatrix}M_{11}&M_{12}\end{bmatrix}\frac{d_{<1>}}{dt}\nu - \omega_{1/0}\times [\begin{bmatrix}M_{11}&M_{12}\end{bmatrix}\nu]]
+\]
+
+ove $\nu\in\R^{6\times 1}$ è il vettore velocità generalizzata, consistente in parte lineare e parte angolare. Variazione di posizione rispetto al tempo. Il vettore $\nu$ lo proiettiamo in terna $<1>$. $\omega$ è la velocità angolare. Se rispetto la terna $<0>$ prendiamo un fluido fermo (IDEALE), allora il veicolo (il corpo rigido, sostanzialmente), è soggetto alla \underline{pressione dinamica}. Terna solidale con le Stelle fisse. Ovviamente la velocità rispetto la terna assoluta, rispetto alla composizione galileiana, deve tenere conto di ambo gli aspetti. Formule ricavate nell'ipotesi che il fluido stesse fermo. \`E sufficiente altrimenti includere nell'equazione di Newton solita del corpo rigido, $m\dot{v}$ ($v$ del veicolo meno $v_f$ del fluido, tutto puntato). Modello di FOSSEN. Lui ha promosso questo modello molto semplificato, a differenza dei navali. Egli ha presentato un lavoro molto semplice, con un taglio quasi didattico, estendendo il concetto alla presenza di correnti o venti (se è un veicolo di superficie). I modelli dei navali sono un po' più complicati. Noi utilizzeremo delle ipotesi abbastanza forti. Nel mondo navale viene fuori che nell'RHS vi è un termine simile a questo. Se abbiamo un fluido non ideale (ho delle onde), quei parametri sono armonici! In funzione di $\omega$. In fisica matematica, questo sarebbe un modello a PARAMETRI CONCENTRATI. Li integro, medio, calcolo l'effetto risultante nel centro di massa. Se volessimo invece fare un CALCOLO CONTINUO, allora dobbiamo considerare ogni singolo elemento infinitesimo come corpo rigido e successivamente, sommare, integrare. Modelli più fedeli, ma al contempo abbastanza complicati. Da controllista non ci serve questo! Dobbiamo essere consapevoli che il modello non è perfetto, ma l'importante è che abbiamo ROBUSTEZZA in feedback! Anche all'incertezza sul modello.
+
+\[
+	N_{dp} = -\begin{bmatrix}M_{21}&M_{22}\end{bmatrix}\frac{d_{<1>}}{dt}\nu - \omega_{1/0}\times [\begin{bmatrix}M_{21}&M_{22}\end{bmatrix}\nu] - v_{u/o}[\begin{bmatrix}M_{11}&M_{12}\end{bmatrix}\nu]]
+\]
+
+\subsubsection{SUMMARIZING}
+
+Riscriviamo in maniera esplicita la struttura del modello:
+
+\[
+	M\frac{d_{<1>}}{dt}\nu + C(\omega_{1/0})\nu = \tau^{dp} + \tau^{visc} + \tau^{rest} + \tau^{ctrl} + \underline{\tau^{dist}}
+\]
+
+ove il termine sottolineato è relativo a disturbi ambientali. Inoltre:
+
+\[
+	[\tau^{dp} = -M_A\frac{d_{<1>}}{dt}\nu - C_A(\nu)\nu]
+\]
+
+Portando a LHS il $\tau^{dp}$, esplicitandolo otteniamo:
+
+\[
+	(M+M_A)\frac{d_{<1>}}{dt} + [C(\omega_{1/0}) + C_A(\nu)]\nu = \tau^{visc} + \tau^{rest} + \tau^{ctrl} + \tau^{dist}
+\]
+
+ove $(M+M_A)>0$. Non possiamo dire altro! Ciò è legato alla sua struttura energetica, di forma quadratica. [$dp = $ dynamic pressure].
+
+\subsection{Altri fenomeni di Forze Esterne}
+
+\subsubsection{Forze viscose}
+
+Le forze viscose sono quelle che si possono decomporre in una componente parallela alla direzione di moto (DRAG (attrito)) ed una perpendicolare (LIFT); decomposizione possibile. Sono sostanzialmente delle forze del tipo un coefficiente moltiplicativo che moltiplica $v$ o $v^2$. Tali coefficienti dipendono dalla geometria del corpo. Se il corpo non ha una struttura di tipo ALA, il coefficiente di lift è praticamente molto piccolo! Dipende dalla struttura, dalla geometria dell'oggetto. [rest = restoring]. Forze che tendono a ristabilire l'assetto (forze e coppie di Newton ed Archimede). Gravità e Buoyancy (galleggiabilità in gergo). ($S_A$ è la Spinta di Archimede). $[\tau^{visc}=\tau^{drag}+\tau^{lift}]$. Effetti viscosi. Attrito e forze di lift. Tipicamente hanno una struttura del genere. Abbiamo:
+
+\begin{itemize}
+
+\item
+
+\[
+	\left\{
+	\begin{aligned}
+	&(F_{drag} = \frac{1}{2}\rho U^2 S\ (C_d:=C_d(R))) > 0\ \forall\mathord{\cdot} \in\R\\
+	&[F_{drag} \propto (S = \frac{\pi d^2}{4})]\\
+	&R = \frac{inertial\ force}{viscous\ force}
+	\end{aligned}
+	\right.
+\]
+
+\`E uno scalare sempre positivo. $U$ è la velocità del fluido. $C_d$ si congela, costante. Dipende dal numero di Reynolds. Di direzione opposta al vettore $\vec{v}$. Si esprime tipicamente in notazione bilogaritmica: $\underline{\log{C_d}(\log{R})}$. L'andamento descritto da tal coefficiente è abbastanza regolare, continuo. Poi abbiamo dei regimi turbolenti. Se prendiamo un AUV, che va massimo ad $1m/s$ (possiamo approssimare la sua velocità come costante, sostanzialmente) $U\ |\ \dot{U}=0 \implies \dot{R}=0$, ovvero $R$ costante. Tanto $U$ varia in un intorno abbastanza piccolo! Ma a rigore se facessi un'analisi ad ampio spettro della velocità, allora quei parametri sarebbero delle funzioni. $(\frac{1}{2})$ è semplicemente un fattore normalizzante! Modellazione attrito (DRAG). $F_{drag}$ sopra espresso, è misurato per una sfera! Ma non tutti i corpi sono delle sfere ovviamente. VISCOUS DRAG COEFFICIENTS: $[\underline{C_d = C_f + C_p}]$, ovvero pari alla somma di un termine \textit{frictional} ed un termine di \textit{pressure}. La forza di attrito dipende anche dalle superfici laterali! L'attrito laterale è dovuto al termine "frictional", mentre il secondo termine $C_p$ è quello dovuto alla superficie frontale! $C_p$ termine quindi proporzionale alla sezione di moto. Attrito proporzionale quindi ad entrambe le superfici! Laterale, dovuto all'adesione del fluido alle pareti, e quello frontale, dovuto al moto. Ma in maniera differente;
+
+\item
+
+Analisi sperimentale.
+
+\begin{defn}{\textbf{FROUDE HYPOTHESIS}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&C_d(R,F) \approx C_f(R) + C_r(R)\\
+	&F_{lift} = \frac{1}{2}\rho U^2S\ C_{lift}(R,\alpha)
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+ove il primo termine del RHS della prima equazione è un termine frictional, il secondo invece è residual. $\alpha$ rappresenta l'angolo di attacco sulla $x$.
+
+\textit{Vortex Shedding}: se la velocità relativa è relativamente bassa, il fluido poi alla fine dell'attraversamento si ricompone (\underline{REGIME LAMINARE}). Se invece la velocità relativa è molto alta, attorno al corpo si formano dei mulinelli (fluido non più irrotazionale). La dinamica di questi mulinelli può essere INSTABILE. L'effetto di ciò è che nella direzione ortogonale alla direzione di moto del fluido si genera una forza instabile. Effetti NON DOVUTI A CORIOLIS! Sono dovuti a fenomeni dovuti a strutture interne del fluido. \underline{REGIME TURBOLENTO}. $\alpha$ è l'angolo di attacco, $U$ è la velocità tipica. Se $(\alpha=90^{\circ}) \implies$ Non abbiamo contributi a $90^{\circ}$.
+
+\end{itemize}
+
+\subsubsection{RESTORING FORCES}
+
+Sulla carta abbastanza facili. Il bilancio di forze lo abbiamo scritto in terna $<1>$! 
+
+\[
+	(M+M_A)\frac{d_{<1>}}{dt} + [C(\omega_{1/0}) + C_A(\nu)]\nu = \tau^{visc} + \tau^{rest} + \tau^{ctrl} + \tau^{dist}
+\]
+
+dove:
+
+\[
+	\tau^{rest} = \begin{bmatrix}F_{wb}\\N_{wb}\end{bmatrix} = g\begin{bmatrix}-mI_{3\times 3}&m_fI_{3\times 3}\\-mS(r_{u,c})&m_fS(r_{u,B})\end{bmatrix}\begin{bmatrix}^1K_0\\^1K_0\end{bmatrix}
+\]
+
+$m_f$ è la massa del fluido spostato (DISLOCAMENTO). Massa del volume di fluido che spostiamo. La forza di Archimede è anch'essa una forza distribuita. Se volessimo rappresentarla in un modello a parametri concentrati, dobbiamo individuare un punto equivalente risultante. CENTRO DI SPINTA $\neq$ CENTRO DI MASSA. Posizione che avrebbe il centro di massa se la distribuzione del corpo fosse uniforme. $r_{u,B}$ sarebbe il centro di massa se il corpo fosse un volume identico ma di acqua. PARTE SOMMERSA. $[\tau^{visc}=\tau^{drag}+\tau^{lift}]$. Se i due punti NON coincidono, si genera una COPPIA! Braccio $\implies$ MOMENTO $\implies$ Restoring MOMENT. In genere si cerca di mettere il centro di massa più in basso. \{Leggero $\rightarrow$ Sopra; Pesante $\rightarrow$ sotto\}. \`E anche il motivo per il quale nei ROV c'è la parte galleggiante che si mette sopra (FOAM). Volume pieno, non allagabile, grande, ma leggero. La parte pesante si mette sotto, per garantire che il centro di massa sia più in giù. Problema potenziale anche sul rollio. Momenti di ROLLIO. Noi vogliamo ASSETTO NEUTRO! Load balancing. Es. il FOLAGA ha il \textit{Battery Pack} su una slitta per spostare il centro di massa lungo il Surge. Il centro di Buoyancy è FISSO, una volta completato il veicolo, quello di massa può ovviamente cambiare! $m_f=\rho V$ (underwater vehicle), oppure $m_f=\nabla{(surface\ craft)}$. $\begin{bmatrix}^1K_0^\top&^1K_0^\top\end{bmatrix}^\top$ è un vettore che si compone di due vettori colonna incolonnati, ognuno dei quali è tale per cui: $^1K_0=\ ^1R_0\begin{bmatrix}0&0&1\end{bmatrix}^\top$, ovvero per il vettore $\begin{bmatrix}0&0&1\end{bmatrix}$ moltiplicato per la rispettiva matrice di ASSETTO. Questo è l'unico punto ove compare in maniera esplicita l'ASSETTO del veicolo! Nelle altre abbiamo un legame tra forze, coppie e velocità lineari / angolari. Solo questo termine dipende ESPLICITAMENTE dall'assetto. Terza colonna della matrice di assetto.
+
+
+\subsubsection{Controlli e Comandi}
+
+$\{\tau^{ctrl},\ \tau^{dist}\}$. Le forze di controllo si possono generare con molti modi. Eliche, motori, superfici di comando. Poi ci sono anche meccanismi differenti (es. camera di allagamento). POMPA, TURBINA. Assimilabili, includibili nella categoria dei \textit{Propeller Based Actuator} $\rightarrow$ attuatori basati su delle eliche.
+
+L'obiettivo alla fine è sempre il controllo (Inseguimento di una traiettoria, percorso, etc.). Alla fine delle fiere, dobbiamo mandare un segnale di TENSIONE. Alimentazione di un motore elettrico. Alla fine è lui che genera una (forza / coppia)! Ci sarà alla fine un mapping fisico modellistico tra $V$ e $F$. Ma non possiamo infatti dare in ingresso una $F$! (Come Newton richiederebbe). Noi dobbiamo dare una TENSIONE! Evidentemente ci serve il modello che lega la tensione con le (forze / coppie) che esso produce. Il motore avrà una sua dinamica elettronica / dinamica. Dinamica di un attuatore. Dinamica elettromeccanica + componente fluidodinamica. Il meccanismo con cui genera le forze è importante. La parte fluidodinamica, la forza (THRUST) prodotta da un'elica che ruota è proporzionale, alla fine delle fiere, al quadrato della velocità dell'elica, A REGIME! Elica in rotazione a velocità $n$ ($[rpm]$ dimensionalmente, revolution x minute). 
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\underline{\tau^{thrust}} = f(U,n)]\\
+	&[\tau \simeq \rho D^4 (K_t := K_t(J_o))n\abs{n}]
+	\end{aligned}
+	\right.
+\]
+
+$n\abs{n}$ ci consente di conservare il segno di $n$. Nell'idrodinamica vengono spesso fuori termini del genere. Se facessimo $n^2$, essa sarebbe la PARABOLA; noi invece siamo interessati a conservare il segno di $n$. Non è poi così costante.. Complessivamente questo coefficiente è il prodotto di molti fattori. Abbiamo un termine elevato alla quarta. $D^4$ è un'amplificazione molto grande! $[D^4]$. Sicuramente questa formula viene fuori da un'analisi IDROdinamica. Analisi in fluidi ideali, a regime. $K_t$ in realtà NON è costante! Anzi è abbastanza complicato. Lineare nell'\textit{Advance Number}:
+
+\begin{defn}{\textbf{Advance Number e Thrust Coefficient}}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[K_t \simeq a + bJ_o]\\
+	&[J_o = \frac{v_a}{nD}]
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+$J_o$ è adimensionato $\iff [\mathord{\cdot}] = [NULL]$. Andamento lineare rispetto l'Advance Number $J_o$. $v_a$ è la velocità relativa del fluido rispetto le pale dell'acqua. $(b<0)$ coefficiente negativo. 
+
+Un'ELICA in acqua è come se si avvitasse nel fluido. Dal punto di vista dell'idrodinamica, si genera una ddp tra le due facce dell'elica. Se l'elica gira sufficientemente in fretta, nella faccia posteriore si genera il vuoto! \underline{CAVITAZIONE}. \`E come se facessi una cavità nel fluido. L'elica la possiamo fare girare a velocità elevate, ma non infinitamente! Alla fine entriamo in SATURAZIONE peraltro. Anzi l'elica potrebbe addirittura rompersi per cavitazione! Pressione mostruosa, che tende addirittura a forare l'elica. Per differenza di pressione accade questo. La pressione del fluido che rimane è abbastanza elevata!
+
+Prima che vada in cavitazione, comunque accade che la forza propulsiva inizia a scendere. Abbiamo VUOTO interno, Non c'è più presa e quindi non spingiamo più. $K_t\sim a + bJ_o$. $(\rho D^4)>0,\ (b<0)$! Meno un coefficiente. Cresce col segno meno, ma un po' lentamente. $v_a=u(1-w)$. NON è la velocità del veicolo! Ma la velocità del fluido in mezzo alle pale. Eventualmente, a volte si modella con:
+
+\begin{itemize}
+\item $u$ velocità del veicolo;
+\item $w$ wake factor.
+\end{itemize}
+
+$w$ è più piccolo di $u$.
+
+Dato che gli AUV viaggiano tipicamente a velocità costanti, il termine negativo, quello dovuto al wake factor, si trascura. Lo stesso vale per le coppie (Spinte + Coppie). Quando si hanno timoni di comando anziché delle eliche, allora abbiamo delle difficoltà. Mentre i motori li possiamo modellare come genericamente forze / coppie precise, i timoni tendono a generare forze / coppie accoppiate tra di loro. Accoppiamento fastidioso! Gli attuatori che agiscono con minimi gradi di libertà sono molto preferibili. Leggi di controllo intrinsecamente MIMO. Ciò si vede soprattutto nelle matrici di Attuazione.
+
+\[
+	\tau^{rudder} = \begin{bmatrix}-a\delta_r^2\\b\delta_r\\0\\0\\0\\-c\delta_r\end{bmatrix}\in\R^{6\times 1}
+\]
+
+$b\lessgtr 0\ \land\ (a,c > 0)$. La seconda componente sarebbe una sorta di forza di lift, che si genera a causa del fatto che il timone NON è diritto. $b$ dipende dalla geometria della barca, del veicolo più genericamente. FORZA NETTA risultante che porta verso dx o sx. A seconda del timone / geometria dello SCAFO. Sul controllo quel termine impatta. Algoritmi di controllo che funzionano solo su alcune navi.
+
+\subsection{RECAP}
+
+Modellisitica. Parte riguardante l'Identificazione. Identificazione del modello (rudder). LSA (\textit{Least Squares Approximation}). Marine Robotics Modeling. Identificazione parametrica. Applicazione specifica del problema della IP a questi modelli. Identificazione generica. Pseudoinverse contestualizzate al problema specifico. Servono poi anche per il filtraggio e per la Navigazione. Il problema della IP sostanzialmente consiste nel misurare sperimentalmente i parametri dal modello sapendo la struttura dell'equazione (Newton):
+
+\[
+	(M+M_A)\frac{d_{<1>}}{dt} + [C(\omega_{1/0}) + C_A(\nu)]\nu = \tau^{visc} + \tau^{rest} + \tau^{ctrl} + \tau^{dist}
+\]
+
+In $\{C,C_A\}$ sono nascoste le posizioni del centro di massa; parametri che dipendono dall'origine della terna body. $\{v,\omega\}$ le misuro. Calcolo $\tau^{ctrl}$ in CICLO CHIUSO. Se la legge di controllo include dei pezzi di questa equazione, allora compariranno anche questi parametri. Accade per tutti gli impianti. Nei problemi di controllo, nei lavori di Ingegneri, se avremo a che fare con problemi di Sintesi dei Regolatori, non ci daranno $G(s)=(\dots)$ per trovare $R$. Ci daranno semplicemente l'Impianto ed il TARGET! Come prima cosa, conosciamo il modello (es. modello meccanico del II ordine). Scriviamo le equazioni che descrivono il modello, ed ivi compariranno dei parametri che tipicamente NON conosciamo. Quindi in generale nell'IP stimiamo i parametri di questi modelli, sapendo la struttura dell'equazione. Stato, ed I/O. Variabili di stato, devono essere accessibili. Dobbiamo misurare tutto ciò che è possibile, e da queste msure ricaviamo i parametri. Se i parametri entrano nel modello in maniera lineare, allora il modello sarà LINEARE nei parametri. $m\ddot{x} = -bx\abs{dx}+f$. Rispetto a $m$ e $b$, il modello è lineare. Se nel modello compare es. $\sin(ct),\ c>0$, allora il parametro $c$ non è assolutamente lineare! Sarà più difficile. La maggior parte dei sistemi meccanici tuttavia presenta dei parametri che entrano linearmente nel modello.
+
+\[
+	\tau^{rudder} = \begin{bmatrix}-a\delta_r^2\\b\delta_r\\0\\0\\0\\-c\delta_r\end{bmatrix}\in\R^{6\times 1}
+\]
+
+con $\{a,c>0\}$. Osservazione, concetto nascosto. In molti sistemi robotici si parla di Matrici di ALLOCAMENTO degli Attuatori. Già quella potrebbe essere una colonna di queste matrici. Mettiamo come Stato il vettore velocità generalizzata (oggetto vettoriale di sei componenti). Nella notazione SNAME, abbiamo le componenti (sei) delle risultanti delle forze esterne. CONTROL FORCES \& TORQUES:
+
+\[
+	[M\frac{d_{<1>}}{dt}\nu + C(\omega_{1/0})\nu = \underline{\tau^{dp}+\tau^{visc}} + \tau^{ctrl}+\tau^{dist}]
+\]
+
+ove i termini sottolineati riguardano termini idrodinamici. Il vettore degli ingressi generalizzati del controllo, deriva dall'applicazione di queste forze esterne da parte degli Attuatori. La forza risultante nel centro di MASSA la possiamo pensare come la forza risultante (combinazione lineare) dei singoli motori. Matrice degli Attuatori. Sei motori (sei righe (sei componenti di $\tau^{ctrl}$)). Combinazione lineare degli effetti dei sei motori. Ciascuna colonna $i$-esima rappresenta l'effetto (le componenti) delle forze generate dal motore $i$-esimo. Abbiamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\tau^{dp} = -M_A\frac{d_{<1>}}{dt}\nu - C_A(\nu)\nu]\\
+	&\tau^{rudder} = \mathord{\cdot}(\delta_r)
+	\end{aligned}
+	\right.
+\]
+
+(FORZE + COPPIE). Dipende dalle variabili d'ingresso del controllo stesso. La Matrice di Allocamento ha a che fare con gli effetti dei motori. La matrice di Allocamento è molto importante. Elemento della progettazione del Robot. In TDS, se il sistema fosse lineare, trascurando CORIOLIS ed alcuni altri termini, questa matrice rappresenterebbe $B$ (la matrice delle forzanti). Ricordiamo che da $B$ dipende la RAGGIUNGIBILIT\`A. Se mettessi dei motori lungo lo stesso asse, allora nonostante avremmo più potenza, non servirebbero a molto! Sarebbero dipendenti.
+
+\[
+	[R = \begin{bmatrix}B&AB&A^2B&\dots&A^{n-1}B\end{bmatrix}]
+\]
+
+I controllisti tipicamente non si parlano con i meccanici. In alcuni AUV (Lisbona, Politecnico) (Medusa), a differenza degli AUV che si trovano tipicamente in giro, non hanno un solo motore (timone), ma hanno un motore a sbalzo, montati lontani tra di loro. Direzionalità ottenuta in maniera differenziale. La coppia che permette di ottenere un timone, ha già un effetto negativo (la velocità deve superare una certa threshold). In generale inoltre esso genera dei momenti accoppiati, aspetto che complica ulteriormente il controllo. Se preferibile, nei sistemi marini, per la Manovrabilità è meglio avere dei motori che lavorano in maniera differenziale. \{ROV, AUV, (ASC)\}. ASC = \textit{Autonomous Surface Craft} $\rightarrow$ motori differenziali. I catamarani sono già predisposti per ciò.
+
+La Matrice di Allocamento degli Attuatori va calcolata, capita veicolo per veicolo. Se il Sistema fosse lineare, la Raggiungibilità dipenderebbe da questa matrice $B$. Anche il consumo energetico dipende da $B$! Diversi sistemi con cui eventualmente gestire gli Attuatori. Problema dell'Allocamento OTTIMO (fissato un criterio di ottimo). Criterio energetico, di manovrabilità, di minime colonne possibili (Minor complessità). Tipicamente matrici non lineari perché i sistemi sono fortemente non lineari (NON linearità difficili). Nei Satelliti (attuazione a jet (propulsione)), l'allocamento è particolarmente difficile. Allocazione dei jet per avere una certa manovrabilità. Problema tipico del controllo dei Satelliti. La \{coppia, forza\} che genera lì un singolo attuatore genera \{forze, coppie\} in una sola direzione.
+
+\subsection{DISTURBANCES}
+
+La Robotica Subacquea (profondità di $1m-2m$), dei disturbi si occupa raramente. Disturbi di moto ONDOSO, es. Sott'acqua NON si risente particolarmente dei disturbi (Moti ONDOSI). L'effetto delle onde si vede in superficie. Scende non linearmente, abbastanza velocemente. No problemi di ONDE. Fenomeni di correnti subacquee probabili, indotte da \{Gradient terms, Flussi subacquei (foce di un fiume), attività sismica marina\}. Quando accade è comunque un fenomeno localizzato. Se un AUV lavora in una zona ampia, è difficile che in continuo vi siano molte correnti. Altri problemi intrinseci scendendo in profondità (DISTURBI legati alla \underline{mancanza di luce}). Pressione NON è un disturbo! Legato alla meccanica del veicolo. Il veicolo NON deve implodere. Ma non è comunque considerata un disturbo. Motivo per cui è difficile miniaturizzare troppo questi sistemi (NO motori leggeri e piccoli). $\exists$ serie di trucchi. Buoyancy: Galleggiante, fatto di materiali leggeri, che tipicamente resistono alquanto pochissimo alla pressione. Es: polistirolo. Tuttora il materiale utilizato per la Buoyancy ha questi problemi. Il galleggiante spesso è uno dei componenti più costosi. Nel farlo, non deve lui aggiungere peso spostato! Anche lui avrà un peso! Struttura di metallo, si necessita del galleggiante. Telaio di Acciaio / Alluminio. $\rho_{MAT} > \rho_{H2O}$ (NON galleggia) $\implies$ Galleggiante richiesto. Se implode il galleggiante, ovviamente il veicolo va giù (NON c'è più la Spinta di Archimede). Altri problemi meccanici rappresentati proprio dai motori ad ELICA, i quali necessariamente richiedono che vi sia un albero che passa da un ambiente asciutto ad uno bagnato. Avvolgimento SOLENOIDALE. Oggetto che riceve una coppia che è proporzionale alla corrente che ivi gira. Solenoide: matassa di cavo sulla quale scorre una corrente. Forza dell'elica dipendente dal quadrato del diametro. I motori marini SERI (telemetrici) hanno degli avanzati sensori di umidità. Se essa supera una certa threshold $\iff UM > threshold \implies$ entra acqua nel motore e si brucia. Problema fondamentale: albero rotante che deve attraversare un BARRIERA. Soluzione: guarnizione (braccialetto) che abbraccia l'albero e lo isola dall'acqua mentre esso ruota. Attrito limitato dalla rotazione. Nonostante siano molto raffinati, funzionano molto poco nella realtà. L'acqua dopo una certa pressione tende comunque ad entrare. Accoppiamenti magnetici tra albero ed elica. Albero che ruota dentro la carcassa completamente chiusa. Elica che tende ad aderire alla carcassa dell'albero. Accoppiamento che però NON regge all'infinito. Dopo una certa soglia di pressione, allora l'elica non spinge più a sufficienza. Per evitare il DISACCOPPIAMENTO, dovremmo avere un'elica piccola (forze resistenti piccole), oppure generare dei comandi limitati $\implies$ prestazioni limitate. Soluzione necessariamente semplice $\implies$ [UOVO DI COLOMBO]. Tipicamente si mette dentro la parte che vogliamo proteggere, degli OLI INERTI elettrochimicamente. Tenuta meccanica con all'interno l'olio. Olio che può essere compresso. Esso avrà la stessa pressione che c'è fuori, per compressione. Anche l'elettronica viene compressa! Problema risolvibile con componenti adatti. Compressione necessaria. Vantaggio: la tenuta meccanica è alla stessa pressione dell'acqua. L'acqua NON tende ad entrare, non per motivi chimici ma fisici. Trucco per qualunque altro oggetto che vogliamo immergere nell'acqua. Es: manipolatori subacquei (industriali) detti a BAGNO D'OLIO. Affari che diventano pesantissimi. Effetti: \{Sforzo di controllo maggiore\}. Per la dissipazione però è un aspetto praticamente conveniente. L'Elettronica scalda! Possibile raffreddamento a liquido. Sensore interno che monitora la temperatura $[\leftarrow PRESSURE]$.
+
+\subsection{Derivate Idrodinamiche}
+
+\[
+	[\nu = \begin{bmatrix}u&v&w&p&q&r\end{bmatrix}^\top]
+\]
+
+Se aprissimo un qualunque libro di modellistica dei sistemi marini, troveremmo il concetto di DERIVATA IDRODINAMICA. Esso è un (coefficiente) che viene rappresentato con questa notazione: quegli oggetti rappresentano i coefficienti che dobbiamo moltiplicare con le variabili di cui dobbiamo fare la derivata per ottenere le forze rappresentate. Es. $\tau^{drag}$ (Il drag lineare è proporzionale alla velocità ed alla velocità quadratica) $\implies$
+
+\[
+	\tau^{drag} = -D_1\begin{bmatrix}v\\\omega\end{bmatrix} - (\bar{D}_2\begin{bmatrix}v\\\omega\end{bmatrix})\begin{bmatrix}v\\\omega\end{bmatrix} = -\underline{\begin{bmatrix}D_{11}&D_{12}&D_{13}&D_{14}&\dots&\dots\\D_{21}&D_{22}&D_{23}&\dots&\dots&\dots\\\dots&\dots&\dots&\dots&\dots&\dots\\\dots&\dots&\dots&\dots&\dots&\dots\end{bmatrix}}\begin{bmatrix}v\\\omega\end{bmatrix} + (\dots)
+\]
+\[
+	(\dots) = \underline{-\begin{bmatrix}(\bar{D}_2)_{11}\abs{u}&0&\dots&\dots&\dots&\dots\\0&(\bar{D}_2)_{22}\abs{v}&0&\dots&\dots&\dots\\&\dots&\dots&\dots&\dots&\dots&\dots\\&\dots&\dots&\dots&\dots&\dots&\dots\\&\dots&\dots&\dots&\dots&\dots&\dots\\&\dots&\dots&\dots&\dots&0&(\bar{D}_2)_{66}\abs{r}\end{bmatrix}}\begin{bmatrix}v\\\omega\end{bmatrix}
+\]
+
+ove il primo termine sottolineato rappresenta le derivate idrodinamiche del drag lineare, mentre il secondo quelle del drag del II ordine. Il concetto di derivata idrodinamica è semplicemente convenzionale. $D_{23}$ moltiplica la terza componente della velocità lineare. Lungo lo SWAY. Perché sono sulla seconda riga. Componente di forza lungo lo SWAY.
+
+\[
+	(\frac{\partial Y}{\partial w})w := \underline{Y_w}w
+\]
+
+$X_{\dot{u}}$ è la derivata idrodinamica della massa più la massa aggiunta lungo la direzione di SURGE. $Z_{\dot{v}}$ è l'elemento $3-2$ dell'operatore $(M+M_A)$, ovvero individuato dalla terza riga e dalla seconda colonna. Il tensore $(M+M_A)$, se moltiplicato per il vettore dell'accelerazione generalizzata è un oggetto del genere:
+
+\[
+	\begin{bmatrix}X_{\dot{u}}&X_{\dot{v}}&X_{\dot{w}}&(\dots)\\Y_{\dot{u}}&Y_{\dot{v}}&Y_{\dot{w}}&(\dots)\\Z_{\dot{u}}&Z_{\dot{v}}&Z_{\dot{w}}&(\dots)\\\dots&\dots&\dots&\dots&\dots&\dots\\\dots&\dots&\dots&\dots&\dots&\dots\\\dots&\dots&\dots&\dots&\dots&\dots\end{bmatrix}\begin{bmatrix}\dot{u}\\\dot{v}\\\dot{w}\\\dot{p}\\\dot{q}\\\dot{r}\end{bmatrix}
+\]
+
+Tali sono gli elementi della matrice di massa aggiunta. Termine fuori diagonale: $Y_{r\abs{r}}$ è un termine fuori diagonale. Rappresenta la componente del drag quadratico lungo la direzione di SWAY. Si approssima che il drag quadratico sia lineare. Il drag molto spesso si approssima come lineare, ma è un'approssimazione comunque molto forte (lineare + quadratico).
+
+\subsubsection{UNIT\`A DI MISURA}
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\frac{N}{(rad/s)^2}] = [Ns^2] = [Y_{r\abs{r}}]\\
+	&[r]=[\frac{rad}{s}]
+	\end{aligned}
+	\right.
+\]
+
+Gli RPM NON sono S.I.! Normalizziamo i parametri dimensionali rispetto a delle grandezze tipiche della nave. Lunghezza tipica con cui normalizziamo i parametri è tipo la lunghezza della nave. Divisione per massa campione / lunghezza campione. Tre possibili scelte per normalizzare le varie grandezze:
+
+\begin{itemize}
+
+\item Prime-System;
+\item Prime-System II;
+\item Bis-System.
+\end{itemize} 
+
+Ha anche un altro vantaggio: Stima molto rozza (fenomeni idrodinamici NON scalano in maniera corretta). Antinormalizzazione delle grandezze di un altro sistema, nel mio sistema.

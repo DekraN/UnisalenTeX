@@ -1,0 +1,1499 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Identificazione parametrica}
+\label{cap:pidnt}
+%************************************************\\
+
+Il problema dell'Identificazione consiste nell'individuare e calcolare le derivate idrodinamiche. Normalizzazione dei parametri e grandezze dell'ordine della nave. I valori normalizzati tendono ad essere simili! $(M+M_A)$; normalizzazione necessaria. Riduzione opportuna dell'\underline{INSTABILIT\`A NUMERICA}. Nei simulatori reali veri, l'integrazione di Newton la facciamo con il sistema con grandezze normalizzate, con eventuale successiva riproiezione.
+
+\section{Identificazione parametrica e pseudoinverse}
+
+\subsection{Identificazione parametrica}
+
+Controllo per i manipolatori. Serve per risolvere un problema inverso di tipo geometrico. Supponiamo di avere una matrice $M\in\R^{n\times m}$, ed un'equazione del tipo: $y=Mx$. Se l'incognita è $x$, siamo in regime di problema inverso. Problema algebrico abbastanza conosciuto in dettaglio. Problema particolarmente interessante da risolvere quando $M$ non è quadrata o non è a rango pieno. Altrimenti $\exists! \inv{M}\ |\ x=\inv{M}y$. Se $M$ non è quadrata $(n\neq m)$, allora la faccenda si complica. Potrebbe $\nexists\inv{M}$, od esisterne infinite. Si pone il problema di trovarne una approssimata. Se sono infinite, c'è un criterio di ottimizzazione eventuale. Perché diciamo queste cose? Abbiamo visto per i manipolatori un'equazione di questa forma:
+
+\[
+	\nu = J(q)\dot{q}
+\]
+
+$\nu$ vettore generalmente di sei righe. $J(q)$ bassa e lunga, solitamente $\implies$ Manipolatore ridondante $\implies n<m$, ovvero poche righe e tante colonne, oppure tante righe e poche colonne nel caso di SOTTOATTUAZIONE. Supponiamo di avere un sistema meccanico semplice. Barchetta che si muove lungo il SURGE. Trascurando gli accoppiamenti tra i vari assi, possiamo scrivere un semplice modello, espresso in termini di derivate IDRODINAMICHE:
+
+\[
+	[X_{\dot{u}}\dot{u} = -X_{u\abs{u}}u\abs{u} - X_uu + (f_{ELICA})]
+\]
+
+ove il termine tra parentesi è la forza prodotta dalla propulsione. $m$ è in realtà $(\bar{m}+m_A)$. Modello più semplice di modellazione dinamica. $\{X_{u\abs{u}},\ X_u\}$ non li conosciamo e li vogliamo stimare parametricamente. Se conoscessimo $f_{ELICA}$ (forza prodotta dal propulsore), sarebbe molto meglio. Supponiamo che $f$ sia nota (conosciamo la spinta che produce a seconda del gas). Supponiamo di conoscere $\{u,\dot{u},\abs{u}\}$. DVL basato sull'effetto Doppler (SONAR). Spara un fascio acustico e legge intorno. Sensore prima molto costoso ed ingombrante. Adesso sono più miniaturizzati e più accessibili economicamente. Può rimbalzare sul fondo o meno. Un ritorno comunque ce l'abbiamo lo stesso (Stima della velocità rispetto al fluido). Se invece becchiamo il fondo, allora abbiamo una velocità più precisa. Il suo uso originale era misurare le correnti, anzi proprio i vari strati. $\{u\ RUMOROSO \implies\dot{u}\ RUMOROSISSIMO\}$. Per dedurre i coefficienti che non conosciamo, allora dobbiamo ovviamente campionare. Riscriviamo l'equazione in forma matriciale, utilizzando una particolare matrice alta e stretta che chiamiamo REGRESSORE. Tante righe dipendenti dai campioni:
+
+\[
+	\begin{bmatrix}f_{ELICA}^{(1)}\\f_{ELICA}^{(2)}\\\vdots\\f_{ELICA}^{(n)}\end{bmatrix}=\begin{bmatrix}\dot{u}(1)&u(1)\abs{u(1)}&u(1)\\\dot{u}(2)&u(2)\abs{u(2)}&u(2)\\\vdots&\vdots&\vdots\\\dot{u}(n)&u(n)\abs{u(n)}&u(n)\end{bmatrix}\begin{bmatrix}X_{\dot{u}}\\X_{u\abs{u}}\\X_u\end{bmatrix}
+\]
+
+$y=Mx$. Non è ovvio renderla quadrata, invertibile. Se $\abs{u}=1m/s \implies \dot{u}=0 \implies$
+
+\[
+	M = \begin{bmatrix}0&1&1\\0&1&1\\0&1&1\end{bmatrix}
+\]
+
+Se acquisisco più misure indipendenti tra di loro, allora mi aspetto che l'incertezza diminuisca. Risultato che otterremo in maniera analitica. Dobbiamo supporre che il rumore sia GAUSSIANO. Se acquisisco informazioni indipendenti, anche sulla stessa misura, allora l'incertezza diminuisce. Se la sorgente è INDIPENDENTE, l'affidabilità dell'esperimento è buona. Set di esperimenti, diversi esperimenti, con diversi ingressi esogeni, allora abbiamo più affidabilità. Se tutte queste misure le mettiamo in colonna, allora tale matrice si chiama REGRESSORE. $\{\{FdA\},\ \{TdS\}\}$. fdt che ha tanti zeri e poli, possiamo sempre supporre di impostare un problema del genere, in regime temporale. Conosciamo il modello (fdt), i segnali, ma NON conosco i parametri! Se sperimentalmente potessimo misurare tali segnali, allora saremmo OK e potremmo quindi stimare tali parametri!
+
+Non è abbastanza infrequente che conosciamo a tavolino un modello, un sistema (impianto), ma non conosciamo i parametri! Problemi relativi ad incertezze a variazioni parametriche. Almeno l'\underline{ordine di grandezza} di questi parametri dobbiamo però conoscerli! Nella realtà la prima colonna $\{\dot{u}\}$, non la si deduce facilmente da $u$! Se facessimo la derivata su una grandezza rumorosa $(\{u\})$, $\dot{u}$ sarebbe moltissimo rumorosa! $f_{ELICA}$ neanche la si conosce tanto bene in realtà. Si introduce quindi un modello che lega i $[Newton]\ ([N])$ di $f_{ELICA}$ con l'angolo di manetta. $f_{ELICA}$ non comparirà esplicitamente alla fine delle fiere, ma sarà legata fisicamente all'angolo dell'attuatore. Per ovviare invece al problema di $\{\dot{u}\}$, allora dovremo integrare membro a membro l'equazione dinamica del modello. Quelle colonne quindi non saranno proprio loro, ma le loro versioni integrali! (Dettagli tecnici comunque).
+
+\subsection{Schema di base}
+
+GO BACK theory. Partiamo da:
+
+\[
+	(y\in\R^{n\times 1}) = (M\in\R^{n\times m})(x\in\R^{m\times 1})
+\]
+
+Ci chiediamo, prima di procedere, se questo problema:
+
+\begin{itemize}
+
+\item ammette soluzione? 
+\item Sì $\rightarrow$ è unica?
+\item No $\rightarrow$ si può cercare un'approssimante?
+\end{itemize}
+
+Dobbiamo quindi contare le soluzioni, sostanzialmente. RANGE = \{insieme di tutte le $y\ |\ y=Mx$\}. A seconda di come è fatta la matrice $M$ abbiamo diversi casi di molteplicità delle soluzioni:
+
+\begin{itemize}
+
+\item{Rango pieno}
+
+\begin{itemize}
+
+\item{$n<m$}: $\infty^{m-n}$;
+\item{$n=m$}: $\exists! \inv{M}\ |\ x=\inv{M}y \iff \exists!\ SOL$;
+\item{$n>m$}:
+
+\begin{itemize}
+\item{$y\in\range{M}$}: $\exists!\ SOL$;
+\item{else}: $\nexists\ SOL$;
+\end{itemize}
+
+\end{itemize}
+
+\item{Rango non pieno}
+
+\begin{itemize}
+
+\item{$n<m$}:
+
+\begin{itemize}
+\item{$y\in\range{M}$}: $\infty^{m-r}\ SOL$;
+\item{else}: $\nexists\ SOL$;
+\end{itemize}
+
+\item{$n=m$}: $(\dots)$;
+\item{$n>m$}: $(\dots)$
+
+\end{itemize}
+
+\end{itemize}
+
+Ove:
+
+\begin{itemize}
+
+\item Il caso $n<m$ rappresenta il tipico caso dello jacobiano (matrice bassa e lunga);
+\item $n=m$ rappresenta il caso di una matrice quadrata, sostanzialmente;
+\item $n>m$ è infine il caso della regressione, ovvero con una matrice, denominata regressore, stretta ed alta.
+
+\end{itemize}
+
+RANGE = spazio individuato dalle colonne di $M$. 
+
+\begin{thrm}{\textbf{Teorema Rango - Nullità}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\range{M} := \{y\in\R^n\ |\ y=Mx\ for\ some\ x\}\\
+	&r := \rank(M) = \dim{\range{M}} \leq \min\{n,m\}\\
+	&[\dim\ker{M} + \rank{M} = m]
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+Ricordiamo che il $\ker{(\mathord{\cdot})}$ è l'insieme di vettori che mappati da $M$ portano in $\vec{0}$. Se nella disuguaglianza del rango vale l'uguale, allora la matrice ha rank max. In tal caso $M$ ha il più grande range ammissibile. Il numero delle soluzioni può però cambiare! $(\dim\ker{M}\neq 0)\implies$ se di soluzioni ne abbiamo qualcuna, allora ne abbiamo infinite! Per linearità della matrice $M$:
+
+\[
+	y=Mx^\star \implies x^\star + (\underline{x_k\in\ker{M}})
+\]
+
+è anch'essa soluzione.
+
+\begin{itemize}
+
+\item{$n<m\ \land\ r=n\implies$} Il kernel NON è vuoto, ed ha dimensione $m-n$;
+\item{$n<m\ \land\ r<n\implies$} Il rango $r$ è più piccolo di $n$ (Il kernel è ANCORA più grande!) Potremmo dire che abbiamo ancora più soluzioni, ma dobbiamo vedere se $y\in\range{M}$. Es:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\rank{[(M\in\R^{2\times 5}) := \begin{bmatrix}0&0&0&0&0\\1&0&0&0&0\end{bmatrix}}] = 1\\
+	&(\begin{bmatrix}1\\0\end{bmatrix}\notin\range{M}) \neq Mx !\\
+	&(\begin{bmatrix}0\\1\end{bmatrix}\in\range{M}) = Mx
+	\end{aligned}
+	\right.
+\]
+
+\end{itemize}
+
+Quindi dobbiamo distinguere due casi (Sempre). Troveremo una formula (teoria), per trovare laddove abbiamo una soluzione, essa stessa, restituendocela senza problemi. Laddove ne abbiamo $\infty$ soluzioni, vorremmo che questa formula mi permetta di trovarne almeno una, o tutte, in base a qualche prescelto criterio di ottimizzazione. Se non abbiamo soluzioni $\iff\nexists\ SOL$, questa stessa formula mi dovrebbe permettere di trovare una soluzione approssimata.
+
+\subsubsection{Soluzione approssimata}
+
+NORMA VETTORIALE / NORMA MATRICE. "Lunghezza" di un vettore.
+
+\[
+	[y=Mx]\ \{\exists\ x\ |\ y=Mx\}
+\]
+
+$\implies$ NON possiamo scegliere $\hat{x}\ |\ y-M\hat{x}$ abbia norma piccola (l'errore sia piccolo). Questa impostazione NON risolve in una botta sola le sei possibili situazioni. Non risolto il problema in maniera definitiva! $x$ che minimizza $(y-Mx)$. Se a questa $x$ ci aggiungo un elemento del kernel, allora è la stessa cosa! Problema $\infty$-dimensionale. Sia:
+
+\[
+	x^\star := \{\argmin_x{\norma{y-Mx}}\}
+\]
+
+L'$x^\star$ che vado a definire con questa formula NON è univoco se \underline{$M$ NON ha rango pieno}, o più correttamente, se $M$ non ha kernel vuoto. Come faccio a sceglierne una? Ponendomi questo problema troveremo una formula che risolve il problema. Se di $x^\star$ ne esistono infinite, un'idea per trovarne uno è sceglierlo tale che la sua norma (di sé stesso), sia MINIMA:
+
+\[
+	SELECTOR: \{\hat{x}=\min{\norma{x^\star}}\}
+\]
+
+Andando per ordine, dato che abbiamo scritto la matrice stretta e lunga, in tal caso il problema di scegliere l'elemento più corto, mi permette di risolvere direttamente il problema. Se sono infinite, algoritmicamente come prendiamo la più corta? Due algoritmi. Uno lo individueremo analiticamente, funzionante solo se $M$ ha rango pieno. Altrimenti NON funziona. Pseudoinversa sx e dx. Questi algoritmi (tecniche) risolvono le prime tre caselle. Invece l'SVD, sebbene più oneroso algoritmicamente, è anche il più generale.
+
+\subsection{Pseudoinverse (RANK - MAX - ALGORITHMS)}
+
+\subsubsection{Pseudoinversa destra}
+
+Risolviamo il caso $n<m$. Prendiamo un costo. $R=\inv{Q}$. Sia $((Q=Q^\top)>0)\in\R^{m\times m}$ symm. definita positiva. $Q=I_{3\times 3}$ potrebbe pure essere l'identica. $[\bar{C}:=\frac{1}{2}x^\top Qx]$. Se abbiamo infinite soluzioni, possiamo trovare il minimo vincolato? Tra queste infinite soluzioni, potremmo prendere la più corta:
+
+\[
+	[C := \frac{1}{2}x^\top Qx + \lambda^\top(y-Mx)]
+\]
+
+$\lambda$ è ovviamente un vettore, denominato \textit{moltiplicatore di Lagrange}. Anche $(y-Mx)$ è un vettore, chiaramente. Cerchiamo il valore di $x$ che annulla il gradiente di $C$. Avremo una condizione che dipende da $\lambda$, ma utilizzando l'equazione del vincolo, riusciremo ad includerne una.
+
+\[
+	\nabla_x{C} = (\frac{1}{2}Qx + \frac{1}{2}Qx = Qx) - M^\top\lambda = 0
+\]
+
+(per trovare il minimo di $C$). Questo $\lambda$ ci dà fastidio. $Q$ è simmetrica definita positiva $(\iff\exists\inv{Q}) \iff$
+
+\[
+	\left\{
+	\begin{aligned}
+	&x = \inv{Q}M^\top\lambda\\
+	&y=Mx=(M\inv{Q}M^\top)\lambda\\
+	&(\dots)
+	\end{aligned}
+	\right.
+\]
+
+$M\inv{Q}M^\top\in\R^{n\times n}$, ed ha anche rango pieno. $M$ ha rango pieno $(n)$, e quindi quella parentesi tonda contiene una matrice quadrata invertibile. La inverto e mi calcolo quindi $\lambda$:
+
+\[	
+	(\dots) = [\lambda = \inv{(M\inv{Q}M^\top)}y]
+\]
+
+A questo punto, banalmente:
+
+\[
+	\exists! x = \inv{Q}M^\top\inv{(M\inv{Q}M^\top)}y
+\]
+
+Ad occhio, moltiplicando membro a membro per $M$,
+
+\[
+	Mx = (M\inv{Q}M^\top)\inv{(M\inv{Q}M^\top)}y = y \implies [Mx=y]
+\]
+
+\`E la nostra soluzione. Tra le infinite ($\infty^{m-n}$), è la soluzione più corta in norma. Altrimenti tale $x$ continua a soddisfare il vincolo, ma non minimizza $C$. La matrice $\inv{Q}M^\top\inv{(M\inv{Q}M^\top)}$ si chiama: \textit{\underline{\underline{PSEUDOINVERSA DX} (PESATA) di Moore - Penrose}}. Vale:
+
+\[
+	M[\inv{Q}M^\top\inv{(M\inv{Q}M^\top)}] = \underline{I_{n\times n}}
+\]
+
+$[Q>0]$ simmetrica definita positiva. Potremmo applicare questo algoritmo al caso dello jacobiano. Se volessimo pseudoinvertire quella in cima, prenderemmo: $\nu=J(q)\dot{q}\implies \dot{q}=J(q)^\dag \nu$. In tal caso, se prendessimo $Q$ diagonale, e mettessimo alcune componenti grandi / piccole (a parità di $C$, di forma quadratica), faremo muovere più o meno alcuni attuatori. Se $Q$ è proporzionale all'identica, è come non averla sostanzialmente!
+
+Formula tanto bella che generalizza anche la seconda casella rk-max. Se $M$ è quadrata / invertibile, allora vale:
+
+\[	
+	\exists[\inv{(M\inv{Q}M^\top)}\in\R^{n\times n}]
+\]
+
+\subsubsection{Pseudoinversa sinistra}
+
+Nel caso $n>m$, il vincolo $(y-Mx)$ è proprio sbagliato come impostazione. Ora siamo nel caso $n>m$; il vincolo potrebbe ovviamente non essere ammissibile. UNCONSTRAINED MINIMUM:
+
+\[
+	C := \frac{1}{2}(y-Mx)^\top Q (y-Mx)
+\]
+
+Voglio che questa quantità sia minima! Altrimenti troveremo l'$x$ che minimizza questo costo. Se esiste un minimo, questa formula mi permetterà di trovarlo, minimizzando questo costo. Ricordiamo che: $([Q=Q^\top]>0)\in\R^{n\times n}$. Riscriviamo il costo effettuando le dovute moltiplicazioni:
+
+\[
+	[C = \frac{1}{2}y^\top Qy - \frac{1}{2}x^\top M^\top Qy + \frac{1}{2}x^\top M^\top QMx - \frac{1}{2}y^\top QMx]
+\]
+
+Ne facciamo la derivata:
+
+\[
+	\nabla_x{C} = -\frac{1}{2}M^\top Qy + (\frac{1}{2}M^\top QMx + \frac{1}{2}M^\top QMx = M^\top QMx) - \frac{1}{2}M^\top Qy
+\]
+
+abbiamo che i termini $\frac{1}{2}\mathord{\cdot}$ sono sommabili:
+
+\[
+	M^\top Qy = (M^\top QM)x \implies \underline{x^\star=\inv{(M^\top QM)}M^\top Qy}
+\]
+
+$[\inv{(M^\top QM)}M^\top Q]$ \textit{\underline{\underline{PSEUDOINVERSA SX} PESATA}}. $(M^\top QM)\in\R^{m\times m}$ una matrice invertibile se lo sono anche $M$ e $Q$, che per ipotesi lo sono $\implies \exists! \inv{(M^\top QM)}$. Al solito il nome deriva dal fatto che posta a sinistra di $M$ fornisce $I_{m\times m}$, ovvero:
+
+\[
+	\inv{(M^\top QM)}M^\top QM = I_{m\times m}
+\]
+
+Questa formula, per poterla utilizzare, richiede che $M$ abbia rango pieno. Altrimenti non esisterebbero quelle inverse. Pseudoinversa sx anche chiamata ai minimi quadrati. Cerchiamo il modello dei parametri che mi riproduce quelle misure, ma penalizza quelle più incerte! La matrice $Q$ dei pesi è inversamente proporzionale alla covarianza delle misure che sto fittando. Approccio molto utile in tantissimi campi dell'Ingegneria. Es. due misure della stessa grandezza presa da due sensori diversi. Nessuno dei due dice il vero. Dobbiamo fare la somma pesata rispetto alle covarianze! Vettori delle misure $\{f_{ELICA}\}$. Ognuno ha una sua incertezza. Se ho delle $f$ più incerte, le peso meno!
+
+La colonna a dx dello schema delle possibili soluzioni, è di più difficile risoluzione e va quindi fatto con cura. Viene utilizzato l'SVD.
+
+\subsubsection{Algoritmi di pseudoinversione}
+
+Gli algoritmi di pseudoinversione si possono interpretare anche in termini probabilistici (soprattutto in caso di matrici strette e alte). Dato: $y=(M\in\R^{n\times m})x$, il problema di ottimo lo possiamo riscrivere in questi termini. Abbiamo identificato la $\hat{x}$ in questo modo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\hat{x}=\argmin_{x\in X}{\norma{x}_Q^2}\\
+	&X=\{x\in\R^m\ |\ x=\argmin{\norma{y-Mx}_Q^2}\}
+	\end{aligned}
+	\right. 
+\]
+
+Si ricordi la seguente NOTATION: $[\norma{v}_L=(v^\top Lv)^{\frac{1}{2}}]$. Nel caso di $M$ a rango pieno, abbiamo individuato cosa accade nei due casi:
+
+\begin{itemize} 
+
+\item{\textbf{Matrice stretta e alta $\iff n\geq m\ \land\ \rank{M}=m$}}:
+
+Abbiamo pesato i residui, o l'errore con una matrice $Q$. Se la matrice è stretta e alta $(n\geq m) \implies$
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[Q=Q^\top]>0\in\R^{n\times n}\\
+	&(M^\top QM)\in\R^{m\times m}\\
+	&\hat{x}=\inv{(M^\top QM)}M^\top Qy
+	\end{aligned}
+	\right.
+\]
+
+La matrice che premoltiplica $y$ nell'ultima equazione del sistema è la PSEUDOINVERSA SX, dato che posta a sinistra di $M$ fornisce l'identica;
+
+\item{\textbf{Matrice larga e bassa $\iff n\leq m\ \land\ \rank{M}=n$}}:
+
+In tal caso la soluzione è fornita da:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[Q=Q^\top]>0\in\R^{m\times m}\\
+	&(M\inv{Q}M^\top)\in\R^{n\times n}\\
+	&\hat{x}=\inv{Q}M^\top \inv{(M\inv{Q}M^\top)}y
+	\end{aligned}
+	\right.
+\]
+
+La matrice che premoltiplica $y$ nell'ultima equazione del sistema è la PSEUDOINVERSA DX. In tal caso ci sono infiniti elementi che rendono il residuo nullo (pesati o meno). 
+
+\end{itemize}
+
+\subsection{Pseudoinverse (NON-RANK-MAX ALGORITHMS)}
+
+Prima di affrontare il problema di quando $M$ non ha rango pieno, perché questa situazione è problematica? Il problema comunque è ben posto! Ci sono infinite soluzioni, non ne trovo una sola! Norma pesata minima. Dal punto di vista concettuale è ancora ben posto. $\hat{x}$ lo riusciamo comunque a trovare. $(\underline{M^\top QM})\underline{k}=0$. Se $M$ non ha rango pieno, l'INVERSA non esiste!
+
+\[
+	k\in\ker{M} \implies \underline{k}\in\ker{(M^\top QM)} \implies \det{M^\top QM}=0
+\]
+
+Tale formule possono essere utilizzate solo quando $M$ ha rango pieno. Sorta di SIGFPE.
+
+\subsubsection{DAMPED LEAST SQUARES}
+
+Quando $M$ tende ad essere singolare, prendiamo un $\hat{x}$ la cui norma è molto grande. Possiamo sfruttare questo exploit. Torniamo al caso della pseudoinversa sx.
+
+\[
+	[C = \frac{1}{2}(y-Mx)^\top Q(y-Mx)]
+\]
+
+Osserviamo che, quando vado a minimizzare, trovo una norma molto grande, che quasi diverge! Quindi aumentiamo $C$:
+
+\[	
+	C = \frac{1}{2}(y-Mx)^\top Q(y-Mx) + \frac{1}{2}\alpha\norma{x}^2
+\]
+
+$\alpha\neq 0$, ovviamente. Soluzione con $\alpha=0$ solo se $M$ ha rango pieno. Se $(\alpha>0)$, devo trovare ovviamente una soluzione differente da quella del caso di $M$ a rango pieno. Quindi, minimizziamo:
+
+\[
+	\nabla_x{C} = (M^\top QMx - M^\top Qy) + (\frac{1}{2}\alpha x + \frac{1}{2}\alpha x = \alpha x) = (M^\top QM + \alpha I)x-M^\top Qy = 0
+\]
+
+$[M^\top QM]$ generalmente è semidefinita positiva. $Q>0$ simmetrica definita positiva. $M$ rango pieno (kernel vuoto) $\implies M^\top QM > 0$ definita positiva. Se $M$ non è rank-max (kernel non vuoto) $\implies M^\top QM \geq 0$ semidefinita positiva. $\underline{M^\top QM}$ è sicuramente simmetrica ed è SEMIDEFINITA POSITIVA.
+
+\begin{thrm}{\textbf{Somma di una matrice Semidefinita Positiva ed una Definita Positiva}}
+
+La somma di una matrice \textit{semidefinita positiva} con una \textit{definita positiva} restituisce in output una matrice DEFINITA POSITIVA:
+
+\[
+	A,B\in\R^{n\times n}\ |\ [A\geq 0,\ B>0 \implies (A+B)>0]
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+\[
+	v^\top(A+B)v = v^\top Av + v^\top Bv = (p\geq 0) + (q > 0) = (k>0)
+\]
+
+\end{proof}
+
+$(M^\top QM + \alpha I)$ è sempre INVERTIBILE! Sicuramente lo è sempre. Quindi minimizzando questo costo, troviamo in realtà:
+
+\[
+	\left\{
+	\begin{aligned}
+	&x^\star=\inv{(M^\top QM+\alpha I)}M^\top Qy\\
+	&\lim_{\alpha\to 0}{x^\star} = \hat{x}
+	\end{aligned}
+	\right.
+\]
+
+Approssima la soluzione ottima quando $\alpha>0$. DAMPED LEAST SQUARES Approximation. Regolarizzazione alla Tychonov. Il problema inverso (calcolare la $x$ che soddisfa i minimi quadrati), allora è mal posto. Se modifichiamo leggermente il problema, comincia a divenire ben posto. Ovviamente è una soluzione approssimata, NON esatta. La pseudoinversa sx è detta ai MINIMI QUADRATI.
+
+\[
+	[V_{LS} = \frac{1}{2}(y-Mx)^\top (I_{3\times 3}=Q)(y-Mx) = \sum_{l=1}^n{(y_l-(Mx)_l)^2}]
+\]
+
+Valore di $x$ che minimizza la somma dei quadrati dei componenti. Se mettiamo dei pesi ($Q$ diagonale), allora la sommatoria sarebbe la sommatoria di residui al quadrato e pesati in maniera differente (WEIGHTED - LEAST - SQUARES).
+
+Peraltro, la pseudoinversa sx smorzata e quella dx smorzata coincidono. Algebricamente bisogna fare un po' di conti. \`E ben visibile con l'SVD. D'altra parte il problema che si va a risolvere è lo stesso. Diventa lo stesso funzionale. Quindi i due funzionali coincidono, del tutto. Buona notizia: ci fornisce una scelta per calcolare una soluzione, sempre. Cattiva notizia: non è una soluzione esatta.
+
+\[
+	[x^\star = \inv{(M^\top QM + \alpha I)}M^\top Qy]
+\]
+
+Pensiamo alla pseudoinversa dx. Quando $M$ non ha rango pieno, $y\notin\range{M} \implies$ il vincolo DURO non può mai essere soddisfato; ma se invece lo fosse?
+
+\[
+	\begin{bmatrix}0\\7\end{bmatrix} = \begin{bmatrix}0&0&0&0&0\\1&0&0&0&0\end{bmatrix}\begin{bmatrix}x_1\\\vdots\\x_m\end{bmatrix}
+\]
+
+Qui nonostante $(\rank{M}<n) \implies y\in\range{M}$ quindi comunque una soluzione ce l'abbiamo! Soluzione $x^\star$ ben posta sempre (No divisioni per 0), ma in generale, anche quando esiste $(y\in\range{M})$, non la restituisce. Ci sta bene ma non è risolutiva in maniera definitiva. L'SVD risolve tutto. \`E computazionalmente oneroso, dal punto di vista numerico. Prima lo era, ora un po' meno.
+
+\subsubsection{SVD as Singular Value Decomposition}
+
+Riprendiamo velocemente l'SVD. Partiamo, utilmente, da un esempio leggermente particolare. Sembra molto speciale, ma il caso più generale possibile è sempre riconducibile ad esso. Prendiamo $[Q=I]$ (non-weighted). Facciamo un'ipotesi molto forte, anche se non lo è così tanto. $M$ diagonale:
+
+\[
+	M := \diag{(\sigma_1,\ \sigma_2,\ \dots,\ \sigma_r,\ \dots,\ 0)}
+\]
+
+Tale matrice diagonale in generale NON è quadrata. Diagonale principale, generalmente definita anche per matrici non quadrate. 
+
+\[
+	\R^{3\times 3} \mapsto \begin{bmatrix}\sigma_1&0\\0&\sigma_2\\0&0\end{bmatrix}
+\]
+
+Questi SIGMA, nonostante adesso sembri assurdo, li ipotizziamo essere ordinati in maniera decrescente $\iff [\sigma_1>\sigma_2>\sigma_3>\dots\geq\sigma_r>0]$ ($\sigma_r$ è quindi il valore più piccolo ma positivo). $r\leq\min\{n,m\}$. $r$ è anche l'indice del rango. \`E proprio il rango di questa matrice $M$. \`E sempre possibile in realtà, presa una matrice qualunque, partizionarla nel prodotto di tre matrici ove quella centrale ha questa struttura. Tramite cambiamenti di base. Come posso andare a trovare la soluzione ottima del problema inverso $y=Mx$ nel senso ben definito (elemento più corto che minimizza l'errore); Troviamo gli elementi di $X$. Chi sono gli $x$ che minimizzano il costo?
+
+\[
+	C = \frac{1}{2}(y-Mx)^\top(y-Mx) = \frac{1}{2}\sum_{l=1}^n{[y_l-(Mx)_l]^2} = (\dots)
+\]
+\[
+	(\dots) = \frac{1}{2}[\sum_l{y_l-\sum_{h=1}^m{M_{lh}x_h}}]^2 \stackrel{M-STRUCTURE-EXPLOIT}{=} \frac{1}{2}\sum_{l=1}^n{[y_l-\sigma_lx_l]^2}
+\]
+
+Definizione della componente $l$-esima del vettore $Mx$. $M$ non è a caso! Gli elementi sono pesati col delta di Dirac. Particolarmente semplice la sommatoria. Troviamo che è nell'insieme $X$. Come al solito, i vettori che minimizzano questo costo si trovano calcolandone il gradiente e ponendolo pari a 0:
+
+\[
+	[\nabla_x{C}]_k = \frac{\partial C}{\partial x_k} = \frac{\partial}{\partial x_k}\frac{1}{2}\sum_l[y_l-\sigma_lx_l]^2 \stackrel{LIN}{=} -\frac{1}{2}\sum_l{2(y_l-\sigma_lx_l)}\sigma_l\delta_{lk} \implies
+\]
+
+Notiamo che muoiono tutti i termini tranne quelli per cui $(l=k)$:
+
+\[
+	\implies [(\nabla_x{C})_k = -(y_k-\sigma_kx_k)\sigma_k]
+\]
+
+Noi vogliamo che $x_k\ \forall k$ sia tale da rendere questa quantità nulla. Poniamo quindi il gradiente uguale a 0. Dobbiamo distinguere due casi:
+
+\begin{itemize}
+
+\item{$\sigma_k=0 \rightarrow$} $x_k$ ARBITRARIA, tanto $(\sigma_k=0)$;
+\item{$\sigma_k\neq 0 \rightarrow$}
+
+\[
+	-y_k+\sigma_kx_k = 0 \implies [x_k=(\frac{1}{\sigma_k})y_k]
+\]
+
+\end{itemize}
+
+Se abbiamo questo grado di libertà, prendo l'elemento di $X$ generico, e laddove $x_k$ è generico, prendiamo $(x_k=0)$! Invece laddove $(\sigma_k\neq 0)$, sono vincolato a prendere $(x_k=\frac{1}{\sigma_k}y_k)$. Se vogliamo scrivere questi vettori in termini matrice - vettore, la notazione standard che si usa è:
+
+\[
+	M^\# := \diag{(\frac{1}{\sigma_1},\ \frac{1}{\sigma_2},\ \dots,\ \frac{1}{\sigma_r},\ 0,\ 0,\ \dots,\ 0)}\in\R^{m\times n}
+\]
+
+$M^\#$ ha le dimensioni di $M^\top$. Possiamo quindi scrivere: $\hat{x}=M^\# y$. Laddove c'è 0, continuiamo a mettere 0! La soluzione ottima al problema inverso è proprio questa! Soluzione di norma minima che meglio approssima la soluzione esatta! Anche nel caso di $M$ non rango pieno, ovviamente.
+
+\`E stato dimostrato che, per matrici reali, si ha:
+
+\begin{thrm}{\textbf{Teorema fondamentale dell'SVD}}
+
+\[
+	M\in\R^{n\times m}\ \implies \exists\{U\in\R^{n\times n},\ V\in\R^{m\times m}\}\ |
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\left\{
+	\begin{aligned}
+	&UU^\top = I_{n\times n} = U^\top U\\
+	&VV^\top = I_{m\times m} = V^\top V
+	\end{aligned}
+	\right.\\
+	&\exists! \Sigma := \diag{(\sigma_1,\ \sigma_2,\ \dots,\ \sigma_r)}\\
+	&r := \rank{M},\ \sigma_1>\sigma_2>\sigma_3>\dots\geq \sigma_r>0\\
+	&[\underline{M=U\Sigma V^\top}]
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+Teorema fondamentale dell'SVD (Singular Value Decomposition). I numeri $\{\sigma_1,\ \sigma_2,\ \dots,\ \sigma_r\}$ sono i valori singolari. Interpretabile come generalizzazione della diagonalizzazione. Decomposizione di una generica matrice nel caso $M$ non sia quadrata. $\{U,V\}$ matrici con $\det{\mathord{\cdot}}=\pm 1$, ovvero ISOMETRICHE (preservano le norme). Molto buone. $\Sigma\in\R^{n\times m}$ (stesse dimensioni di $M$). I $\sigma_i$ sono UNIVOCI! \`E sempre possibile utilizzare valori singolari ordinati in maniera decrescente. Se la $M$ generica è decomposta secondo l'SVD, il problema di partenza $(y=Mx)$, ammette un ben posto problema inverso, la quale matrice la possiamo scrivere sempre utilizzando l'SVD.
+
+\[
+	y=U\Sigma V^\top x \implies (\underline{U^\top y} = \Sigma \underline{V^\top x} \impliedby\exists\inv{U}=U^\top) \implies [(y_T\in\R^{n\times 1}) = \Sigma (x_T\in\R^{m\times 1})]
+\]
+
+Se risolviamo il problema nello spazio trasformato (trovando la soluzione ottima nello spazio $y_T=\Sigma x_T$), allora abbiamo la stessa norma per $y$ e $x$ di quelle originarie! $\Sigma^\#$ è quella che abbiamo definito prima: $\hat{x}_T = \Sigma^\# y_T$. Se torno poi nello spazio originario, 
+
+\[
+	\hat{(V^\top x)} = \Sigma^\#(U^\top y) \implies [\hat{x}=(V\Sigma^\# U^\top)y]
+\]
+
+Quindi,
+
+\begin{corl}{\textbf{Risoluzione del problema inverso mediante SVD}}
+
+Data una matrice qualunque, per calcolare la pseudoinversa esatta, abbiamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&M=U\Sigma V^\top\\
+	&M^\# = V\Sigma^\# U^\top
+	\end{aligned}
+	\right.
+\]
+
+\end{corl}
+
+Soluzione più generale possibile. Formula esatta laddove possibile! Gli algoritmi, dato $M$, restituiscono: $\{U,\Sigma,V^\top\}$. Con questi tre elementi costruiamo la pseudoinversa. $\exists\{U,V,\Sigma\}$ si ottengono risolvendo il problema ad autovettori / autovalori, facendo un ragionamento improprio. Ipotizziamo che esistano. Se è vero che $M$ la posso decomporre in tal modo, calcolo:
+
+\[	
+	MM^\top = U\Sigma V^\top V\Sigma^\top U^\top = U\Sigma\Sigma^\top U^\top \implies (MM^\top)U = U\Sigma\Sigma^\top
+\]
+
+$\Sigma\Sigma^\top\in\R^{n\times n}$ è quadrata, ed ha sulla diagonale i valori singolari al quadrato. $MM^\top$ semidefinita positiva (autovalori positivi o nulli). Si tratta quindi della risoluzione di un problema agli autovettori / autovalori. Quando calcoleremo gli autovalori, dobbiamo fare un SORTING. $u_1$ normalizzato, poi $u_2$. Eventuali componenti nulli di $U$ possono essere normalizzati con Gram - Schmidt, ecco spiegato la NON-UNIVOCIT\`A di $\{U,V\}$.
+
+\subsubsection{RECAP}
+
+Descrizione di dettagli riguardo l'SVD. $M\in\R^{n\times m}$ (matrice generica). 
+
+\[
+	\exists \{U,V\}\ |\ \left\{\begin{aligned}(\inv{U}=U^\top)\in\R^{n\times n}\\(\inv{V}=V^\top)\in\R^{m\times m}\end{aligned}\right.\ |\ M=U\Sigma V^\top
+\]
+
+$M$ può essere quindi una qualunque matrice, anche non quadrata ed a rango non pieno (non rank-max). 
+
+\[
+	(\Sigma\in\R^{n\times m}) := \diag{(\sigma_1,\ \sigma_2,\ \dots,\ \sigma_r,\ \dots,\ 0)}
+\]
+
+Le colonne di $U,V$ sono riconducibili agli autovettori di $MM^\top,\ M^\top M$ ed i valori singolari ai loro autovalori. Interpretazione utile per il calcolo. Utilità dal punto di vista numerico molteplice.
+
+\[
+	\Sigma^\# := \diag{(\frac{1}{\sigma_1},\ \frac{1}{\sigma_2},\ \dots,\ \frac{1}{\sigma_r},\ \dots,\ 0)}
+\]
+
+$M^\#$ risolve il problema inverso. Migliore approssimazione di norma minima.
+
+\subsubsection{Condizionamento della matrice}
+
+Si tratta di un numero (scalare) che si associa a ciascuna matrice. Quanto questa matrice è lontana dall'essere singolare.
+
+\begin{defn}{\textbf{Numero di condizionamento}}
+
+Il numero di condizionamento di una matrice $M\in\R^{n\times m}$ è
+
+\[
+	1\leq(k := \frac{\sigma_1}{\sigma_r}\in\R) < +\infty
+\]
+
+Talvolta si utilizza l'inverso del numero di condizionamento (\textit{RCOND}):
+
+\[
+	(0<(\frac{1}{k})\leq 1)
+\]
+
+\end{defn}
+
+I valori singolari sono non-negativi $\implies$ il rapporto è non negativo. Rappresenta numericamente quanto una matrice è lontana dall'essere singolare.
+
+\[
+	y=Mx=U\Sigma V^\top x \implies [(U^\top y)=\Sigma(V^\top x)]
+\]
+
+$\rank{M}=\rank{\Sigma}$. In generale una matrice ha kernel non vuoto se due colonne sono uguali / parallele più in generale. I calcolatori lavorano con un'aritmetica NON infinitamente precisa! Dipende dall'errore di quantizzazione. $(\alpha\ll 1),\ \{\begin{bmatrix}1\\0\end{bmatrix},\ \begin{bmatrix}1.0003\\0\end{bmatrix}\}$ sono paralleli per un calcolatore! $\alpha$ angolo tra i due vettori. Prima o poi avremo problemi nel calcolo. Numero di condizionamento molto importante. Una matrice sulla carta (analiticamente) a rango pieno, potrebbe inesorabilmente non risultare tale al calcolatore. $M,\ \exists\inv{M}\iff \det{M}\neq 0$. 
+
+\[
+	M = \begin{bmatrix}\frac{1}{\epsilon}&0\\0&\epsilon\end{bmatrix}\in\R^{2\times 2}
+\]
+
+$0\leq\epsilon<1$. Abbiamo che $\det{M}=\frac{1}{\centernot{\epsilon}}\centernot{\epsilon}=1$. Invece $(k=\frac{1}{\epsilon^2})$. I valori singolari, se la matrice $M$ è già quadrata e diagonale, sono gli elementi sulla diagonale. Il determinante NON è buono come indicatore! Il numero di condizionamento è invece la metrica corretta! Esprime quando due colonne / due righe sono parallele. MATLAB prima di calcolare l'inversa, effettua dietro le quinte questo calcolo (di $k$), e se essa supera una certa soglia, allora avverte con un WARNING sul CONDITION NUMBER. Verosimilmente in un qualsiasi ambiente di calcolo numerico accade questo. L'SVD permette di conoscere questo numero di condizionamento.
+
+\subsubsection{Interpretazione dell'SVD}
+
+Ricordiamo che per un'ISOMETRIA abbiamo determinante in valore assoluto pari ad 1. In particolare,
+
+\begin{itemize}
+
+\item rotazione $\implies \det{M}=+1$;
+\item riflessione $\implies \det{M}=-1$.
+\end{itemize}
+
+Una matrice $M$ applicata ad un vettore, secondo l'interpretazine fornitaci dalla formula dell'SVD, viene anzitutto ruotato, poi amplificato / deformato (deformazione), ed infine di nuovo ruotato. Se i valori singolari fossero tutti uguali, il vettore verrebbe solo amplificato / deformato isotropicamente lungo le sue componenti. Ma rimane parallelo a sé stesso se $(\sigma_1=\sigma_2=\dots=\sigma_r)$. Altrimenti vi è una deformazione anisotropica (potremmo anche andare incontro a delle proiezioni se $(\sigma_i\ll 1)$). Successiva rotazione. Se amplifichiamo di meno o di più, andiamo incontro ad un'ellissoide come struttura deformante. Ellissoide schiacciato significa che c'è una direzione dove $y$ rispetto ad $x$ non avrà più componenti! Ovvero se qualche $\sigma_i\ll 1$. Questa rappresentazione grafica permette di introdurre anche il concetto di NORMA MATRICIALE.
+
+Una norma, astrattamente, è una funzione che si applica ad un oggetto matematico, tipicamente geometrico, e tira fuori uno scalare:
+
+\begin{defn}{\textbf{Norma di una MATRICE}}
+
+Dato $x\in D$, con $x$ qualunque cosa. Un funzionale, genericamente. Una norma è una qualsiasi funzione $\rho:D\mapsto\R^+$ che soddisfi alle seguenti tre proprietà:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\rho(x)\geq 0,\ \rho(x)=0\iff (x=0)\\
+	&\rho(x+y)\leq \rho(x)+\rho(y)\\
+	&\rho(\alpha x) = \abs{\alpha}\rho(x)\ \forall\alpha\in\R
+	\end{aligned}
+	\right.
+\]
+
+$D$ può essere qualsiasi cosa. $\rho$ è un numero reale NON negativo.
+
+\end{defn}
+
+$\rho$ è comunque a nostro piacimento! Una NORMA induce una metrica! Serve a confrontare gli elementi $x_i$! $\{x_1,x_2,\ \dots\}$. Nei vettori euclidei la norma è in realtà quella euclidea, per l'appunto:
+
+\begin{defn}{\textbf{Norma Euclidea}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\norma{x}:=\sqrt{x^\top x}\\
+	&\norma{x}^2 = x^\top x
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+Se $D$ è uno spazio matriciale, ivi posso definire una norma. Diverse norme possibili! Anche nei vettori ve ne sono tante!
+
+\[	
+	\left\{
+	\begin{aligned}
+	&x\in\R^{n\times 1}\\
+	&[\norma{x}_p = [\sum_{l=1}^n{\abs{x_l}^p}]^\frac{1}{p}]\\
+	&\norma{x}_\infty = \max_l{\abs{x_l}}\in\R
+	\end{aligned}
+	\right.
+\]
+
+Notiamo che nella seconda equazione, se $p=2$ la formula collassa in quella della norma euclidea, per l'appunto prima definita. Se $p=1$ diventa semplicemente la somma dei moduli dei componenti. L'ultima equazione rappresenta la componente che ha il modulo più grande. Sono tutte norme queste! Soddisfano alle tre (quattro) proprietà. Se una norma induce una metrica, significa che induce un ordinamento parziale! Ordinamento PARZIALE preservato. PER tutte le norme! Le norme infinito numericamente possono discostarsi anche tanto dalle altre. In genere si utilizza la più semplice. La cosa più buona è che si può definire una norma anche per le matrici. Possiamo definire una norma per $D$ \{FROBENIUS, \dots\}. Sia $M\in(D=\R^{n\times m})$.
+
+\[
+	[\norma{M}_2 = \max_{\norma{x}_2=1}{\norma{Mx}_2}]
+\]
+
+$M$ trasforma $x$ e mi produce $y$. Vettori $\norma{x}_2=1$ che di partenza stanno su una (iper)sfera UNITARIA. \`E legittimo chiedersi, qual è la direzione di massima amplificazione? $\norma{Mx}_2$ è il fattore di amplificazione! Tra lo spazio di partenza e quello di arrivo. Possiamo associare ad $M$ una NORMA. Se anziché $\norma{\mathord{\cdot}}_2$ avessi messo $\norma{\mathord{\cdot}}_1$, allora avrei trovato la NORMA MATRICIALE (1) INDOTTA.
+
+La norma 2 di $M$ NON è altro che $\sigma_1$! Il valore singolare massimo della matrice $M$. L'SVD fornisce quindi la direzione di MASSIMA amplificazione! $\sigma_1$ è proprio la norma indotta. Se $(\sigma_1=1)$, la norma massima è uguale ad 1. $V^\top x=\begin{bmatrix}1&0&0\end{bmatrix}^\top$ fornisce la direzione di massima amplificazione. \{Norme, numero di condizionamento\}. $U$ dice nello spazio $y$ a cosa corrisponde. Nello spazio di partenza è $V$ l'importante.
+
+Nell'ambito di TDS, alcune proprietà fondamentali erano legate alle matrici $\{R,\theta\}$. $R$ è la matrice di raggiungibilità di Kalman. $\theta$ è la matrice di osservabilità! Questioni delicate al solito. Al calcolatore potrebbe sembrare singolare una matrice che in realtà non lo è. Se $(k\gg 1)\to +\infty \implies$ ci sono direzioni abbastanza privilegiate!
+
+\begin{itemize}
+
+\item{$\sigma_1=10^8 \rightarrow$} amplifichiamo pochissimo!
+\item{$\sigma_r=1.0001 \rightarrow$} amplifichiamo tantissimo!
+
+\end{itemize}
+
+Questo dal punto di vista dello sforzo di controllo. Per l'Osservabilità, significa che in teoria possiamo costruire $x_0$ dalla misura di $y$. Ma nello spazio di $x_0$ in alcune direzioni abbiamo un'uscita unitaria. $\begin{bmatrix}y_1&y_2&\dots\end{bmatrix}^\top = \theta(x_0)$. Si potrebbe invertire $\theta$. Ci sono alcune direzioni in cui, a parità di $x_0$, la $y$ corrispondente è molto più piccola rispetto a quella che otterremmo su un'altra direzione. Il sensore che ci fornisce la $y$ ha del rumore (RUMORE)! Alcune componenti è proprio come se non le osservassimo proprio. Numero di condizionamento abbastanza importante, quasi anche rispetto al rango! Conoscere i valori singolari fornisce anche molte più informazioni $\implies$ \{Norma, condizionamento\}.
+
+Queste tecniche di SVD vengono utilizzate sia nell'ambito di TdS che in altri ambiti dell'Ingegneria. Se $M$ è dimensionata, il numero di condizionamento potrebbe anche dipendere dalle unità di misura! es. $\begin{bmatrix}[m]&\dots\\\dots&[mm]\end{bmatrix}$ NON è bilanciata! Una banale conversione ci ritornerebbe una rappresentazione bilanciata. Trasformazioni opportune che, scalando opportunamente le componenti, migliorano il numero di condizionamento (lo abbassano). Vogliamo il $k$ quanto più possibile vicino ad 1.
+
+\section{Identificazione parametrica utilizzando metodi probabilistici}
+
+Riferimento presso (TDS). $y=U\Sigma (V^\top x)$. L'idea di fondo è questa: abbiamo un modello matematico $y(t) = S(\theta,u(t))$, ove $y\in\R$ è un segnale scalare. Scritto in maniera estremamente generica. La funzione $S$ sostanzialmente sarà una matrice (lineare rispetto a parametri $\theta$). Ingresso $u$ generico (NON necessariamente scalare). Il modello potrebbe anche essere differenziale. Regressore. Il modello NON è sempre lineare nei parametri! (Parametri $\theta_i$) che possoni essere riassunti in un vettore $\theta$. Identificazione parametrica (problema di stima dei parametri) a partire da $\{y(t),\ u(t)\}$. Qual è il valore di $\theta$? Il tipo di legame molto spesso viene discretizzato. $y(t)$ è in generale una serie di campioni (sequenze):
+
+\[
+	\left\{
+	\begin{aligned}
+	&y_k := y(kT)\\
+	&u_k := x(kT)
+	\end{aligned}
+	\right.
+\]
+
+$\theta$ VERO non lo conosciamo! $\hat{\theta}$ è quello che andiamo a calcolare con i dati. \`E un modo più generico di enunciare la REGRESSIONE. Espressione in termini stocastici. Rumori Gaussiani. Problema lineare $\implies$ SVD. Percorso comunque NON immediato. Aspetti probabilistici. Nei modelli più completi $y$ è NOTA NON perché viene fuori da una misura. Affetto da rumore come qualsiasi altra misura. Rumore identificato con una v.a. (distribuzione di probabilità). Due approcci filosofici al problema di come calcolare $\theta$: 
+
+\begin{itemize}
+\item Approccio Bayesiano;
+\item Approccio non Bayesiano.
+\end{itemize}
+
+\[
+	Z_N = \{y(kT)\ |\ k=0,1,2,\ \dots,\ N-1	\}
+\]
+
+$Z_N$ insieme di misure che acquisisco empiricamente. A queste misure $y$ è associata una distribuzione di probabilità. Di sicuro  affetta da rumore. $\{y,u,\theta\}$ sono legate dal modello $S(\theta,u(t))$. Le variabili NON sono scorrelate! Anzi sono addirittura fortemente dipendenti tra di loro.
+
+\begin{defn}{\textbf{ML = Maximum Likelihood (massima verosimiglianza)}}
+
+\[
+	[\hat{\theta}_{ML} = \argmax_\theta{p(Z_N\ |\ \theta)}]
+\]
+
+\end{defn}
+
+$\theta$ è considerata però una variabile deterministica! I parametri del sistema NON li pensiamo come oggetti aleatori, ma fisici, deterministici. Nell'ambito non Bayesiano i parametri VERI li intendiamo deterministici. Quelli stimati stocastici. Nell'approccio Bayesiano viene utilizzato un approccio speculare. $Z_N$ veri perché li ho acquisiti. $\theta$ NON deterministico. 
+
+\begin{defn}{\textbf{MAP = Maximum a Posteriori}}
+
+\[
+	[\hat{\theta}_{MAP} = \argmax_\theta{p(\theta\ |\ Z_N)}] = \argmax_\theta{\frac{p(Z_N\ |\ \theta)p(\theta)}{p(Z_N)}}
+\]
+
+\end{defn}
+
+$(\hat{\theta})$ sarà tra tutti i $\theta$ possibili, quello con la probabilità più alta compatibile con le misure $Z_N$. Notiamo che nella formula precedente, $p(Z_N)$ al denominatore può anche essere scartato ($(p(Z_N) \neq\mathord{\cdot}(\theta))$ è un numero, scalare). $p(Z_N\ |\ \theta)$ è chiamata \underline{\underline{VEROSIMIGLIANZA}}, o \underline{likelihood}. $p(\theta)$ spesso viene fuori da una conoscenza A PRIORI del problema. 
+
+MAP è il milestone per tutta una famiglia di problemi di FUSIONE. Due sorgenti di informazione: ($\{Z_N,\theta\}$, e cerchiamo di combinarli insieme). \`E come se comprassimo un oggetto: Informazione sul PESO data dal commerciante (indipendente dalla mia!). Si possono integrare purché siano indipendenti. Io mi faccio le mie misure $Z_N$. Anche in quello Bayesiano $\theta$ può essere pensato come deterministico, tanto quel $p(\theta)$ può essere pensata a sua volta come una misura.
+
+\subsection{Approccio non Bayesiano - Maximum Likelihood}
+
+RUMORE: Generalmente si assume che l'errore di misura sia ADDITIVO, GAUSSIANO a media nulla (ipotesi molto forte):
+
+\[
+	y(kT) = S(\theta,u(kT)) + (\epsilon(kT) \sim N(0,\sigma_y))
+\]
+
+Ipotizziamo $\sigma_y$ nota. Ipotesi forti ma utili. La ddp della singola misura, è perfettamente scrivibile. Ipotizziamo inoltre che CIASCUNA misura sia \underline{indipendente}. Assunzione abbastanza forte!
+
+\[
+	p(y(kT)|\theta) = \frac{1}{\sqrt{2\pi}\sigma_y(kT)}\e^{-\frac{[y(kT)-S(\theta,u(kT))]^2}{2\sigma_y^2(kT)}}
+\]
+
+Scriviamo la funzione di likelihood:
+
+\begin{defn}{\textbf{Funzione di likelihood}}
+
+\[
+	P(Z_N|\theta) = \frac{1}{C}\e^{-\sum_{k=0}^{N-1}{\frac{[y(kT)-S(\theta,u(kT))]^2}{2\sigma_y^2(kT)}}}
+\]
+
+\end{defn}
+
+$\sigma_y^2$ è la COVARIANZA della misura $y$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&J_{WLS} = \frac{1}{2}\sum_{k=0}^{N-1}{[\frac{y(kT)}{\sigma_y(kT)} - \frac{S(\theta,u(kT))}{\sigma_y(kT)}]^2}\\
+	&\underline{\hat{\theta}_{WLS}} = \argmin_\theta{\frac{1}{2}\sum_{k=0}^{N-1}{[\frac{y(kT)}{\sigma_y(kT)} - \frac{S(\theta,u(kT))}{\sigma_y(kT)}]^2}}
+	\end{aligned}
+	\right.
+\]
+
+Dobbiamo ovviamente ipotizzare che NON vi siano errori sistematici! Alcune misure le possiamo considerare più affidabili. Se $\sigma_y$ è molto piccolo, quella misura è molto affidabile! $[(\sigma_y\ll 1),\ (\frac{1}{\sigma_y}\gg 1)] \implies$ (mi fido di più). I minimi quadrati sono i pilastri della scienza. Curiosità molto significativa: la GAUSSIANA intesa come ddp, Gauss l'ha inventata in questi contesti. Orbite ellittiche (Keplero). Non riuscivano a trovare un'ellissi precisa. Tante misure, di una quantità che dovrebbe essere sempre la stessa ma che non lo era! Minimizzazione della somma dei residui al quadrato. Ha ingegneristicamente risolto il problema. $(\cardinality{misure}>\cardinality{parametri})$, sfruttandoli tutti. $\theta_{ML}$ e le soluzioni ai minimi quadrati COINCIDONO quando le misure sono indipendenti e distribuite in questo modo (secondo la GAUSSIANA). Mentre per la ML generica NON c'è una soluzione in forma chiusa. Con i minimi quadrati invece la soluzione è NOTA! (LINEARE peraltro).
+
+Minimi quadrati. Impostazione del problema dell'Identificazione parametrica (Bayesiana o meno). Risultati fondamentali: la soluzione con i WLS coincide con la ML nel caso delle ipotesi standard sul rumore (misure indipendenti, rumore additivo a media nulla e distribuito secondo $N(0,\sigma_y)$). Il motivo per cui l'osservazione è fondamentale, è che il modello è lineare in $\theta$. Problema già risolto con le pseudoinverse. Quel $\theta$, il $\hat{\theta}_{WLS}$ diventa quello dei minimi quadrati, risolubile con i metodi di inversione. Se scrivessimo il costo in forma matriciale, avremmo una matrice dei pesi diagonale (diagonale se le misure sono tutte indipendenti, ovviamente).
+
+I WLS si ottengono utilizzando delle matrici definite positive. Concetto di segno delle matrici. Concetto utile da richiamare, con tutte le annesse definizioni. Studio della covarianza di $\hat{\theta}$. Sia nell'Approccio Bayesiano che in quello non Bayesiano, la stima di $\theta$ è una quantità probabilistica, stocastica. La differenziazione stocastica si ha sul valore vero. \`E molto importante lo studio della distribuzione del $\hat{\theta}$. Quantità probabilistica che deriva dalla massimizzazione fatta su una PDF. Probabilità \& Statistica: $\hat{\theta}_{WLS}$ ottenuta mediante combinazione lineare di gaussiane $\implies$ è ancora una gaussiana. Sarà importante studiare le proprietà di Rumore Gaussiano. $\hat{\theta}_{WLS}$ è un vettore! Vettore di parametri. L'incertezza è molto importante! Quasi molto più importante della misura stessa. L'informazione sulle varianze è quindi molto importante. La matematica che stiamo per sviluppare ci permetterà di calcolare non solo $\hat{\theta}_{WLS}$, ma anche la sua covarianza!
+
+Ipotesi molto importanti: rumore gaussiano. $\hat{\theta}$ è lineare nella quantità che ha l'errore gaussiano. Il suo valore ottimo corrisponderà al suo valore medio, e la covarianza si calcolerà in maniera abbastanza semplice. Quando le misure NON sono gaussiane, anche in tal caso ci serve avere una stima dell'Affidabilità di $\hat{\theta}$, studiando una particolare matrice.
+
+
+\begin{defn}{\textbf{Funzioni definite positive e semidefinite positive}}
+
+Data una funzione $V:\R^{n\times 1}\mapsto \R$, 
+
+\[
+	\left\{
+	\begin{aligned}
+	&V(x)>0\ \forall x\in\R^{n\times 1}\neq\vec{0},\ definita\ positiva\\
+	&V(x)\geq 0\ \forall x\in\R^{n\times 1}\neq\vec{0},\ semidefinita\ positiva
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+\`E prassi identificare con un ADN anche il segno della matrice associata alla particolare forma quadratica che rappresenta $V_P(x) = \frac{1}{2}x^\top Px$. Alcune matrici potrebbero NON avere segno ben definito. Il segno eventualmente dipende dagli autovalori. es: $P=\begin{bmatrix}1&0\\0&-1\end{bmatrix}$ non ha segno ben definito. Quando si prende una funzione di Lyapunov, la simmetria della matrice è richiesta per il fatto che la parte antisimmetrica non fornisce contributo nelle forme quadratiche. Infatti:
+
+\[
+	\frac{1}{2}x^\top A_ax \stackrel{REAL}{=} (\frac{1}{2}x^\top A_ax)^\top \stackrel{TRANSP}{=} \frac{1}{2}x^\top A_a^\top x \stackrel{SKEWSYMM}{=} -(\frac{1}{2}x^\top A_ax) = 0
+\]
+
+Matrice quadrata mappa un vettore in un altro vettore. Se la matrice è antisimmetrica, allora fornisce in output un vettore ortogonale al primo. $[V_P=\frac{1}{2}x^\top Px]$. La parte antisimmetrica di $P$, qualora $P$ non avesse segno ben definito, non fornisce contributo nelle forme quadratiche. Le matrici di COVARIANZA sono per loro natura simmetriche. Definiamo:
+
+\begin{defn}{\textbf{Prodotto Esterno}}
+
+\[
+	xy^\top := \begin{bmatrix}x_1\\x_2\end{bmatrix}\begin{bmatrix}y_1&y_2\end{bmatrix} = \begin{bmatrix}x_1y_1&x_1y_2\\x_2y_1&x_2y_2\end{bmatrix}
+\]
+
+\end{defn}
+
+\begin{thrm}{\textbf{Trasformazione di Similitudine di una matrice}}
+
+\[
+	H\in\R^{n\times m},\ (\inv{R}=\inv{R}^\top)>0 \implies H^\top \inv{R}H\geq 0
+\]
+
+\end{thrm}
+
+\begin{proof}
+
+\[
+	x^\top H^\top \inv{R}Hx =
+	\left\{
+	\begin{aligned}
+	&0,\ x:\ Hx=0\\
+	&y^\top\inv{R}y,\ altrimenti
+	\end{aligned}
+	\right.
+\]
+ 
+\end{proof}
+
+Richiamiamo inoltre che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&(\inv{R}=\inv{R}^\top)>0\\
+	&(\inv{P}=\inv{P}^\top)>0\\
+	&(\underline{H^\top\inv{R}H} + \underline{\inv{P}}) > 0
+	\end{aligned}
+	\right.
+\]
+	
+ove il primo termine sottolineato è una matrice semidefinita positiva, mentre la seconda è definita positiva; tale oggetto matriciale in parentesi sarà poi utile invertirlo. 
+
+Sarà utile ricordare anche lo sviluppo di una funzione vettoriale in serie di Taylor. L'HESSIANO non necessariamente è semidefinita positiva. Simmetrica se valgono le ipotesi del:
+
+\begin{thrm}{\textbf{Teorema di SCHWARZ}}
+
+Sia $[[f:\R^{n\times 1}\mapsto \R]\in\mathit{C}^2]$, allora le derivate a cavallo commutano purché $f$ sia sufficientemente regolare.
+
+\end{thrm}
+
+Sotto queste ipotesi possiamo espandere in serie di Taylor generalizzata (vettoriale) questa funzione $f$. Per calcolo diretto segue che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_x{(x^\top Ay)} = Ay\\
+	&\nabla_y{(x^\top Ay)} = A^\top x
+	\end{aligned}
+	\right.
+\]
+
+Dal punto di vista mnemonico, basta ricordare se la variabile rispetto la quale si sta derivando, compare sulla sinistra con un trasposto oppure sulla destra rispetto al prodotto matrice vettore. La parentesi tonda è uno scalare. La si riscriva in maniera opportina.
+
+Nella situazione speciale nella quale il modello di misura sia lineare nei parametri (può sembrare un'ipotesi molto forte, ma non lo è realmente nella pratica: situazione abbastanza non infrequente).
+
+\[
+	[y(t) = S(\theta,u(t)) = H[u(t)]\theta]
+\]
+
+NON tutte le funzioni sono lineari nei parametri. Può accadere che riesca a trasformare un sistema NON lineare nei parametri mediante trasformazione invertibile in una rappresentazione lineare nei parametri. Tutti i circuiti RLC si riescono a scrivere in modelli lineari nei parametri. Un esempio di riconduzione è il seguente:
+
+\[
+	\left\{
+	\begin{aligned}
+	&y=\sin(\omega t)\\
+	&\arcsin(y)=\omega t
+	\end{aligned}
+	\right.
+\]
+
+Il costo $J_{WLS}$ lo possiamo riscrivere in tal modo:
+
+\[
+	J_{WLS} = \frac{1}{2}\sum_{k=0}^{N-1}{[\frac{y(kT)}{\sigma_y(kT)} - \frac{S(\theta,u(kT))}{\sigma_y(kT)}]^2} = (\dots)
+\]
+\[
+	(\dots) = \frac{1}{2}(y-H\theta)^\top\inv{R}(y-H\theta)
+\]
+
+$(y-H\theta)$ è il vettore residuo. Definiamo:
+
+\begin{defn}{\textbf{Matrice di precisione od INFORMAZIONE}}
+
+\[
+	\exists\inv{R}\ |\ \inv{R}_{ij} = \frac{\delta_{ij}}{\sigma_y^2(i)}\ |\ \sigma_y(h)>0\ \forall h
+\]
+
+\end{defn}
+
+Inoltre abbiamo $R := \cov(\epsilon) = \E[\epsilon\epsilon^\top]$, pari ovvero alla covarianza dell'errore di misura. Se le misure sono indipendenti, allora $\E[\epsilon\epsilon^\top]=R$ è una matrice diagonale, altrimenti avrebbe comunque senso considerare quella matrice. Il costo $J_{WLS}$ lo possiamo minimizzare molto facilmente. Calcoliamo il gradiente di $J_{WLS}$ rispetto a $\theta$ e lo poniamo uguale a 0:
+
+\[
+	(H^\top\inv{R}H)\theta_{WLS} = H^\top\inv{R}y
+\]
+
+Notiamo che abbiamo $H^\top$ sia nel LHS che nell'RHS $\iff$ stesso spazio. Se $(H^\top\inv{R}H)$ NON è invertibile vi sono infinite soluzioni! Altrimenti ne abbiamo una sola, e la trovo con la seguente espressione:
+
+\[
+	[\hat{\theta}_{WLS} = \underline{\inv{(H^\top\inv{R}H)}H^\top\inv{R}}y]
+\]
+
+Notiamo che il termine sottolineato è proprio la pseudoinversa sx pesata di $H$. $\leftarrow$ Soluzione ai minimi quadrati pesati. Stima calcolata con la ML. Stiamo massimizzando la verosimiglianza delle misure rispetto al modello. Sotto le ipotesi standard del rumore sulle misure, allora dobbiamo minimizzare il paraboloide. Se $(\alpha\to 0)$, il minimo lo troviamo sempre, ma quel minimo è meno significativo! Il costo, se mi allontano, cresce significativamente poco. Il minimo è quanto più significativo quando l'hessiano è grande. Dal punto di vista di quanto è significativo il $\hat{\theta}$, allora l'oggetto da studiare è proprio l'Hessiano. Se calcoliamo l'Hessiano di $J_{WLS}$, otteniamo esattamente: $[\He[J_{WLS}] = \underline{H^\top\inv{R}H}]$. Se questa matrice dovesse essere NON invertibile allora il paraboloide sarebbe degenere. Altrimenti il minimo è molto significativo dal punto di vista geometrico (ed anche analitico).
+
+\subsubsection{Interpretazione stocastica o probabilistica del valore stimato dei parametri}
+
+\[
+	[\hat{\theta}_{WLS} = \underline{\inv{(H^\top\inv{R}H)}H^\top\inv{R}}y]
+\]
+
+Troviamo il minimo di quel conto con questa espressione. Calcoliamo le proprietà di media e varianza di questo stesso valore:
+
+\[
+	R := \cov(\epsilon) = \E[\epsilon\epsilon^\top] = R^\top > 0
+\]
+
+Vedremo dove serve e dove non serve quell'ipotesi di indipendenza. A valle di conti rigorosi la stretta indipendenza non è richiesta. \`E assunta al solito per semplificare alcuni calcoli. Tutti i risultati che otterremo li si avranno per calcolo diretto.
+
+\begin{thrm}{\textbf{UNBIASED ESTIMATOR}}
+
+\[
+	\E[\hat{\theta}_{WLS}] = (\dots) = \theta
+\]
+
+\end{thrm}
+
+\`E quindi uguale al valore vero! Il valore atteso di $\hat{\theta}_{WLS}$ è UNBIASED. 
+
+\begin{proof}
+
+\[
+	\E[\hat{\theta}_{WLS}] \stackrel{DEF}{=} \E[\inv{(H^\top\inv{R}H)}H^\top\inv{R}y] = \inv{(H^\top\inv{R}H)}H^\top\inv{R}\E[y] = (\dots)
+\]
+\[
+	(\dots) = \inv{(H^\top\inv{R}H)}H^\top\inv{R}\E[H\theta+\epsilon] = \inv{(H^\top\inv{R}H)}((H^\top\inv{R}H)\theta+\centernot{\E[\epsilon]=0}) = \theta
+\]
+
+\end{proof}
+
+Abbiamo utilizzato il fatto che: $\E[H\theta]=H\theta$, dal momento che la media di una costante è la costante stessa $\iff\E[x\in\R]=x$ deterministica, e che $\E[\epsilon]=0$.
+
+\begin{defn}{\textbf{BIAS}}
+
+Valore additivo di polarizzazione del valor medio di una misura.
+
+\end{defn}
+
+L'errore di stima è: $[\tilde{\theta} := \theta - (\hat{\theta}_{WLS})]$. L'errore di STIMA è comunque importante. Vale: $\E[\tilde{\theta}]=0 \stackrel{DIRECT-DIM}{\iff} \E[\hat{\theta}]=\theta$. Ricordiamo infatti che $\E[\mathord{\cdot}]$ è un operatore lineare. Si può inoltre dimostrare che:
+
+\[
+	[\tilde{\theta} = -\inv{(H^\top\inv{R}H)}H^\top\inv{R}\epsilon]
+\]
+
+Per definizione di covarianza, $[P := \cov(\hat{\theta}_{WLS})]$:
+
+\[	
+	P = \E[(\hat{\theta}_{WLS}-\E[\hat{\theta}_{WLS}])(\hat{\theta}_{WLS}-\E[\hat{\theta}_{WLS}])^\top] = \E[(\hat{\theta}_{WLS}-\theta)(\hat{\theta}_{WLS}-\theta)^\top] = \E[\underline{\tilde{\theta}\tilde{\theta}^\top}] = (\dots)
+\]
+\[
+	(\dots) = \E[(\inv{(H^\top\inv{R}H)}H^\top\inv{R}\epsilon)(\inv{(H^\top\inv{R}H)}H^\top\inv{R}\epsilon)^\top] = (\dots)
+\]
+\[
+	(\dots) = \inv{(H^\top\inv{R}H)}H^\top\inv{R}\E[\epsilon\epsilon^\top](\inv{R})^\top H\inv{(H^\top\inv{R}H)} = (\dots)
+\]
+\[
+	(\dots) = \inv{(H^\top\inv{R}H)}H^\top\inv{R}R\inv{R}H\inv{(H^\top\inv{R}H)} \stackrel{R=\E[\epsilon\epsilon^\top]=R^\top\ \land\ \E[\epsilon]=0}{=} \inv{(H^\top\inv{R}H)}
+\]
+
+$P$ è per costruzione la covarianza associata alla stima, e sotto le ipotesi standard, l'inversa della covarianza sulla stima coincide con l'hessiano del costo. Es: misura di una provetta $\implies$ incertezza sulla stima è molto bassa $\implies$ minimo molto significativo. Legame forte tra interpretazione probabilistica e quella geometrica. Errore di misura gaussiano, a media nulla e che entra additivamente. Dobbiamo inoltre conoscere in maniera quasi esatta la covarianza. Altrimenti non posso più garantire che questo $P$ sia effettivamente la covarianza di $\hat{\theta}_{WLS}$. Matrice dei pesi $\inv{R}$ che NON sappiamo se sia effettivamente l'inversa della covarianza dell'errore di misura. Anche se non lo fosse, la quantità matriciale prima calcolata rimane comunque collegata all'INVERSO dell'hessiano della funzione di costo. Il BIAS è un errore sistematico.
+
+\[
+	\E[\epsilon\epsilon^\top] \neq (R=R^\top)
+\]
+
+$\implies$ avrebbe comunque senso prendere in considerazione la covarianza della stima.
+
+\[
+	[\hat{\theta}_{WLS} = \underline{\inv{(H^\top\inv{R}H)}H^\top\inv{R}}y]
+\]
+
+L'osservazione banale ma fondamentale è che $\hat{\theta}_{WLS}$ è comunque lineare nei dati. $M := \underline{\inv{(H^\top\inv{R}H)}H^\top\inv{R}}$. L'operazione da fare per dedurre i parametri è comunque LINEARE nei dati (sulle uscite). Nel caso di distribuzioni gaussiane i WLS coincidono con la ML. Se NON siamo certi che l'errore sia distribuito in maniera gaussiana, possiamo comunque utilizzare i minimi quadrati? Se mi invento uno stimatore alternativo rispetto a quello utilizzato, prendiamo quindi $C$ al posto di $M$, la quale moltiplicato per $y$ restituisce in output $\hat{\theta}_{WLS}$. Comunque sia fatta la distribuzione, se $\E[\epsilon]=0$, i WLS forniscono una stima UNBIASED, e quello che viene fuori è che la covarianza sulla stima dei parametri è MINIMA (BLUE = Best Linear UNBIASED Estimator). Stimatore NON polarizzato, a varianza minima.
+
+\[
+	[(y\in\R^{n\times 1})=(H\in\R^{n\times m})\theta_{vero}+\epsilon]
+\]
+
+con $n\geq m$. Abbiamo le seguenti informazioni:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\E[\hat{\theta}_{WLS}]=\theta\\
+	&\cov(\hat{\theta}_{WLS})=\inv{(H^\top\inv{R}H)}
+	\end{aligned}
+	\right.
+\]
+
+$C$ stimatore generico di $\theta$, non polarizzato e lineare in $y$, ha covarianza associata alla stima maggiore uguale a $\cov(\hat{\theta}_{WLS})$. Dobbiamo prendere un $C$ tale per cui:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\E[\hat{\theta}_C] = \E[C(H\theta_{vero}+\epsilon)] = CH\theta_{vero}+\centernot{C\E[\epsilon]}\\
+	&[D := C - \inv{(H^\top\inv{R}H)}H^\top\inv{R}]\\
+	&[DRD^\top = \cov(\hat{\theta}_C) - \cov(\hat{\theta}_{WLS}) \geq 0]\\
+	&[\underline{\cov(\hat{\theta}_C)\geq \cov(\hat{\theta}_{WLS})}]
+	\end{aligned}
+	\right.
+\]
+
+WLS rimane comunque di gran lunga lo stimatore più utilizzato.
+
+Gli \underline{\underline{INGRESSI PERSISTENTEMENTE ECCITANTI}} sono legati alla varianza di stima. Ingressi da fornire al sistema affinché le misure siano quanto più informative possibili. Si guardano ai valori singolari (minimo) della matrice $H$ per ottenere gli ingressi. Il valore singolare minimo rappresenta l'effetto distanza / lontananza / vicinanza dalla singolarità.
+
+Quando eseguiamo una stima, i valori singolari associati al regressore (elementi sulla diagonale), sono molto importanti! Il modello cinematico di un manipolatore è: $\nu=J(q)\dot{q}$. Incontrare una singolarità significa che la $q$ utilizzata per eccitare il sistema non fornisce contributo in quella particolare direzione.
+
+\subsubsection{OLS as Ordinary Least Squares}
+
+Se i minimi quadrati sono tali per cui come matrice dei pesi si prenda l'identica $I$, se i pesi sono tutti uguali, allora i WLS coincidono con gli OLS:
+
+\[
+	\left\{
+	\begin{aligned}
+	&(M=\alpha I) = ((a\in\R)I_{3\times 3})\\
+	&J_{WLS} = \frac{1}{\sigma^2}J_{OLS}\\
+	&\argmin_\theta{J_{WLS}} = \argmin_\theta{J_{OLS}}
+	\end{aligned}
+	\right.
+\]
+
+\subsection{Approccio Bayesiano - Maximum A Posteriori}
+
+Finora abbiamo parlato dei minimi quadrati pesati / non pesati e li abbiamo utilizzati in un contesto non Bayesiano.
+
+\subsubsection{Maximum A Posteriori}
+
+Vediamo ora la stima MAP (Maximum A Posteriori) (Approccio Bayesiano). $p(\theta)$ è un'informazione aggiuntiva. Il costruttore ci direbbe:
+
+\[
+	[p(\theta) = \frac{1}{C_1}\e^{-\frac{1}{2}(\theta-\theta^\star)^\top\inv{P}(\theta-\theta^\star)}]
+\]
+
+Quella a priori supponiamola Gaussiana. Il trucco è che l'informazione a priori dev'essere Gaussiana. La stima di MAP risulterebbe in:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[J_{MAP} = \frac{1}{2}(y-H\theta)^\top\inv{R}(y-H\theta) + \frac{1}{2}(\theta-\theta^\star)^\top\inv{P}(\theta-\theta^\star)]\\
+	&[\hat{\theta}_{MAP} = \argmax_\theta{p(\theta|Z_N) = \argmax_\theta{\frac{p(Z_N|\theta)p(\theta)}{p(Z_N)}} = \argmax_\theta{p(Z_N|\theta)p(\theta)}}]
+	\end{aligned}
+	\right.
+\]
+
+ove $\inv{P}$ è la covarianza A PRIORI. $\nabla_\theta{J_{MAP}} = 0$. Viene fuori un'equazione che risolve l'equazione normale dei minimi quadrati. Viene fuori:
+
+\[
+	(H^\top\inv{R}H+\inv{P})\theta = (H^\top\inv{R}H+\inv{P})\theta^\star + H^\top\inv{R}(y-H\theta^\star) = (\dots)
+\]
+
+\[
+	\left\{
+	\begin{aligned}
+	&\hat{\theta}_{MAP} = \theta^\star + K(y-H\theta^\star)\\
+	&K := \inv{(H^\top\inv{R}H+\inv{P})}H^\top\inv{R}
+	\end{aligned}
+	\right.
+\]
+
+Tutte le volte che fondo un'informazione a priori con una misura, la stima migliore si ottiene sommando alla predizione un fattore correttivo, il cui valore è proporzionale al residuo. [$\theta^\star$ è l'informazione A PRIORI (Predizione)]. $K$ parente stretta dei minimi quadrati. $\hat{\theta}_{MAP}$ è anch'essa una variabile stocastica. Possiamo calcolare valore atteso / \underline{covarianza}. Se facciamo questo calcolo otteniamo:
+
+\[
+	[\E[\hat{\theta}_{MAP}] = \theta_{vero}]
+\]
+
+Risultato naturale: la covarianza di $\hat{\theta}_{MAP}$ contiene il termine $\inv{P}$. 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\inv{L} := (H^\top\inv{R}H+\inv{P})\\
+	&K = LH^\top\inv{R}
+	\end{aligned}
+	\right. 
+\]
+
+Se abbiamo un'informazione a priori (es. misura di un circuito), l'informazione è l'inversa della covarianza. Additivo se il rumore è gaussiano. Anche se le misure sono uguali, purché siano indipendenti, allora la confidenza AUMENTA! L'informazione è sempre la stessa, ma aumenta la confidenza! Purché i dati siano indipendenti ovviamente. La covarianza diminuisce. Questo meccanismo è quello che tipicamente si usa quando si vuole fondere un'informazione a priori con un'informazione derivata dalle misure.
+
+\subsection{Minimi quadrati Ricorsivi - (R)WLS}
+
+Identificazione parametrica. Problema / Metodo / Implementazione dell'algoritmo dei minimi quadrati (Minimi quadrati ricorsivi, RECURSIVE WLS). I minimi quadrati servono per risolvere un problema inverso lineare (nei parametri) algebrico. O la soluzione esiste o ne esistono infinite. $x$ in norma minima che minimizza la distanza euclidea tra $y$ e $Hx$. $H$ è il Regressore. Quando il regressore è stretto ed alto (matrice stretta ed alta), allora abbiamo un'unica soluzione. Matrice che ha tante righe quanti sono i dati (le misure) e tante colonne quanti sono i parametri. Se abbiamo $n$ dati, abbiamo $n$ righe della matrice $H$.
+
+\begin{defn}{\textbf{Ordinary Least Squares}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&y=(H\in\R^{n\times m})x\\
+	&\hat{x}=\inv{(H^\top H)}H^\top y
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+Noi siamo nel caso: $n\geq m\ \land\ n\gg m,\ (n\gg 1)\to+\infty,(\dots)$. La matrice $H^\top H\in\R^{m\times m}$ è una matrice $m\ x\ m$. Se sono pesati (WLS), abbiamo:
+
+\[
+	[\hat{x}_R = \underline{\inv{(H^\top\inv{R}H)}H^\top\inv{R}y}]
+\]
+
+Se volessimo implementare questi algoritmi prima di implementare tutti i dati, l'algoritmo standard non si presterebbe molto bene. I minimi quadrati ricorsivi sono un metodo per calcolare la soluzione $\hat{x}$ in maniera ricorsiva. $\hat{x}_n$ associati ad $n$ dati calcolati. Quindi mi devo calcolare $\hat{x}_{n+1}$ associato ad $(n+1)$ misure come quello di prima $(\hat{x})$ più un termine correttivo additivo. Dal punto di vista delle applicazioni, l'esistenza della soluzione dei R(W)LS, è molto importante. Frequentissimi in Teoria del Controllo. In alcuni casi non c'è un'esigenza Real Time. Se devo fare un'interpolazione lineare di dati elettorali, probabilmente il tempo non è un constraint molto stretto. In TdC sì. \underline{CICLO CHIUSO}. La soluzione esiste nel nostro caso. Lemma dell'INVERSIONE MATRICIALE. Risultato algebrico che si sfrutta (nuovo). Nel caso MAP l'informazione viene integrata. La covarianza è addirittura minore di quella ML.
+
+Il $\hat{\theta}$ associato ad $n+1$ voglio calcolarlo come quello associato alle $n$ misure più un termine. Per calcolo diretto (brute force), si indicizza la matrice $H$ bidimensionalmente:
+
+\[
+	\left\{
+	\begin{aligned}
+	&H_{N+1}=\begin{bmatrix}H\\h^\top\end{bmatrix}\\
+	&R = \diag{\underline{(\sigma_1^2,\ \sigma_2^2,\ \dots,\ \sigma_N^2)}}
+	\end{aligned}
+	\right.
+\]
+
+ove il termine sottolineato è la covarianza delle misure. $h^\top$ è una nuova riga. I vettori sono sempre vettori colonna. Ci vuole il trasposto per renderli riga. Lo stesso per la matrice dei pesi. 
+
+\[
+	J_{WLS} = \frac{1}{2}(y_N-H\theta)^\top\inv{R}(y_N-H\theta) + \frac{1}{2}(y(N+1)-h^\top\theta)^\top r^{-1}(y(N+1)-h^\top\theta)
+\]
+
+Qui gioca un ruolo importante il fatto che $R$ sia diagonale, altrimenti i termini non sarebbero facilmente identificabili. Quindi facciamo il solito passaggio (gradiente del costo $J_{WLS}$ pari a 0 (imposizione)). Veramente per calcolo diretto:
+
+\[
+	(H^\top\inv{R}H+hr^{-1}h^\top)\theta = H^\top\inv{R}y_N + hr^{-1}y(N+1)
+\]
+
+Si sviluppa la somma e ci si ricorda che l'oggetto sulla destra è il $\hat{\theta}$ associato alle $N$ misure.
+
+\[
+	H^\top\inv{R}H\hat{\theta}_N + hr^{-1}h^\top\hat{\theta}_N - H^\top\inv{R}H\hat{\theta}_N -hr^{-1}h^\top\hat{\theta}_N
+\]
+
+è una quantità a somma nulla. Se la sommo al secondo membro dell'equazione precedente, otteniamo alla fine eseguendo opportuni raccoglimenti:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\hat{\theta}_{N+1} = \hat{\theta}_N + K_{WLS}(N+1)(\underline{y(N+1)-h^\top\hat{\theta}_N})\\
+	&[K_{WLS}(N+1) := \inv{(H^\top\inv{R}H + hr^{-1}h^\top)}hr^{-1}]
+	\end{aligned}
+	\right.
+\]
+
+\`E presente un fattore correttivo proporzionale alla differenza tra la misura al passo $(N+1)$ e la predizione (previsione) della misura $(N+1)$ sulla base delle $N$ misure. Se quella differenza facesse 0, allora quel dato sarebbe perfettamente identico a quello precedente. INNOVAZIONE. Se facesse 0, nonostante miglioreremmo la covarianza (diminuendola), non aggiungeremmo nuova informazione (innovazione). Il termine $(H^\top\inv{R}H+hr^{-1}h^\top)$ è proprio l'HESSIANO. Inversa della covarianza della stima di $\theta$ al passo attuale (al passo $N+1$). Proprio perché  l'Hessiano del costo, non presenta nulla di particolare se non la sua struttura. Somma di due matrici semidefinite positive. Od è uguale o più grande (covarianza od uguale o più piccola). La covarianza può migliorare se le misure sono indipendenti. Queste due formule apparentemente risolvono il problema. La struttura della formula è corretta. Fa esattamente quello che ci eravamo preposti. La formula di $\hat{\theta}_{N+1}$ ha veramente una struttura ricorsiva. La matrice HESSIANA non è detto che sia invertibile (es. se non lo è nessuna delle due). A volte la formula non ricorsiva si chiama BATCH (WLS in forma aggregata). Se nella versione BATCH non era invertibile, neanche adesso lo sarà! C'è quindi sempre da ipotizzare che quella matrice sia invertibile! 
+
+\[
+	[(H^\top\inv{R}H+hr^{-1}h^\top)\in\R^{m\times m}]
+\]
+
+es. $(m=1000)$. Ci sono però applicazioni ove la capacità di calcolo è molto limitata. Se dell'ordine di $(kHz),\ (MHz)$. Se $m=3,4$, se abbiamo un processore lento, in meno di un millisecondo NON è scontato che ce la facciamo con rapidità. C'è quindi un modo per riscrivere le formule di $K_{WLS}(N+1)$ in maniera tale da non calcolare una nuova inversa ad ogni passo?
+
+\begin{lemma}{\textbf{Lemma dell'INVERSIONE MATRICIALE}} 
+
+Siano $\{F,G,Q,W\}$ matrici di dimensioni opportune. Vale:
+
+\[
+	[\inv{(F+GQW)} = \inv{F} - \inv{F}G\inv{(\inv{Q}+W\inv{F}G)}W\inv{F}]
+\]
+
+\end{lemma}
+
+$F$ dev'essere invertibile. Anche $Q$ quadrata ed invertibile. Vale l'uguaglianza di cui sopra. Questo lemma dell'inversione matriciale si utilizza tantissimo in teoria della Stima. $r$ = COVARIANZA dell'ultima misura. Vale:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[S_{N+1} := H^\top\inv{R}H + hr^{-1}h^\top] = S_N + hr^{-1}h^\top\\
+	&[\inv{S_{N+1}} = \inv{S_N} - \frac{1}{\rho_N} \inv{S_N}hh^\top \inv{S_N}]
+	\end{aligned}
+	\right.
+\]
+
+C'è solo una somma! L'unica divisione è per $\rho_N$, che è uno scalare! Ricordiamo che $\inv{S_N}hh^\top \inv{S_N}$ è una matrice ovviamente. $H$ può anche essere molto grande dimensionalmente. Se la misura è scalare, come stiamo ipotizzando che sia, $\inv{S_{N+1}}$ lo calcoliamo semplicemente invertendo uno scalare e facendo una somma. Risultato veramente naturale. Se guardiamo $\{\hat{\theta}_{N+1},\ K_{WLS}(N+1)\}$, in particolare il secondo termine ci interessa l'inversa:
+
+\[
+	\left\{
+	\begin{aligned}
+	&V_{N+1} := \inv{S_{N+1}} = [V_N - \frac{1}{\rho_N}(V_Nhh^\top V_N)]\\
+	&K_{WLS}(N+1) = V_{N+1}hr^{-1}\\
+	&\hat{\theta}_{N+1} = \hat{\theta}_N + K_{WLS}(N+1)(y(N+1)-h^\top\hat{\theta}_N)
+	\end{aligned}
+	\right.
+\]
+
+Abbiamo quindi alleggerito la notazione eliminando l'apice ai termini $(\mathord{\cdot})^{-1}$. Come si inizializzerebbe? Prendiamo le prime $(n=m)$ misure, calcoliamo la soluzione batch sui primi $n$ dati (sperando ovviamente che il regressore sia ivi invertibile), ed il $\hat{\theta}$ calcolato lo utilizziamo come base per la regressione. La soluzione esatta (soluzione identica a quella che avremmo ottenuto in forma aggregata), si ottiene inizializzando opportunamente $\hat{\theta}$ e poi andando avanti. La buona notizia è che se davvero le misure sono informative ($H$ sempre informativo), la soluzione $\hat{\theta}_{N+1}$ converge al valore che avrei ottenuto in forma aggregata, se $H$ è ben posto. Converge asintoticamente a quella vera! Asintoticamente vuol dire asintoticamente! $(n\to +\infty)$. Se abbiamo la possibilità di inizializzarlo in maniera esatta, allora è tanto meglio. Inizializzazione in maniera esatta. BATCH fino a $n$ e poi algoritmo ricorsivo. Serve un numero di misure qualsiasi purché superiore ad $n$. L'approccio FIXED ricorsivo ha una convergenza limitata (e quindi a \underline{PASSO FINITO}). $V$ è la matrice di COVARIANZA. Matrice di covarianza simmetrica e semidefinita positiva. Supponiamo che $V_N$ fosse veramente semidefinita positiva. Nel fare questa sottrazione, potrei perdere la simmetria! $V_N$ dovrebbe simmetrica. $(V_N^\top=V_N)hh^\top V_N$. Potrebbero esserci problemi di arrotondamento numerico, in virtù di un'eventuale sopraggiunta dell'errore di quantizzazione. Quindi formula chiusa per $V_{N+1}$ abbastanza poco robusta. La soluzione è aggiungere la parte simmetrica:
+
+\[
+	\frac{1}{2}(V_{N+1}+V_{N+1}^\top) \mapsto V_{N+1}
+\]
+
+Si potrebbe anche in realtà monitorare nel tempo la parte antisimmetrica (es. calcolo della norma e verifica che sia al di sotto di una certa threshold). La struttura PREDICTOR - CORRECTOR $\hat{\theta}_{N+1}$ è quella prodotta al passo precedente più un termine correttivo, il quale è 0 se l'INNOVAZIONE è 0, nonostante la covarianza migliori comunque, in virtù del fatto che le misure siano realmente indipendenti ($R$ diagonale, perfettamente).
+
+\subsubsection{Minimi quadrati a Memoria Finita}
+
+I minimi quadrati (forma aggregata e ricorsiva), integrano tutte le misure che abbiamo acquisito. Nessuna differenza dal punto di vista del contenuto informativo. $\theta$ chi è nei modelli che trattiamo? $\theta$ rappresenta il vettore dei parametri fisici del sistema. Li ipotizziamo costanti. Es: $\theta=\begin{bmatrix}m&X_u&X_{u\abs{u}}\end{bmatrix}^\top$. Interpolazione lineare. Siamo certi che abbiamo un andamento lineare. Se ho $n$ dati li processo tutti quanti. Integro nel tempo le informazioni che acquisisco. Ci sono situazioni ove i parametri sebbene siano costanti, non mi devo aspettare che lo siano sempre. Es. coefficienti di attrito, cambiano nel tempo a seconda dell'USURA! Se abbiamo un dispiositivo (pompa / caldaia / motore che girano in teoria per sempre), se faccio girare questo algoritmo ricorsivo, misuro i parametri su un tempo molto grande! I coefficienti / parametri cambiano! Possono essere influenzati dall'umidità / temperatura! Voglio dare un peso più piccolo ai dati più vecchi. Se abbiamo delle situazioni del genere (parametri costanti su una finestra temporale molto piccola), ma il periodo di misurazione è veramente grande, è opportuno dimenticare le misure molto vecchie:
+
+\[
+	\inv{R_{ij}} \mapsto \inv{R_{ij}} := \frac{(\delta_{ij})[0<\beta\leq 1]^{N-i}}{\sigma_y(i)}
+\]
+
+$\underline{\beta\in\R}$ è il \underline{\textit{coefficiente di oblio}} o forgetting factor. Se scelgo $\beta$ minore di 1, lo devo elevare ad una potenza (esponente) $(N-i)$, che dipende dalla posizione sulla diagonale. Quelli precedenti li rendo scalati opportunamente. Se $\beta<1$, i pesi sono sempre via via più piccoli. Peso in maniera minore i dati sempre più vecchi. Utilizziamo sempre la stessa formula di prima, ma adesso la stima gode di questa proprietà (\underline{MEMORIA FINITA}). Quanto $\beta$ è ragionevole che sia grande? Dimostrazione operazionale $\implies$ quanto dev'essere veloce? Si utilizzi Taylor. Il numero di dati che hanno veramente senso lo indichiamo con $m=\cardinality{componenti\ veramente\ significative}$, abbiamo:
+
+\[
+	[m\approx\frac{1}{1-\beta}] \implies
+	\left\{
+	\begin{aligned}
+	&m=20,\ \beta=0.95\\
+	&m=50,\ \beta=0.98\\
+	&m=100,\ \beta=0.99
+	\end{aligned}
+	\right.
+\]
+
+Se $(\beta=1)$ è esattamente la stessa di prima. Effetto di obsolescenza delle misure.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\rho_N = \beta r + h^\top V_Nh\\
+	&V_{N+1} = \frac{1}{\beta}(V_N-\frac{1}{\rho_N}(V_Nhh^\top V_N))
+	\end{aligned}
+	\right.
+\]
+
+Utilizzarla SOLO quando necessario! WLS molto belli ma hanno un grave limite! Molto poco robusti agli OUTLIER! Siamo in ipotesi di media nulla e covarianza $\sigma^2_y$. Naturalmente i WLS si fondano su una sorta di minimizzazione. Potrebbe sucedere nella pratica che un valore $y$ sia veramente  a caso! Residuo in questo caso molto grande. Se i WLS dovessero accorgersene, essendo perfetti, dovendo riprodurre l'andamento medio, allora sposterebbero tutte le misure! Quindi i WLS NON sono per nulla robusti agli outlier!
+
+\begin{defn}{\textbf{BDP as Break Down Point di uno Stimatore}}
+
+Il BDP è il numero di dati perturbatori tali per cui il $\hat{\theta}$ rispetto a quello vero si discosta arbitrariamente:
+
+\[
+	BDP := \lim_{n\to\infty}{\frac{\abs{o}}{n}}
+\]
+
+dove $o$ sono i \textit{Perturbatory Outlier}.
+
+\end{defn}
+
+I WLS hanno BDP pari a 0. Un singolo dato può perturbare significativamente la misura. Potrei calcolare i minimi quadrati su tutte le possibili combinazioni, ma comunque non va bene! Se i dati non li cancello mai, anche in caso di parametri costanti, allora progressivamente quelle misure vanno quasi NON prese più in considerazione. Quindi la \underline{MEMORIA FINITA} è utile anche in questo. BIAS arbitrariamente grande anche con un OUTLIER. Se ne prendiamo anche la metà più uno, verranno poi alla fine esclusi! (\textit{Least Trimmed Squares} as LTS).
+
+\subsection{Filtro di Kalman}
+
+REGRESSIONE (Stima ai Minimi Quadrati per l'Osservazione dello Stato). FILTRO DI KALMAN. Tutto quello che avevamo visto era per $\theta$ costante (parametri costanti). In TdS (sistemi dinamici in forma di stato), si ha una misura che assomiglia ad $Hx$, ma non più costante! $x$ evolve. Stimare lo stato $x$ sulla base delle misure $y$. [FILTRO DI KALMAN] $\rightarrow$ non è altro che i WLS applicati a questi problemi qui!
+
+\begin{defn}{\textbf{Equazione dinamica dello stato}}
+
+\[	
+	\left\{
+	\begin{aligned}
+	&x\in\R^{n\times 1}\\
+	&x(k+1) = Ax(k) + Bu(k) + \omega(k)\\
+	&y(k) = Cx(k) + Du(k) + \epsilon(k)
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+Filtraggio alla \underline{KALMAN}. In tantissime applicazioni robotiche i filtri di Kalman si utilizzano tantissimo. Il risultato è che:
+
+\[
+	[\hat{x}(k+1|k+1) = \underline{\hat{x}(k+1|k)} + K_{k+1}(y(k+1)-C\hat{x}(k+1|k) - Du(k+1))]
+\]
+
+ove il LHS è la stima che facciamo a $k+1$ avendo integrato tutte le misure sino a $k+1$, il termine sottolineato è la stima al passo precedente, ed il rimanente termine è al solito un termine correttivo. $D$ serve semplicemente per motivi tecnici. In tal caso il regressore include anche il modello! La difficoltà è proprio che $x$ non è costante! \`E una stima MAP, sostanzialmente. \`E intrinsecamente ricorsivo (loop-based). Supponiamo di avere una stima ottenuta al passo $k$. Come posso aggiornare questa stima? Due sorgenti di informazioni: \{modello, stima\}. Prima di avere la misura: $[x_{nuovo} = Ax_{vecchio} + Bu]$. Ipotesi che fa il modello indipendente dalla misura \{modello + stima pregressa\}. $C\hat{x}(k+1|k)$ è il termine utilizzato nel calcolo dell'INNOVAZIONE. Qualcuno mi deve dare l'inizializzazione $\hat{x}(k|k)$, la quale è un'informazione A PRIORI. Ma se il sistema è completamente OSSERVABILE le misure sono indipendenti (ipotesi standard sull'errore), ed allora l'oggetto $\hat{x}(k+1|k+1)$ converge alla Stima ottima, asintoticamente, e quindi inizializzabile più o meno a caso. Il Filtro di Kalman è praticamente un filtro alla Louenberger ove il guadagno NON è costante ma una matrice $K_{k+1}$ tempo variante che dipende dalla COVARIANZA. $\{A,B,C,D\}$ potrebbero essere anche T.V.! $\{A(t),B(t),C(t),D(t)\}$. Tipicamente NON si utilizza questo algoritmo! FILTRO DI KALMAN ASINTOTICO. MATLAB ha la funzione che ci permette di utilizzarne la versione asintotica. $\omega(k)$ è l'errore di processo. Può modellare tante cose! Anche una conoscenza non perfetta di $u(k)$, oppure incertezze sul modello. $\epsilon(k)$ riguarda invece l'errore di misura. La GAUSSIANIT\`A del rumore di processo / misura garantisce l'ottimalità del filtro (altrimenti il filtro sarebbe sub-ottimo).
+
+\[
+	\left\{
+	\begin{aligned}
+	&\left\{
+	\begin{aligned}
+	&\E[\omega(k)]=0\\
+	&\E[\epsilon(k)]=0
+	\end{aligned}
+	\right.\\
+	&\left\{
+	\begin{aligned}
+	&\cov(\omega(k)) = \E[\omega(k)\omega(k)^\top] = Q(k)\\
+	&\cov(\epsilon(k)) = \E[\epsilon(k)\epsilon(k)^\top] = R(k)
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+Se:
+
+\begin{itemize}
+
+\item{$\norma{K}\to 0 \implies$} stima al passo attuale coincide con $x(k|k)$ che è il modello;
+\item{$\norma{K}\to+\infty\implies$} ci fidiamo molto del SENSORE.
+\end{itemize}
+
+
+\section{Pseudoinverse in generale / SVD}
+
+Puntualizzazione di alcuni concetti. Legame tra le pseudoinverse calcolate con i minimi quadrati (a rango pieno, pseudoinversa sx e dx). Legame tra WLS e DWLS. La versione smorzata o l'SVD si utilizza quando la matrice non ha rango pieno. Psuedoinverse pesate, nell'approccio minimi quadrati. Quando abbiamo visto l'SVD i pesi non c'erano. Conti aggiuntivi da fare. MINIMI QUADRATI PESATI (SMORZATI) DWLS.
+
+\subsection{SVD con Matrice dei Pesi}
+
+Problema: modello. Immaginiamo di essere nel caso opposto dell'Identificazione parametrica, ovvero nel caso più frequente in robotica (JACOBIANO):
+
+\[
+	y=(M\in\R^{(n<m)\times m})x
+\]
+
+Ricordiamo che $n<m$ è il caso più frequente degli jacobiani. In tal caso, quando $[\rank{M}=\max\rank{M}=n]$, il kernel ha dimensione $m-n$ per via della nullità più rango. Rango + kernel insieme hanno dimensione $m$. Prendiamo $((\inv{R})^\top = \inv{R}) > 0$ simmetrica definita positiva. Prendiamo come costo $C$:
+
+\[
+	C = \frac{1}{2}x^\top\inv{R}x + \lambda^\top(y-Mx)
+\]
+
+Si calcola il gradiente di questo oggetto e lo si imponga uguale a 0. Conto già fatto:
+
+\[	
+	\nabla_x{C} = \inv{R}x-M^\top\lambda = 0 \implies [x=RM^\top\lambda]
+\]
+
+Quindi sostituendolo nel vincolo otteniamo:
+
+\[
+	\implies y = M(RM^\top\lambda = x) = (MRM^\top)\lambda
+\]
+
+La parentesi tonda $(MRM^\top)$ ha sicuramente rango pieno; sicuramente invertibile quindi. Essendo invertibile la invertiamo e troviamo $\lambda$:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\lambda=\inv{(MRM^\top)}y]\\
+	&[\hat{x}_{ott} = \underline{(RM^\top\inv{(MRM^\top)} := M^\dag_R)}y]
+	\end{aligned}
+	\right.
+\]
+
+dove il pedice $\mathord{\cdot}_R$ sta per right. La parte sottolineata è quindi la pseudoinversa dx. Non è necessario utilizzare l'SVD  in caso di $M$ a rango pieno. Se $R\neq I$ ed $M$ non ha rango pieno, allora facciamo l'SVD di tutta la parentesi tonda $(MRM^\top)$. Facciamo poi la "cancelletto" di tutta questa $\implies$ effettuiamo la pseudoinversa. La soluzione ottima in tal caso è:
+
+\[
+	\hat{x}_{ott} = RM^\top(MRM^\top)^\# y
+\]
+
+Le due formule sono molto simili. Se $M$ ha rango pieno, utilizzo direttamente $(MRM^\top)\mapsto\inv{(MRM^\top)}$. Per una matrice quadrata invertibile ($M$ rango pieno), $MRM^\top$ è quadrata e le due formule sono perfettamente coincidenti. L'SVD è più generale, ma ha un prezzo. Non basta fare l'inversa, ma proprio l'SVD! Computazionalmente più oneroso. Nel caso in oggetto $(n<m)$, l'inversione è fatta sulla dimensione minore. Meglio fare un'inversa $\R^{6\times 6}$ che un SVD $6\times 6$ (la matrice $MRM^\top\in\R^{n\times n}$). Se vogliamo pesare la pseudoinversa, dobbiamo necessariamente utilizzare questo approccio. Moltiplicando a sx per $M$ otteniamo l'identica nel caso di rango pieno, ed una matrice diagonale nel caso rank non-max.
+
+Nel caso $n>m$ invece $\max\rank{M}=m,\ \dim\ker{M}=0$. Caso rango pieno. La soluzione è esatta se $y\in\range{M}$, altrimenti la soluzione che andremo a cercare non sarebbe esatta. Il costo è il solito dei minimi quadrati. Se $y\in\range{M}\ \exists x\ |\ C(\mathord{\cdot})=0$, altrimenti ci dobbiamo accontentare di una quantità $C$ minima ma non nulla.
+
+\begin{defn}{\textbf{Equazione NORMALE dei Minimi Quadrati}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&C = \frac{1}{2}(y-Mx)^\top\inv{R}(y-Mx)\\
+	&\nabla_x{C} = 0 \implies (M^\top\inv{R}M)x-M^\top\inv{R}y=0
+	\end{aligned}
+	\right.
+\]
+
+\end{defn}
+
+Se $M$ ha rango pieno, allora $(M^\top\inv{R}M)$ ha anch'essa rango pieno $(m) \impliedby (M^\top\inv{R}M)\in\R^{m\times m}$, e possiamo quindi invertire la precedente equazione compattata senza problemi:
+
+\[
+	\hat{x}_{ott} = \underline{(\inv{(M^\top\inv{R}M)}M^\top\inv{R} := M^\dag_L)}y
+\]
+
+ove il pedice $\mathord{\cdot}_L$ sta per left. Se la mettiamo a sx di $M$, otteniamo proprio l'identica $I_{m\times m}$. Altrimenti calcoliamo la pseudoinversa di $(M^\top\inv{R}M)$. Se è quadrata e non ha rango pieno, allora il kernel NON sarà vuoto. Dal momento che siamo sicuri che $M^\top\inv{R}y\in\range{(M^\top\inv{R}M)}$, stiamo nello stesso spazio, $M^\top$ in entrambi i casi.
+
+Infinite soluzioni quindi ($\infty^{m-r}$ in numero) $\implies$
+
+\[
+	\rank{M} = r<m \implies [\hat{x}_{ott} = (M^\top\inv{R}M)^\# M^\top\inv{R}y]
+\]
+
+La $(\mathord{\cdot})^\#$ si calcola ovviamente con l'SVD, computazionalmente più oneroso. La pseudoinversa "cancelletto" pesata (weighted).
+	
+\subsection{Legame tra SVD e (D)WLS}
+
+Pseudoinverse smorzate. Trucco / Metodo per calcolare una pseudoinversa approssimata qualora la matrice $M$ non abbia rango pieno, senza utilizzare l'SVD. Approssimante della pseudoinversa sx/dx nel caso la matrice da invertire non abbia rango pieno. Approssimante rispetto alla versione della pseudoinversa che avrei ottenuto con l'SVD. Didatticamente utile per dimostrare l'utilità della pseudoinversa smorzata.
+
+D(W)LS (Damped). Caso più comune nelle applicazioni robotiche (pseudoinversa dx). Effettuiamo il caso senza pesi (wlog), tanto non lede di generalità concettuale. Discutiamo il caso di uno JACOBIANO. Reimpostiamo il problema di prima ma senza pesi. In generale, mi aspetto che tale sistema avrà un numero di soluzioni dipendenti dal fatto se $y\in\range{M}$. $y=(M\in\R^{(n<m)\times m})x$, $C_p = \frac{1}{2}\norma{x}^2$. In tal caso, se $M$ non ha rango pieno, non è detto che il vincolo DURO si riesca a soddisfare. $(MRM^\top)$ non ha rango pieno quindi. \`E come se venisse fuori un $\lambda$ divergente ($\norma{\lambda}\to+\infty$). La soluzione $\hat{x}_{ott}$, quando il vincolo non può essere soddisfatto in maniera esatta, divergerebbe anch'essa. $\dot{q}$ lo voglio finito, non infinito! Vogliamo una $x$ limitata. Soluzione $\hat{x}$ limitata. Quindi anziché richiedere che il vincolo sia soddisfatto in maniera esatta, cambiamo il costo e li aggiungiamo un termine che penalizza la distanza: VINCOLO SOFFICE:
+
+\[	
+	C = \frac{1}{2}\norma{x}^2 + \frac{\beta}{2}(y-Mx)^\top(y-Mx)
+\]
+
+$\beta$ è un coefficiente penalizzante. $\beta=0\implies$ il termine $\hat{x}$ è corto, ma non garantisce che la distanza tra $y$ e $Mx$ sia sufficientemente corta. La soluzione che minimizza $C$ si ottiene calcolando il gradiente e ponendolo uguale a 0:
+
+\[
+	\nabla_x{C} = x + \beta(M^\top Mx-M^\top y) = 0 = (\dots)
+\]
+
+Questa quantità va posta uguale a 0 e calcoliamo per $x$:
+
+\[
+	(\dots) = \beta((M^\top M + \frac{1}{\beta}I)x-M^\top y) = 0
+\]
+
+Il termine $(\frac{1}{2})$ sparisce nel fare le derivate. Ciò che abbiamo scritto è parente stretta dell'equazione normale dei minimi quadrati. Se il termine $\frac{1}{\beta}I$ non ci fosse, l'equazione sarebbe perfettamente identica all'equazione normale dei minimi quadrati. $(\beta>0)$. Il costo che minimizza dev'essere definito positivo. Altrimenti non penalizziamo nulla! $(\beta\in\R)$ è quindi uno scalare strettamente positivo.
+
+\[
+	(\underline{M^\top M} + \frac{1}{\beta}I)>0
+\]
+
+il termine sottolineato è una matrice simmetrica semidefinita positiva, anche se $M$ non ha rango pieno. Tutta la parentesi tonda è definita positiva in quanto è la somma di una matrice semidefinita positiva ed una definita positiva $\implies$ Matrice tra parentesi definita positiva e quindi invertibile. 
+
+\[
+	(M^\top M + \frac{1}{\beta}I)x = M^\top y
+\]
+
+La $\hat{x}_{ott}$ la possiamo quindi sempre calcolare. Anche nel caso eventualmente $y\in\range{M}$, nonostante $M$ non abbia rango pieno, una soluzione esatta c'è e la SVD me la individua! Questo metodo NON fornisce la soluzione esatta, anche quando questa esiste! $\iff y\in\range{M}$. Quindi nel problema dei minimi quadrati \underline{regolari}, $\nexists \inv{(M^\top M)}$, se $M$ NON ha rango pieno, nonostante $y\in\range{M}$. Questo sistema fornisce sempre una soluzione Approssimata! Se $(\beta\to+\infty)$, la \underline{soluzione approssimata tende} a quella esatta, calcolabile eventualmente con la SVD, pur non raggiungendola mai!
+
+In tal caso,
+
+\[
+	\hat{x}_{ott} = \underline{\inv{(M^\top M + \frac{1}{\beta}I)}M^\top}y
+\]
+
+ove il termine sottolineato è la pseudoinversa DAMPED LS. C'è un legame tra questa soluzione e quella ESATTA che troveremmo con l'SVD. $\SVD(M) := M = UDV^\top$. La $M$ pseudoinvertita è tale che:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[M^\# = \underline{VD^\# U^\top}]\\
+	&M^\dag_{DLS} = \inv{(M^\top M + \frac{1}{\beta}I)}M^\top
+	\end{aligned}
+	\right.
+\]
+
+$D$ è la solita matrice diagonale dei valori singolari. Per capire il legame tra le due, semplicemente sostituisco nell'espressione DAMPED, al posto di $M$, la sua regolare decomposizione ai valori singolari (SVD):
+
+\[
+	M^\dag_{DLS} = \inv{(M^\top M +\frac{1}{\beta}I)}M^\top = (\dots)
+\]
+\[
+	(\dots) = \inv{(VD^\top\centernot{U^\top U}DV^\top + \frac{1}{\beta}I)}VD^\top U^\top = \inv{[V(D^\top D + \frac{1}{\beta}I)V^\top]}VD^\top U^\top
+\]
+
+La parentesi tonda è sempre invertibile (semidefinita positiva + definita positiva), ed è inoltre anche quadrata $\iff (D^\top D + \frac{1}{\beta}I)\in\R^{m\times m}$. Utilizziamo la tale proprietà:
+
+\begin{corl}{\textbf{Proprietà di inversione del prodotto di TRE matrici}}
+
+\[
+	\inv{(ABC)} = \inv{C}\inv{B}\inv{A}
+\]
+
+\end{corl}
+
+otteniamo:
+
+\[
+	[V\inv{(D^\top D + \frac{1}{\beta}I)}\centernot{V^\top V}D^\top U^\top] = V\{\inv{(D^\top D + \frac{1}{\beta}I)}D^\top\}U^\top
+\]
+
+Se $(\beta\to+\infty)$, avremmo ritrovato esattamente quella di sopra (equivalente). Sappiamo che $D\in\R^{n\times m},\ D^\top\in\R^{m\times n}$. Supponiamo che $M\in\R^{(n=2)\times(m=3)} \implies D^\top D\in\R^{3\times 3}\implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\left[
+	\begin{aligned}
+	&D=\begin{bmatrix}\sigma_1&0&0\\0&\sigma_2&0\end{bmatrix}\\
+	&D^\top=\begin{bmatrix}\sigma_1&0\\0&\sigma_2\\0&0\end{bmatrix}
+	\end{aligned}
+	\right.\\
+	&D^\top D = \begin{bmatrix}\sigma_1^2&0&0\\0&\sigma_2^2&0\\0&0&0\end{bmatrix}\in\R^{m\times m}
+	\end{aligned}
+	\right.
+\]
+
+A questa $D^\top D$, dobbiamo aggiungere $\frac{1}{\beta}I$ prima di fare l'inversa:
+
+\[
+	(D^\top D + \frac{1}{\beta}I) = \begin{bmatrix}(\sigma_1^2+\frac{1}{\beta})&0&0\\0&(\sigma_2^2+\frac{1}{\beta})&0\\0&0&\frac{1}{\beta}\end{bmatrix}
+\]
+
+Anche $(\sigma_i=0)\implies\exists(D^\top D+\frac{1}{\beta})_{ii}\neq0$, ovvero comunque abbiamo un termine non nullo, il correttivo penalizzante $\frac{1}{\beta}$. L'inversa di tale matrice è semplicemente:
+
+\[	
+	\inv{(\mathord{\cdot})} = \begin{bmatrix}\frac{\beta}{\beta\sigma_1^2+1}&0&0\\0&\frac{\beta}{\beta\sigma_2^2+1}&0\\0&0&\beta\end{bmatrix}\in\R^{3\times 3}
+\]
+
+Confrontare la parentesi graffa con $D^\#$. Dobbiamo ora semplicemente moltiplicare la matrice qui sulla dx per $D^\top$:
+
+\[
+	\{\mathord{\cdot}\} = \begin{bmatrix}\frac{\sigma_1\beta}{\sigma_1^2\beta+1}&0\\0&\frac{\sigma_2\beta}{\sigma_2^2\beta+1}\\0&0\end{bmatrix} = \begin{bmatrix}\frac{\sigma_1}{\sigma_1^2+\frac{1}{\beta}}&0\\0&\frac{\sigma_2}{\sigma_2^2+\frac{1}{\beta}}\\0&0\end{bmatrix} = (\dots)
+\]
+
+\begin{itemize}
+
+\item{$(\beta\to 0)\implies$} tutto diventa singolare;
+\item{$(\beta\to+\infty)\implies$} abbiamo la soluzione che approssima arbitrariamente bene quella dell'SVD.
+\end{itemize}
+
+Altrimenti commettiamo comunque un errore:
+
+\[
+	(\dots) = \begin{bmatrix}\frac{1}{\sigma_1+\frac{1}{\beta\sigma_1}}&0\\0&\frac{1}{\sigma_2+\frac{1}{\beta\sigma_2}}\\0&0\end{bmatrix}
+\]
+
+\[
+	(\frac{1}{\beta\sigma_2}\ll 1)\implies \beta\sigma_2\gg 1\implies \underline[\beta\gg \frac{1}{\sigma_2}]
+\]
+
+Abbiamo utilizzato il termine con $\sigma_2$ dal momento che $\sigma_1>\sigma_2 \iff \frac{1}{\sigma_1}<\frac{1}{\sigma_2}$.
+
+Un metodo che si utilizza spesso in Robotica, per cui abbiamo a che fare spesso con questa situazione. Singolarità INTERNE (JACOBIANO perde rango), difficili perché potrei non conoscerle a priori. Poi abbiamo quelle di fondo corsa (banali). Quando mi avvicino a fondo corsa, l'algoritmo divide per 0 quando fa l'inversa sostanzialmente! Quando siamo in questa postura, allora è sbagliato utilizzare la normale pseudoinversa! Bisogna necessariamente smorzarla!

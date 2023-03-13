@@ -1,0 +1,1136 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../rob.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Teoria del Controllo}
+\label{cap:ctrl}
+%************************************************\\
+
+\section{Controllo di manipolatori}
+
+Controllo cinematico dei manipolatori. Minimi esempi numerici di minimi quadrati.
+
+\subsection{Controllo cinematico di manipolatori}
+
+Controllo cinematico di manipolatori industriali. Dettagli delle pseudoinverse di una matrice. Pseudoinversa sx e dx. Ottimizzazione dell'approssimazione del costo dei minimi quadrati e situazione più generale dell'SVD. Una delle situazioni più comuni in Robotica ove si utilizzano questi strumenti è:
+
+\[
+	(\dot{x}\in\R^{6\times 1}) = J(q)\dot{q}
+\]
+
+$\dot{x}$ include la velocità lineare e quella angolare dell'end-effector. In generale, se parliamo di Jacobiano geometrico, $\dot{x}$ ha un senso fisico ben definito, in quanto le tre componenti della velocità angolare sono ben poste. $x$ invece non ha un significato fisico ben definito. Potremmo parlare con ADN di $x$ come una quantità da regolare. Per le ultime tre componenti si pone il problema. Vogliamo però controllare l'orientazione della terna. Con la cinematica elementare (Denavit - Hartenberg), e con le varie regole di propagazione galileiane delle velocità, siamo arrivati alla seguente notazione: $J\in\R^{6\times n}$, ove $n$ è il numero di giunti. $q$ compare sia come derivata che come argomento. Matrice in generale non lineare e tempo - variante. Facciamo finta di poter assegnare istantaneamente $\dot{q}$, cosa assolutamente non vera, dal momento che i motori elettrici sono molto leggeri e veloci, ma relativamente molto meno potenti di quelli idraulici. Nelle applicazioni manifatturiere / industriali, si utilizzano quasi sempre quelli elettrici. Più facilmente interfacciabili con il PC / Schede. Invece in applicazioni di edilizia abbiamo le GRU (motori idraulici). In entrambi i casi, la variabile d'uscita è $\dot{q}$. $\dot{q}$ quindi non la assegnamo in maniera istantanea! Per un motore idraulico l'ingresso è la pressione. E poi questo motore genererà $\dot{q}$. Facciamo finta di poter assegnare istantaneamente l'ingresso $\dot{q}$. Trascurare questa dinamica è sensato in almeno due scenari:
+
+\begin{itemize}
+
+\item Se è vero che la dinamica in CICLO CHIUSO è molto lenta rispetto alla dinamica del singolo attuatore, allora quella dinamica è trascurabile;
+\item Magari non è vero che il vincolo non sia soddisfatto, ma vogliamo far finta che la dinamica del motore non vi sia, allora risolviamo il problema e poi utilizziamo la tal variabile $\dot{q}$ come RIFERIMENTO.
+
+\end{itemize}
+
+Serve comunque fare un'analisi dettagliata per verificare che le prestazioni siano garantite. \`E quindi utile in ogni caso utilizzare il modello cinematico. $\dot{x}=\begin{bmatrix}v_x&v_y&v_z&\omega_x&\omega_y&\omega_z\end{bmatrix}^\top\in\R^{6\times 1}$. Supponiamo di avere risolto il problema del controllo dell'assetto della terna. Alla fine dell'esercizio, abbiamo trovato una formula di controllo che ci dice quali devono essere le velocità angolari (le $\omega$ che vorrei che l'end-effector avesse perché tale terna si possa riorientare automaticamente), $\omega_d$ potrebbe pure essere tempo - variante. $\omega$ è quella che risolve il problema di assetto. Un EE voglio sia orentarlo che posizionarlo (linearmente). Detta $p$ la posizione dell'origine della terna dell'EE, $\begin{bmatrix}\dot{x}&\dot{y}&\dot{z}\end{bmatrix}^\top := \dot{p} = v$.
+
+\subsubsection{Idea di base}
+
+ASSEGNATO $p_d$, 
+
+\[
+	e = p-p_d\implies \dot{e}=\dot{p}-\dot{p}_d = v - (\dot{p}_d)
+\]
+
+Ad occhio, riconosciamo che basta prendere:
+
+\[
+	\implies v = \dot{p}_d - Ke = \dot{p}_d - K(p-p_d)]
+\]
+
+Se istante per istante $v$ avesse questo riferimento, la dinamica andrebbe esponenzialmente a 0 ($\iff e\tendsto{EXP}0$). A questo punto, vorrei che il mio EE avesse quella come velocità lineare, ed anche $\omega$ quella dell'esercizio sul controllo di assetto (giustapposizione). Velocità (lineare ed angolare) che la terna vorrei che avesse. Ma noi manipoliamo le $\{q,\dot{q}\}$! Bisogna vedere se lo JACOBIANO è quadrato, rettangolare (stretto ed alto, basso e lungo, quadrato). Se è SOTTOATTUATO, per definizione non è certo che riusciamo a trovare una soluzione. Bisogna sempre vedere se $\dot{x}\in\range{J}$. Può essere che la velocità che vogliamo non sia compatibile con la dinamica del manipolatore. Minimizzazione dell'approssimazione rispetto al criterio dei minimi quadrati. Per un manipolatore sottoattuato, solo se strettamente necessario, bisogna genericamente andare a progettare la velocita desiderata (generalizzata, $\dot{x}$) in maniera tale che A PRIORI $\dot{x}\in\range{J}$. Se il manipolatore è quadrato, e \underline{RIDONDANTE}, allora non abbiamo di questo problema, purché non ci troviamo in condizioni di singolarità ovviamente. Le componenti della $v$ non sappiamo da dove derivino! A priori non sappiamo come quella $\omega$ sarà fatta, eppure è utile quella relazione se il manipolatore è perfettamente attuato o sovrattuato. Facciamo il caso RIDONDANTE (Jacobiano con più colonne che righe). Manipolatore almeno antropomorfo (almeno sette gradi di libertà). 
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{q}=J^\dag_R(q)\dot{x}_d\\
+	&\dot{x}_d = \begin{bmatrix}\dot{p}_d-K(p-p_d)\in\R^{3\times 1}\\\begin{bmatrix}\omega_x\\\omega_y\\\omega_z\end{bmatrix}_{CLOSED\ LOOP}\in\R^{3\times 1}\end{bmatrix}\in\R^{6\times 1}
+	\end{aligned}
+	\right.
+\]
+
+ove $CLOSED\ LOOP$ sta per indicare il riferimento di velocità angolare che ci fa convergere all'ingresso desiderato. $(R^\top=R)>0$. 
+
+\[
+	[J^\dag_R(q) = \inv{R}J^\top\inv{(J\inv{R}J^\top)}]
+\]
+
+Tale formula ha senso se e solo se $J$ ha rango pieno. Un'alternativa a questa formula è utilizzare $J^\#$ dell'SVD oppure utilizzare i minimi quadrati SMORZATI.
+
+Questa è l'inversa $\forall R$, se $J$ è quadrato. Tutto questo formulone coincide con l'INVERSA STANDARD. Se è RIDONDANTE o perfettamente quadrata, tale formula risolve perfettamente il problema. Se vi è una SINGOLARIT\`A, potrei sempre utilizzare i minimi quadrati smorzati, o l'SVD. Nella configurazione singolare NON è detto che $\dot{x}\in\range{J}$.
+
+\subsubsection{Proiettore nel nullo dello JACOBIANO}
+
+Tale operatore di pseudoinversa permette di calcolare il $(\dots)$ (proiettore):
+
+\[
+	\dot{q} = J^\dag_R(q)\dot{x}_d + \underline{(I_{n\times n} - J^\dag_R(q)J(q))\underline{\dot{q}_0})}
+\]
+
+ove la matrice tra parentesi del secondo addendo è il proiettore nel nullo di $J$. Tutto il secondo addendo è la VELOCIT\`A INTERNA. Se a ciascun punto del manipolatore assegnassi il tal comando, non disturberei il task primario:
+
+\[
+	J(q)\dot{q} = (J(q)J^\dag_R=I)\dot{x}_d + J(q)(I_{n\times n} - J^\dag_R(q)J(q))\dot{q}_0 = \dot{x}_d \impliedby
+\]
+\[
+	\impliedby J(q)(I_{n\times n} - J^\dag_R(q)J(q))\dot{q}_0 = (J(q)-J(q))\dot{q}_0 = 0\ \forall \dot{q}_0
+\]
+
+Se prendiamo $\dot{q}_0$ e lo assegnamo così com'è, lo proiettiamo nel nullo dello JACOBIANO, ciò non compromette il task primario di posizionamento e di orientazione. Per definizione di proiezione nel nullo, non genero alcuna velocità nell'EE. Nell'Ingegneria, ogni qualvolta abbiamo ridondanza, possiamo sfruttarla per un criterio di ottimo. L'ENERGIA CINETICA la possiamo calcolare sfruttando un momento d'INERZIA (matricione), che contiene tutte le masse ed i momenti d'INERZIA (masse generalizzate); operatore d'INERZIA. Generalizza la formula dell'Energia Cinetica:
+
+\[
+	[T=\frac{1}{2}\dot{q}^\top (M=M(q)\in\R^{n\times n})\dot{q}]
+\]
+
+ove $M$ è l'operatore di INERZIA. $M$ = matrice di INERZIA. Per un umano $M\in\R^{7\times 7}$. $(M(q)=M(q)^\top)>0$ simmetrica definita positiva. Possiamo calcolare il $\dot{q}$ che minimizza l'energia cinetica $(\dot{q}_0=0)$. Oppure se non ce ne freghiamo dell'energia, possiamo stabilire a PRIORI che alcuni giunti li vogliamo muovere di meno. Opportunità che viene sfruttata moltissimo. Mettiamo un peso molto alto a dei giunti ROTTI.
+
+Questa formula ha suggerito un approccio al controllo orientato al TASK.
+
+\subsection{TASK ROBOTICI}
+
+\begin{defn}{\textbf{TASK ROBOTICO}}
+
+Obiettivo di moto descritto da un qualche riferimento di velocità nell'end-effector (spazio operativo).
+
+\end{defn}
+
+Ma può anche essere definito nello spazio dei giunti. Obiettivo di moto. Formula molto importante. Gestire alcuni task con un qualche criterio di priorità. Se NON finiamo in una singolarità, utilizzando quella legge di Controllo soddisfiamo esattamente $\dot{x}_d$, qualsiasi $\dot{q}_0$ esso sia. TASK PRIMARIO. Invece per i \underline{task secondari}, che non garantiamo di compierli, cercheremo comunque di compierli compatibilmente con il task primario. Possibili scelte per $\dot{q}_0$:
+
+Lo spirito di $\dot{q}_0$ è quello di evitare le singolarità. Potrei essere in una posa tale per cui alcune $\dot{x}$ non le riesco a generare. Potrei comunque generarle mantenendomi lontano dalle singolarità. Obiettivo di costo secondario. TASK SECONDARIO $\implies$ ottimizzazione DEL COSTO $f(q)$. $f(q)\in\R\implies$
+
+\[
+	f(q) := \det{(JJ^\top)} = \det{(J(q)J^\top(q))}
+\]
+
+Se il $\det{\mathord{\cdot}}=0$, allora $q$ è in una singolarità. Ma abbiamo detto che il determinante NON è proprio una buona misura! $RCOND$ più utilizzato. Nella pratica $(f(q)\in\R)$ è un buon costo.
+
+\[
+	[\dot{q}_0 = +K(\frac{\partial f}{\partial q})]
+\]
+
+Mi muovo nella direzione nella quale tale BENEFIT aumenta (\underline{penalità}). $(+)$ come segno per massimizzare. Abbastanza oneroso. $J$ matricione complicato. Determinante di $JJ^\top$ onerosissimo, calcolabile numericamente ONLINE. Se mettessimo questo $\dot{q}_0$ lì dentro, è tale che ci allontaneremmo dalle Singolarità! Formula specifica poco semplice da utilizzare, perché il determinante è una funzione complessa! Si sa A PRIORI che le singolarità sono a \underline{fondo corsa} (sicuramente). Tipicamente NON conosciamo quelle interne. Prendiamo come:
+
+\[
+	f(q) = \det(J(q)J^\top(q))
+\]
+
+Un'alternativa (a parte $RCOND$) è una funzione di costo, magari quadratica che và all'infinito quando ci avviciniamo a fondo corsa. Oppure prendiamo una funzione che ha il massimo a metà dell'Escursione. I giunti hanno una \underline{corsa finita}. Tecnica di controllo orientata ai task.
+
+Sistema a blocchi corrispondente alla tal logica. Riproduzione:
+
+
+
+Sistemi con blocco di integratori. Impianto + pezzo del regolatore. $\dot{x}_d$ sappiamo anche come è fatta dietro le quinte. Se blackbox-assimo il penultimo integratore, possiamo pensare all'ultimo blocco d'integratori come un BANCO DI INTEGRATORI; con un riferimento costante abbiamo alla fine un errore di tracking nullo.
+
+Se utilizzassimo lo JACOBIANO ANALITICO alla fine avremmo proprio $x$. Ricordiamo che: $\omega_{CLOSED\ LOOP} := \begin{bmatrix}\omega_x&\omega_y&\omega_z\end{bmatrix}^\top_{CLOSED\ LOOP}$. $\dot{x}$ è la giustapposizione di $\omega_{CL}$ superiore: $\begin{bmatrix}\mathord{\cdot}&\omega_{CL}\end{bmatrix}^\top$. Il task secondario può essere qualunque cosa. Dal punto di vista dei segnali, il TASK SECONDARIO possiamo pensarlo come un disturbo. Ma il segnale che entra lì, non fornisce contributo alla fine $(J(q)(\mathord{\cdot})=0)$. Con lo JACOBIANO ANALITICO avremmo potuto scrivere i riferimenti sulle velocità angolari come quelle lineari. La parte sul controllo dell'ASSETTO sarebbe stata più semplice. Anche se gli angoli di Eulero hanno le loro singolarità brutte. Questo schema qui risolve il \underline{problema geometrico INVERSO}. Difficile. La cinematica diretta è un problema lineare non molto difficile. Immaginiamo che la posa desiderata sia costante $\iff (\dot{p}_d=0)\ \iff p_d=constant$. Asintoticamente la posa vera converge a quella desiderata (errore a 0). Se ci arriva arbitrariamente, quando l'errore è diventato sufficientemente piccolo, spengo tutto e la $q$ che mi ritrovo è quella giusta. Modi diversi: pose diverse, task secondario diverso.
+
+Posa è un termine tecnico che comprende \{posizione dell'origine della terna che la descrive, ed assetto di tale terna\}. Quindi la $q$ associata è una che risolve il problema geometrico inverso. Opportunamente codificandolo numericamente, quando $e$ scende sotto una certa threshold, exitiamo ed otteniamo così $q$. Si può utilizzare questo schema, implementato come schema di controllo, per risolvere il \underline{problema geometrico inverso}. Lo si può fare con delle differenti varianti. $J^\dag_R(q)$ lo si può fare con l'SVD, (D)WLS; formula esatta se non siamo in singolarità etc.
+
+\subsection{Modello cinematico dei manipolatori}
+
+Almeno due considerazioni del precedente discorso. Modello cinematico: $[\dot{x}=J(q)\dot{q}]$. Stiamo calcolando la soluzione inversa (controllo cinematico $\dot{q}$ che garantisce di mandare a 0 un errore di assetto e di posizione). Alla fine di tutte le fiere la soluzione era la seguente:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\dot{q}=J^\dag_R(q)(\dot{p}_d + K(p_d-p))]\\
+	&\dot{x}\in\R^{3\times 1}=J(q)\dot{q}
+	\end{aligned}
+	\right.
+\]
+
+Nel precedente paragrafo abbiamo risolto il problema facendo il diagramma a blocchi complessivo. Supponiamo che $x$ sia solo il vettore delle posizioni (della terna dell'end-effector). In ciclo chiuso verrebbe fuori:
+
+\[
+	v := \dot{p} = \dot{p}_d + K(p_d-p)
+\]
+
+$K>0$ definita positiva. In tal modo l'errore va esponenzialmente a 0. $J^\dag_R(q)$ è la pseudoinversa pesata di $J$ secondo $R$. Se $J$ ha rango pieno, la possiamo calcolare come:
+
+\[
+	J^\dag_R(q) = \inv{R}J^\top\inv{(J\inv{R}J^\top)}]
+\]
+
+Se $J$ NON ha rango pieno (e questo dipende da $q$), dobbiamo ricorrere ad una pseudoinversa calcolata con i minimi quadrati smorzati o all'SVD.
+
+In realtà:
+
+\[
+	\dot{q} = J^\dag_R(q)(\dot{p}_d+K(p_d-p)) + \underline{(I_{n\times n} - J^\dag_R(q)J(q))\dot{q}_0} \implies (\dot{x}_d-\dot{x})\tendsto{exp}0
+\]
+
+ove il termine sottolineato è una velocità che genera un movimento fermo (VELOCIT\`A INTERNA). $p$ e $x$ coincidono in tal caso. Nei precedenti paragrafi abbiamo invece distinto $p$ e $x$. Discorso perfettamente estendibile al caso in cui vi sia da regolare anche l'assetto. La struttura diverrebbe più semplice se utilizzassimo gli angoli di Eulero, e dovremmo in tal caso utilizzare lo JACOBIANO ANALITICO, anziché quello GEOMETRICO. $\phi$ sono gli angoli di Eulero correnti. Naturalmente questo Jacobiano, a seconda di chi è $x$, avrebbe delle dimensioni diverse.
+
+\subsection{Caso di assetto / posizione desiderata costante}
+
+C'è un caso particolare, ove l'assetto / posizione è costante. In tal caso il problema si può risolvere in maniera particolarmente semplice $\implies$
+
+\[
+	p_d=constant\implies p_d-p=e,\ [\dot{e}=(\dot{p}_d=0)-\dot{p}=-\dot{p}=-J(q)\dot{q}]
+\]
+
+Se vogliamo mandare $e$ esponenzialmente a 0, prendiamo come funzione di Lyapunov:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[V=\frac{1}{2}e^\top e];\\
+	&[\dot{V}=\dot{e}^\top e= -\dot{q}^\top J^\top(q) e = e^\top\dot{e} = -e^\top J(q)\dot{q}]
+	\end{aligned}
+	\right.
+\]
+
+Saremmo contenti se questa quantità fosse semidefinita negativa. Come posso scegliere $\dot{q}$ affinché tutta quella roba sia semidefinita negativa?
+
+\[
+	\dot{q}=J^\top(q)e \implies \dot{V}=-e^\top J(q)J^\top(q)e = -\norma{J^\top(q)e}^2
+\]
+
+La norma è sempre non negativa. Meno la norma è sempre non positiva. Può essere uguale a 0 solo se $(e=0)$ oppure se $e\in\ker{J^\top(q)}$. Quindi $\dot{V}$ è \underline{semidefinita negativa}. Ma se $J$ è uno JACOBIANO a rango pieno (come $J^\top(q)$), il NULLO è vuoto e quindi NON abbiamo singolarità. Con questo algoritmo di controllo non mando l'errore a 0 esponenzialmente se incontro una singolarità. La singolarità fa perdere rango a $J^\top(q)$. \`E abbastanza raro che accada: due condizioni / combinazioni di situazioni:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\det{J^\top(q)}=0\\
+	&e\in\ker{J^\top(q)}
+	\end{aligned}
+	\right.
+\]
+
+Può però accadere, sebbene sia infrequente. Le singolarità di fondo corsa sono le più comuni. Questa formula è infinitamente più semplice di quella precedente, potendo trascurare i TASK SECONDARI. Dovrei nel qual caso fare un'inversa. $\inv{(J\inv{R}J^\top)}\in\R^{3\times 3}$, ma sempre che la devo calcolare. Algoritmo appena visto molto più semplice, dobbiamo solo calcolare una trasposta. Ma NON riusciamo a fare Inseguimento di una traiettoria! Se avessimo fatto l'Analisi di Lyapunov con $p_d$ generico (non costante), allora sarebbe venuto fuori un termine aggiuntivo $(\dot{p}_d^\top e = e^\top\dot{p}_d)$, il quale non ha segno ben definito. Se l'errore dualmente è variabile in maniera lenta, nella pratica si può trascurare $\iff\dot{e}\approx 0$. Anziché andare a 0 esponenzialmente, convergeremmo in un intorno sufficientemente vicino dell'origine.
+
+In FdA, si mette una rampa $(\frac{1}{K})$. $K$ è la costante di Bode. Se il tempo di convergenza del regolatore è veloce, allora l'errore non va mai rigorosamente a 0, ma riusciamo comunque lentamente ad inseguirlo. Nella scelta della funzione di Lyapunov, avremmo potuto scegliere: $\dot{q}=[KJ^\top(q)e]$, con $K>0$ definita positiva. Alla fine è un controllo proporzionale. Se $K$ è sufficientemente grande (autovalori molto grandi), allora nonostante abbiamo un termine additivo non definito in segno, possiamo comunque rendere l'errore arbitrariamente piccolo. TRASPOSTA + Guadagno proporzionale. Per risolvere il problema cinematico inverso, questo algoritmo è molto utile. Scelgo la $p_d$ della quale voglio ricostruire una possibile $q_d$, ed in SW implementiamo questo controllo, inizializzandolo dove vogliamo noi. Stiamo integrando la CINEMATICA. Convergenza esponenziale (arbitrariamente veloce), ma l'errore và asintoticamente a 0! Soluzione approssimata che approssima tanto meglio quanto più siamo disposti ad aspettare. Nella pratica si utilizzano delle threshold. La configurazione finale è la posa desiderata. Per cambiare configurazione, o cambiamo $K$ oppure cambiamo le \underline{condizioni INIZIALI} $q_0$.
+
+\subsection{Considerazioni pratiche sulla soluzione generale}
+
+Quell'altra non consente in maniera semplice di introdurre l'idea del proiettore / task secondari. Attenzione alla formula generale: questione delle saturazioni. Non ne si parla mai nei corsi introduttivi controllo. Analisi di Stabilità in CICLO CHIUSO (Nyquist, Bode, etc.). A FdA non vi sono gli strumenti per capire cosa accade se $u$ è troppo grande in modulo $(\norma{u}\to+\infty)$, e l'attuatore non riesce ad esplicare il comando. Blocco che satura. La saturazione è un elemento fortemente NON LINEARE, e non si riesce a modellare ovviamente con Bode, Nyquist etc. Il task secondario NON perturba il primario:
+
+\[
+	[J(q)\dot{q} = (JJ^\dag = I)\dot{x}_d + J(\mathord{\cdot}) = 0]
+\]
+
+Ma se uno di questi comandi mi fa andare in saturazione, può accadere che (\dots)
+
+Se $(\norma{\dot{q}_0}\gg 1)\to+\infty$, allora il risultato netto è che il secondo addendo, ovvero tutto il secondo prodotto matrice vettore, NON è più detto che stia nel nullo di $J(q)$! Quindi potrebbe proprio sporcare / influenzare il task primario, nemmeno soddisfacendo al task secondario peraltro. Due strade per risolvere. Gli approcci sono:
+
+\begin{itemize}
+
+\item A PRIORI, progetto guadagni / pesi. Se prendo i guadagni del primario e del secondario sufficientemente piccoli, possiamo verificare che i giunti siano in limiti accessibili di velocità. Ma $\dot{p}_d$ potremmo non conoscerla A PRIORI! Questi guadagni vanno sempre scelti con un occhio allo sforzo di controllo;
+
+\item strada più analitica: Algoritmi di gestione delle saturazioni: $\forall$ giunto si introduce una quantità scalare, denominata CAPACIT\`A DEL GIUNTO. Scalare $(\mathord{\cdot}\in\R)$ che cambia dinamicamente. Se il giunto 7 sta andando a palla, non possiamo forzarlo ulteriormente (poca capacità residua). Tutto il vettore $(I_{n\times n}-J^\dag_R(q)J(q))\dot{q}_0$, se opportunamente scalato, sarà più corto ma comunque rimarrà nel nullo di $J(q)$. \underline{SCALING DINAMICO}. Si potrebbe includere un meccanismo di adattamento alla Lyapunov.
+
+\end{itemize}
+
+\subsubsection{Più task di ordine inferiore}
+
+Altro aspetto della formula: Generalizzazione della formula quando di task ne abbiamo più di due: \{Task I, II, III, (\dots) ordine\}. Concetto sempre lo stesso: proietto via via tutti i task nel nullo di $J(q)$. Supponendo di non avere saturazione: il task del III ordine deve evitare di sporcare sia il primo che il secondo. Tutto si riduce al calcolare opportunamente i proiettori. Meccanismo algebrico con cui calcolare i proiettori. Devono essere vettori tutti ortogonali i termini risultanti! JACOBIANO che dev'essere la giustapposizione di task! Task i-esimo $\implies$ calcolo jacobiano aumentato: ammassiamo sopra il proiettore di nostro interesse quello degli altri. Parecchi riferimenti che discutono questo caso. Due puntualizzazioni principali.
+
+\subsection{Modello dinamico dei manipolatori}
+
+
+Già visto quello del punto materiale. Non approfondiremo le equazioni. La derivazione più elegante ed efficace (Sciavicco / Siciliano) è quella fatta con la LAGRANGIANA. Ma non abbiamo i prerequisiti di \underline{meccanica razionale}. La struttura dell'equazione dinamica di un manipolatore è molto simile a quella del singolo corpo rigido. Naturalmente abbiamo più componenti (più gradi di libertà). Obiettivo: scrivere la dinamica in funzione delle variabili ai giunti. Equazione che lega $\ddot{q}$ all'equivalente RHS della $(\vec{F}=m\vec{a})$ (Newton). $q$ è calcolato nelle terne dei giunti. CORIOLIS + termini centrifughi. Perché le velocità sono su terne locali. Termini eventuali di attrito, termine di gravità. Esattamente come visto per un "semplice" sommergibile. Se l'oggetto è in aria, chiaramente non vi è Archimede.
+
+Chiamiamo con $\tau$ le coppie generalizzate (sistemi MIXED) (forze / coppie). Convenzione che utilizzano i Robotici: siccome nei manipolatori la stragrande maggioranza dei giunti è rotazionale, per indicare sia le coppie sia le forze, convenzionalmente si parla di COPPIE GENERALIZZATE. Se il manipolatore ha anche dei giunti prismatici, è ovviamente associata una forza ad essi su quell'asse di lavoro, ma per convenzione le chiamiamo tutte coppie generalizzate. Le forze / coppie che l'ambiente scambia con l'EE, per convenzione si chiamano FORZE GENERALIZZATE. Convenzione utilizzata da Sciavicco / Siciliano.
+
+\[
+	dW_\tau = \tau^\top dq\in\R
+\]
+
+\`E uno scalare, dato dal prodotto scalare tra $\tau$ e $\underline{dq}$, ove l'ultimo termine è lo spostamento infinitesimo di giunto. Tale formula restituisce in output il lavoro infinitesimo associato alle coppie generalizzate. Tutto questo nello spazio dei giunti. Nello spazio operativo invece, abbiamo:
+
+\[
+	dW_\gamma = f^\top dp + \mu^\top \underline{\omega dt}
+\]
+
+ove il termine sottolineato è lo spostamento infinitesimo angolare. \newline Più generalmente, $\{\underline{dp,\ (\omega dt)}\}$ possiamo pensarli come elementi infinitesimi del vettore $\dot{x}=J(q)\dot{q}$, ovvero $\bar{dx} = \begin{bmatrix}dp&\omega dt\end{bmatrix}^\top$. Abbiamo inoltre:
+
+\[
+	\left\{
+	\begin{aligned}
+	&J(q) := \begin{bmatrix}J_P(q)&J_O(q)\end{bmatrix}^\top\\
+	&\left\{
+	\begin{aligned}
+	&dp=J_P(q)dq\\
+	&\omega dt = J_O(q)dq
+	\end{aligned}
+	\right.
+	\end{aligned}
+	\right.
+\]
+
+$\{J_P,J_0\}$ sono delle restrizioni dello \underline{\underline{JACOBIANO GEOMETRICO}}. $J$ è lo JACOBIANO totale!!
+
+\begin{defn}{\textbf{Restrizioni dello JACOBIANO GEOMETRICO}}
+
+\[
+	[J(q)=\begin{bmatrix}J_P(q)&J_O(q)\end{bmatrix}^\top]
+\]
+
+\end{defn}
+
+$\sigma=\begin{bmatrix}f&\mu\end{bmatrix}^\top$. Il principio del lavoro virtuale, afferma che all'equilibrio ci sono delle coppie che agiscono in maniera tale che:
+
+\[
+	[\underline{dW_\tau = dW_\gamma}]
+\]
+
+(\underline{elementi infinitesimi uguali}). Ai giunti ed all'end-effector si intende chiaramente. $\tau$ sono le coppie generalizzate. Coppie che i giunti devono generare perché l'EE rimanga in equilibrio. Interpretazione fisica di $J^\top(q)$:
+
+\begin{thrm}{\textbf{Interpretazione fisica di $J^\top(q)$}}
+
+\[
+	\tau=J^\top(q)\gamma
+\]
+
+\end{thrm}
+
+COUPLING. Trasposto dello JACOBIANO. Quando siamo in singolarità (di $J(q)$), una certa $\dot{x}$ NON la possiamo generare con alcuna $\dot{q}$. \underline{$\dot{x}$ non raggiungibili}.
+Viceversa, quando lo JACOBIANO trasposto è in singolarità, può accadere che $\gamma\in\ker{J^\top(q)}$: ci sono delle forze applicate all'EE, per compensare le quali $(\tau=0)$. Quelle della direzione singolare! Struttura stessa che resiste. $\tau=0$ senza che lo sia $\gamma$! c'è uno spazio nullo in $J^\top(q)$. Rimaniamo all'equilibrio perché è la struttura stessa che compensa.
+
+\subsection{Ellissoidi di manipolabilità}
+
+\subsubsection{Ellissoidi di manipolabilità in velocità}
+
+Tali oggetti aiutano ad interpretare le singolarità. Possiamo considerare delle velocità ai giunti che hanno norma unitaria:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\underline{\dot{q}=J^\dag v}\\
+	&[\dot{q}^\top\dot{q}=1]
+	\end{aligned}
+	\right.\implies [v^\top(J^{\dag\top}(q)J^\dag(q))v = 1 \stackrel{PSEUDOINV-DEF}{\implies} [v^\top\inv{(J(q)J^\top(q))}v=1]
+\]
+
+L'ellissoide tende a schiacciarsi $\implies$ velocità unitarie nello spazio dei giunti generano velocità che sono solo lungo una direzione. Nell'alto ad esempio NON è possibile.
+
+\subsubsection{Ellissoidi di manipolabilità in forza}
+
+Per gli ellissoidi di forza, 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tau=J^\top(q)\gamma\\
+	&[\tau^\top\tau = 1]
+	\end{aligned}
+	\right.\implies \gamma^\top J(q)J^\top(q)\gamma = 1
+\]
+
+descrive questi ellissoidi, che rappresentano quali sono le forze generalizzate $(\gamma)$ associabili alle coppie generalizzate di norma unitarie. $J$ è decomponibile in $(U\Sigma V^\top)$. Le direzioni lì sono individuate da $U$. Gli ellissoidi associati a $\{U,V^\top\}$ dello JACOBIANO generano gli ellissoidi di manipolabilità. Utilizzati per capire qual è la postura migliore per un certo task. Configurazione meccanica migliore per velocità.
+
+DUALIT\`A CINETO-STATICA. $[\tau=J^\top(q)\gamma]\leftarrow$ questi termini compariranno nell'equazione dinamica. $\vec{F}=m\vec{a}$ ha $\vec{F}$ come risultante delle forze esterne. Ma se l'Ambiente genera una forza generalizzata $\gamma$, nei giunti si esplica invece $\tau$ (le coppie generalizzate). COPPIE generalizzate che generano i motori (esterne) + contributi derivanti dallo scambio. MAPPING in condizioni STATICHE!
+
+\subsection{RECAP}
+
+Sciavicco - Robotica Industriale.
+Modello dinamico dei Manipolatori. In particolare esso ha uina struttura che richiama quella di singolo corpo rigido (eq. differenziale del II ordine). Ricavarle nello spazio dei giunti ($q$ è l'incognita, variabile di giunto). Sostanzialmente è l'equazione di Newton per i manipolatori. Bilancio di coppie generalizzate. Ingresso: coppie generalizzate generate dai motori. $\{q,\dot{q}\}\rightarrow$ USCITA. Variabile desiderata / di controllo. Altre volte vogliamo generare una velocità nello spazio dei giunti. I termini macroscopici che compaiono sono:
+
+\begin{itemize}
+\item termine inerziale: matrice di INERZIA dipendente da $q$, simmetrica definita positiva; 
+\item termine di CORIOLIS. Mapping quasi - lineare (intuitivamente, ma non intrinsecamente).
+
+\end{itemize}
+
+Sia la $B(q)$ che la $C(q)$ hanno termini fuori dalla diagonale (la dinamica di un giunto dipende pure dagli altri oltre che da sé stesso). Sorta di accoppiamento, COUPLING; Troviamo inoltre termini aggiunti a posteriori rispetto alla derivazione di Lagrange:
+
+\begin{itemize}
+
+\item termini dissipativi; 
+\item ATTRITI (il più semplice è il viscoso, lineare; esso è il più semplice, proporzionale solo alla velocità). In alcune applicazioni (tipicamente subacquee), si mette pure quello quadratico $(\mathord{\cdot}u\abs{u})$. Termine che sperimentalmente si dimostra essere presente quando un corpo rigido è immerso in un fluido abbastanza denso (vedasi paracadutisti). Quello quadratico entra!
+\item Termine di gravità. Se siamo nello spazio quel termine non c'è. Sotto acqua ci sarebbe anche la Spinta di Archimede ($S_A=\rho V g$). Viene fuori dalla derivazione dell'energia potenziale.
+
+\end{itemize}
+
+Nell'RHS mettiamo le coppie generalizzate dei motori e quelle ambientali. [Equazioni di Newton - Eulero]
+
+\subsection{LAGRANGIAN EQUATION}
+
+\begin{defn}{\textbf{LAGRANGIAN EQUATION}}
+
+\[
+	[B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + F_s\sgn{\dot{q}} + g(q) = \tau - \underline{J^\top(q)h}]
+\]
+
+\end{defn}
+
+$h$ sarebbe la forza che ci si scambia con l'ambiente. Difatti quello sottolineato è il termine della dualità CINETO-STATICA, e comprende lo JACOBIANO GEOMETRICO.
+
+Problema del controllo. Questa equazione, come controllisti la studiamo per progettare una legge di controllo per $\tau$ in maniera tale che le $\{q,\dot{q}\}$ facciano quello che vogliamo noi. Fino ad ora abbiamo pensato che $\dot{q}$ fossero gli ingressi. Tra l'altro non c'è neanche un oggetto che mi produca una coppia arbitrariamente grande! I veri segnali (di basso livello) sono le tensioni di armatura (motori elettrici), etc. quello che tralasciamo per il momento è la derivazione di questo stesso modello mediante equazioni di Newton - Eulero (si tratta ogni giunto come corpo rigido, e si modellano anche le reazioni vincolari tra i vari giunti). Ma il modello NE è molto più interessante dal punto di vista del codice della simulazione (non solo di un manipolatore, ma di una qualunque struttura robotica complessa). Questa è l'equazione che userei per sintetizzare un controllore. Ma i parametri $\{B(q),C(q,\dot{q})\}$ non sono sempre scontati! Se vogliamo predisporre un'architettura SW apposita, questa non lo risolve. Invece con NE, si modella in maniera separata ogni giunto come corpo rigido (metodo versatile), e funziona nativamente in maniera ricorsiva. Algoritmo di NE anziché quello Lagrangiano. Entrambi i metodi portano comunque alla medesima equazione vettoriale.
+
+\subsection{Spazio dei Giunti e Spazio Operativo}
+
+Modello DINAMICO nello spazio dei giunti è esattamente quello che abbiamo visto. Incognita: $\{\tau\}$. Nel modello nello spazio operativo, l'incognita è la POSA della catena cinematica. Nel controllo cinematico dobbiamo pilotare $\underline{\dot{x}}$, ovvero la velocità della terna relativa allo spazio operativo, utilizzando le $\dot{q}$ come INGRESSI. Potremmo porci la stessa domanda per le pose. La $x$ e la $q$ non sono INDIPENDENTI! $\iff(\dot{x}=J(q)\dot{q})$. \`E possibile derivare l'equazione dinamica di Newton per il vettore che descrive la posa. \`E meno frequente utilizzare questo modello per il controllo (è $x$ qui l'incognita). Noi vogliamo sintetizzare un controllo in feedback. Se il controllo lo chiudessi direttamente sulla POSA, in tempo reale dovremmo acquisire la posa! Mediante $q$ però $(\dot{x}=J(q)\dot{q})$. \`E più lineare pensare al controllo manipolando le $\{q,\dot{q}\}$, dal momento che abbiamo ad esse più facile accesso! Potremmo misurare direttamente le $\dot{x}$, direttamente senza passare per le $q$! Tecniche di \underline{MOTION - CAPTURE}. Se misurassimo direttamente le $\{x,\dot{x}\}$, potremmo ivi chiudere la retroazione. Ma sarebbe più complicato! $\dot{x}=J(q)\dot{q}$ è il legame geometrico - cinematico. Ora vogliamo trovare un modello dinamico dove l'incognita è $\{x,\dot{x}\}$. Trascuriamo gli attriti ed isoliamo $\ddot{q}$ dall'equazione dinamica. Se vogliamo tirare fuori questo modello, le $\tau$ le dobbiamo scrivere come forze / coppie generalizzate generate dalle coppie generalizzate del sistema:
+
+\[
+	\ddot{q} = -\inv{B}(q)C(q,\dot{q})\dot{q}-\inv{B}(q)g(q) + \inv{B}(q)J^\top(q)(\gamma-h)
+\]
+
+ove $[B(q)>0\ \forall q]$ definita positiva, per la fisica newtoniana. Matrice di INERZIA. NON abbiamo singolarità. $\tau$ scritto in termini di $\gamma$. Questa la usiamo per tirare fuori un'equazione in $x$, la leghiamo a $q$ mediante la relazione cinematica e deriviamo. Sfruttando lo Jacobiano analitico:
+
+\[
+	\ddot{x} = J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}
+\]
+
+$J^\top(q)$ è quello GEOMETRICO. Per scrivere quello ANALITICO, è sufficiente effettuare il MAPPING (angoli di Eulero). La formula è strutturalmente uguale a prima. Non abbiamo più matrici di inerzia / CORIOLIS, ma matrici adeguatamente ritrasformate secondo lo \underline{JACOBIANO ANALITICO}. Alla fine è possibile riscrivere l'equazione differenziale del II ordine nelle variabili nello spazio operativo come: (Scrittura simbolica)
+
+\[
+	[B_A(x)\ddot{x} + C_A(x,\dot{x})\dot{x} + g_A(x) = \gamma_A - h_A]
+\]
+
+Non è comunque immediato sapere come sono fatti i termini: $\{B_A(x),\ C_A(x,\dot{x})\}$. Conto "teorico". Illustra il fatto che sia possibile scrivere la dinamica anche in questo modo. $\{\gamma_A,h_A\}$ sono rispettivamente:
+
+\begin{itemize}
+
+\item{$\gamma_A$}: risultante delle forze generalizzate indotte sull'EE dai motori;
+\item{$h_A$}: forze generalizzate sull'EE da parte dell'ambiente esterno.
+
+\end{itemize}
+
+Più il modello fisico si allontana dai nostri scopi, più ci risulta praticamente poco utile.
+
+\begin{thrm}{\textbf{Formule di MAPPING}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&B_A=\inv{(J_A\inv{B}J_A^\top)}\\
+	&C_A\dot{x} = B_AJ_A\inv{B}C\dot{q} - B_A\dot{J}_A\dot{q}\\
+	&g_A=B_AJ_A\inv{B}g
+	\end{aligned}
+	\right.
+\]
+
+\end{thrm}
+
+Il problema di controllo si può quindi formulare sia nello spazio dei giunti (più frequente in ambito industriale), che in quello operativo. Il concetto del problema di \underline{controllo cinematico} $(\dot{x}=J(q)\dot{q})$ permette di pilotare le $\dot{q}$ in modo tale che le $\dot{x}$ facciano quello che vogliamo noi (Si pongono problemi di sicurezza per i GRUisti). \`E possibile anche pervenire a delle soluzioni intermedie, oggi poco diffuse. Questo tipo di applicazioni (alle VAR) sono molto poco diffuse. Questo anche in soluzioni più complesse. Equipaggiamento di un ROV con un sistema di controllo automatico (Satellitare). Certi ritardi li deve gestire il veicolo, gli altri i manipolatori. Manipolazione giunti / giunti + EE. Pedaliera per il rilascio del cavo. Il ROV nuotava (risp. volava) in maniera molto elegante! Recupero oggetti. Knowledge Power.
+
+Possibili controlli. Saltiamo per il momento la Pianificazione di Traiettoria. Architettura generale di Controllo (controllo di posizione) $\rightarrow$ progettare a tavolino traiettorie / cammini che siano utili al task che dobbiamo compiere e soprattutto \underline{feasible} per la struttura. Bisogna rispettare quindi sia i vincoli ai GIUNTI che quelli esterni, di OSTACOLI. I metodi più semplici sono metodi di Interpolazione. Punto di passaggio / di via. Possono passare od i giunti o l'EE. Interpolanti vari. Un sacco di dettagli tecnici. Letteratura molto ampia sulla \underline{pianificazione di traiettoria}. I moti semplici sono possibili senza pianificazione al contrario di quelli reattivi! Almeno il controllo lo sappiamo fare!
+
+Prima distinzione: controllo nello spazio dei giunti VS controllo nello spazio operativo:
+
+\begin{itemize}
+
+\item{\textbf{Spazio dei Giunti}}: quella che viene retroazionata è la $q$. Noi vogliamo sempre regolare la POSA ma non trasduco la $x$ quando lavoriamo nello spazio dei giunti. Nei manipolatori tipici $q$ sono degli ANGOLI (ENCODER. Sensori di posizione angolare). Se voglio regolare le $x$ (mandando a 0 l'errore tra $x$ e $x_d$) lo devo fare imponendo una dinamica sulle $q$. La $x_d$ la potrebbe generare un Pianificatore. Con le mie $\tau$ non regoliamo l'errore nello spazio operativo, ma in quello dei giunti! $e := q_d-q\to 0$. Le $q_d$ che genero è quella associata ad $x_d$ che voglio! Catena diretta: elementi abbastanza ovvi: \{CONTROLLORE, ATTUATORE, \underline{TRASMISSIONI}, MANIPOLATORE\}. Per un manipolatore elettrico la trasmissione è molto importante! Lavorano ad Induzione. Campo magnetico variabile che genera una forza su un conduttore. Motori elettrici che lavorano con velocità alte e coppie relativamente basse. \underline{BRUSHLESS}. Efficienze alte quando la velocità di rotazione è molto alta $(\mathord{\cdot}\sim 10^3 rpm)$. Se vogliamo invece muovere una gru ci muoviamo a qualche grado al minuto! Nei manipolatori vogliamo coppie alte e velocità basse! Organo di trasmissione. Motoriduttore. Tecnicismo. Dettagli tecnici ma che incidono molto! Nei vari blocchi viene difatti indicato in maniera esplicita! Dissipano energia / scaldano. Introducono dei giochi! ASINCRONIA a livello di asse. Influiscono abbastanza pesantemente sulle performance dei manipolatori;
+
+\item{\textbf{Spazio Operativo}}: se avessimo invece lo schema di controllo nello spazio operativo, la variabile che misuriamo è proprio quella che controlliamo! Inoltre non abbiamo la black-box a monte del sommatore che produce l'inversione cinematica! Se nei parametri di DH (Denavit - Hartenberg) sbagliamo qualche parametro, allora l'errore si propaga! In questo caso però, il fatto di trasdurre $x$ è un po' un problema! Trasduttori complicati / costosi / molto poco comuni. Questo schema è solo apparentemente più semplice! L'inversione cinematica è comunque presente! Nascosta nel controllo tipicamente quindi molto più complicato! Abbiamo bisogno di fornire delle tensioni ai motori, che alla fine piloteranno le $q$! Quindi un'inversione alla fine la dobbiamo comunque fare! 
+
+\end{itemize}
+
+\subsubsection{CONTROLLO NELLO SPAZIO DEI GIUNTI}
+
+Vedremo per prima questa. Peraltro le idee / concetti di base nei due approcci sono alla fine sempre gli stessi. Ci sono sostanzialmente due macro approcci. In ambo gli approcci, abbiamo due schemi diversi:
+
+\begin{itemize}
+
+\item{\textbf{Controllo decentralizzato}}: consiste nel sviluppare regolatori / controllori tali per cui la decisione di cosa fare al giunto $i$-esimo dipende solo dal giunto $i$-esimo!
+\item{\textbf{Approccio centralizzato}}: raccolta delle informazioni di $\{q,\dot{q}\}$ e basare la scelta su di essi.
+
+\end{itemize}
+
+Modello non lineare dei manipolatori ed accoppiato. Quindi il controllo decentralizzato in linea di princiupio non potrebbe nemmeno esistere! A meno che non si accettino delle approssimazioni. Ovviamente avremo un modello approssimato! Quando queste approssimazioni \underline{di disaccoppiamento} dovessero essere ragionevoli, allora tutto va bene, altrimenti le performance non saranno molto buone! (Approssimazioni incompatibili con l'applicazione).
+
+\begin{defn}{\textbf{EQUAZIONE DINAMICA TOTALE}}
+
+\[
+	[B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + g(q) = \tau]
+\]
+
+\end{defn}
+
+Rispetto a quella vista NON c'è il termine di DRAG (termine di distacco coulombiano (C)). Nell'RHS c'è solo la $\tau$ generata dai motori. Le $q$ che ivi compaiono sono proprio le variabili ai giunti. Supponiamo giunti rotazionali. Variabili angolari ai giunti. Ma non pilotiamo proprio il giunto! Ma l'asse che viene prima rispetto alla trasmissione. Le scatole degli Ingranaggi riducono la velocità di rotazione. La $q$ che là compare $(\dot{q})$ sono le $\dot{q}$ dell'asse lento a valle della trasmissione. Mentre noi manipoliamo le $q$ a monte della trasmissione! Nei casi più semplici vi è solo un coefficiente di SCALING. Nella realtà le cose sono molto più complicate. Fenomeni di saturazione e zone morte (non linearità). $q$ è la variabile d'asse lento, $K_r$ è la matrice dei GUADAGNI (matrice diagonale) e \underline{$q_m$ è la variabile di giunto sul motore (\underline{asse veloce})}. Vale: $K_rq = q_m$. Nei motoriduttori ideali (si conserva la potenza meccanica, quindi l'energia generata per unità di tempo):
+
+\[	
+	\tau_m^\top\dot{q}_m = \tau^\top\dot{q} \implies \tau^\top\dot{q} = \tau_m^\top K_r\dot{q} \implies [\underline{\tau=K_r\tau_m}]
+\]
+
+In realtà la dissipazione c'è! La potenza ovviamente non si conserva in maniera esatta. Ma se ipotizziamo che l'efficienza sia ideale ($100\%$), allora il modello è il tale. $B(q)$, la matrice di INERZIA, che tipicamente include termini non diagonali, possiamo scriverla come:
+
+\[
+	[B(q) = \bar{B} + \Delta B(q)]
+\]
+
+Decomposizione valida. $\bar{B}$ matrice diagonale. Sulla diagonale abbiamo dei momenti di inerzia costanti. Abbiamo scritto $B(q)$ come somma di una matrice diagonale ed una generica (antidiagonale). Siccome $\bar{B}$ la vogliamo costante (cosa non sempre vera), mettiamo i valori medi dei momenti di inerzia in $\bar{B}$. 
+
+\[
+	\tau_m = \inv{K_r}\bar{B}\inv{K_r}\ddot{q}_m + F_m\dot{q}_m + d
+\]
+
+ove $d$ è un termine di fattori fuori diagonale. La $F_m$ è attrito viscoso. Diagonale. $\bar{B}$ diagonale, costante \underline{per costruzione}. Quindi quei due termini nell'equazione di Newton sono sicuramente quelli diagonali. Tutti gli altri, proprio perché sono fuori diagonale, li raccogliamo in $d$ (disturbi) ed abbiamo riscritto la Newton in tal modo. Facciamo finta che $d$ sia un disturbo, lentamente variabile. Sistema elementare del II ordine: $\ddot{y} + 2\xi\omega_n + \dots + y = (u)$. Mettiamo un polo nell'origine $(\frac{1}{s})$ nel regolatore. Se regoliamo le velocità basta la velocità. Se vogliamo regolare la POS ($q_m$), allora ne mettiamo un altro. $d$ in realtà non è una rampa / gradino! Ma lo trattiamo come se fosse abbastanza piccolo. A questo punto la sintesi la possiamo fare in frequenza! (In $\mathord{\cdot}(s)$). $[F_m=\inv{K_r}F_v\inv{K_r}]$. Scriviamo la fdt tra $\tau_m$ e $q_m(s)$ e facciamo la sintesi in frequenza (Bode, Nyquist, etc.).
+
+Se nel regolatore abbiamo un numero di poli nell'origine sufficientemente alto, reiettiamo i disturbi. Quando vedremo il \underline{controllo centralizzato}, ci renderemo conto che in realtà il $(d)$ lo conosco! Solo che non ho voglia di calcolarlo, infatti nella CPU che lo calcola dovrebbe contestualmente conoscere $\{q_m,\dot{q}_m\}$. Compensazione in avanti del $d$ (anche con il segno meno $(-)$).
+
+Abbiamo visto lo schema di controllo centralizzato / decentralizzato. Controllo di manipolatori articolati, sul modello dinamico. Modello dinamico inteso come l'equivalente della equazione di Newton per un corpo rigido (inerzia, gravità, attriti, Coriolis). Eq. differenziale del II ordine, espressa in forma vettoriale ($\forall$ componente di $q$). Le $\tau$ di attuazione siano dello stesso numero di $q$. Sistema completamente attuato. Ma vi potrebbe essere un manipolatore con un giunto passivo (più $q$ che $\tau$, sistema sottoattuato). \`E raro che vengano progettati a tavolino dei manipolatori del genere. Nello scenario visto sinora, questa equazione differenziale del II ordine è NON LINEARE. Nello spazio dei GIUNTI, abbiamo:
+
+\begin{defn}{\textbf{EQUAZIONE GENERALE DELLA ROBOTICA}}
+
+\[
+	[B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + g(q) = \tau]
+\]
+
+\end{defn}
+
+Non facciamoci ingannare dalla presenza del prodotto matrice / vettore. L'argomento è difatti presente nelle matrici come dipendenza funzionale. Matrici non necessariamente diagonali $\iff$ sistema ACCOPPIATO. Controllo: regolare le $q$ nello spazio dei giunti, oppure le $x$ nello spazio dell'EE. $[\dot{x}=J(q)\dot{q}]\leftarrow$ \underline{Legame cinematico}. Estensione del modello includendo per $\tau$ il modello dei motoriduttori. $\tau$ è l'ingresso fisico (coppie generalizzate di attuazione). Ma i dispositivi non generano algebricamente una $\tau$! Dinamica di mapping ed un termine di motoriduzione incluso nel modello: $[K_rq=q_m]$. ($q_m$ è la variabile dell'asse veloce, $q$ \underline{variabile dell'asse lento}). L'idealità consiste nel fatto che è solo un fattore di scala (stiamo trascurando non linearità e saturazioni). Mapping con i motoriduttori $\implies$ Realizzazione del modello (senza approssimazioni) raccogliendo a fattore comune i termini $(+d)$ accoppiati, non diagonali. Scomposizione del termine d'inerzia: $[B(q)=\bar{B}+\underline{\Delta B(q)}]$, ove il termine sottolineato rappresenta la differenza accoppiata. Effettuando questo raccoglimento, il modello si può pensare come l'interazione tra la parte lineare disaccoppiata e quella non lineare, accoppiata. Per un impianto lineare la sintesi la si fa tranquillamente con Bode, Nyquist, etc. Evidentemente $d$ lo si tratta come un disturbo (guadagni sufficientemente alti + poli nel'origine (eventuali)). Se avessi incluso $(+d)$ nel modello, avrei potuto ottenere delle migliori prestazioni. Il vantaggio di questa scomposizione è che ora il controllo è decentralizzato (elettronica messa proprio vicino al giunto). \{Motore + PID\}. $\{q_d,q\}\lor\{\dot{q}_d,\dot{q}\}$. Confronto e generazione locale del segnale. Controllo decentralizzato e lineare. Centralmente, lato HW e SW, dobbiamo calcolare le $q_d$ e ad ogni giunto dobbiamo mandare il proprio. Ma ogni scheda PID provvede poi alla decisione sull'attuazione (Intelligenza). Quasi sempre il vantaggio di avere un'architettura più semplice (come questa), NON è nella parte computazionale. Ma è un vantaggio tutto sommato minore, dal momento che con le attuali tecnologie HW, SW non è poi così difficile. Librerie SW già pronte (pacchetti che fanno SVD, inversioni, etc.). Il vantaggio è proprio nella complessità HW! BUS su cui trasferisco questi dati. I BUS industriali sono lenti (BUS CAN, $1\ Mbit/s$ di velocità), parenti stretti dell'Ethernet, ma più lenti [WiMUST]. I trasduttori (idrofoni) sono analogici. L'alternativa è averli digitali (connessi ad un unico bus). Acquisizioni su una scheda dedicata. Quelli acustici fanno sì che ognuno abbia la propria coppia di fili (idrofoni RX). Connettori abbastanza complessi. La complessità dell'HW è questa. Dimensionamento importante! Spesso nelle architetture dei manipolatori accade proprio questo. Trasporto locale + digitalizzazione locale eventuale.
+
+Un'analisi proposta nel libro di testo riguarda i possibili controlli (genericamente ci dovrebbero essere dei PID) localmente. Schemi più complicati. L'attuatore genera le $\tau_m$ in funzione di un certo ingresso. Es. motori elettrici. Il riferimento che ricevono è un segnale che dipende dalle applicazioni. In quelle più commercialmente frequenti, è predisposto per essere controllato IN POSIZIONE (riferimento di posizione). INPUT: $q_d$, retroazione con $q_m$. Altre volte si regola IN VELOCIT\`A (INPUT: $\dot{q}_d$), come riferimento. Nelle applicazioni avanzate (operazioni complesse), controllo della $\dot{q},\ (\dot{x}=J(q)\dot{q})$. Se trattiamo le $\dot{q}$ come ingressi, possiamo fare la trattazione sui task secondari etc. Se il PID è sufficientemente veloce rispetto alle $\dot{x}$, possiamo fare finta che $(\dot{q}_d\simeq \dot{q})$. Campionamento nell'ordine dei $\mathord{\cdot}\sim kHz$. Convergenza in meno di $1s$. Mentre la velocità dell'EE è più lenta (task con costanti di tempo maggiori del secondo). Se quella è la situazione, la $q_d$ possiamo fare finta che sia uguale a $\dot{q}$. Se abbiamo quindi un manipolatore regolato in velocità, possiamo fare tesoro dell'inversione cinematica. Discussioni piuttosto dettagliate sui regolatori di basso livello che è possibile utilizzare, a seconda del controllo in posizione od in velocità. \`E un esercizio di FdA. I modelli dei motori sono modelli lineari. Analisi / Sintesi di un regolatore PID più o meno articolata su un modello di motore elettrico a corrente continua. Sviluppare il modello di questi motori. TdS [Luogo delle radici]. Si possono effettuare varie approssimazioni semplificatrici. Ovviamente a seconda delle approssimazioni fatte il luogo delle radici cambia. Oltre al fare la sintesi (PID), questa discussione propone l'analisi tra l'uscita in ciclo chiuso ed eventuali disturbi che entrano nel modello (\textit{funzione di sensitività}), per valutare la robustezza ai disturbi di questi modelli. Tanto più il guadagno è grande più siamo robusti ai disturbi, od in generale termini additivi.
+
+Schema di un singolo GIUNTO. Unico giunto con un suo motore / attuatore, da cui viene generato un $\begin{bmatrix}\theta&\dot{\theta}&\ddot{\theta}\end{bmatrix}\mapsto\begin{bmatrix}q&\dot{q}&\ddot{q}\end{bmatrix}$. In particolare qui si regola in retroazione le $q$ (controllo in posizione). Uno schema molto utile di controllo in retroazione è l'aggiunta del termine di azione in avanti (feedforward). Tipicamente si mette l'inverso del modello. Per migliorare le prestazioni di velocità / prontezza in ciclo chiuso, non tanto alla reiezione dei disturbi. Siamo sull'$i$-esimo giunto (controllo disaccoppiato / indipendente). Possiamo mandare in avanti un termine additivo, anch'esso comunque dipendente dal solo riferimento del giunto $i$-esimo (spinta disaccoppiata). Compensazione in avanti locale! Non dipende dagli altri. Parte lineare disaccoppiata e termine $(+d)$. Per cancellare questo $d=d(q)$, dovrei raccogliere $\{q,\dot{q}\}$ dai sensori $(\underline{d=d(q,\dot{q}}))$. $\dot{q}$ per via di CORIOLIS. Attriti disaccoppiati già di per sé. Se dovessi compensare in avanti quella $d$, dovrei raccogliere localmente le $\{q,\dot{q}\}$. Dovrei raccoglierle tutte! Un'alternativa intelligente è mandare in avanti solo le frequenze zero! Ovvero il termine in continua, che include i termini persistenti. Schema: $\{q\to q(d)\}$, a regime. Il termine dei disturbi $[\underline{d(q)\to d(q_d)}]$. Quindi in tale schema potrei compensare $d_\alpha(q_d)$. $q_d$ lo pianifico a tavolino! Viene fatto offline! Utilizzo questa informazione per calcolare $d$ in funzione di $q_d$! Questo non dobbiamo calcolarlo online, real-time! Offline. Se $q_d$ è costante, $d$ sarà costante, $d(q_d)$ sarà costante, altrimenti neanche $d$ sarà costante. Ma è comunque calcolabile offline! Termine che aiuta. Il modello di controllo è \underline{DECENTRALIZZATO}, complessivamente. NON c'è alcune necessità di centralizzare la raccolta delle $q$. Facciamo comunque un'azione in avanti centralizzata, ma è offline, pianificata per l'appunto, perché dipendente da $q_d$. Modulo centralizzato a priori, calcolato a tavolino. Ma l'architettura nel suo insieme è complessivamente decentralizzata, nel feedback sicuramente. L'azione in avanti serviva a migliorare le prestazioni in termini di prontezza $G(s)H(s)=1\ \forall s$, \underline{ovunque}. Migliora le prestazioni se abbiamo una prontezza alta! Se $q_d$ è un segnale non costante ma con uno spettro alto, allora è utile. Altrimenti non cambia nulla, neanche ce ne accorgeremmo. Non necessariamente se metto tutti i termini faccio meglio. Nel valutare il compromesso peso tutte le complessità. Trade / Off. Se un termine non c'è, "non si può sapere". Filosofia "Less is Better", a meno che non ci serva realmente per le prestazioni. In realtà nei casi più comuni quei due termini (blocchi in alto) non vi sono, soprattutto se gli ambienti includono delle dinamiche lente, magari con la necessità di controllo in posizione. Dipende strettamente dal task.
+
+
+\underline{Controllo centralizzato}. Le idee dietro questa architettura sono quelle viste in ACT. Controllo dei sistemi non lineari alla Lyapunov. Consiste nell'affrontare gli stessi problemi di prima (regolare le $\{q,\dot{q}\}$), sviluppando una sintesi in ciclo chiuso non necessariamente trascurando i termini di non linearità (accoppiamento). Evitiamo di decomporre il sistema nella parte lineare - non lineare. $K_rq=q_m$. Includiamo qui anche la dinamica elettrica, mettendola a sistema con l'equazione generale della Robotica. Noi guardiamo a $\tau$ come ingressi all'impianto, ma in realtà ad esso forniamo delle tensioni di ARMATURA! Necessario modificare proprio il modello. Circuito ove viene generato il campo magnetico che mette in rotazione il rotore:
+
+\[
+	[L\frac{di}{dt} + Ri + V_{emf} = V]
+\]
+
+ove $V_{emf}$ è il termine di forza elettromotrice. Quindi $V$ è l'ingresso. $V_{emf}$ è legato alla velocità angolare dell'albero da una relazione di bilancio IDEALE. A questa equazione va aggiunta un'equazione elettromeccanica:
+
+\[
+	J\frac{d\omega}{dt} + B\omega = \tau_m = Ki
+\]
+
+ove $\tau_m$ è la tau-motore, proporzionale alla corrente di armatura. $\omega$ è la velocità angolare del rotore. $J$ è il momento d'inerzia del rotore (che ruota). $\vec{F}=\vec{q}\times \vec{v}$. Rotore su cui è avvolto un avvolgimento in cui circola una corrente. Fatto di elettroni che ricevono una certa forza, che alla fine è proporzionale alla coppia.
+
+La $i$ che troviamo nell'equazione meccanica è proprio pari a quella che troviamo nell'equazione elettrica. Modello elettromeccanico.
+
+\begin{defn}{\textbf{Modello di mapping elettromeccanico ideale}}
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\underline{V_{emf}i} = \tau_m\omega]\\
+	&[\tau_m=Ki]
+	\end{aligned}
+	\right.\implies [V_{emf}=K\omega]
+\]
+
+\end{defn}
+
+ove il termine sottolineato è la potenza elettrica associata alla caduta di tensione legata alla trasformazione elettromeccanica. $V$ è la tensione di armatura (di potenza). Questo per quanto riguarda il singolo motore. Il regolatore può girare su un dispositivo logico anche banale (es. smartphone). Parte logica che calcola il comando, e parte HW di attuazione che genera la potenza ($V$ è quella di armatura). Ma non genera $V$! Il PID genera un segnale che è un riferimento per $V$! L'amplificatore ha a sua volta una certa dinamica ($V_c$ è il comando logico, dell'ordine dei $[mV]$ che escono dalla porta USB del PC):
+
+\[
+	[V_a = (G_v\sim PROP)\underline{V_c}]
+\]
+
+ove il LHS è il comando fisico, ed il termine sottolineato è il comando logico. Ne abbiamo $n$ di questi. Notazione vettoriale: Mettiamo le $i$ in un vettore colonna. $R$ diverrà una matrice. Matrice diagonale che ha sulla diagonale principale le resistenze dei motori. Altra approssimazione abbastanza valida: equazione differenziale elettromeccanica. La $i$ segue una dinamica del primo ordine, ove la costante di tempo è $\frac{L}{R}$. $L$ è piccola. Il termine induttivo è piccolo, quindi la costante di tempo è veramente molto piccola. $(\mathord{\cdot}\sim [ms])$. Noi siamo interessati a dinamica dell'ordine del $(\mathord{\cdot}s)$. Quindi è come se ponessimo $L=0 \implies$
+
+\[
+	[(\centernot{L\frac{di}{dt}}\approx 0) + Ri + K\omega = V]
+\]
+
+Dobbiamo al solito distinguere tra $q$ dell'asse lento e $q_m$ dell'asse veloce. Quindi $Ki=\tau_m,\ \tau_m\mapsto \inv{K_r}\tau$. Versione vettoriale (con matrici diagonali):
+
+\[
+	\left\{
+	\begin{aligned}
+	&\inv{K_r}\tau = K_ti_a\\
+	&v_a = R_ai_a + \underline{K_v\dot{q}_m}\\
+	&v_a = (G_v\sim PROP)v_c
+	\end{aligned}
+	\right.
+\]
+
+\`E stato trascurata l'induttanza, ed abbiamo distinto tensione di armatura e quella di comando includendo la terza equazione. Equazione del modello. Adesso mettiamo a sistema con l'equazione generale della Robotica, quindi accoppiando nel seguente modello (COUPLING) $v_c$! Adoperando le opportune sostituzioni, possiamo riscrivere il seguente modello:
+
+\[
+	[B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F_v\dot{q} + g(q) = \tau]
+\]
+
+nella seguente maniera (prima equazione):
+
+\[
+	\left\{
+	\begin{aligned}
+	&B(q)\ddot{q} + C(q,\dot{q})\dot{q} + Fq + g(q) = u\\
+	&F := \underline{F_v} + \underline{K_rK_t\inv{R_a}K_vK_r}
+	\end{aligned}
+	\right.
+\]
+
+ove il primo termine sottolineato è l'attrito viscoso, ed il secondo l'attrito elettrico. $\{\dot{q},\dot{q}_m\}$ sono proporzionali. Risoluzione del sistema. Il segnale $u$ è il vero ingresso fisico:
+
+\[
+	[u = K_rK_t\inv{R_a}G_vv_c]
+\]
+
+$u$ è il comando che assegno all'impianto istante per istante. Proporzionale in termini matriciali a $v_c$! Inclusione esplicita del modello degli attuatori in quello dei giunti. Adesso ci si può sbizzarrire per fare il controllo centralizzato. Controllo P.D. Primi schemi ad essere proposti negli anni '70 per il controllo dei manipolatori. Tipicamente per task di posizione. Sintesi alla Lyapunov. Task di posizionamento $(q\to q_d),\ (e=(q-q_d)\to 0)$. Alla Lyapunov costruiamo una funzione definita positiva in $e$ tale per cui la derivata di questa funzione sia definita negativa. $((q\to q_d),\ q_d=const)$ (Ipotesi semplificativa). Anche quando non è del tutto vero potrebbe comunque andare bene.
+
+$\underline{\tilde{q}} := q_d-q$ è l'errore. Lo stato NON è solo $q$! Ma $\begin{bmatrix}q&\dot{q}\end{bmatrix}^\top$. L'equazione differenziale è in $\ddot{q}$: Dovrei prendere una funzione di Lyapunov definita positiva in $q$ e $\dot{q}$. $\begin{bmatrix}q&\dot{q}\end{bmatrix}^\top\to\begin{bmatrix}q_d&0\end{bmatrix}^\top$.
+
+\[
+	[x = \begin{bmatrix}q&\dot{q}\end{bmatrix}^\top \to x_d = \begin{bmatrix}q_d&0\end{bmatrix}^\top]
+\]
+
+Scriviamo una funzione di Lyapunov in questa $x$:
+
+\[
+	[V(\dot{q},\tilde{q}) := \underline{\frac{1}{2}\dot{q}^\top B(q)\dot{q}} + \underline{\frac{1}{2}\tilde{q}^\top K_P\tilde{q}}],\ \forall \dot{q},\tilde{q}\neq 0
+\]
+
+ove il primo addendo sottolineato è nell'errore di velocità in $\dot{q}$, mentre il secondo è nell'errore in posizione. Dal punto di vista di Lyapunov, prendere $B(q)$ come prima matrice della forma quadratica è una scelta perfettamente legittima! Sempre simmetrica definita positiva. Comparirà $u$, se facciamo la derivata di $V(\dot{q},\tilde{q})$, dal momento che comparirà $B(q)\ddot{q}$, esplicitandolo dalla equazione della Robotica:
+
+\[
+	[\dot{V} = \frac{1}{2}\dot{q}^\top(\dot{B}(q)-2C(q,\dot{q}))\dot{q} - \dot{q}^\top F\dot{q} + \dot{q}^\top(u-g(q)-K_P\tilde{q})] = (\dots)
+\]
+
+Si noti che la prima parentesi tonda è nulla per le proprietà della matrice in parentesi.
+
+\[
+	(\dots)\impliedby \dot{V} = \dot{q}^\top B(q)\ddot{q} + \frac{1}{2}\dot{q}^\top \dot{B}(q)\dot{q} - \dot{q}^\top K_P\tilde{q}
+\]
+
+Il secondo termine è già di suo negativo. $F$ è l'attrito, quindi è già negativo di per sé.
+
+\[
+	[\underline{\underline{u = g(q) + K_P\tilde{q}}}]
+\]
+
+Così facendo rimane solo quel termine. Se prendessimo invece:
+
+\begin{defn}{\textbf{Controllo PD con compensazione della gravità}}
+
+\[
+	[u = g(q) + \underline{K_P\tilde{q} + (-K_D\dot{q} \stackrel{CBE}{=} 0)}]
+\]
+
+\end{defn}
+
+la parte negativa in modulo diviene più grande. Controllo PD con compensazione della gravità: termine PD. $g(q)$ è un termine feedforward che compensa la gravità. Così facendo è però solo semidefinita negativa. Servirebbe applicare Lasalle od il Lemma di Barbalat, sapendo che:
+
+\[
+	[\dot{V} = -\dot{q}^\top (F+K_D)\dot{q}]
+\]
+
+e che lo stato converge al più grande insieme invariante ove la $\dot{V}=0 \impliedby (\dot{q}=0 \implies \ddot{q}=0)$:
+
+\[
+	B(q)\ddot{q} + C(q,\dot{q})\dot{q} + F\dot{q} + g(q) = g(q) + K_P\tilde{q} - K_D\dot{q}
+\]
+
+\[
+	\{\dot{q}=0,\ \ddot{q}=0\} \implies [B(q)\ddot{q} = K_P\tilde{q}] \implies (\tilde{q}=q_d-q=0)
+\]
+
+Per annullare $\dot{q}=0,\ddot{q}=0$, necessariamente anche $\tilde{q}$ deve annullarsi. Funziona se $q_d=const\iff (\dot{q}_d=0)$. Legge di controllo che permette di posare il manipolatore in $q_d$ costante, altrimenti se cambia in maniera molto lenta, questo algoritmo di controllo funziona sufficientemente bene lo stesso. Piccolo errore di inseguimento, ma che in alcune applicazioni è perfettamente tollerabile. Legge di controllo molto comune, non del tutto decentralizzata. Dimostrazione della convergenza / Stabilità utilizzando termini lineari (wlog), eccetto $g(q)$ che è un termine di non linearità / centralizzazione. Solo da questo punto di vista è centralizzata. $g(q)\stackrel{MAP}{\mapsto} g(q_d)\leftarrow$ tipicamente si utilizza questa! Se il moto era del tutto pianificato, $g(q_d)$ la calcoliamo A PRIORI. Riferimenti da mandare giunto per giunto senza alcuna azione centralizzata.
+
+CONTROLLO CENTRALIZZATO. Già fatto il PD con compensazione della gravità. Uno dei primi, storicamente. Analisi che lega la matematica con la pratica. Il modello matematico dei manipolatori lega le $\dot{q}$ alle coppie. Ma noi regoliamo degli ingressi di basso livello! (Tensione). Se sono motori elettrici, si può utilizzare il modello di motore elettrico semplificato. $L\sim 0 \rightarrow$ dinamica molto veloce). Non è obbligatorio ovviamente trascurare l'induttanza. Quel modello è vettoriale, completamente diagonale, disaccoppiato $\iff$ resistenze indipendenti, e ciascun motore eroga la coppia in maniera indipendente. $v_c$ è il comando di bassa tensione, $v_a$ è invece un segnale di potenza, dai $12V$ in su a piacere. Mapping comando logico / fisico. Molto spesso nelle schede di basso livello, non è neanche detto che $v_c$ sia una tensione elettrica $v_c\in[x,y][V]$, ma una percentuale. Il driver della scheda accetta solo un numero tra 0 e 100 (es). Poi verrà mappato ad un valor medio (PWM), che sarà $v_c$. $K_v\dot{q}_m$ è un termine legato alla forza elettromotrice. $\{K_t,K_v\}$ dove $K_t\neq K_v$. Sono in realtà matrici (diagonali), che dovrebbero essere uguali. Questo è un modello ideale, ove la dissipazione di potenza è nulla. Idealmente quei numeri dovrebbero essere uguali, ma se volessimo modellare una dissipazione, potrebbero essere diversi. Ma non è il vero motivo questo! \`E in realtà una questione di unità di misura! $[\mathord{\cdot}]$. Quei due numeri, come valore sono gli stessi! A patto di utilizzare lo stesso sistema (sistema di unità di misura). $[\dot{q}] = [\frac{rad}{s}]$. Generalmente nei datasheet viene utilizzato l'$[rpm]$! Per far quadrare le unità di misura vengono premoltiplicati questi termini con le rispettive costanti di SCALING. Costanti tabellate ed opportunamente differenti. Se sono espresse nello stesso sistema alla fine coincidono. Accadono anche gravi disguidi a causa delle unità di misura. $K_r$ è la costante di motoriduzione, della quale bisogna necessariamente tenere conto nella catena di retroazione. Ricordiamo che $q_m$ è la variabile d'asse veloce, $q$ quella dell'asse lento, asse di giunto. Di nuovo, ipotizzando il motoriduttore ideale (NO dissipazioni), si modella che la potenza a valle ed a monte del motoriduttore sia la stessa! Costante di proporzionalità $K_r$. Espressione in termini matriciali. $n$ equazioni, $n$ motori. $K_r$ matrice diagonale $n$-dimensionale. Mettendo a sistema tutte queste equazioni con l'equazione dinamica, otteniamo proprio un'espressione dove a RHS abbiamo alla fine il nostro controllo $u$!
+
+\[
+	\left\{
+	\begin{aligned}
+	&\inv{K_r}\tau = K_ti_a\\
+	&v_a = R_ai_a + \underline{K_v\dot{q}_m}\\
+	&v_a = (G_v\sim PROP)v_c
+	\end{aligned}
+	\right.\implies F=(\dots)
+\]
+
+Controllo di posa PD con compensazione della gravità, ove la formula finale è la seguente:
+
+\[
+	[u = \underline{g(q)} + K_P\tilde{q} - K_D\dot{q}]
+\]
+
+con errore di POSA: $[\tilde{q} := q_d-q]$. Ricordiamo che al solito il termine sottolineato serve a cancellare la gravità (feedforward). Controllo che serve a stabilizzare la posa in retroazione, con $q_d$ costante. Dobbiamo necessariamente avere le $q$! $\dot{q}$ e la $(\tilde{q} = (q_d\ REQUIRED)-q)$. In realtà serve anche sapere il modello $g(q)$! Nonostante $\{K_P,K_D\}$ siano diagonali! Non accoppiate. $g(q_d)$ instead of $g(q)$. $g(q)$ è in generale NON LINEARE ed accoppiata. Esaminando in maniera dettagliata $g(q)$, lo si potrebbe approssimare con una funzione diagonale. Centralizzato per via di $g(q)$. Se nell'economia dell'algoritmo fosse comodo mettere dei termini fuori diagonale su $\{K_P,K_D\}$, è legittimo. Tanto è un controllo centralizzato. L'unico vero requisito è che $(F+K_D)$ sia semidefinita positiva. Meglio in realtà definita positiva. Meglio se simmetrica.
+
+\[
+	[\dot{V} = -\dot{q}^\top(F+K_D)\dot{q}]
+\]
+
+dove $V(x)$ è la funzione di Lyapunov.
+
+Un altro approccio metodologico è il controllo a DINAMICA INVERSA. Idea quasi banale. L'idea di base è che se il modello lo conosco, lo posso sfruttare!
+
+\[
+	n(q,\dot{q}) = C(q,\dot{q})\dot{q} + F\dot{q} + g(q)
+\]
+
+Tutti i termini, tranne $\dot{q}$, sono non lineari ed accoppiati. Sistema complessivamente NON LINEARE, ed accoppiato. $[u = B(q)y + n(q,\dot{q})]$. Se fosse perfettamente identico a quello vero, si cancellerebbe. Le non linearità degli accoppiamenti verrebbero cancellate. $y$ segnale arbitrario. Con questa dinamica,
+
+\[
+	[B(q)\ddot{q} + n(q,\dot{q}) = u] \implies [\ddot{q}=y] 
+\]
+
+Dato che $B(q)$ è sempre a rango pieno. Ipotesi semplificatrice molto forte. Se dovesse valere questa, $q$ vettore $n$-dimensionale, come $y$. $n$ gradi di libertà. $n$ sistemi $\frac{1}{s^2}$ da regolare. Basta un PID. Banco di integratori, definendo opportunamente: 
+
+\begin{itemize}
+
+\item margine di fase;
+\item margine di ampiezza;
+\item tempo di assestamento.
+
+\end{itemize}
+
+etc. Facendo finta che il controllo sia $y$, una volta fatto il controllo per essa, in realtà dobbiamo implementare $u$! Ma la struttura della formula è alla fine questa:
+
+\[
+	[y = -K_Pq - K_D\dot{q} + r]
+\]
+
+$\leftarrow$ utilizzando questo particolare segnale arbitrario, $[\ddot{q}=y]$. Pensata vettorialmente. Di fatto ne abbiamo $n$ di queste equazioni! Controllo nella frequenza. Nei tempi invece utilizzerei metodi alla Lyapunov. In frequenza: supponiamo che: $\begin{bmatrix}q_d&\dot{q}_d&\ddot{q}_d\end{bmatrix}$ siano note. Chiamiamo con $[\underline{\tilde{q} := q_d-q}] \implies$
+
+\[
+	\{\dot{\tilde{q}} = \dot{q}_d - \dot{q},\ \ddot{\tilde{q}} = \ddot{q}_d - (\ddot{q}=y)\} 
+\]
+
+Se vogliamo mandare $\tilde{q}\tendsto{EXP} 0$ in maniera EXP, agendo su $y$,
+
+\[
+	[y := \ddot{q}_d + 2\xi\omega_n \dot{\tilde{q}} + \omega_n^2\tilde{q}]
+\]
+
+Se $y,q\in\R$, sarebbe questa. Ma ne abbiamo $n$ di doppi integratori! Prendiamo quindi per $y$ un vettore:
+
+\[
+	(y) = \begin{bmatrix}(\ddot{q}_d)_1\\(\ddot{q}_d)_2\\\vdots\\(\ddot{q}_d)_n\end{bmatrix} + \diag{((2\xi\omega_n)_1,\ (2\xi\omega_n)_2,\ \dots,\ (\dots)_n)}\begin{bmatrix}(\dot{\tilde{q}})_1\\(\dot{\tilde{q}})_2\\\vdots\\(\dot{\tilde{q}})_n\end{bmatrix} + (\dots)
+\]
+
+La matrice $\omega_n$ sarà diagonale. $[K_P=\diag\{\omega_{n1}^2,\ \dots,\ \omega_{nn}^2\}]$. Equivalente molla - smorzatore. Questo ci permette di forzare $\forall$ giunto una dinamica molla - smorzatore. Dinamica del II ordine che manda $(\tilde{q}\to 0)$ con una opportuna sovraelongazione, dipendente da: $\{\xi,\omega_n\}$. I possibili problemi nascono nel momento in cui le cancellazioni non sono completamente soddisfatte! Se già nello scrivere la formula distinguo la $B$ vera da quella utilizzata, ed anche la $n$, il controllo viene leggermente più complicato. La dinamica in CICLO CHIUSO anziché essere quella di prima, sarebbe più complicata.
+
+\[
+	[\ddot{\tilde{q}} + K_D\dot{\tilde{q}} + K_P\tilde{q} = \eta]
+\]
+
+$(\dot{q},\ddot{q})=(0,0)\leftarrow$ stato stazionario. $K_P$ contiene le $\omega_n^2$. Non le possiamo prendere sufficientemente alte per lo sforzo di controllo. SLIDING MODE, tecniche di CONTROLLO ROBUSTO. Tecniche sempre basate su Lyapunov utilizzabili per mandare a 0 questi termini aggiuntivi. CHATTERING: a frequenze molto elevate si cambia modulo e segno dell'azione di controllo. Tecniche che mandano a 0 l'errore anche in presenza di incertezze sul modello. IN TEORIA. Ma in pratica ci vorrebbe una \underline{banda di attuazione INFINITA}.
+
+I fenomeni di WIND-UP si manifestano quando (ex. SISO) vi è un'azione di controllo integrale (pezzo di controllo, del comando proporzionale all'integrale dell'errore). Prima o poi gli attuatori saturano! Ciò limita nella pratica la dimensione delle costanti, dei guadagni! Magari anche in presenza di errore piccolo, la costante grande potrebbe far sì da richiedere uno sforzo di controllo troppo elevato! Magari viene fuori un regolatore con $K_P$ gigante! $[\tilde{q}=0]$. L'errore massimo potrebbe essere $360^{\circ}$. Esempio $300^{\circ}$ di errore. $K_P\tilde{q}$ è il termine fondamentale. $[\ddot{q}=y]$ dobbiamo pensarlo come unità di misura di \underline{accelerazione angolare}. Comunque, a prescindere dal motore, un limite ce l'abbiamo! Es. $\max\norma{K_P}=1$. Nel dominio del tempo  così che si dimensionano i guadagni! UPPER BOUND su $\norma{K_P}$, per evitare la saturazione. [WIND-UP]. Quando abbiamo una legge di controllo almeno PI, allora la situazione si complica. Magari l'errore rimane piccolo, dello stesso segno, ma per un tempo sufficientemente grande, l'integrale di questo errore si accumula! Può accadere che l'attuatore saturi. Aritmetica modulare a $360^{\circ}$. Effetto molto indesiderato; può succedere di avere l'attuatore in saturazione pur avendo un errore piccolo! SISO, $u$ non proporzionale $\iff[u\neq re]$. Di fatto sto andando in anello aperto! Un sistema INSTABILE in anello aperto diverge! Saturazioni per via dell'errore grande è una situazione quantomeno giustificabile ancora, pur essendo una situazione negativa. Situazioni ove si satura per via dell'azione integrale devono essere risolte mediante Schemi [ANTI WIND-UP] $\rightarrow$ INTEGRAZIONE CONDIZIONATA. Se l'errore è piccolo ed il suo integrale è abbastanza grande, allora $(K_i=0)$. Lo svantaggio è che è difficile predire la stabilità così! NON LINEARIT\`A. Quindi tutte le dimostrazioni sulla convergenza sulla stabilità, vengono perse. Si passano per simulazioni, oppure si modella alla Lyapunov, nel dominio del tempo. Schemi quindi non più facili da analizzare. Altri schemi possibili più vantaggiosi. Se ci fosse un termine integrale nel nostro termine, dovremmo quindi tenerne conto. Ma potremmo anche saturare per via di $K_P$, ovvero per eccessivo sovradimensionamento dell'azione proporzionale.
+
+\subsubsection{CONTROLLO NELLO SPAZIO OPERATIVO}
+
+Quando chiudiamo la retroazione sulle $x$ anziché sulle $q$. Ci mettiamo la cinematica di mezzo.
+
+Schemi di controllo del moto per manipolatori nello spazio euclideo, fisico, operativo. Di schemi di dettaglio ve ne sono molti per il controllo nello spazio dei giunti. Come primissima soluzione abbiamo visto il Controllo disaccoppiato (schema decentralizzato). Nell'ambito degli schemi centralizzati abbiamo visto il PD con compensazione della gravità ed il modello a \underline{dinamica INVERSA}.
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\dot{x}=f(x)+u]\\
+	&[u = -f(x) + Ax + v]
+	\end{aligned}
+	\right.
+\]
+
+TdS linearization (feedback linearization as FL). Non tutti i sistemi hanno un controllo affine. Storicamente questa soluzione al controllo è stata introdotta prima (robotica). In quei primi schemi e risultati di letteratura, tale soluzione veniva anche chiamata COMPUTED TORQUE, utilizzata qui solo nell'ambito robotico. La FL è la generalizzazione a dinamiche più generali.
+
+Tutto questo sinora si riferisce al controllo nello spazio dei giunti, ove $q$ era la variabile di controllo e quella trasdotta (o $\dot{q}$). Negli schemi di controllo robotici si distingue se la variabile di controllo è $q$ o $x$. Ma gli schemi di principio che si possono utilizzare sono sostanzialmente gli stessi. Sono poco frequentemente utilizzati quelli nello spazio operativo, dal momento che abbiamo problemi con il retroazionare le $x$, problemi di trasduzione più precisamente. Qui si utilizza lo JACOBIANO ANALITICO quadrato. Schemi: \{PD con compensazione di gravità, (\dots)\}. Qui si parte dall'errore che si vuole mandare a 0. Nello spazio dei giunti era $\tilde{q}:=(q_d-q)\to 0$. Lì si ipotizzava $q_d=const\iff (\dot{q}_d=0)$. Anche in quel contesto, nel controllo, è rarissimo che prendiamo $q_d$ come riferimento. Risolviamo prima il problema di Geometria, o pianificazione. $q_d$ viene quindi comunque calcolato a tavolino. Anche nello schema precedente allora l'EE và dove vogliamo noi. Qui mandiamo invece a 0 proprio l'errore relativo alla $x: [\tilde{x} := x_d-x]$.
+
+\[
+	V(\dot{q},\tilde{x}) := [\frac{1}{2}\dot{q}^\top B(q)\dot{q} + \frac{1}{2}\tilde{x}^\top K_P\tilde{x} > 0]
+\]
+
+$\forall \dot{q},\tilde{x}\neq 0$. Quando si scrive la funzione di Lyapunov, essa dev'essere una funzione definita positiva. $\tilde{x}$, o $x$, non è una variabile di stato per il manipolatore. $\begin{bmatrix}x&\dot{x}\end{bmatrix}^\top$ è il vero stato. Anziché $\dot{x}$ è più comodo mettere $\dot{q}$ nella funzione di Lyapunov, miscelando variabili di giunto e variabili nello spazio operativo. Ciò non permette di scrivere il controllo utilizzando un solo tipo di variabili. Non è praticamente mai vero che abbiamo solo variabili euclidee. Schemi leggermente complicati per via di questo mix. L'errore di posizione anziché su $\tilde{q}$ è fatto su $\tilde{x}$:
+
+\[
+	[\dot{V} = \underline{\dot{q}^\top B(q)\ddot{q}} + \frac{1}{2}\dot{q}^\top \dot{B}(q)\dot{q} + \dot{\tilde{x}}^\top K_P\tilde{x}]
+\]
+
+Sostituiamo a $B(q)\ddot{q}$ l'espressione solita della dinamica (Newton), la quale introduce il vero comando, $u$. Dettagli che andrebbero approfonditi. $\dot{\tilde{x}}$ lo esprimo utilizzando la cinematica. $x$ è una variabile di sei componenti (posa dell'EE, posizione e angoli), $x\in\R^{6\times 1}$. Le variabili angolari sono gli angoli di Eulero, per via dell'utilizzo dello Jacobiano analitico. Evidentemente la posa da regolare è: $\begin{bmatrix}x_x&x_y&x_z&\omega_x&\omega_y&\omega_z\end{bmatrix}^\top$, ove la parte angolare sono gli angoli di Eulero. Ma avremmo benissimo potuto utilizzare direttamente le velocità angolari, utilizzando però lo JACOBIANO GEOMETRICO, ovviamente, a patto di descrivere l'errore di assetto in maniera conseguente. $[\dot{\tilde{x}} = -J_A(q)\dot{q}]\impliedby(\dot{x}_d=0)$. Tale espressione viene sostituita lì sopra, nella solita equazione $\implies$
+
+\[
+	[\dot{V} = \dot{q}^\top(B(q)\ddot{q}) + \frac{1}{2}\dot{q}^\top \dot{B}(q)\dot{q} - \dot{q}^\top J_A^\top(q)K_P\tilde{x}] \implies
+\]
+\[
+	\implies [\dot{V} = -\dot{q}^\top F\dot{q} + \dot{q}^\top(u-g(q)-J_A^\top(q)K_P\tilde{x})]
+\]
+
+Tale formula eredita l'attrito viscoso del manipolatore $(F)$ e la gravità. Coriolis se n'è andato. Gli scambi con l'esterno qui non ve ne sono. Ci si sta semplicemente muovendo nello spazio libero $(-J_A^\top h)$, ove $h$ è la forza generalizzata generata dall'Ambiente verso l'EE. Questo è un task di posizionamento (portare la posizione in una posizione desiderata, costante). pick-and-place, contesti industriali. Movimenti liberi senza avere un carico sull'EE. A questo punto, lo scopo della sintesi è far sì che la $\dot{V}$ sia definita negativa o quantomeno semidefinita negativa. Il prmo termine è sicuramente almeno semidefinito negativo (meno l'attrito viscoso è un termine già semidefinito negativo di suo). Se il secondo termine non lo avessi, rimarrebbe solo il primo termine già semidefinito negativo di suo (prendendo semplicemente $[u=g(q)+J_A^\top(q)K_P\tilde{x}]$). Semidefinito negativo ma di una quantità indotta dall'attrito e basta! Quindi di una quantità che non controllo. Prendiamo in linea più generale:
+
+\[
+	[u = g(q) + J_A^\top(q)K_P\tilde{x} - J_A^\top K_DJ_A(q)\dot{q}]
+\]
+
+Continua comunque ad essere semidefinita negativa nell'intero stato! Dobbiamo controllare la semplice stabilità oppure l'asintotica stabilità. Per capire se lo è bisognerebbe effettuare un'analisi aggiuntiva (Lasalle o Barbalat). Somiglia molto a quella già derivata nello spazio dei giunti. Ha però due contributi (termine derivativo nello spazio dei giunti, anche se perfettamente scrivibile come $[\dot{\tilde{x}}=-J_A(q)\dot{q}]$). Nello spazio dei giunti retroazionavamo solo $\{q,\dot{q}\}$! Le $x$ le utilizzavamo solamente per adoperare l'inversione cinematica a monte nella fase di \underline{Mission Planning}, per pianificare e progettare a tavolino $q_d$! Raramente nello spazio operativo trasdurrei direttamente $\dot{\tilde{x}}$. Le $\{q,\dot{q}\}$ le misuro molto più precisamente con gli ENCODER. Sensore di posizione e velocità angolare di un'ASSE. In tale schema le variabili sono mixed, servono tutte e due. Eppure continua ad essere un PD con compensazione della gravità. 
+
+Per quanto riguarda la funzione di Lyapunov, si utilizza Lasalle.
+
+\[
+	[(\dot{q}=0\implies\ddot{q}=0)\impliedby \dot{V}=0] \implies [J_A^\top(q)K_P\tilde{x}=0]
+\]
+
+$\leftarrow$ nella dinamica rimane solo questo. $\begin{bmatrix}\tilde{x},q\end{bmatrix}^\top$ che soddisfa questo:
+
+\begin{itemize}
+
+\item Se $J_A^\top(q)$ ha rango pieno, allora $K_P\tilde{x}=0\iff(\tilde{x}=0)\impliedby \det{K_P}\neq 0$, quindi equilibrio asintoticamente stabile;
+\item si devono verificare le seguenti condizioni:
+
+\begin{itemize}
+
+\item{$(K_P\tilde{x})\in\ker{J_A^\top(q)}$};
+\item{$J_A^\top(q)$ SINGOLARE}.
+
+\end{itemize}
+
+Se accade questo, è una situazione abbastanza sfortunata.
+
+\end{itemize}
+
+Per gli schemi nello spazio dei giunti (ma vale lo stesso se stiamo nello spazio operativo), se $(\dot{x}_d\neq 0)$, ma $x_d$ cambia in maniera lenta, lo schema continua comunque a funzionare sufficientemente bene ($x_d$ non costante). Se prendiamo la costante di Bode sufficientemente grande, l'errore può divenire arbitrariamente piccolo. 
+
+CONTROLLO A DINAMICA INVERSA. Sempre nello spazio operativo, schema a dinamica inversa o feedback linearization. In $n(q,\dot{q})$ raccogliamo Coriolis, gravità, attriti.. tutti termini che vogliamo tagliare:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&[B(q)\ddot{q}+n(q,\dot{q}) = u]\\
+	&[u = B(q)y+n(q,\dot{q})]
+	\end{aligned}
+	\right.
+\]
+
+$y$ é un segnale che ha tante componenti quanti sono i giunti. $[\underline{\ddot{q}=y}]$. L'idea è di mandare $\tilde{x}$ e $\dot{\tilde{x}}$ a 0. Di nuovo, ad occhio. Non c'è un trucco particolare. Il legame tra la $x$ e la $\ddot{q}$ è:
+
+\[
+	[\ddot{x} = J_A(q)\ddot{q} + \dot{J}_A(q,\dot{q})\dot{q}]
+\]
+
+$\leftarrow$ derivato dalla solita cinematica differenziale, con lo JACOBIANO ANALITICO. Il trucco è far entrare la $x$, la sua dinamica esplicita, e vogliamo che la tale sia stabile (convergente):
+
+\[
+	[J_A(q)\ddot{q}=J_A(q)y] \implies [J_A(q)\ddot{q}+\dot{J}_A(q,\dot{q})\dot{q} = \ddot{x}] = J_A(q)y + \dot{J}_A(q,\dot{q})\dot{q} \implies
+\]
+\[
+	\implies [y = \inv{J_A}(q)(\underline{\ddot{x}_d} + K_D\dot{\tilde{x}} + K_P\tilde{x} - \dot{J}_A(q,\dot{q})\dot{q})]
+\]
+
+ove il termine sottolineato è di feedforward. Alla fine $y$ ha la dimensione delle accelerazioni angolari ai giunti, con $\{K_P,K_D\}$ matrici (diagonali) definite positive. Infatti alla fine otteniamo:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\{K_P=[\omega_n^2],\ K_D=[2\xi\omega_n]\}\\
+	&[\ddot{\tilde{x}} + K_D\dot{\tilde{x}} + K_P\tilde{x} = 0]
+	\end{aligned}
+	\right.
+\]
+
+Bisogna scalare $\{K_P,K_D\}$ in maniera congruente. La tale equazione esprime la dinamica dell'errore $\tilde{x}$:
+
+\[
+	\left\{
+	\begin{aligned}
+	&u = B(q)y+n(q,\dot{q})\\
+	&y=(\dots)
+	\end{aligned}
+	\right.
+\]
+
+Il codice deve fare un sacco di conti. Dobbiamo conoscere $B(q)$. Conoscere attriti, Coriolis e gravità in $n(q,\dot{q})$. Inverso dello Jacobiano analitico. Poi c'è pure un'inversa. Schema molto oneroso. Ma dal punto di vista teorico le prestazioni possono essere davvero abbastanza buone. Senza ipotesi di traiettorie lente. Se conosciamo $\dot{x}_d$, anche veloce a piacere, il gioco è fatto.
+
+\[
+	\left\{
+	\begin{aligned}
+	&(\tilde{x}=x_d-x)\\
+	&\dot{\tilde{x}} = \dot{x}_d-\dot{x}
+	\end{aligned}
+	\right.
+\]
+
+$\begin{bmatrix}x_d&\dot{x}_d\end{bmatrix}$ anche vengono calcolate ONLINE a runtime! Bisogna stimare anche quelle online. \{precisione all'inseguimento, tempo di convergenza, etc.\}. ALLOCAMENTO: modello che mappa l'azione di diversi motori, eventualmente accoppiati, nel centro di massa. Modello che lega forze / coppie generate sul veicolo in virtù dell'attuazione accoppiata.
+
+\subsection{Digressioni sul motore in corrente continua ed ENCODER}
+
+\subsubsection{Motore a corrente continua}
+
+I motori in corrente continua sono descritti da equazioni elettriche e meccaniche:
+
+\[
+	\left\{
+	\begin{aligned}
+	&V_a = (R_a+sL_a)I_a+V_g\\
+	&V_g=K_v\Omega
+	\end{aligned}
+	\right.
+\]
+
+ove $V_g$ è la forza elettromotrice (caduta di tensione associata alla conversione di energia elettromeccanica (TENSIONE DI BILANCIO)). $\Omega$ è la velocità di rotazione a monte del motoriduttore.
+
+\[
+	\left\{
+	\begin{aligned}
+	&C_m=(sI_m + F_m)\Omega+C_r\\
+	&C_m=K_tI_a
+	\end{aligned}
+	\right.
+\]
+
+$I_a$ è la corrente elettrica del circuito di armatura, $I_m$ è il momento d'inerzia dell'albero. $s$ è la variabile di Laplace. $C_m$ è la coppia motrice. Mettendo fuori queste equazioni, viene fuori un'equazione elettromeccanica del II ordine. Inoltre il sistema amplificatore è descritto dalla seguente fdt:
+
+\[
+	\{(\frac{V_a}{V_c}) = \frac{G_v}{1+sT_v}\}
+\]
+
+La modelliamo come una dinamica del I ordine, ove $T_v$ è molto molto piccola. Rispetto alla dinamica meccanica è molto molto piccola. Se trascuriamo la dinamica induttiva, se trascuriamo o meno la dinamica dell'Amplificatore, possiamo vedere che succede mediante funzione di sensitività (legame tra $\Omega$ e $C_r$).
+
+\subsubsection{ENCODER}
+
+Un ENCODER significa codificatore. Sistema elettromeccanico per codificare la (posizione) velocità angolare di un albero rotante. L'idea di fondo è banale. Settori angolari. \{Encoder Incrementali vs Assoluti\}, \{Encoder passante BI-ENCODER\}.
+
+
+\section{Controllo di Interazione}
+
+Controllo di un veicolo. In particolare di un veicolo marino (Controllo Dinamico). Stesso modello dell'Identificazione parametrica $M(q)=M$ (matrice d'inerzia costante), analoga a $B(q)$. Controllo di interazione. Le idee di base in realtà sono abbastanza facili da descrivere. Concetti fondamentali sono: \{Controllo d'impedenza, Controllo di compliance = cedevolezza\}. Esercitiamo una forza sull'ambiente, ed il manipolatore accetta passivamente queste forze $\implies$ progettare il sistema di controllo della posizione tale per cui se l'ambiente esercita una forza NOTA, allora il manipolatore può rispondere. Talvolta dobbiamo conoscere proprio le forze, la struttura del termine $h$ (FORZE ESOGENE). Estensimetri: dispositivi meccanici. Costituito da film fotografico. Dentro vi è un conduttore, la cui resistenza dipende dalle forze esercitate. I più semplici sfruttano delle tecnologie di base. Se abbiamo il modello tra la deformazione e le forze, allora possiamo effettivamente quantificare una forza. Sensori. Trasduttori siffatti, sebbene le problematiche non sono così banali. Ne servono almeno sei indipendenti per fare queste misure: $\begin{bmatrix}F_x&F_y&F_z&N_x&N_y&N_z\end{bmatrix}$. Nell'approccio di IMPEDANCE CONTROL, contrariamente a quello compliance, la $h$ si misura! Anche qui possiamo scegliere una costante elastica equivalente, ma lo schema è più complicato per via della trasduzione. Soluzione di controllo dinamico per veicolo marino. Nella compliance supponiamo di conoscere proprio il modello $(h)$.
+
+\subsection{ROS - Robot Operating System}
+
+Oggigiorno lo sviluppo della maggioranza degli algoritmi in ambito di ricerca si fa sempre in \underline{ROS} (\textit{Robot Operating System}). Da molto ROS è centrale. Il limite è che non è real-time! Non fornisce alcuna garanzia di realtime. Se l'$R$ gira in ROS, non è detto che il $\Delta t$ sia costante e pari a quello che vogliamo noi. In tutti gli ambiti dove abbiamo dinamiche instabili e molto veloci, si usa ma bisogna stare molto attenti. Se abbiamo processi più lenti e "meno CRITICI", si può utilizzare, sebbene non abbiamo una garanzia finale di essere real-time. \`E un sistema aperto con relativo ambiente facile da utilizzare. Standard de-facto, un sacco di librerie: \{filtraggio, comando, controllo, identificazione\}. Integrazione di pezzi di codice scritti da vari enti. Mettere insieme dei vari pezzi è più semplice.
+
+\subsection{CONTROLLO DI CEDEVOLEZZA}
+
+Alla fine questo schema è equivalente al controllo di un sistema scalare (SISO) di posizione (riferimento: posizione (posizione desiderata costante)). Regolatore di tipo 0. Non è 0 se abbiamo un disturbo. $\frac{1}{1+K_Ps}$. Se vogliamo ridurre l'errore, scegliamo $(K_B\gg 1)$. Oppure mettiamo un polo nell'origine (che sarebbe come avere $K_B\to +\infty$). L'errore asintotico, con $K_B$ sufficientemente grande, andrà a 0. (Nel nostro schema, $K_B := K_P$). L'errore residuo talvolta dobbiamo cercare di renderlo costante, in maniera tale da avere un certo offset. Questo è il servizio della cedevolezza (compliance). Scelta direzionale: il sistema NON è SISO: ha almeno sei gradi di libertà. Potrei scegliere una compliance diversa $\forall$ grado di libertà ($\forall$ componente). In tutte le operazioni di inserimento in un buco, ad esempio, questo è tipico. La $h$ è VETTORIALE! Quindi lavoriamo sulla matrice diagonale $K_P$ onde scegliere la cedevolezza opportuna. L'equazione dinamica del manipolatore è la seguente, supponiamo di lavorare con PD con compensazione di gravità nello spazio operativo:
+
+\[
+	[B(q)\ddot{q} + C(q,\dot{q})\dot{q} +F\dot{q} + g(q) = u -(J^\top(q)h \stackrel{CBE}{=} 0)]
+\]
+
+Quando abbiamo sintetizzato $u$, avevamo scelto [PD con compensazione di gravità]:
+
+\[
+	\left\{
+	\begin{aligned}
+	&[u = g(q) + J_A^\top(q)K_P\tilde{x} - J_A^\top(q)K_DJ_A(q)\dot{q}]\\
+	&[\dot{\tilde{x}} = -J_A(q)\dot{q}]
+	\end{aligned}
+	\right.
+\]
+
+Lo stato era: $\begin{bmatrix}\tilde{x}&\dot{q}\end{bmatrix}^\top$. Analisi di Stabilità delle prestazioni asintotiche, come con Lasalle. All'equilibrio $\{\dot{q}=0,\ddot{q}=0\}$, la condizione finale di equilibrio era:
+
+\[
+	[J_A^\top(q)K_P\tilde{x}=0] \iff (\tilde{x}=0) \impliedby (\rank{J_A^\top(q)}=6 \iff (\det{J_A^\top(q)}\neq 0))
+\] 
+
+Il risultato continua ad essere vero, ma avevamo ipotizzato che il manipolatore si muovesse nello spazio libero! Altrimenti rimarrà quel particolare residuo. Nel compliance control, accade questo:
+
+\[
+	[J_A^\top(q)K_P\tilde{x} = J^\top(q)h]
+\]
+
+Termine che controlla l'interazione $(h)$, forze esogene che l'ambiente scambia con l'end-effector. $h$ è definito nello spazio operativo, e fa riferimento all'EE. Fa riferimento a forze / coppie generalizzate. Avevamo introdotto in precedenza la matrice:
+
+\begin{prop}{\textbf{Mapping (TRASPOSTO) tra Jacobiani}}
+
+\[
+	[T_A^\top(x) = \inv{J_A^\top}J^\top(q)]
+\]
+
+\end{prop}
+
+Ipotizziamo Jacobiano invertibile (non singolare). Jacobiano analitico quadrato. Manipolatore lontano dalle singolarità.
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\inv{J_A^\top}(q)J_A^\top(q)K_P\tilde{x} = \inv{J_A^\top}(q)J^\top(q)h]\\
+	&\underline{T_A^\top(x) = \inv{J_A^\top}(q)J^\top(q)}\\
+	&\underline{\underline{\tilde{x} = \inv{K_P}T_A^\top(x)h}}
+	\end{aligned}
+	\right.
+\]
+
+Modello dell'ambiente: forze generalizzate nell'EE. $h$ = forze / coppie. Supponiamo che l'ambiente si comporti come una molla. Ipotesi valida, molto naturale. Si comporta, almeno al primo ordine, come una molla.
+
+\[
+	h = \begin{bmatrix}f\\\mu\end{bmatrix} := \begin{bmatrix}K_f&0\\0&K_\mu\end{bmatrix}\begin{bmatrix}dp\\\omega dt\end{bmatrix} = K\begin{bmatrix}dp\\\omega dt\end{bmatrix}
+\]
+
+Lo stesso per le coppie: modelliamo i momenti che l'ambiente restituisce all'EE, come una molla generalizzata angolare.
+Facciamo l'ipotesi: modello il mio ambiente con $\{K_f,K_\mu\}$, con $K_f$ che ha tutte le componenti uguali (azione delle forze ISOTROPICA). Modello chiaramente non sempre ragionevole: può essere troppo semplificato. Sostituiamo ad $h$ la sua espressione:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\tilde{x} = \inv{K_P}T_A^\top(x)(K(\begin{bmatrix}dp\\\omega dt\end{bmatrix} = T_A(x)(dx := x-x_e)))\\
+	&\underline{h_A} = (K_A(x) := T_A^\top(x)KT_A(x))dx = K_A(x)(x-x_e)
+	\end{aligned}
+	\right.
+\]
+
+$\implies \tilde{x}=\inv{K_P}K_A(x)(\dots)$.
+
+\subsection{CONTROLLO DI IMPEDENZA}
+
+Utilizziamo la misura di $h$ come base. \newline Qui utilizziamo il modello centralizzato a \underline{DINAMICA INVERSA}.
+
+$u = B(q)y + n(q,\dot{q})$. La filosofia di questa scelta è che in CICLO CHIUSO abbiamo: $[\underline{\ddot{q}=y}]$. Questo lo possiamo fare sia nello spazio operativo che in quello dei giunti. Se siamo nello spazio dei giunti non abbiamo alcuno Jacobiano. Qui ci poniamo nello spazio operativo. Ipotesi di ATTUAZIONE PERFETTA:
+
+\[
+	[y = \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q})]
+\]
+
+Se $\exists\inv{J_A}(q)$ è perché la matrice $\inv{J_A}(q)$ è quadrata. Ipotesi semplificatrice. $y$ allora la scegliamo così. Sto esattamente facendo quanto già fatto nel caso di manipolatore libero. Quello che cambia è che il manipolatore qui NON è libero, ma sta interagendo con l'Ambiente. Scegliendo quel particolare $u$, in ciclo chiuso otteniamo $\ddot{q}=y=(\dots)$. La $\inv{B}(q)$ è sempre INVERTIBILE. Restituisce l'energia cinetica di un punto materiale se premoltiplicata per $\dot{q}^\top$ a sx e per $\dot{q}$ a dx. Quindi la $M$ lì dentro deve necessariamente essere definita positiva, e quindi invertibile $(B(q))$. Abbiamo:
+
+\[
+	\ddot{q} = y-\inv{B}(q)J^\top(q)h
+\]
+
+Se le $q$ sono davvero delle variabili di giunto, allora $M$ è davvero definita positiva, dunque se la rappresentazione di Stato NON è MINIMA, bisogna essere consapevoli. In alcuni casi non è proprio banale (es. Jacobiano di una formazione, sciame di veicoli. Non necessariamente lì le componenti dello Stato si riferiscono allo stesso veicolo! La $B(q)$ in tal contesto è sicuramente invertibile).
+
+Qui la forma di $y$ è costruita con la stessa idea, ma con delle differenze. Viene difatti introdotto $M_d$. Massa equivalente con la quale vogliamo si muova $\tilde{x}$.
+
+\[
+	[M_d\ddot{\tilde{x}} + K_D\dot{\tilde{x}} + K_P\tilde{x} = M_d\inv{B_A}(q)\underline{h_A}]
+\]
+
+Se a destra dell'uguale non abbiamo 0, la $M_d$ ha in realtà senso! Interpretazione interessante.
+Viene suggerito di prendere:
+
+\[
+	[u := B(q)y+n(q,\dot{q}) + J^\top(q)h]
+\]
+
+Con questa scelta di $u$, otteniamo in \underline{ciclo chiuso} la seguente espressione, ove $h$ viene opportunamente trasdotta:
+
+\[
+	y = \inv{J_A}(q)\inv{M_d}(M_d\ddot{x}_d + K_D\dot{\tilde{x}} + K_P\tilde{x} - M_d\dot{J_A}(q,\dot{q})\dot{q} - h_A)
+\]
+
+Il controllo d'impedenza si manifesta con l'opportuna scelta di $\{M_d,K_D\}$. Ipotesi di ambiente elastico: $h_A$ sarebbe premoltiplicata per $K_A$: ($K_Ax$). Lo è se l'ambiente si comporta in maniera elastica. Ma non è detto che sia così.
+
+\section{Dinamica di corpo rigido applicata ad un sistema marino}
+
+Il modello risultante alla fine ha questa struttura:
+
+\[
+	[(M\in\R^{6\times 6})\dot{\nu}_r + C(\nu_r)\nu_r + D(\nu_r)\nu_r + g(\eta) = \tau]
+\]
+
+$M$ rappresenta l'inerzia comprensiva della massa aggiunta. Il pedice $\mathord{\cdot}_r$ sta per rigid body. Ricordiamo che: $M:=(M_r+M_A)\neq \mathord{\cdot}(\mathord{\cdot})\iff$ NON dipende da nulla! Se l'oggetto è costante in massa ed il corpo rigido è unico, $M_r$ ha una struttura ben precisa. Ma NON è diagonale invece, ed i vari suoi elementi dipendono dalla geometria del corpo e dalle caratteristiche del fluido. $\nu_r$ è la velocità del corpo rigido proiettata in terna body. La velocità DEVE, per sua definizione, essere assoluta (terna inerziale). Dopodiché questo vettore viene proiettato in terna body, istante per istante. $\nu_r$ è la velocità meno la velocità della corrente (velocità relativa) (se la corrente c'è). Se $\nu_r$ fosse proiettata in terna assoluta (ABS), $(C(\nu_r)\nu_r=0))$. 
+
+Se la corrente ha direzione ed intensità costante, lo è in terna assoluta ma non in terna body! $[\nu_r=\nu-\nu_c]\leftarrow$ si può scrivere così se $\nu_c$ è costante in terna assoluta. $D(\nu_r)$ termine quadratico, DRAG. Attrito $\tau$ = forza generalizzate di attuazione, e se ci sono altri disturbi potremmo includerli ivi. Es: \{correnti, vento (superficie), onde (in superficie)\}. Le onde per fortuna hanno degli smorzamenti molto veloci con la profondità. $g$ è la risultante tra la Spinta di Archimede e la gravità: $(g=g(q))$. Quello che accade in realtà è che la densità dell'acqua tende a crescere con la profondità. BUOYANCY: spinta di Archimede $S_A=\mathord{\cdot}(\downarrow h)$. dove $h$ è l'altezza. Noi abbiamo risolto modellando il corpo come perfettamente rigido, ma potrebbe pure essere elastico! Quindi soggetto a deformazione. Se volessimo guardare questi effetti fissi, il modello cambierebbe. Sono comunque fenomeni del II ordine. Tecnologia molto complicata.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\underline{\dot{\eta} = J(\eta)\nu}\\
+	&\nu_r=\nu-\nu_c\\
+	&M\dot{\nu_r} = C(\nu_r)\nu_r + D(\nu_r)\nu_r + g(\eta) = \tau
+	\end{aligned}
+	\right.
+\]
+
+ove la prima equazione è la \underline{solita equazione cinematica}. NED è una terna fissata sulla superficie terrestre (\textit{North - East - Down}). La si approssima come inerziale. Ma non è inerziale per via della rotazione terrestre. Utilizzo la NED come se fosse nerziale.
+
+Ma il comando che fornisco al veicolo non è una coppia $\tau$, ma dei comandi di tensione. Modello di allocamento:
+
+\[
+	\eta = \begin{bmatrix}x&y&z&\theta_x&\theta_y&\theta_z\end{bmatrix}
+\]
+
+POSA, posizione. La densità dell'acqua di mare è fortemente influenzata dalla SALINIT\`A, a sua volta fortemente influenzata (dipendente più che altro) dalla temperatura. L'effetto della temperatura è più influente rispetto alla quota. Cambiando la densità dell'acqua, cambia anche la $S_A$. Se cambia la temperatura il corpo NON è più neutro. La MASSA dipende da quanto è l'imbarco. MA dato che la camera d'imbarco non è posizionata sul centro di massa, cambierebbe anche il momento d'inerzia del veicolo! Centro di Spinta $\neq$ Centro di massa. Il centro di spinta è determinato da quello che sarebbe il centro di massa se il volume fosse d'acqua. Il centro di massa cambia, quello di spinta no, è costante. Quindi abbiamo la corrispondenza:
+
+\begin{itemize}
+
+\item{centro di spinta $\rightarrow$}: ARCH;
+\item{centro di massa $\rightarrow$}: GRAV.
+
+\end{itemize}
+
+$\bar{B}$ è la matrice di allocazione (ALLOCATORE). Una volta definita $\bar{B}$, facciamo la pseudoinversa. Dal punto di vista del tuning non è banale. Cerchiamo di cancellare i termini che vogliamo cancellare (feedback linearization):
+
+\[
+	[(\dot{\nu_r}-\dot{\nu_d}) + K(\nu_r-\nu_d)=0]
+\]
+
+$K$ è la costante proporzionale. Al solito, $(K>0) \implies \nu_r-\nu_d \tendsto{EXP}0$.
+
+\subsection{Allocatore}
+
+\begin{defn}{\textbf{Matrice di Allocamento alias ALLOCATORE}}
+
+\[
+	(\tau := \tau^{ctrl}\in\R^{6\times 1}) := (\bar{B}\in\R^{6\times m})(u\in\R^{m\times 1})
+\]
+
+con $m=\cardinality{motori}$.
+
+\end{defn}
+
+$u$ è il vettore dei comandi innestati agli $m$ motori (vettore $m$-dimensionale). La matrice di Allocamento consta quindi di $m$ colonne e 6 righe (in generale $n$, pari ai gradi di libertà nello spazio libero, operativo). Ha senso definire un CRITERIO DI ALLOCAMENTO OTTIMO, come ad esempio minimo numero di colonne.
+
+Ha senso mettere nell'allocatore quella riga nulla? Se negli altri gradi di libertà non compare il roll (modello disaccoppiato) allora la posso togliere. Le matrici di gravità e di Coriolis dipendono da quella variabile per la natura accoppiata dei gradi di libertà $\implies$ la devo considerare!
+Ha senso non considerarla quando sebbene ci siano delle dinamiche accoppiate, le condizioni del veicolo, sia ambientali che strutturali, sono tali per cui l'angolo di rollio evolve in anello aperto (riga nulla), ma stando sempre vicino a 0. 
+
+C'è un'altra rappresentazione di $\bar{B}$ (in cui non consideriamo la camera di allagamento e vano batteria). 
+
+La SVD risolve il problema della pseudoinversione \underline{NON PESATA}. La possibilità di mettere i pesi è importante:
+
+\[
+	\tau=\bar{B}u
+\]
+
+\subsubsection{PSEUDOINVERSA PESATA}
+
+$\rightarrow$ PSEUDOINVERSA PESATA:
+
+\[
+	y = (L\in\R^{(n\leq m)\times m})x
+\]
+
+$\leftarrow$ equazione da invertire. Siamo nel caso sovrattuato. Se $L$ ha rango pieno, ci sono $\infty^{m-n}$ soluzioni. 
+
+\[
+	C = \underline{\norma{x}^2_P} + \lambda^\top(y-Lx) = (\dots)
+\]
+
+$\implies$ ove il termine sottolineato indica che il peso entra in gioco lì. $(P=P^\top)>0$ simmetrica definita positiva $\implies$
+
+\[
+	(\dots) = x^\top Px + \lambda^\top(y-Lx)
+\]
+\[
+	\nabla_x{C} = 0 = 2Px - L^\top\lambda \implies x=\frac{1}{2}\inv{P}L^\top\lambda = (\dots)
+\]
+
+la sostituisco nel vincolo..
+
+\[
+	(\dots) \implies y = \frac{1}{2}(L\inv{P}L^\top)\lambda
+\]
+
+la tal formula la possiamo invertire in quanto se $P$ ha rango pieno e se $L$ ha rango pieno, $L\inv{P}L^\top$ è invertibile $\implies$
+
+\[
+	\lambda = 2\inv{(L\inv{P}L^\top)}y \implies x^\star = \inv{P}L^\top\inv{(L\inv{P}L^\top)}y
+\]
+
+Tale è la PSEUDOINVERSA DX. Se $L$ non avesse rango pieno ci blocchieremmo a $y= \frac{1}{2}(L\inv{P}L^\top)\lambda$. Se $L$ non è invertibile ci sono $\infty\ \lambda$ che la soddisfano. Se $L\inv{P}L^\top$ non è invertibile, lo posso invertire alla SVD:
+
+\[
+	\lambda=2(L\inv{P}L^\top)^\# y = (\dots) 
+\]
+
+(SVD) è sempre possibile farlo, dal momento che la SVD è sempre ben posta. 
+
+\[
+	(\dots) \implies x^\star = \underline{\inv{P}L^\top(L\inv{P}L^\top)^\#} y
+\]
+
+ove il termine sottolineato è la PSEUDOINVERSA DX CALCOLATA ALLA SVD E PESATA.
+
+\[
+	u = \bar{B}_R^\dag(\underline{\hat{C}(\hat{\nu}_r)\hat{\nu}_r + \hat{D}(\hat{\nu}_r)\hat{\nu}_r + \hat{g}(\hat{\eta})} - \underline{\inv{\hat{M}}K(\nu_r-\nu_d) + \hat{M}\dot{\nu}_d})
+\]
+
+I primi termini sottolineati sono dei termini che si cancelleranno alla fine. I secondi termini servono per imporre in ciclo chiuso una dinamica considerata $\implies$
+
+\[
+	(\dot{\nu}_r-\dot{\nu}_d) + K(\nu_r-\nu_d) = 0
+\]
+
+$\implies$ dinamica lineare. Se $K>0$ è definita positiva, la dinamica è esponenzialmente stabile. Il transitorio dipende dai guadagni di $K$, ed a regime $\nu_r=\nu_d$. 
+
+\underline{IMPORTANTE}: Se abbiamo un modello \underline{NON} LINEARE NEI PARAMETRI, FACCIAMO il logaritmo:
+
+\[
+	u = k_1cmd^{k_2} \implies \log{u} = k_1\log{cmd} + \log{k_2}
+\]
+
+es. $y=H\theta$.

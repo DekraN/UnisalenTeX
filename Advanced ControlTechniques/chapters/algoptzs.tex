@@ -1,0 +1,2944 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{(Distributed) Optimization's Algorithms}
+\label{cap:algoptzs}
+%************************************************\\
+
+\section{Starting Point}
+
+Teoria dell'ottimizzazione \underline{finito-dimensionale}. Teoria del Controllo Ottimo. Requisiti di Ottimalità della Legge di Controllo. Gli spazi in cui lavoreremo saranno sottoinsiemi di $\R^n$. Nel caso continuo saranno \underline{infinito-dimensionali} (Spazi di funzioni continue).
+-) Ottimizzazione NON VINCOLATA. OPTIMIZATION METHOD IN CONTROL. NONLINEAR (FINITE-DIMENSIONAL) OPTIMIZATION. The decision variable lives in a subset of $\R^n\ (A \subset \R^n)$. You can write every vector of $\R^n$ with a linear combination of $n$ vectors. (Generally it isn't possible $\implies$ infinite-dimensional). We're considering the finite-dimensional case. Let $f \in C^1$ (continuously differentiable).
+\begin{itemize}
+\item $\min_{x\in X}{f(x)},\ f:\R^n\mapsto\R$ (it takes a vector, and gives in output a number). Same assumptions of regularity on $f$;
+\item $X \subset \R^n \implies x$ is a vector in $\R^n$. Se $X=\R^n$, globalmente, localmente od in qualche punto, allora abbiamo il problema \underline{UNCONSTRAINED}. [If $f$ is linear and $X=\R^n$, linear PROGRAM];
+\item{LOCAL MINIMUM} We want to find $x$ in order to minimize this cost function $f \implies f$ achieves LOCAL MINIMUM $\implies x^\star \in X$ is a LOCAL MINIMUM if:
+\[
+	\exists \epsilon > 0\ |\ f(x^\star) \leq f(x)\ \forall x \in \cball(x^\star, \epsilon)
+\]
+(quite natural) (Definition of local minimum);
+\item{STRICT LOCAL MINIMUM} $x^\star \in X$ is so-called when:
+\[
+	f(x^\star) < f(x)\ \forall x \neq x^\star,\ x \in \cball(x^\star, \epsilon)
+\]
+(Se vale la disuguaglianza debole)
+\item{GLOBAL MINIMUM} $x^\star \in X$ is is so-called when:
+\[
+	f(x^\star) \leq f(x)\ \forall x \in X
+\]
+Clearly we can talk also about Strict global minimum.
+\end{itemize}
+
+$x$ can be any vector $\in \R^n \implies x \in \R^n$. Low-dimensional example is the 2D classical example. Now, what is the goal we want to achieve? Special optimization problem with Control Theory. But less stay more general. How to calculate (compute) these minima? By using some iterative algorithm. But to develop those, first we want to characterize these minima. There are some necessary conditions:
+\begin{itemize}
+\item The gradient $\nabla(\mathord{\cdot})$ must be equal to 0;
+\item The action msut be $(\mathord{\cdot}) \leq 0$;
+\end{itemize}
+
+\subsection{NECESSARY CONDITIONS OF OPTIMALITY}
+
+Why are these necessary conditions important to approach those optimizations problems? Typically what the algorithms do is the following: Construct a list, a vector of vectors that asymptotically satisfies these properties.
+Of course we can also define $\{$LOCAL MAXIMA, STRICT LMAX, GLOB MAX, \dots$\}$. (and so on). The definition of the maxima is completely equivalent!
+
+\[
+	f(x^\star) \geq f(x)\ \forall x \in \cball(x^\star, \epsilon)
+\]
+
+Just changed the inequality. Quite straightforward property. Suppose you want to find a minimum of some function $f$. $x^\star$ be min of $f(x)$. Then $x^\star$ is local max of: $-f(x)=g(x)$. The same holds for the other properties. We just concentrate on minima problems. Just one more definition: $x^\star$ is EXTREMUM if it is either a minimum or maximum (for example Saddle Points) (punti di sella). (Se non sono massimi o minimi).
+
+\subsubsection{NECESSARY CONDITIONS OF OPTIMALITY FOR UNCONSTRAINED PROBLEMS}
+
+We mean that either $X=\R^n$, or in a neighborhood of $x^\star$, $X$ can be approximated with $\R^n$. Why necessary? Conditions, which when they will be violated, we are sure that the point is NOT a minimum or a maximum. It's a condition on the gradient of the function $f$:
+
+\begin{thrm}{\textbf{FIRST ORDER NEC. COND}} \newline
+If $x^\star$ is a local minimum $\implies$
+\[
+	[\underline{\nabla{f(x^\star)} = 0}]
+\]
+\end{thrm}
+
+Let's see why this is true! We use a more general method. Let's take a vector $(d\in\R^n)$ (a fixed direction in which we want to move). Consider $x^\star + \alpha d,\ (\alpha\in\R)$ (some real number). We fix the direction and then we move in this direction, Clearly if $\alpha$ is sufficiently small $\iff \abs{\alpha} \ll 1 \implies (x^\star + \alpha d \in X)$.
+We're assuming that in a neighborhood of $x^\star,\ X\approx \R^n$.
+Now we remember $x^\star$ is a LOC. MIN. In particular, we want to evaluate $f(x^\star +\alpha d)$. We fix $d$ and we change $\alpha$. $(x^\star,d)$ can belong to different spaces! $d$ and $x^\star$ are complicate objects, but $\alpha$ is a simple real number! We define:
+\[
+	g(\alpha) := f(x^\star +\alpha d),\ (fixed\ d\in\R^n)
+\]
+Let's try to understand. If we define $g:=g(\alpha)$, no matter how complicate is $f(x^\star + \alpha d)$. Once fixed $d$, $[g:\R\mapsto\R]$. We're able to play with this function! It is a simple function! $[g(0)=f(x^\star)] \leftarrow$ (important thing).
+\[
+	g(0) = f(x^\star) \leq f(x^\star + \alpha d) = g(\alpha)\ \forall \alpha \in \cball(0,\epsilon)
+\]	
+
+Remember we're assuming $x^\star$ is LOC. MIN for $f \implies 0$ is loc. MIN for the scalar real function $g$! $(\alpha=0\in\R)$ is LOC. MIN. for $g$! Let's analyze the function $g$!
+Taylor expansion of $g$:
+
+\[
+	g(\alpha) = g(0) + g'(0)\alpha + o(\alpha)
+\]	
+
+where $g'(\alpha^\star) = \frac{\partial{g(\alpha)}}{\partial{\alpha}}|_{\alpha=\alpha^\star}$. What is $o(\alpha)$? It is defined such that:
+\[
+	[\lim_{\alpha\to 0}{\abs{\frac{o(\alpha)}{\alpha}}} = 0]
+\]
+
+If 0 is local minimum of $g(\alpha)$, then $g'(0)$ must be equal to $0 \implies [g'(0)=0]$. 
+
+\begin{proof}
+Suppose by contradiction that $g'(0) \neq 0$. Let's write explicitly this limit here:
+\[
+	\forall r > 0,\ \exists \delta > 0\ |\ \forall \abs{\alpha} < \delta \implies \abs{\frac{o(\alpha)}{\alpha}} < r
+\]
+which means that: $\abs{o(\alpha)} < r\abs{\alpha}$. Let's write:
+
+\[
+	g(\alpha) < g(0) + g'(0)\alpha + r\abs{\alpha}
+\]
+
+and therefore, $g(\alpha)-g(0) = g'(0)\alpha + o(\alpha)$. Take $r < \abs{g'(0)} \implies$
+\[
+	g(\alpha)-g(0) < g'(0)\alpha + \abs{g'(0)}{\alpha} = g'(0)\alpha + \abs{g'(0)\alpha}
+\]
+
+So, this must holds $\forall \alpha$ in a neighborhood of $x^\star\ (\forall \alpha \in \cball(0,\epsilon))$. Then we can take: $[\underline{\sign(\alpha) = -\sign(g'(0))}]$. Then:
+
+\[
+	\abs{g'(0)\alpha} > 0\ \land\ g'(0) < \alpha \implies g(\alpha) - g(0) < 0 \iff g(0) > g(\alpha)
+\]
+
+(CONTRADICTION! Because $g(\alpha) \centernot{<} g(0)$. Nella realtà, $g(0)$ era supposto essere il minimo).
+\end{proof}
+
+The condition we've got is: $g'(0) = 0$. So now let's go back to our $f$! Let's compute what is this:
+
+\[
+	g'(\alpha) = \frac{\partial{g(\alpha)}}{\partial{\alpha}} = \frac{\partial{f(x^\star +\alpha d)}}{\partial{\alpha}}
+\]
+
+How do we compute this derivative? CHAIN RULE! $(\dots) = \nabla{f(x^\star +\alpha d)}^\top$.
+In particular, $g'(0) = \nabla{f(x^\star)^\top d} = 0\ (\forall d \in\R^n)$! So we get
+\[
+	\nabla{f(x^\star)^\top}d = 0 \iff [\nabla{f(x^\star)} = 0]
+\]
+
+Again, a very important step!
+Recognize $g(\alpha)$ and then compute $g'(0)=0 \implies \nabla{f(x^\star)} = 0$, Then we're able to characterize the first order necessary condition for optimality:
+
+F.N.C.: $\nabla{f(x^\star)} = 0$. Why first order? Used only first derivative of $f$. If $x^\star$ is LOC. MIN, then this condition must hold. If I take a bunch of points $\{x^\star\}$ such that FNC holds, then those points $\{x^\star\}$ are called \underline{STATIONARY POINTS}.
+Clearly, we've assumed that $f$ is differentiable $\iff (f \in C^1)$ to do FNC test: $\nabla{f(x^\star)} = 0$.
+
+\begin{thrm}{\textbf{SECOND ORDER (NEC. CONDITION) (of optimality)}} \newline
+Let's approximate:
+\[
+	g(\alpha) = g(0) + g'(0)\alpha + \frac{1}{2}g''(0)\alpha^2 + o(\alpha^2)
+\]
+$[\lim_{\alpha\to 0}{\frac{o(\alpha^2)}{\alpha^2}} = 0]$. So now what is this NEC. COND for optimality? It is: $g''(0) \geq 0$.
+\end{thrm}
+
+Let's see why this is true again:
+
+\begin{proof}
+We know how to play. We're assuming 0 is LOC. MIN for $g(\alpha)$ and $x^\star$ is LOC. MIN of $f(x)$. It does satisfy $g'(0)=0$:
+\[
+	g(\alpha) - g(0) = \frac{1}{2}g''(0)\alpha^2 + o(\alpha^2)
+\]
+
+Use basically the same argument. Suppose:
+\[
+	\forall r > 0\ \exists \delta > 0\ |\ \forall \alpha^2 < \delta \implies \abs{o(\alpha^2)} < r\alpha^2
+\]
+In fact, $g(\alpha)-g(0) < (\frac{1}{2}g''(0) + r)\alpha^2$. And now, assuming by contradiction that: $[g''(0)<0]$, then take: $r < \frac{1}{2}\abs{g''(0)}$, we get a negative RHS member $\implies$
+\[
+	g(\alpha) - g(0) < 0\ \forall \alpha \in \cball(0,\delta)
+\]
+Then, violating the Hypothesis! $g(\alpha) \centernot{<} g(0)$! Because $g(0)$ is supposed to be LOC. MIN for $g(\alpha)$.
+\end{proof}
+
+Let's go back to:
+\[
+	g'(\alpha) = \nabla{f(x^\star +\alpha d)}^\top d = \sum_{i=1}^n{\frac{\partial{f(x^\star +\alpha d)}}{\partial{x_i}}d_i}
+\]
+
+How do we compute $g''(\alpha)$?
+\[
+	[g''(\alpha) = \sum_{j=1}^n{\sum_{i=1}^n{\frac{\partial^2{f(x^\star +\alpha d)}}{\partial{x_i}\partial{x_j}}d_id_j}}]
+\]
+
+, and in particular:
+\[
+	g''(0) = \underline{d^\top \nabla^2{f(x^\star)}d} \geq 0 \implies (\nabla^2{f(x^\star)} \geq 0)
+\]
+
+Just what does it mean? That $\nabla^2{f(x^\star)}$ must be \underline{POSITIVE SEMI-DEFINITE} $\iff$ \underline{SNC} (Second order derivative's informations).
+
+The action must be positive semidefinite. At least $f$ differentiable two times $\iff (f \in C^2)$. Now these are necessary conditions. If we compute all the points that satisfy these conditions, we find loc. min among them.
+
+\begin{thrm}{\textbf{SECOND ORDER SUFFICIENT CONDITION OF OPTIMALITY}} \newline
+Let's compute again $g(\alpha)$, by using $f$ this time:
+\[
+	f(x^\star +\alpha d) = f(x^\star) + (\nabla{f(x^\star)}^\top d\alpha = 0) + \frac{1}{2}d^\top \nabla^2{f(x^\star)}d\alpha^2 + o(\alpha^2)
+\]
+Clearly if we want to find SSC, clearly we have to satisfy the (-)NC's.
+\[
+	\nabla{f(x^\star)}^\top d\alpha = 0 \implies \nabla{f(x^\star)}^\top d = 0
+\]
+
+, we want:
+
+\[
+	f(x^\star +\alpha d)-f(x^\star) = \frac{1}{2}d^\top \nabla^2{f(x^\star)}d\alpha^2 + o(\alpha^2)
+\]
+
+to be non-negative. Clearly if:
+\[
+	d^\top \nabla^2{f(x^\star)}d \geq 0\ \forall d\neq 0 \implies \nabla^2{f(x^\star)} > 0
+\]
+is \underline{(POSITIVE DEFINITE)}.
+\end{thrm}
+
+If the action is positive definite, we want to prove LOC. MIN.
+
+\begin{proof}
+Use: $(\lim_{\alpha\to 0}{\frac{o(\alpha^2)}{\alpha^2)}} = 0)$. Repeat the same argument as before. It's very similar: $\underline{\nabla^2{f(x^\star)} > 0} \implies f(x^\star +\alpha d) -f(x^\star) > 0$ but notice that $\forall\ fixed\ d,\ \forall \alpha \in \cball(0,\delta_d)$, we can find some $\delta_d := \delta(d)$ such that this condition holds. The STRICT condition was $f(x^\star) < f(x)\ \forall x\neq x^\star,\ x \in \cball(0,\epsilon)$. This is not that condition $(\delta(d)\neq \epsilon)$. We can simply take, without loss of generality, $d\ |\ \norma{d} = 1$. Suppose we are in $\R^2 \iff (n=2)$. I can use $\alpha$ to scale the $d$ vector! So by taking $\norma{d}=1$, and scale with $\alpha$ (restrict $d\ |\ \norma{d}=1$). Then, the set of $\{d\}$ such constructed, $\{d \in \R^n\ |\ \norma{d} = 1\}$ is compact and then by using continuity argument, $\exists \delta^\star\ |\ (\delta_d \geq \delta^\star)$. We can find a minimum $\delta\ \ (\delta^\star)$, and therefore I can write:
+\[
+	f(x^\star +\alpha d) - f(x^\star) > 0\ \forall \alpha \in \cball(0,\delta^\star)
+\]	
+
+which is equivalent that this inequality holds $\forall x\ \forall d$.
+\end{proof}
+
+This condition may seem obvious (\underline{Weierstrass theorem}). $\delta$ depends continuously on the direction $d$. The important keypoint is that we we're able to use Weierstrass theorem. We'll see that in optimal control there can be spaces in which this condition doesn't hold.
+
+For F.D., if $[\nabla{f(x^\star)} = 0\ \land\ \nabla^2{f(x^\star)} > 0] \implies x^\star$ is a LOCAL MINIMUM (\underline{STRICT}) (\underline{Condizione Sufficiente}) (\underline{SSC}). Again we can prove this condition by using the trick of the $g(\alpha)$ function plus the fact of the existence of $\delta_d$ minimum wrt $d$.
+
+Questo fatto non vale per spazi INFINITO-DIMENSIONALI. Dovremo assumere qualcosa di più forte.
+
+\subsubsection{NECESSARY CONDITIONS FOR CONSTRAINED (CONVEX) PROBLEMS}
+
+Remember we've given these conditions for unconstrained problem. This was somehow crucial. For unconstrained $g'(0) = 0$ for some fixed $(d\in\R^n)$. And then we have: $g'(0) = 0 \implies \nabla{f(x^\star)}^\top d=0$ for some fixed $(d\in\R^n)$. The trick was take ANY $d\in\R^n$. For some $\bar{d}\in\R^n$ \underline{MEANS}:
+\begin{itemize}
+\item $\nabla{f(x^\star)}^\top \bar{d}=0$;
+\item $\nabla{f(x^\star)}^\top (-\bar{d})=0$;
+\end{itemize}
+In constrained problem\dots our $X$ is a closed set and has a boundary. It is NOT true that we can take $\bar{d},(-\bar{d})$! It is not true anymore we can take the opposite direction. How do we write the necessary conditions in this case? The point is that we can take only (ONLY) FEASIBLE DIRECTIONS $(d\in\R^n)$. Not all $d$'s! Not all the directions are allowed. In general $(d\in\R^n)$, but some of these aren't allowed. Do it as an exercise $\rightarrow$ Show that $x^\star$ LOC. MIN $\implies \nabla{f(x^\star)}^\top d \geq 0\ \forall d\ FEASIBLE\ (d\in\R^n)$. I'm not allowing to take every $d$, but some vectors $d$ that are feasible.
+
+Similarly, $d$ feasible if
+\[
+	\exists \bar{\alpha}\in\R\ |\ (x^\star +\alpha d) \in X\ \forall \alpha\in \cball(0,\bar{\alpha})
+\]
+SNC basically looks the same:
+\[
+	[d^\top \nabla^2{f(x^\star)}^\top d \geq 0]\ \forall d\ FEASIBLE\ (d\in\R^n)
+\]	
+
+\begin{thrm}{SNC for Constrained Problems}
+\[
+	[d^\top \nabla^2{f(x^\star)}^\top d \geq 0]\ \forall d\ FEASIBLE\ (d\in\R^n)\ |\ \nabla{f(x^\star)}^\top d = 0
+\]
+\end{thrm}
+
+We'll not use these conditions. We'll use it in some particular problem. But this characterizes \underline{local minima} $\implies$ iterative algorithms for constrained problems.
+In fact, the case in which these conditions are really useful is the case of convex problems. $(x=x^\star + \bar{\alpha}d) \in X$, I'll be sure $(x^\star +\alpha d) \in X\ \forall \alpha\in\cball(0,\bar{\alpha})$; therefore this gives me some very useful informations. $\forall$ some small $\alpha$ it belongs to that set.
+
+Let's go back to our problem.
+\[
+	\min_{x\in X}{f(x)},\ where: \left\{
+	\begin{aligned}
+	&f\ convex\\
+	&X\ convex\ set
+	\end{aligned} 
+	\right.
+\]
+Minimizing a convex function over a convex set, and it can be stated: If $X$ is convex, then by using the convexity of the function $f$, we can demonstrate that, if it exists, every \underline{global minimum} is a \underline{local minimum}. It means that If I apply: $[\nabla{f(x^\star)}=0]$, it can be shown that this condition, the NC one, is also a sufficient condition for optimality. Convex problems are very special problems. If strictly convex, $\exists!\ x^\star$ and it is global!
+
+\subsubsection{OPTIMIZATION OVER CLOSED (CONVEX) SET}
+
+$x\in\R^n$ or at least locally. $min_{x\in X}{f(x)}$ \dots then we can treat the constrained version. We cannot consider both directions. Necessary CONDITION for optimality:
+\[
+	\nabla{f(x^\star)}^\top d \geq 0\ \forall\ FEASIBLE\ DIR.\ d
+\]	
+FEASIBLE DIR $d$. means:
+\[
+	\exists \bar{\alpha}\ |\ x^\star+\alpha d \in X\ \forall \alpha\in[0,\bar{\alpha}]
+\]
+We're almost considering $x$ to be in a convex set, at least locally. In some sense, a convex structure around locally in $x^\star$. Remark: notice that: if $X$ is closed, (Supposed to be in $\R^2$, ex. A surface in $\R^3$), it may happen that these conditions are meaningless for a set like this $\implies$ we'll give some meaningful condition like this (Every direction we choose it will don't correspond to a feasible solution).
+
+\[
+	g(\alpha) = g(0) + \underline{g'(0)\alpha} + o(\alpha)
+\]
+
+where $(\alpha\in\R)$
+In this case if we consider ONLY feasible dir, we have to get: $\alpha \geq 0 \impliedby g'(0) \geq 0$. \underline{Even in the unconstrained case}, we may claim the following as FNC: $g'(0)\geq 0 \iff \nabla{f(x^\star)}^\top d \geq 0\ \forall d$. Because in the \underline{UNCONSTRAINED}, by taking $\bar{d},(-\bar{d})$, it must hold:
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{f(x^\star)}^\top \bar{d}=0 \\
+	&\nabla{f(x^\star)}^\top (-\bar{d})=0
+	\end{aligned} 
+	\right. \iff (\nabla{f(x^\star)} = 0)
+\]
+
+So it is true only for $\nabla(\mathord{\cdot})=0$.
+\[
+	\nabla{f(x^\star)}^\top d \geq 0
+\]
+
+IS MORE GENERAL!
+Modo alternativo per ridimostrare quello che abbiamo fatto precedentemente. Quindi senza ledere di generalità possiamo scegliere: Let's suppose to consider: Even the $X$ is (locally) convex, $[\alpha\geq 0]$. $f$ may not be convex. In that case the problem will be not convex.
+
+\subsubsection{CONVEX PROBLEMS}
+ 
+$\min_{x\in X}{f(x)}$, where as REMARK: $X$ convex means that:
+\[
+	\forall x,y\in X\ \alpha x +(1-\alpha)y \in X,\ \alpha\in[0,1]
+\]
+In our case, $f$ is a convex function and $X$ is a convex set. REMARK: $f$ convex function $\iff$
+\[
+	\forall x,y\ [f(\alpha x+(1-\alpha)y) \leq \alpha f(x) +(1-\alpha)f(y)]\ \alpha\in[0,1]
+\]
+But there's a more simple way: a function $f$ is convex $\iff$ the epigraph of the function is convex. If strict version holds, the function is said to be strictly CONVEX. Then with $X,f$ convex the problem is CONVEX $\implies$ For a convex problem:
+
+\begin{prop}
+For a Convex Problem, Local Minima are also global.
+\end{prop}
+
+\begin{proof}
+Show that since the convexity property must hold for any point, we can suppose by contradiction that $x^\star$ is a local minimum but not a global minimum. If then, there $\exists \epsilon > 0\ |\ \forall x \in \cball(x^\star, \epsilon)\ f(x^\star) \leq f(x)$. Let's suppose that this is not global. There $\exists \bar{x}\ |\ (f(\bar{x}) < f(x^\star))$. 
+
+If the function is convex, it must hold that:
+
+\[
+	f(\alpha x^\star + (1-\alpha)\bar{x}) \leq \alpha f(x^\star) + (1-\alpha)f(\bar{x}) = (\dots)
+\]	
+, but since $f(\bar{x}) < f(x^\star) \implies$
+\[
+	(\dots) \leq \alpha f(x^\star) + (1-\alpha)f(x^\star )= f(x^\star)
+\]
+Since $\alpha\in[0,1] \implies$ then it contradicts the local optimality. $those =$ points arbitrarily close to $x^\star\ |\ f(those) \leq f(x^\star)$. 
+\end{proof}
+
+That's an appealing property. Another one is that FNC is FSC.
+
+\begin{thrm}
+It can be shown that if $f$ is convex then we have that:
+\[
+	f(z) \geq f(x) + \nabla{f(x)}^\top (z-x)
+\]	
+Thus, suppose if for some $x^\star$
+\[
+	[\nabla{f(x^\star)} = 0]\ \implies f(z) \geq f(x^\star)\ \forall z \in X
+\]
+So, $\nabla{f(x^\star)} = 0$ is not only necessary but it is also a SUFFICIENT CONDITION OF OPTIMALITY.
+\end{thrm}
+
+If we're able to find \underline{stationary points} then these points are \underline{global minimum}. This is a sufficient condition. (PER PROBLEMI CONVESSI!).
+
+\subsubsection{EXISTENCE OF MINIMA}
+
+We're characterized minima. But do there exist minima for this problem? $min_{x\in X}{f(x)}$. Under what conditions (\underline{SUFFICIENT CONDITIONS}) those minima exist?
+
+\begin{itemize}
+\item $f$ is continuous;
+\item $X$ is COMPACT;
+\end{itemize}
+
+And this is the Weierstrass theorem Hypothesis. Here we're assuming the continuity for the $f$. But we require also the fact that $X$ has to be closed and limited. Another sufficient conditions are that $f$ is again continous and coercive (radial unbounded function) $\iff (\lim_{\norma{x}\to\infty}{f(x)} = \infty)$, and $X$ is closed. Of course, if not satisfied, it may still exist a global minimum! These are only sufficient conditions.
+
+\section{ITERATIVE ALGORITHMS}
+
+Suppose we give sufficient conditions and at least a minimum exists. Then the question is: How can I compute it? The way to do is to generate an (iterative) algorithm. We want to generate a sequence of points $\{x_k\}\ |\ x_k \tendsto{} x^\star$, with $x^\star$ a (local/global) minimum. A first class of algorithms we can analyze are called:
+
+\subsection{DESCENT ALGORITHMS}
+
+The idea is the following: we need to converge to some local minimum. We may start with a point and construct a new point in which the $f$ evaluated at that next point is less than the previous one. DESCENT ALGORITHMS: Design $\{x_k\}\ |\ f(x_{k+1}) < f(x_k)\ k=0,\ \dots$. Suppose we are in some point $x_k$. Let's construct $x_{k+1}$.
+\[
+	[x_{k+1} = x_k + \alpha d_k]
+\]
+I'm not saying that designing a descent algorithm will be also a minimum-convergent algorithm. But let's prove the descent property.
+
+\begin{proof}
+Suppose the function at least differentiable:
+\[
+	f(x_{k+1}) = f(x_k) + \alpha\nabla{f(x_k)}^\top d_k + \underline{o(\alpha)}
+\]
+
+(As we've already done). Remember that $o(\alpha)$ is an HIGHER-ORDER TERM (HOT): $\lim_{\alpha\to 0}{\frac{o(\alpha)}{\alpha}} = 0 \implies$
+\[
+	\forall r > 0\ \exists \delta > 0\ |\ \forall\abs{\alpha > 0} < \delta \implies o(\alpha)<r\alpha
+\]
+Take $d_k\ |\ \nabla{f(x^\star)}^\top d_k < 0$. If I take $d_k$ satisfying this condition, for $\alpha \ll 1$ sufficiently small $\implies f(x_{k+1})-f(x_k)<0$.
+Take $r < \abs{\nabla{f(x^\star)}^\top d_k} \implies$
+\[
+	\alpha(\nabla{f(x^\star)}^\top d_k + r) < 0	
+\]
+\[
+	x_{k+1} = x_k + \alpha d_k\ |\ [\nabla{f(x^\star)}^\top d_k < 0]
+\]
+At least, I'm descending!
+\end{proof}
+
+Look at this condition: $\nabla{f(x^\star)}^\top d_k < 0$. This could be written such that this property is the most negative possible: $d_k = -\nabla{f(x_k)} \implies$
+\[
+	x_{k+1} = x_k -\alpha\nabla{f(x_k)}
+\]
+(STEEPEST DESCENT ALGORITHM).
+Again we don't know about the convergence. We can do something more general. We can create sequence of points:
+\[
+	x_{k+1} = x_k +\alpha_kd_k\ \land\ \nabla{f(x_k)}^\top d_k < 0
+\]
+with $a_k > 0,\ d_k$ such that I can take the STEEPEST DESCENT: $x_{k+1} = x_k -\alpha\nabla{f(x_k)}$.
+
+\subsubsection{GRADIENT METHODS}
+
+Let's see a class of algorithms called "Gradient Methods".
+\[
+	x_{k+1} = x_k - \alpha_k D_k\nabla{f(x_k)}
+\]
+$D_k\in\R^{n\times n} > 0$ (positive definite).
+
+\begin{itemize}
+\item $D_k = I \implies$ steepest descent;
+\item $D_k$ uniformly bounded $\iff \delta_1I \leq D_k \leq \delta_2I$. ($\leq$ in the sense of pos. semidefinite);
+\item We can choose something about second order approximation of the function. Let's consider a quadratic approximation of the function:
+\[
+	f(x) = f(x_k) + \alpha_k\nabla{f(x_k)}^\top (x-x_k) + \frac{1}{2}(\alpha_k)^2(x-x_k)^\top D_k(x-x_k)
+\]
+Let's suppose to freeze the situation. Let's take:
+\[
+	[x_{k+1} = x_k -\alpha_kD_k\nabla{f(x_k)}]
+\]
+\[
+	[\nabla{f(x_k)} + \alpha_k\inv{D_k}(x-x_k) = 0]
+\]
+To minimize the quadratic approximation of the function, $\bar{x} = x_k - \alpha_kD_k\nabla{f(x_k)}$ soddisfa questa con: $D_k = \inv{\nabla^2{f(x_k)}}$ and in this case we have:
+\[
+	[x_{k+1} = x_k - \alpha_k\inv{\nabla^2{f(x_k)}}\nabla{f(x_k)}]
+\]
+Let's suppose $f$ differentiable 2 times. Se $D$ NON \`E INVERTIBILE questa scelta non si può fare:
+\item{Newton method} $\underline{\alpha_k := 1}$.
+\[
+	x_{k+1} = x_k - (\alpha_k=1)(\inv{\nabla^2{f(x_k)}})\nabla{f(x_k)}
+\]
+If we start sufficiently close to the minimum, it will converge to the minimum in a fast way! There are other ways to choose $D_k$!
+\item $D_k = \inv{\nabla^2{f(x_0)}}$;
+\end{itemize}
+
+We have our descent algorithm, a gradient algorithm. We need to choose $D_k$ in a such way. How do we choose $a_k$? How do select STEPSIZE?
+
+\subsubsection{STEPSIZE SELECTION}
+
+The first way is the so called:
+\begin{itemize}
+\item{MINIMIZATION RULE} We choose $\alpha_k\ |\ f(x_k+\alpha d_k) := \min_{\alpha\in[0,s]}{f(x_k+\alpha d_k)},\ (\alpha\geq 0)$, where: $s = +\infty\ \lor\ s=\bar{s}>0\ constant$;
+In this case $(s=\bar{s}<+\infty) \implies$ LIMITED MINIMIZATION RULE. $(s=+\infty)$ is somehow consuming;
+Really very important: $f:\R^n\mapsto\R$. For this positive $f$ could be also more complex function in an infinite-dimensional  space. And even $d_k$. If I fix $x_k,d_k$, then I can make a picture of what is called $g(\alpha)\in\R^2$. Get $\alpha$ such we get the minimum value. I descend as much as possible: Descending:
+\begin{itemize}
+\item{A)} choose direction;
+\item{B)} choose stepsize;
+\end{itemize}
+
+\begin{itemize}
+\item{1)} $A\rightarrow B$ possible workflow;
+\item{2)} The 1) is not the best from a computational point of view.
+\end{itemize}
+Another rule is the so-called:
+\item{ARMIJO RULE} Choose some $\beta\in(0,1),\ \sigma\in(0,1)$, and then choose some $s>0$. Three parameters (experience, heuristical way). Typically $\{\beta=0.7,\ \sigma=0.5,\ s=1\}$. We choose $[\alpha_k=\beta^{m_k}*s]$, and $m_k$ is the first non-negative integer such that the following holds:
+\[
+	[f(x_k)-f(x_k+\beta^{m_k}sd_k) \geq -\sigma\beta^{m_k}s\nabla{f(x_k)}^\top d_k]
+\]
+This condition is called a SUFFICIENT DECREASE CONDITION. We'll see that Armijo rule is a way to demonstrate convergence (Enough descentness).
+For example, let's try to evaluate the function with $\alpha=1,\ m=0,\ s=1$. $f(x_k+\alpha d_k)$ with $m_k=3,\ \alpha=\beta^3s=\beta^3$. If $\sigma=1$, I'm taking the tangent. Per la retta è fissata la pendenza! Una volta scelto $x_k,d_k$, mi resta un grafico bidimensionale! $g(\alpha):\R\mapsto\R$. Utile per il debugging dell'algoritmo del gradiente. In casi patologici, la retta potrebbe non essere ben definita;
+
+\item{CONSTANT STEPSIZE} $a_k=\underline{\alpha > 0}$. For example, for a gradient method, if $\abs{\alpha}<1$ and strictly positive, there is convergence. So we get a constant stepsize. In distributed optimization it is useful;
+
+\item{DIMINISHING STEPSIZE}
+\[
+	[\lim_{k\to\infty}{\alpha_k}=0],\ \sum_{k=1}^{+\infty}{a_k} = \infty
+\]
+Somehow we want a not summable series. If $\abs{a_k}<1$ asymptotically we could get near the minimum.
+
+\end{itemize}
+
+When a function has no gradient, $\alpha$ is chosen DIMINISHING. (SUBGRADIENT METHODS).
+What happens to $min_{x\in X}{f(x)}$ In CONSTRAINED case? ($x\in\R^n$ or locally $X \approx \R^n$), where:
+\begin{itemize}
+\item $(X \neq \emptyset) \subset \R^n$ CLOSED CONVEX;
+\item $f\in C^1$.
+\end{itemize}
+How do we choose the $D_k$?
+
+\underline{IDEA}: Generate a sequence of feasible points, where \underline{$d_k$ is a feasible direction} $\iff (x_k+\alpha d_k \in X), \abs{\alpha} \ll 1$.
+\[
+	x_{k+1} = x_k + \alpha_kd_k
+\]
+\[
+	[\nabla{f(x_k)}^\top d_k < 0]
+\]
+I need to choose: $\{\alpha_k > 0\ |\ x_k+\alpha_kd_k \in X\}$. This is our possibility to iterate feasible points. There are algorithms that iterate on unfeasible points.
+Osservazione:
+
+\[	
+	g(\alpha) = g(0) + (g'(0)\geq 0 \impliedby \alpha\geq 0)\alpha + o(\alpha)
+\]
+Posso prendere una certa direzione ed andare sempre in quella direzione. $g'(0)\geq 0 \iff$ (Non può essere negativa). (L'informazione sul segno è contenuta in $d$); se l'osservazione è che abbiamo un problema di minimizzazione $\min_{x\in X}{f(x)},\ \exists x^\star$ global minimum $\implies f(x_k) \leq f(x)\ \forall (((x\in X)\subset \R^n))\iff x\in\R^n)$. (caso unconstrained).
+\[
+	\{x_k\}\ |\ f(x_0) > f(x_1) > \dots
+\]
+(Algoritmo di discesa). La mia successione degli $\{x_k\}$ è tale che $\{f(x_k)\}$ è decrescente.  Limitata inferiormente. Convergerà. Quello che può andare storto è che converga non al minimo ma ad un'altra parte. Ci sono algoritmi non di discesa che in un bacino all'interno del minimo convergeranno; diversamente addirittura divergono (metodo di Newton puro); quindi un metodo di discesa valido NON può divergere od oscillare. Eventuali problemi intrinseci. Nel caso NON vincolato, abbiamo visto che ci sono condizioni non subito semplici, ma che ci danno delle informazioni.
+
+Gradient Method, Descent Method. We can do something similar for \underline{constrained problems}:
+\[
+	\min_{x\in X}{f(x)},\ (X\neq\emptyset)
+\]
+where $X$ closed (convex) set. Convex locally (in some neighborhood of $x^\star$). We're somehow generating the descent method. $d_k$ must be a \underline{FEASIBLE DIRECTION} $\implies d_k\ |\ (x_k +\alpha d_k)\in X$. For $\abs{\alpha}\ll 1$ sufficiently small, $\nabla{f(x_k)}^\top d_k <0 \implies d_k$ must be a descent direction. Construct this sequence:
+\[
+	[x_{k+1} = x_k + \alpha_kd_k]
+\]
+What about STEPSIZE SELECTION RULE? We can use bother the (limited) MINIMIZATION RULE or even the CONSTANT STEPSIZE. Depending on the rule we use there are results for convergence. Choose a possible descent direction. We can do something similar for the constrained case. These are several possibilities. We just focus on a method called PROJECTED GRADIENT. This is the most known version $\implies$ (GRADIENT PROJECTION). Let's start by defining a projection:
+\[
+	\min_{x\in X}{\norma{z-x}^2}
+\]
+Notice that the domain variable is $(x\in X)$ in convex set. Our function, $\norma{z-x}^2$ is a strictly convex function (quadratic function). Then, $X$ closed convex set and we take it to be closed and convex. So, the minimum $\exists$ and this is unique $\implies$ unique global minimum. We call this unique minimum the projection of $z$ over the set $X \implies$
+\[
+	P_x(z) = \argmin_{x\in X}{\norma{z-x}^2}
+\]
+We call it the projection of $z$ over the set $X$. If the set $X$ is a polytope, Then it is the orthogonal projection $\implies$ (intersection of linear inequalities). The important point is that: $\exists!\ P_x(z)$. Define, get a feasible direction for our method:
+\[
+	x_{k+1} = P_x(x_k-\alpha_k\nabla{f(x_k)})
+\]
+This is called PROJECTED GRADIENT METHOD. And we can apply this method to our minimization problem.
+
+\subsubsection{CONVERGENCE (UNCONSTRAINED)}
+
+We can state: let's give the notion of GRADIENT RELATED DIRECTION. $d_k$ is a GRD if: $\norma{d_k}<+\infty\ \land\ [\limsup_{k\to\infty}{\nabla{f(x_k)}^\top d_k} < 0]$; for example, if we're in this situation: $dk = -D_k\nabla{f(x_k)}$, but $D_k$ must satisfy: $[\delta_1I \leq D_k \leq \delta_2I]$. (Meant in term of positive semidefinite). (Questo è il caso unconstrained). The result is the following theorem:
+
+\begin{thrm}{\textbf{(UNCONSTRAINED)}} \newline
+$\{x_k\}$. Let $\{x_k\}$ be a sequence generated as: $[x_{k+1}=x_k+\alpha_kd_k]$, with $d_k$ \underline{gradient related direction} (GRD). Suppose $\alpha_k$ generated by the limited minimization rule or the ARMIJO rule. Then the result is the following: Every limit point of $\{x_k\}$ is stationary.
+\end{thrm}
+
+We're able to prove that this method converges to a stationary point. Good news: we don't need to assume any convexity of the function $f$. A some regularity is required. Bad news: we're converging to a stationary point. Are we really converging to a global minimum? It is applicable for non-convex problem. One looks for local minima.
+
+\subsubsection{CONVERGENCE (CONSTRAINED CASE)}
+
+The difference in the constrained case is that\dots $d_k$ must be a \underline{feasible direction}.
+\begin{thrm}{\textbf{(constrained)}} \newline
+Let $\{x_k\}$ be generated as: $[x_{k+1}=x_k+\alpha_kd_k]$, with $d_k$ GRD and a feasible direction. Suppose $\alpha_k$ is generated with the limited minimization rule or by the Armijo rule. Then $\{x_k\}$ converges to a stationary point
+\end{thrm}
+
+(Exactly the same as before). REWR := Every limit point of $\{x_k\}$ is stationary (satisfying the FNC in the constrained case).
+
+Classe di algoritmi applicabili in questi casi. Special class of constrained problems.
+
+\subsection{EQUALITY CONSTRAINED OPTIMIZATION}
+
+We want to consider:
+\[
+	\min_{x\in\R^n}{f(x)},\ (X\subset\R^n)\ |\ h_1(x) = 0,\ \dots,\ h_m(x) = 0
+\]
+Our set $X$ is the set defined by these (in)equalities. So, since we're considering equality constraints, our set $X$ is closed. But unless the constraint functions $h_1(x),h_n(x)$ are NON linear, the set $X$ isn't convex. The only way for $X$ to be convex is that $h\ \|\ h_i:\R^n\mapsto\R,\ i\in\{1,\ \dots,\ m\}$.
+
+In case we have a general set. At least graphically there could be no way to find a useful feasible direction. We require meaningful requests.
+UNCONSTRAINED: We go back to unconstrained case. \underline{$x^\star$ is a local minimizer}. Consider $x^\star +\alpha d$ for some fixed direction. Trying to reach $x^\star$ with some sort of update. Let's use a more general way. General curves that traverse $x^\star$.
+\[
+	x := x(\alpha):\R\mapsto\R^n
+\]
+Let's consider a function like this, and as before let's consider: $[g(\alpha):=f(x(\alpha))]$. Now as before, let's write:
+\[
+	[g(\alpha) = g(0) + g'(0)\alpha + o(\alpha)]
+\]
+(Taylor expansion) and let's see if we can play the same game we've play in the unconstrained case. Notice that $g(0) = f(x(0)) = f(x^\star)$. Suppose $x^\star = x(0)$ and $\forall\alpha\in\R\ x(\alpha)$ satisfies:
+$h_1(x(\alpha)) = 0,\ \dots,\ h_n(x(\alpha)) = 0$. Let's write $g'(\alpha)$ by using CHAIN RULE:
+\[
+	g'(\alpha) = \nabla{f(x(\alpha))}^\top x'(\alpha)
+\]
+Let's assume that $(x:\R\mapsto\R^n)\in C^1 \implies \exists x'(\alpha)$ and it is continuous. $g'(0) = \nabla{f(x^\star)}^\top x'(0)$; The condition of optimality (FNC) is:
+\[
+	[\nabla{f(x^\star)}^\top x'(0) = 0]
+\]
+By using this parametrization, once we have $x(\alpha)$ we can choose $(\alpha\neq 0)\in\R$. Esistono dei risultati che sotto condizioni di regolarità delle $h_i$ c'è la convergenza. We can expand $x$ using a Taylor expansion:
+\[
+	[x(\alpha) = x(0) + x'(0)\alpha + o(\alpha)] = x^\star + x'(0)\alpha + o(\alpha)
+\]
+[linear approximation of our function at $x^\star$. $(x\in C^1) \iff$ (Taylorizable). Quindi $x^\star + x'(0)\alpha \approx x(\alpha)$ in a neighborhood of $x^\star$. It means that if I take my nonlinear function $x(\alpha)$ that passes through $x^\star$ then I'm approximating $x$ locally by its linear approximation. Vector $x'(0)$ gives me a direction tangent to my curve, and since this curve belongs to the surface, I'm considering vectors tangents in my curve.
+\[
+	\nabla{f(x^\star)}^\top x'(0) = 0\ \forall x:\R\mapsto\R^n\ (x\in C^1)
+\]
+Is this characterization useful? We're defined this surface in terms of our equality constraints. ($x'(0)$ tangente alla superficie!) $x^\star$ è un vettore.
+\[
+	[x^\star + x'(0)\alpha] \in T_{x^\star}X
+\]
+Prendo tutti i punti appartenenti a quella superficie $(x'=d_k)\in T_{x^\star}X$. Partendo da un minimo locale, stiamo derivando le NC.
+
+Let's go back to the constraints: $x(\alpha)\in X$ for $\alpha$ in a neighborhood of 0. It means that:
+\[
+	[h_1(x(\alpha))=0,\ \dots,\ h_n(x(\alpha)) = 0]
+\]
+\underline{At least locally}. Remember $(x\in C^1)$. Some regularity for $h_i$'s ($h_i$ continuously differentiable) $\iff (h_i\in C^1)$. Differentiate it:
+\[	
+	[\frac{dh_i(x(\alpha))}{d\alpha} = 0]
+\]
+$\iff \underline{h_i =\ constant\ \forall\alpha\forall i}\in\{1,\ \dots,\ m\}$. Let's compute this derivative. Chain RULE := for differentiation $\implies$
+\[
+	\nabla{h_i(x(\alpha))}^\top x'(\alpha) = 0
+\]
+, and in particular we get that the following holds:
+\[
+	[\underline{\nabla{h_i(x(0)=x^\star)}^\top x'(0) = 0}]
+\]
+$\forall i\in\{1,\ \dots,\ m\}$. We're descending the tangent space. The condition that we have is that: $\nabla{f(x^\star)}^\top d = 0,\ (x'\in T_{x^\star}X)$; for $(d\in T_{x^\star}X)$. So this condition could be rewritten as:
+\[
+	\nabla{f(x^\star)}^\top d = 0\ \forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0
+\]
+RECAP: The condition is now:
+\[
+	\nabla{f(x^\star)}^\top x'(0) = 0\ \forall x:\R\mapsto\R^n,\ (x\in C^1)
+\]
+$\nabla{f(x^\star)}$ perpendicular to $T_{x^\star}X$.
+\[
+	\nabla{f(x^\star)}^\top d = 0\ \forall (d\in T_{x^\star}X)
+\]
+
+This is the condition we've got. How to rewrite it in a better way?
+
+\begin{defn}{\textbf{REGULAR POINT}} \newline
+$x^\star$ is a regular point if the $\nabla{h_i(x^\star)},\ i\in\{1,\ \dots,\ m\}$ are linearly independent.
+\end{defn}
+
+This is a technical assumption that allows us to avoid some general case. This gradient, in $x^\star$ is a basis for that tangent space. Let's then proceed this way:
+
+\begin{prop}
+Let $x^\star$ be a local minimum, with $x^\star$ regular. Then the gradient of $f$ at $x^\star$ is a linear combination of:
+\[
+	\nabla{h_i(x^\star)},\ i\in\{1,\ \dots,\ m\} \iff \nabla{f(x^\star)} \in\Span{\nabla{h_i(x^\star)},\ i\in\{1,\ \dots,\ m\}}
+\]
+\end{prop}
+
+The claim is that if $x^\star$ is a regular local minimum, $\nabla{f(x^\star)}$ belongs to that span. Let's prove it, and let's prove it by contradiction:
+
+\begin{proof}
+Suppose by contradiction that this is NOT true, $\implies$
+\[
+	\nabla{f(x^\star)} = LINCOMB\{\nabla{h_i}\} + (somevector \notin LINCOMB) \implies
+\]
+\[
+	\implies \nabla{f(x^\star)} = d - \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}}
+\]
+
+, with $\nabla{h_i(x^\star)}^\top d = 0\ \forall i \in\{1,\ \dots,\ m\}$. and here I'm simply taking this because $\rightarrow$ I have a linear combination of these gradient and another vector $[d \perp \nabla{h_i(x^\star)}]$. OK. Let's see that this is impossible! Remember what the FNC of optimality was saying:
+\[
+	\nabla{f(x^\star)} \perp \nabla{h_i(x^\star)}
+\]
+Let's try to compute $\nabla{f(x^\star)}d = d^\top d -\sum_{i=1}^m{\lambda_i^\star\underline{(\nabla{h_i(x^\star)}^\top d = 0)}}$.  Because $d \perp \nabla{h_i(x^\star)} \implies \nabla{f(x^\star)}^\top d = (\dots) = d^\top d = \norma{d}^2 > 0\ \forall d \neq 0$, but this is a contradiction because: $[\nabla{f(x^\star)}^\top d = 0]\ \forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}$. The only way for that to be true is that:
+\[
+	\nabla{f(x^\star)} \in \Span{\nabla{h_i(x^\star)},\ i\in\{1,\ \dots,\ m\}}
+\]
+In other words,
+\[
+	\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0
+\]
+\end{proof}
+
+and this is a nice NC of optimality. It requires to find $(\lambda_i^\star\in\R)$ such that this condition is satisfied. Let's remember that this condition must be combined with the fact that: $h_i(x^\star) = 0\ \forall i\in\{1,\ \dots,\ m\}$. 
+
+Let's see if these conditions make sense. FNC of optimality.
+
+\subsubsection{FIRST ORDER NECESSARY CONDITION OF OPTIMALITY}
+
+Those $\{\lambda_1^\star,\ \dots,\ \lambda_m^\star\}$ are called LAGRANGE MULTIPLIERS. We need to find this $m$ real values, $\lambda_i^\star\in\R$ such that this condition holds. LM if $\exists\lambda_i\ |$ it holds. We'll see that there's another way to reinterpret this FNC which we'll lead to a natural way to compute it. Class of algorithms. Let's introduce the function $L(x,\lambda)$:
+\[
+	[L(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih(x)}]
+\]
+what we're doing? I've my constrained problem. Suppose that I allow myself to violate this constraints $h_i(x^\star) = 0$. There's a cost proportional to this violation. If I take feasible points, I get $[L(x,\lambda) = f(x) + 0]$. $L(x,\lambda)=\ (AUGMENTED)\ COST\ LAGRANGIAN$. Let's see basically why they're called LM. Suppose we forget to start at the original problem. We want to find stationary points of this $L(x,\lambda)$. $x\in\R^n$. I'm considering $\lambda^\star\in\R^m$. Compute the gradient of $L(x,\lambda)$ and set it equal to 0. Let's take:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{L(x^\star,\lambda^\star)} = \nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0 \\
+	&\frac{\partial{(\dots)}}{\partial{\lambda}} = 0 \implies
+		\left\{
+		\begin{aligned}
+		h_1(x^\star) &= 0\\
+		h_2(x^\star) &= 0\\
+					 &\vdots\\
+		h_m(x^\star) &= 0
+		\end{aligned} 
+		\right. \\
+	\end{aligned} 
+	\right.
+\]
+
+Now let's take those $\{n+m\} = \#EQUATIONS = \#VARIABLES$. Somehow this condition is well-posed.
+Le $m$ variabili sarebbero i $\lambda_i$, che al valore ottimo sono chiamati moltiplicatori di Lagrange. (OPTIMAL LAGRANGE MULTIPLIERS). AON Different conventions for their names. $\lambda_i$ ADJOINT VARIABLES. All'ottimo sono chiamati LM.
+
+Just a remark: notice that here we've shown that if $x^\star$ is a stationary point for the original problem and $\lambda_i^\star$ are LM, then it's quite straightforward. It can be shown that $x^\star$ is stationary, with associated Lagrange multipliers vector $\lambda^\star\in\R^m \iff \nabla{L(x^\star,\lambda^\star)} = 0$. $\nabla$ is meant in term of two variables $x,\lambda$. The converse is more complex but it is also true $\rightarrow$ We can start from finding $\lambda^\star\in\R^m$.
+
+\subsubsection{SECOND ORDER NECESSARY CONDITION OF OPTIMALITY}
+
+Let $x^\star$ be a local minimum of the constrained problem and $x^\star$ \underline{regular}. Then let's see how to compute SNC. $L(x,\lambda)$. If we take the gradient of $L(x,\lambda)$,
+\[
+	[\nabla{L(x,\lambda)} = \nabla{f(x)} + \sum_{i=1}^m{\lambda_i\nabla{h_i(x)}}]
+\]
+We derived the FNC simply setting this gradient equal to 0. Temptation now is: let's compute $\nabla^2L(x,\lambda)$ and set it positive definite.
+\[
+	\nabla^2{L(x,\lambda)} = \nabla^2{f(x)} + \sum_{i=1}^m{\lambda_i\nabla^2{h_i(x)}}
+\]
+And can be proven that:
+SNC:
+\[
+	\nabla^2{L(x^\star,\lambda^\star)} = \nabla^2{L(x,\lambda)}|_{x=x^\star,\lambda=\lambda^\star} \geq 0
+\]
+is positive semidefinite, but not for all vector, but: $\forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}$. In other words it must be $\geq 0$ for the tangent space. Only for those $d$'s. $\iff (\underline{d\in T_{x^\star}X})$.
+
+SNC:
+
+\[
+	d^\top \nabla^2{L(x^\star,\lambda^\star)} d \geq 0\ \forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}
+\]
+
+Similarly we can derive SNC:
+
+\subsubsection{SECOND-ORDER SUFFICIENT CONDITIONS OF OPTIMALITY}
+
+Suppose $(x^\star,\lambda^\star)$ satisfies FNC of optimality:
+\[
+	[\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0]
+\]
+, $h_i(x^\star) = 0,\ i\in\{1,\ \dots,\ m\} \iff x^\star$ is a \underline{feasible point}. Here we don't need to assume the regularity of $x^\star$. We need:
+\[
+	d^\top \nabla^2{L(x^\star,\lambda^\star)} d > 0\ \forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}
+\]
+
+Then $\implies x^\star$ is a strict local constrained minimum of $f$ subj. to: $h_i(x)=0$, or let's rewrite of $\min_{x\in\R^n}{f(x)}$ subj. to: $h_i(x)=0,\ i\in\{1,\ \dots,\ m\}$.
+
+If I'm able to verify (FNC \&\& SNC), then it holds. Caratterizzare i minimi nel caso vincolato. Molto più esplicita ed operativa.
+
+\subsubsection{UNCONSTRAINED (UNCONSTRAINED CONSTANT STEPSIZE)}
+
+Let $\{x_k\}$ be a sequence generated by: $x_{k+1}=x_k+\alpha_kd_k$, with $d_k$ \underline{gradient related direction} (GRD). Suppose $\nabla{f}$ is Lipschitz $(\iff \norma{\nabla{f(x)}-\nabla{f(y)}} \leq L\norma{x-y}\ \forall x,y\in\R^n)$, and:
+\[
+	[\epsilon \leq \alpha_k \leq (2-\epsilon)\frac{\abs{\nabla{f(x^k)}^\top d_k}}{L\norma{d_k}^2}]
+\]
+and $\epsilon>0$ fixed. Then every limit point of $\{x_k\}$ is stationary. (Preso uno stepsize costante), o variabile ma che soddisfi la condizione di doppia disuguaglianza di cui sopra. Questi teoremi sono importanti perché non stiamo chiedendo nulla sulla convessità della funzione. Solo una sua certa regolarità.
+
+Problema immediato. \`E possibile scrivere le condizioni del primo ordine in termini del Lagrangiano $L$. Porre uguale a 0 il gradiente del lagrangiano rispetto a $x$ e $\lambda$. Per i vincoli di disuguaglianza quando abbiamo un punto di minimo i vincoli possono essere attivi o meno. Quando non saranno attivi potremmo considerarli inesistenti. Quelli che giocheranno un ruolo sono quelli attivi. Let's recall what we've done for (EQUALITY CONSTRAINT OPTIMIZATION):
+
+\[
+	\min_{x\in\R^n}{f(x)}
+\]
+
+subj. to:
+\[
+	\left\{
+	\begin{aligned}
+	h_1(x) &= 0\\
+		   &\vdots\\
+	h_m(x) &= 0
+	\end{aligned}
+	\right. \iff h(x)=0
+\]
+
+where $h(x)$ is a vectorial function (a field in $\R^n$).
+\[
+	L(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)}
+\]
+and we can write the NC in terms of Lagrangian.
+FNC: If $x^\star$ is a regular local minimum (minimizer) then $\implies \exists \{\lambda_1^\star,\ \dots,\ \lambda_m^\star\}$ called Lagrange Multipliers such that:
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_x{L(x^\star,\lambda^\star)} = 0\\
+	&\nabla_\lambda{L(x^\star,\lambda^\star)} = 0
+	\end{aligned}
+	\right. \implies 
+	\left\{
+	\begin{aligned}
+	&\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0\\
+	&h_i(x^\star) = 0\ \forall i\in\{1,\ \dots,\ m\}
+	\end{aligned}
+	\right.
+\]
+FNC of optimality. 
+SNC: Suppose that $f\in C^2$ as well as $h_i$ variables. Then if $x^\star$ is a regular local minimizer, then we get that:
+\[
+	d^\top\nabla_{xx}^2{L(x^\star,\lambda^\star)}d \geq 0
+\]
+$\forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}$.
+Basically this is:
+\[
+	[\nabla^2{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla^2{h_i(x^\star)}}] \geq 0
+\]
+(Nel senso di semidefinita positiva). (Solo per le $d$ che soddisfano quel vincolo). Possiamo scrivere anche $\forall d$ in tangent space $\iff\ \forall d \in T_{x^\star}X,\ X=\{x\in\R^n\ |\ h_i(x)=0\ \forall i\in\{1,\ \dots,\ m\}\}$.
+
+SSC: If $x^\star$ satisfies the FNC of optimality and if the action is positive definite $(\nabla^2{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla^2{h_i(x^\star)}} > 0)\ \forall d\ |\ \nabla{h_i(x^\star)}^\top d = 0 \implies$, then $x^\star$ is a STRICT LOCAL MINIMIZER. Here we don't require the point regularity. Very powerful theorems. Possible workflow:
+\begin{itemize}
+\item{1)} Construct the Lagrangian (with additional variables $\lambda_i$), and:
+\item{2)} Just compute gradients;
+\item{3)} Solve that equations $(\nabla(\dots) = 0)$;
+\end{itemize}
+(Proprio su questi si fonderanno gli algoritmi che andremo a sviluppare). (Run a numerical method to solve these equations).
+
+Now we move \underline{towards inequality constraints}:
+
+\subsection{(INEQUALITY CONSTRAINTS)}
+
+Let's consider the following optimization problem:
+
+\[
+	\min_{x\in\R^n}{f(x)},\ subj.\ to: 
+	\left\{
+	\begin{aligned}
+	h_1(x) = 0,\ \dots,\ h_m(x) = 0\\
+	g_1(x) \leq 0,\ \dots,\ g_r(x) \leq0 
+	\end{aligned}
+	\right. \implies \left\{
+	\begin{aligned}
+	h(x) &= 0\\
+	g(x) &\leq 0
+	\end{aligned}
+	\right.
+\]
+
+where we have both equalities and inequalities constraints. The $h_i$, let's remember they are: $[h_i\R^n\mapsto\R],\ g_j:\R^n\mapsto\R\ \land\ g(x)\leq 0$ is a little bit different notation.
+
+\[
+	\left\{
+	\begin{aligned}
+	h&:\R^n\mapsto\R^m\\
+	g&:\R^n\mapsto\R^r
+	\end{aligned}
+	\right.
+\]
+
+What does it mean that $VEC < 0$?
+\[
+	g(x) = \begin{bmatrix}g_1(x)\\ \vdots\\g_r(x)\end{bmatrix} \leq 0 \iff
+	\left\{
+	\begin{aligned}
+	g_1(x) &\leq 0\\
+		   &\vdots\\
+	g_r(x) &\leq 0
+	\end{aligned}
+	\right.
+\]
+Somehow we can partly think of writing that problem in a similar way as before\dots but not exact as before.
+Let's define a set. Let $\bar{x}$ a feasible point, meaning $h(\bar{x})=0\ \land\ g(\bar{x}) \leq 0$. Let's define the set $A(\bar{x}) =$
+\[
+	A(x) = \{j\in\{1,\ \dots,\ r\}\ |\ g_j(\bar{x})=0\}
+\]
+In other words, the $A(\bar{x})$ is the set of the indices of the active constraints on the $g$ (indices in the inequalities).
+I'm just considering the indices of the inequalities that are active. Dal punto di vista delle condizioni che contano le condizioni che contano sono quelle attive (quelle che stanno sul bordo). I significativi saranno sulla frontiera. Solo per gli inequality constraints. I vincoli di uguaglianza sono invece sempre attivi. Clearly this set can be distinguished into two sets:
+\begin{itemize}
+\item $j\in A(\bar{x}) \implies g(\bar{x}) \leq 0$ ACTIVE (we're on the boundary);
+\item $j\notin A(\bar{x}) \implies g(\bar{x}) \leq 0$ INACTIVE (strict inequality);
+\end{itemize}
+Let's suppose only inequality constraints\dots $x^\star$ is in the interior of the constraints. From a local point of view, the inequality constraints play no role.
+
+\subsubsection{NECESSARY CONDITIONS OF OPTIMALITY}
+
+\[
+	L(x,\mathbf{\lambda}=(\lambda,\mu)) = L(x,\lambda,\mu) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \sum_{j=1}^r{\mu_jg_j(x)}
+\]
+
+If we have inequalities that are INACTIVE, then we can forget that inequalities. Focus on inequalities that are ACTIVE! Let's define again a REGULAR POINT:
+
+\begin{defn}{\textbf{REGULAR POINT}} \newline
+$\bar{x}\in\R^n$ feasible ($h(\bar{x})=0\ \land\ g(\bar{x})\leq 0)$ is \underline{regular} if the $\nabla{h_i(\bar{x})},\ i\in\{1,\ \dots,\ m\}\,\ \nabla{g_j(\bar{x})},\ j\in A(\bar{x})$ are linearly independent.
+\end{defn}
+
+Then we can write FNC of optimality:
+
+\[
+	\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} + \sum_{j\in A(x^\star)}{\mu_j^\star\nabla{g_j(x^\star)}} = 0
+\]
+
+Notice that in an equivalent way
+
+\[
+		\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} + \sum_{j=1}^r{\mu_j^\star\nabla{g_j(x^\star)}} = 0
+\]
+with $\mu_j^\star = 0\ \forall j \notin A(\bar{x})$. But the point is: look at $\lambda^\star$ and $\mu^\star$. In the pure equality constraint case, we need to find $\{\lambda_1,\ \dots,\ \lambda_m\}$ such that that condition is satisfied. $(\lambda_i^\star\in\R)\ i\in\{1,\ \dots,\ m\}$. Now we've got to this point again. We need to be careful, we cannot treat the problem in exactly the same way. When we construct Lagrangian we want to penalize ourself in order to violate the constraints. $\lambda_i$ AMPLIFIER that amplifies the fact that we pay something because we're violating some constraints.
+Suppose we're in the inequality constraints: Suppose let's treat in $x^\star$ as an EQUALITY CONSTRAINT! I've to be careful! NON c'è una stretta analogia! Se trattiamo i vincoli di uguaglianza allora dobbiamo pagare una prezzo! A kind of violation such that the term $\lambda_i\nabla{h_i(x)}$ doesn't depends on the sign. But in the $\mu_j\nabla{g_j(x)}$, the sign of $\underline{\mu_j^\star \geq 0}\ \forall j\in A(x^\star)$.
+
+Il teorema che enunciamo risponde al fatto che quando i vincoli sono attivi allora $(\iff \mu_j \geq 0)$. 
+
+\begin{thrm}{\textbf{((KARUSH-KUHN-TUCKER) OPTIMALITY CONDITIONS)}} \newline
+Let $x^\star$ be a local minimum of the problem:
+
+\[
+	\min_{x\in\R^n}{f(x)}\ subj.\ to:\ 
+	\left\{
+	\begin{aligned}
+	&h_1(x) = 0,\ \dots,\ h_m(x) = 0\\
+	&g_1(x) \leq 0,\ \dots,\ g_r(x) \leq 0
+	\end{aligned}
+	\right.
+\]
+
+where $f,h_i,g_j \in C^1\ i\in\{1,\ \dots,\ m\},\ j\in\{1,\ \dots,\ r\}$ (continuously differentiable). And assume \underline{$x^\star$ is regular}\dots then $\exists!\ \lambda^\star=(\lambda_1^\star,\ \dots,\ \lambda_m^\star),\ \mu^\star=(\mu_1^\star,\ \dots,\ \mu_r^\star)$ unique Lagrange multipliers such that:
+\[
+	\nabla_x{L(x^\star, \lambda^\star, \mu^\star)} = 0
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\mu_j^\star \geq 0\ \forall j\in\{1,\ \dots,\ r\}\\
+	&\mu_j^\star=0\ \forall j\notin A(x^\star)
+	\end{aligned}
+	\right.
+\]
+and in particular where $A(x^\star)$ is \underline{the set of} ACTIVE constraints at $x^\star$. This is the FNC of optimality. If in addition, $f,h_i,g_j\in C^2 \implies$ then holds:
+\[ 
+	d^\top \nabla_{xx}^2{L(x^\star,\lambda^\star,\mu^\star)} d \geq 0
+\]
+\[
+	\forall d\in\R^n\ |\ \left\{
+	\begin{aligned}
+	&\nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}\\
+	&\nabla{g_j(x^\star)}^\top d = 0,\ j\in A(x^\star);
+	\end{aligned}
+	\right.
+\]
+
+Basically we have to check feasibility of the point. Moreover in the theorem $\mu_j$ CANNOT be negative. Similarly we have the SNC of optimality. KKT conditions asks $x^\star$ to be regular! The theorem can be relaxed, in such a version where $x^\star$ can also be nonregular.
+
+If I take $\mu_j^\star g_j(x^\star)$, this can be $<> 0$. $\mu_j^\star$ must be depending on what $g_j(x^\star)$ does: $\mu_j^\star = 0 \iff g_j(x^\star) \neq 0$. Se i vincoli sono attivi, $\mu_j^\star \geq 0$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\mu_j^\star g_j(x^\star) = 0]\\
+	&\mu_j^\star \geq 0
+	\end{aligned}
+	\right.\ \forall j\in\{1,\ \dots,\ r\}
+\]
+(COMPLEMENTARY SLACKINGS). $\underline{\mu_j^\star g_j(x^\star) = 0}$ means:
+\begin{itemize}
+\item $\mu_j^\star = 0,\ g_j(x^\star) < 0$ INACTIVE;
+\item $(\forall \mu_j^\star \geq 0),\ g_j(x^\star) = 0$ ACTIVE;
+\end{itemize}
+These are ways to make $\mu_j^\star g_j(x^\star) = 0$.
+\end{thrm}
+
+\begin{proof}
+IDEA: $\mu_j^\star \geq 0$. We can define a function, $g_j^+(x) = \max{\{0,g_j(x)\}}$. Then similarly we can consider an approximating function $\forall j\in\{1,\ \dots,\ r\}$:
+\[
+	\min{f(x) + \frac{K}{2}\norma{h(x)}^2 + ((\dots)= 0) + \frac{\alpha}{2}\norma{x-x^\star}^2}
+\]
+(EQUALITY CASE). In the INEQUALITY VERSION we have:
+\[
+	(\dots) = \frac{K}{2}\sum_{j=1}^r{g_j^+(x)^2} \neq 0
+\]
+and this is subj. to: $x\in\{x\ |\ \norma{x-x^\star} \leq (\epsilon>0)\}$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\underline{\lambda_i}^\star = \lim_{k\to\infty}{kh_i(x^k)}\\
+	%\mu_j^\star = \lim_{k\to\infty}{k(g_j^+(x^k) > 0)}
+	\end{aligned}
+	\right.
+\]
+
+Role of $\lambda_i^\star$ and $\mu_j^\star$. It gives us a price of violation of my constraints. But tells us what happen when we violate in particular $g$! To prove the constraint condition we haven't proven the effective ROLE of $(\lambda_i^\star,\mu_j^\star)$.
+\[
+	\frac{K}{2}\norma{h(x)}^2 + \frac{K}{2}\sum_{i=1}^r{g_j^+(x)^2} + \frac{\alpha}{2}\norma{x-x^\star}^2
+\]
+is a quadratic penalty.
+
+$\{x_k\}$ è una sequenza che converge a $x^\star \iff \{x_k\} \tendsto{} x^\star$.
+
+\end{proof}
+
+\subsubsection{SECOND ORDER SUFFICIENT CONDITION OF OPTIMALITY}
+
+Suppose the FNC holds and $d^\top \nabla_{xx}^2{L(x^\star,\lambda^\star,\mu^\star)}d > 0\ \forall d\ |\ (\forall d\in\R^n)\ |$
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{h_i(x^\star)}^\top d = 0,\ i\in\{1,\ \dots,\ m\}\\
+	&\nabla{g_j(x^\star)}^\top d = 0,\ j\in A(x^\star);
+	\end{aligned}
+	\right.
+\]
+and suppose $\mu_j^\star > 0\ \forall j\in A(x^\star)$. Somehow the fact that the $\mu_j$'s of the ACTIVES constraint are positive gives us a condition of strict local optimality. Then $x^\star$ is a \underline{strict local minimum} of the\newline\underline{INEQUALITY CONSTRAINED PROBLEM}.
+
+\begin{itemize}
+\item{-)} Hessiano positivo nello SPAZIO TANGENTE!
+\item{+)} $\mu_j^\star>0$ per I VINCOLI ATTIVI!
+\end{itemize}
+
+Questi metodi sono PRIMALI DUALI (Si aggiorna sia $x$ sia $\lambda$). $\lambda$ è detta variabile duale. Dato un problema di ottimizzazione, sotto certe ipotesi si può scrivere un problema di ottimizzazione rispetto alla sola $\lambda$ e $\mu$, che sotto alcune ipotesi è equivalente al problema di partenza. Idea di fondo della trasformata. Metodi numerici per risolvere problemi di ottimizzazione vincolata.
+
+\subsection{COMPUTATION METHODS FOR EQUALITY AND INEQUALITY CONSTRAINED PROBLEMS}
+
+\subsubsection{BARRIER METHODS}
+
+Constrained problem. Set of algorithms called BARRIER METHODS (part of INTERIOR POINT METHODS). Why Interior Point? Because we basically try to approach a minimum from the interior of the constrained set. Start with a feasible point. Suppose we only specify explicitly inequality constraints:
+\[
+	\min_{x\in X}{f(x)}\ subj.\ to:\ g_j(x)\leq 0\ \forall j\in\{1,\ \dots,\ r\}
+\]
+$f,g_j$ continuous and $X$ closed. Clearly an assumption that we need is that:
+\[
+	S = \{x\in X\ |\ g_j(x) < 0,\ j\in\{1,\ \dots,\ r\}\} \neq \emptyset
+\]
+Here in the $X$ we're taking into account that: $X$ is a general closed set. For example $X$ can be a subset represented by the \underline{equality constraints}. The main idea: think about a 3-dimensional pic. Let's suppose we want to minimize some function over a set $S$ (we want to find some point $x$ that minimizes $f$ but $x$ must stay inside $S$).
+$x$ that are outside $S$ aren't allowed $\implies$ we've got a cost function that is $f(x)$ inside $S$ and $+\infty$ outside. We may equivalent state the following problem: minimize a class of functions (INDICATOR FUNCTIONS). With the barrier method we approximate this idea. We'll introduce a sequence of this function. We approach the indicator function at limit. Let's state:
+\[
+	\min_{x\in X}{f(x)+ \epsilon_kB(x)}
+\]
+
+where $B(x)\ |\ \epsilon_kB(x)$ is our barrier at iteration $k\in\N$. We compute the minimizer of this:
+\[	
+	x_k = \argmin_{x\in X}{f(x) + \epsilon_kB(x)},\ k=0,1,\ \dots
+\]
+We keep going by increasing the $\epsilon$. $x_k$ è comunque una sorta di aggiornamento. Vary $\epsilon_k \uparrow$ and update $x_k$, il quale non è quello in particolare che mi risolve il problema! In questo algoritmo si procede all'interno! Un modo per ovviare al problema è quello di andare ad approssimare la funzione barriera e definirla in maniera tale che si possa estendere per continuità fuori. How do we choose the $\{\epsilon_k\}$ sequence?
+Take: $\{\epsilon_k\}\ |\ 0<\epsilon_{k+1}<\epsilon_k$ (decreasing sequence of $\epsilon$). ($\underline{\epsilon_k \tendsto{} 0}$!) (All the $\epsilon_k$ must be positive). What it can be shown? It is the following:
+
+\begin{prop}
+Every limit point of $\{x_k\}$ is a global minimum of the constrained problem.
+\end{prop}
+
+Quite strong result. Generating a sequence this way, $\{x_k\}$ will converge to a global minimum. There's a trick: Clearly the proposition holds if at every iteration $\forall k\ \exists!\ x_k$. If the barrier is convex, then the result is interesting! As longer as $\epsilon_k \tendsto{} 0$, we can run numerical problems. Take an approximation of our function. If we stop, moving through our interior point, at least it is a feasible point. Two most used $B(x)$'s are:
+\begin{itemize}
+\item 
+\[
+	[B(x) = -\sum_{i=1}^r{\log(-g_j(x))}]
+\]
+The most commonly used function. When $g_j(x)<0$ then we are inside the set $(\log\mathord{\cdot})>0$. If $g_j \tendsto{} 0,\ \log(\mathord{\cdot})\tendsto{} +\infty$. Logarithm barrier function do the job! If we approach the boundary, $g_j\tendsto{} 0$ and $B(x)\tendsto{} +\infty$! $B(x)$ is not defined in $g_j \geq 0$. Another possibility is:
+\item
+\[
+	[B(x) = -\sum_{j=1}^r{\frac{1}{g_j(x)}}]
+\]
+As $g_j(x) \tendsto{}0,\ B(x)\tendsto{} +\infty$.
+\end{itemize}
+
+Now if I have an unconstrained problem, then $X=\R^n$ and I can minimize like an unconstrained problem. Se abbiamo soli vincoli di disuguaglianza $\implies$ approssimati con \underline{funzione lineare} e $X=\R^n$.
+ Se abbiamo anche vincoli di uguaglianza, $\implies$ costituiscano $X$ e dobbiamo applicare metodi per unconstrained problem. We can handle inequality constraints in this way.
+ 
+\subsubsection{PENALTY METHODS (for EQUALITY CONSTRAINTS)}
+
+\[
+	\min_{x\in X}{f(x)}\ subj.\ to:\ h_i(x) = 0,\ i\in\{1,\ \dots,\ m\}
+\]
+As before we're assuming $f,h$ continuous and \underline{$X$ closed}! Remember that: $h(x) = 0 \iff h(x) := \begin{bmatrix}h_1(x)\\ \vdots\\h_m(x)\end{bmatrix} = 0 \mathbf{0}\in\R^m$.
+What is the idea? Is something similar to the barrier methods for inequality constraints. Since we have $h(x)=0$, let's approximate this problem (violate constraints and I'll be penalized). Let's make a relaxation of the problem. What is the approximation? It is the following cost:
+\[
+	[L_{ck}(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \frac{c_k}{2}\norma{h(x)}^2]
+\]
+or:
+\[
+	L_{ck}(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \frac{c_k}{2}\sum_{i=1}^m{\abs{h_i(x)}^2} =
+\]
+\[
+	= \underline{f(x) + \mathbf{\lambda}^\top h(x)} + \frac{c_k}{2}\norma{h(x)}^2
+\]
+in a more compact way; Notice that the underlined terms are the Lagrangian! We cannot minimize the Lagrangian wrt $(x,\lambda)$ to minimize the original problem. We add $\frac{c_k}{2}\norma{h(x)}^2$ in order to allow ourself to minimize $L$.
+\[
+	\min{L_{ck}(x,\lambda_k)}
+\]
+We fix some $\lambda=\lambda_k$, at each $(k\in\N)$. So,
+\[
+	\min_{x\in X}{L_{ck}(x,\lambda_k) = f(x) + \mathbf{\lambda_k}^\top h(x) + \frac{c_k}{2}\norma{h(x)}^2}
+\]
+Ro where as we said, Just assume that $\{x_k\}$ is a bounded sequence and $\{c_k\}$ is such that $(c_{k+1} > c_k > 0)$. There are increasing sequence of $\{c_k\ positive\}$ and plus $(c_k \tendsto{} \infty)$; IDEA: Take my constrained problem\dots Relax the problem taking into account the AUGMENTED LAGRANGIAN and solve an unconstrained problem (taking into account $h(x)=0$ of the original problem) and let
+\[
+	x_k = \argmin_{x\in X}{L_{ck}(x,\lambda_k)}
+\]
+$X$ UNCONSTRAINED (es. $X=\R^n$). As before: we can claim this result:
+
+\begin{prop}
+Every limit point of $\{x_k\}$ sequence is a global minimum of the original (constrained) problem.
+\end{prop}
+
+This result is true, no matter how we choose $\lambda_k\ |\ \{\lambda_k\} < +\infty$ bounded. $(\lambda_k=0)$ it is also possible (It is however a bounded sequence: $\{\lambda_k\ |\ \lambda_k=0\ \forall k\}$. Assuming that we're solving exactly the provlem! Nel risolvere il mio algoritmo ci sono delle cose fattibili ed altre meno. $X$ può anche essere limitato, ma chiuso, positivo. $X$ lo so gestire (Il problema rilassato lo sappiamo risolvere, es. $X=\R^n$). 
+$\{\lambda_k\}$ servono perché se li scegliamo in un determinato modo, ci aiutano. NB: Dobbiamo risolvere esattamente il problema aumentato così posto! Now the point is: We're not able to solve that problem exactly at each iteration $k$. In MATLAB we'll get an approximation for the relaxed problem.
+\underline{PRACTICAL IMPLEMENTATION} Typically happens that: Terminate algorithm when:
+\[
+	[\norma{\nabla_x{L_{ck}(x_k,\lambda_k)}} \leq (\epsilon_k>0)]
+\]
+with $\epsilon_k>0$ some positive tolerance (something sufficiently small). We can define the tolerance for the algorithm. What happens if we solve the problem's approximation this way?
+
+\begin{prop}
+If $\{x_k\} \tendsto{} x^\star$, which is a \underline{regular point} of the (equality constrained) problem. Then $\implies$
+\[	
+	\lambda_k + c_kh(x_k) \tendsto{} \lambda^\star
+\]
+and $(x^\star,\lambda^\star)$ are such that they satisfy the FNC of optimality, meaning that:
+\[
+	[\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0]
+\]
+and $h_i(x^\star) =0,\ i\in\{1,\ \dots,\ m\}$ (FEASIBLE POINT!).
+\end{prop}
+
+This result is saying that there are 3 possibilities for this procedure from a practical point of view:
+
+\begin{itemize}
+\item{1)} I'm not able to solve the minimization at some tolerance (We're not able to find $x_k$ such that it respects the tolerance condition $\iff$ \underline{TOLERANCE FAULT});
+\item{2)} Ok, at each $k$ I find that, but either $\{x_k\}$ doesn't converge or it converges to $\bar{x}$ not regular!
+\item{3)} The one that we hope to happen: $\{x_k\} \tendsto{} x^\star$ regular and then this is the nice situation! Then $(x^\star,\lambda^\star)$ satisfy the FNC of optimality.
+\end{itemize}
+We should try to find $\{\lambda_k\}$ such that we can help the procedure to don't stack at either 1st and 2nd condition. If we're in the 3rd good situation, then $[\lambda_k + c_kh(x_k) \tendsto{} \lambda^\star]$.
+
+\subsubsection{METHOD OF MULTIPLIERS}
+\[
+	\lambda_{k+1} = \lambda_k +c_kh(x)
+\]
+plus the previous resolver. If we're in the good situation, then $\lambda_k + c_kh(x) \tendsto{} \lambda^\star\ \land\ \lambda_{k+1}\tendsto{}\lambda^\star$ too!)
+
+There are other possibilities to choose the \underline{penalty function}. $L_{ck}(x,\lambda)$ is a QUADRATIC PENALTY FUNCTION. With this penalty function we're solving a relaxation of the problem. Choose $c_k\ |\ \{x_k\} \tendsto{} x^\star$. These are [INEXACT PENALTY FUNCTION METHODS]
+
+\subsubsection{EXACT PENALTY FUNCTION METHOD - SEQUENTIAL QUADRATIC PROGRAMMING}
+
+La classe dei metodi che vedremo si basa sull'idea di creare delle penalty functions che risolvono esattamente il problema! Non in maniera approssimata. Algoritmi costruiti con una logica diversa. Risolvere la FNC di ottimalità. Algoritmi che risolvono la FNC. E trovare dei punti stazionari del lagrangiano non serve a nulla se non utilizzando propriamente delle \underline{exact penalty functions}
+(SQP) sono tra gli algoritmi più utilizzati. Per risolvere problemi di controllo ottimo. IDEA: Approssimo in maniera quadratica il mio problema. I problemi quadratici sono di più semplice risoluzione. Let's start to have a look of EPF's methods.
+\[
+	L(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)}
+\]
+Let's consider the function (penalty function) $P(x,\lambda)$:
+\[
+	P(x,\lambda) = \frac{1}{2}\norma{\nabla_x{L(x,\lambda)}}^2 + \frac{1}{2}\norma{h(x)}^2
+\]
+Let's suppose we minimize:
+\[
+	\min_{x,\lambda}{P(x,\lambda)}
+\]
+This is called $(P(x,\lambda))$ an EXACT PENALTY FUNCTION. How the minima of this $P$ is related to points that satisfy FNC of the original constrained problem? $P(x,\lambda)\ \forall x,\forall\lambda$. What can we say?
+
+$P$ is a non-negative function. $\forall x,\lambda,\ P(x,\lambda)\geq 0$ because it's a sum of squared NORMs (that are $\geq 0$) $\iff$ it is a NORM $\centernot{<}0$. What about the minimum value? $[P(x,\lambda)=0]$ è il minimo $\iff \nabla_x(\dots) = 0\ \land\ h(\dots) = 0$. So, $P(x^\star,\lambda^\star)=0$ (minimum value) $\iff$
+\[
+	(x^\star,\lambda^\star)\ |\ \nabla_x{L(x^\star,\lambda^\star)} = 0\ \land\ h(x^\star)=0 
+\]
+This is interesting. If we minimize $P(x,\lambda)$ wrt $x,\lambda$ then we get points that satisfy FNC of the original constrained problem. $P$ may also be not convex. We require global minimum! I minimi locali NON soddisfano queste condizioni! $P(\bar{x},\bar{\lambda}) > 0$ se sono locali non globali. $P(\bar{x},\bar{\lambda}) = 0 \implies \bar{x},\bar{\lambda}$ sarebbero punti di minimo globali! (E soddisfano la FNC per l'OP).
+
+We can construct algorithms that try to satisfy FNC of optimality. To prove convergence we have to use algorithm that decrease $P(x,\lambda)$. $P$ plays the role of a Lyapunov function for our optimization problem (as a discrete time system). In this case, think the minimum (or stationary point) to be an equilibrium of our dynamical system as optimization algorithm. \newline\underline{PRIMAL-DUAL METHODS} are algorithms such that the sequence of $\{(x_k,\lambda_k)\}$ converge to some $(x^\star,\lambda^\star) \leftarrow \{(x_k,\lambda_k)\}$ that satisfies FNC of optimality: $\{\nabla{f(x^\star)} + \sum_{i=1}^m{\lambda_i^\star\nabla{h_i(x^\star)}} = 0,\ \underline{h(x^\star) = 0}\}$, where the underlined condition means $x^\star$ is a feasible point. In general we can design a class of algorithms such that:
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = G(x_k,\lambda_k)\\
+	&\lambda_{k+1} = H(x_k,\lambda_k)
+	\end{aligned}
+	\right.
+\]
+
+Even a non linear algorithm ($\iff (G,H)$ NL). If we want this sequence to converge to some $(x^\star,\lambda^\star)$ satisfying FNC; construct $(x_{k+1},\lambda_{k+1})$ such that $(x^\star,\lambda^\star)$ are equilibrium for $\{x_{k+1},\lambda_{k+1}\}$ dynamical system! They must be equilibria for this UPDATE. (for the algorithm as discrete-time dynamical system) and so $(x^\star,\lambda^\star)$ have to be fixed point (ex AUTOPOINT's). We remember that:
+\[
+	\left\{
+	\begin{aligned}
+	&x^\star = G(x^\star,\lambda^\star)\\
+	&\lambda^\star = H(x^\star,\lambda^\star)
+	\end{aligned}
+	\right.
+\]
+is the FPR Equation (Fixed Point Requirement). $(x^\star,\lambda^\star)$ fixed point of our map. Just compute $(x^\star,\lambda^\star)$ such that FNC is satisfied. Dobbiamo progettare $G,H$ tale che soddisfi la FPR equation e la FNC. Vogliamo che siano degli equilibri \underline{asintoticamente stabili}. A result we've already known. The result holds. The INDIRECT METHOD of Lyapunov. Suppose we start in a neighborhood of $(x^\star,\lambda^\star)$. L.A.S. for NL system (based on Linearization). $(x^\star,\lambda^\star)$ is an equilibrium for the algorithm $(x^\star=G(x^\star,\lambda^\star)\ \land\ \lambda^\star=H(x^\star,\lambda^\star))$. And all the eigenvalues of the matrix:
+\[
+	R^\star = \begin{bmatrix}\nabla_x{G(x^\star,\lambda^\star)} & \nabla_x{H(x^\star,\lambda^\star)}\\
+	\nabla_\lambda{G(x^\star,\lambda^\star)} & \nabla_\lambda{H(x^\star,\lambda^\star)}\end{bmatrix}
+\]
+lie strictly inside the unit circle, then $(x^\star,\lambda^\star)$ is a point of attraction for the algorithm. Actually this result tells us also something more. When the sequence converge, the rate of convergence is \underline{linear}, meaning that:
+\[
+	\left\{
+	\begin{aligned}
+	&\norma{x_{k+1}-x_k} \leq c\norma{x_k-x^\star}\\
+	&\norma{\lambda_{k+1}-\lambda_k} \leq c\norma{\lambda_k-\lambda^\star}
+	\end{aligned}
+	\right.
+\]
+
+This type of convergence is [\underline{locally EXPONENTIAL}].
+This is a result that holds for general algorithm. Start looking to specific algorithm. SPECIALIZE:
+generare una sequenza che mi porti a convergere a dei punti FNC-feasible. Let's look an update: is there a way to solve an instance of the augmented Lagrangian method?
+
+\subsubsection{FIRST ORDER (PRIMAL-DUAL) METHOD}
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_k - \alpha\nabla_x{L(x_k,\lambda_k)}\\
+	&\lambda_{k+1} = \lambda_k + \alpha h(x)
+	\end{aligned}
+	\right.
+\]
+
+$(x^\star,\lambda^\star)$ is an equilibrium satisfying FNC? Yes. If we look at the Lagrangian $L(x,\lambda)= f(x) + \sum_{i=1}^m{\lambda_ih_i(x)}$ (If you think of this update, it could be thought as a gradient method for the lagrangian).
+\[
+	[h(x_k) = \nabla_\lambda{L(x_k,\lambda_k)}]
+\]
+We're descending in the variable $x$ whilst the sequence of $\lambda$'s is ascending $\iff x_k \downarrow\ \land\ \lambda_k \uparrow$.
+How now do we prove that it converges? Use the \underline{EXACT penalty function}:
+\[
+	P(x,\lambda) = \frac{1}{2}\norma{\nabla_x{L(x,\lambda)}^2} + \frac{1}{2}\norma{h(x)}^2
+\]
+
+(decreasing penalty function $\iff P(x_{k+1},\lambda_{k+1}) < P(x_k,\lambda_k)$). Con questo metodo convergiamo ad un punto di sella per il lagrangiano (Saddle Point).
+
+\begin{proof}
+IDEA of the proof: Use the discrete version of the Direct Lyapunov's theorem.
+\end{proof}
+
+$f(x)$ funzione di costo. Invece di forzare la $x$ a stare lì dentro $\implies \underline{f(x)+\epsilon B(x)}$. Mandando a 0 l'$\epsilon$, la funzione si appiattisce sempre di più sino a diventare 0. (Solo $\epsilon B(x)$). Se $\epsilon$ è troppo grande, mi sto allontanando di più dalla $f(x)$. Troviamo qualcosa di approssimato a seconda di come è fatto $\epsilon$. Quando mandiamo $\epsilon\tendsto{}0, \epsilon\downarrow$ più le cose rischiano di complicarsi se il problema totale NON è condizionato! Traiettorie a tempo minimo. Approccio di tipo BARRIERA ($\epsilon\tendsto{}0$). Evitare problemi numerici di condizionamento.
+Metodi PRIMAL-DUAL del II ordine. Algoritmi di SEQUENTIAL QUADRATIC PROGRAMMING (risolto in maniera iterativa). Due metodi per implementare questi algoritmi. Dualità. Costruire un altro problema di ottimizzazione. Schema applicativo ove il problema duale è più fattibile da risolvere. Algoritmi paralleli e distribuiti di ottimizzazione.
+
+Just briefly recall (PRIMAL-DUAL METHODS). FIRST-ORDER METHODS. The idea is: we construct:
+
+\[ 	
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = G(x_k,\lambda_k)\\
+	&\lambda_{k+1} = H(x_k,\lambda_k)
+	\end{aligned}
+	\right.
+\]
+
+Construct an update wrt $(x,\lambda)$ that possibly converges to the pair $(x^\star,\lambda^\star)$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_{k} - \alpha\nabla_x{L(x_k,\lambda_k)}\\
+	&\lambda_{k+1} = \lambda_k +\alpha h(x_k)
+	\end{aligned}
+	\right.
+\]
+
+We've seen a theorem which basically states that: if $(x^\star,\lambda^\star)$ is A.S., then in an its neighborhood, the linearization of the dynamical system converges to $(x^\star,\lambda^\star)$. One method we've seen.
+
+Local convergence with the Primal-Dual methods. This is something general. If we want to gain some global convergence property, then we have to use some suitable descent function. Slightly modified method. Switchable versions. Those PD methods try to satisfy FNC of optimality. This update gives us something local. Former methods: Penalty methods that were global.
+
+\subsubsection{EXACT PENALTY FUNCTION}
+
+Our possible modified \underline{Penalty FUNCTION} is the following one:
+
+\[
+	P_c(x,\lambda) = L(x,\lambda) + \frac{1}{2}\norma{W(x)\nabla_x{L(x,\lambda)}}^2 + \frac{c}{2}\norma{h(x)}^2
+\]
+For this PF: $\exists \bar{c}>0\ \forall c\geq\bar{c} \implies$ any stationary point of $P_c(\bar{x},\bar{\lambda})$, satisfies the FNC of optimality:
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{f(\bar{x})} + \sum_{i=1}^m{\bar{\lambda_i}\nabla{h_i(\bar{x})}} = 0\\
+	&h(\bar{x}) = 0
+	\end{aligned}
+	\right.
+\]
+where the last one equation is a vectorial version of the constraints. 
+
+Obiettivo: cambiare metodi PD con convergenza locale con metodi PF. Switch tra PD e PF. Convergenza quadratica. Usare una qualsiasi funzione di Penalty. Questo è un esempio es. $W(x)=I$. Giustificare la convergenza locale.
+
+\subsubsection{NEWTON-LIKE METHODS}
+
+
+Let's have a look to the NEWTON-LIKE METHODS. Sometimes it is called 2nd ORDER METHOD. One of the property is that if we're in a neighborhood of a strict local minimizer, then we have a local convergence (quadratic convergence, that is something much faster). We can use other methods to get close to the minimum. What is the idea? We want to solve the following: 
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{f(\bar{x})} + \sum_{i=1}^m{\bar{\lambda_i}\nabla{h_i(\bar{x})}} = 0\\
+	&h(\bar{x}) = 0
+	\end{aligned}
+	\right.
+\]
+We want to solve this system of equation. Let as a shorthand:
+\[
+	[\nabla{L(\bar{x},\bar{\lambda})} = 0]
+\]
+Remember that $L$ is defined as:
+\[
+	L(x,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)}
+\]
+
+when $h(x) := \begin{bmatrix}h_1(x)\\ \vdots\\h_m(x)\end{bmatrix}$. How can I solve this system? I can think of apply a Newton's method to solve this equation. Defined as a numerical method to find zeros of an algebraic equation. $\nabla{L(x)}=0$ then we apply Newton's method. $\underline{\nabla{L(x,\lambda)} =0}$. How can I solve? Can compute:
+
+\[
+	\nabla^2{L(x_k,\lambda_k)}\begin{bmatrix}\Delta x_k\\ \Delta\lambda_k\end{bmatrix} = -\nabla{L(x_k,\lambda_k)}
+\]
+
+where I update with this update:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_k + \Delta x_k\\
+	&\lambda_{k+1} = \lambda_k + \Delta\lambda_k
+	\end{aligned}
+	\right.
+\]
+
+The idea behind NM is: If I want to find the 0's of $\underline{\nabla{L(x,\lambda)} = 0}$, I set to 0 this approximation of that equation, at first order:
+\[
+	\nabla{L(x_k,\lambda_k)} + \nabla^2{L(x_k,\lambda_k)}\begin{bmatrix}\Delta x_k\\ \Delta\lambda_k\end{bmatrix} + \underline{o(something)} = 0
+\]
+
+where the underlined terms are higher order terms.
+If I want to find the 0 of something, then:
+
+\[
+	\left\{
+	\begin{aligned}
+	&l(z) = 0\\
+	&l(z_k) + l'(z_k)\Delta z_k(\mathord{\cdot}) = 0
+	\end{aligned}
+	\right.
+\]
+
+What we do in general. In our case, the equation is perfectly $\underline{\nabla{L(x,\lambda)} = 0}$. Dobbiamo implementare questa regola di aggiornamento. Let's compute the action of the Lagrangian. What is the blocks structure?
+\[
+	\underline{\nabla^2{L(x,\lambda)}} = \begin{bmatrix}\nabla^2{f(x)} + \sum_{i=1}^m{\lambda_i\nabla^2{h_i(x)}}&\nabla_J{h(x)}\\ \nabla_J{h(x)}^\top&0\end{bmatrix} = \begin{bmatrix}\nabla^2_{xx}{L(x,\lambda)}&\nabla^2_{x\lambda}{L(x,\lambda)}\\ \nabla^2_{\lambda x}{L(x,\lambda)}&\nabla^2_{\lambda\lambda}{L(x,\lambda)}\end{bmatrix} = (\dots)
+\]
+
+4 blocks. In which we have this structure of derivatives. 
+
+\[
+	(\dots) = \begin{bmatrix}H_k&N_k\\N_k^\top&0\end{bmatrix}
+\]
+Let's rewrite it by using this block notation:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla^2_{xx}{L(x_k,\lambda_k)} := H_k\\
+	&\nabla^2_{x\lambda}{L(x_k,\lambda_k)} := N_k = \nabla{h(x_k)}\\
+	&\nabla^2_{\lambda x}{L(x_k,\lambda_k)} = N_k^\top
+	\end{aligned}
+	\right.
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&H_k\Delta x_k + N_k\Delta\lambda_k = -\nabla_x{L(x_k,\lambda_k)}\\
+	&N_k^\top\Delta x_k = -h(x_k)
+	\end{aligned}
+	\right.
+\]
+
+We want to solve these equations. $H$ will be much clear, but $[N_k^\top\Delta x_k = -h(x_k)]$ can be rewritten as we want to set:
+
+\[
+	h(x_k) + N_k^\top\Delta x_k = 0\implies h(x_k) + \nabla{h(x_k)}^\top\Delta x_k = 0
+\]
+\underline{first order approximation of $h(x)$, at $x_k$}. 
+Instead of considering $h(x)=0$, if I'm at some $x_k$, let's set to 0 this first order approximation. Stay in the tangent space. Mostreremo due versioni della risoluzione del problema.
+
+I have this system of $\#EQUATIONS = (n+m)\ \land\ \#VARIABLES = (n+m)$. ($\Delta x_k$ and $\Delta\lambda_k$). Notice that $H_k$ is a fixed matrix. The same for $N_k$. Once I know $(H_k,N_k)$, then I evaluate this Jacobian. $(\nabla_x{L(x_k,\lambda_k)})$ is something we can compute. There are two possibilities: manipulate the expression in terms of matrices, where $H_k>0$ (positive definite). If we approach $(x_k,\lambda_k)$ strict local minimizer, then it is true. Let's invert from the 1st equation:
+
+\[
+	\Delta x_k = -\inv{H_k}N_k\Delta\lambda_k - \inv{(H_k)}\nabla_x{L(x_k,\lambda_k)}
+\]
+Then if we go to the II'nd equation and substitute $\Delta x_k$, we get now:
+\[
+	[\underline{-N_k^\top \inv{(H_k)}N_k}\Delta\lambda_k - N_k^\top\inv{(H_k)}\nabla_x{L(x_k,\lambda_k)} + h(x_k) = 0]
+\]
+
+where the underlined term is something invertible! Then:
+
+\[
+	\Delta\lambda_k = \inv{(N_k^\top \inv{(H_k)}N_k)}(-N_k^\top \inv{(H_k)}\nabla_x{L(x_k,\lambda_k)} + h(x_k))
+\]
+
+$[\nabla_x{L(x_k,\lambda_k)}]$ is a feasible term. Then we get the following by rewriting it in such a manner way:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\lambda_{k+1} = \lambda_k + \inv{(N_k^\top \inv{(H_k)}N_k)}(h(x_k) -N_k^\top \inv{(H_k)}\nabla_x{L(x_k,\lambda_k)})\\
+	&x_{k+1} = x_k -\inv{H_k}N_k\Delta\lambda_k -\inv{(H_k)}\nabla_x{L(x_k,\lambda_k)}
+	\end{aligned}
+	\right.
+\]
+
+where the second equation is a manipulable expression. Here I'm putting $\nabla{f(x_k)}$.
+$x_{k+1} = x_k +\ something$.
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_k + \Delta x_k\\
+	&\lambda_{k+1} = \lambda_k + \Delta\lambda_k
+	\end{aligned}
+	\right.
+\]
+This is the CORE! Questa è quella che riusciamo (facilmente) a codificare su MATLAB. Sistema lineare di equazioni $\{H_k,\ N_k,\ \nabla_x{L(x,\lambda)}|_{x_k,\lambda_k}\}$ e troviamo $(\Delta x_k,\ \Delta\lambda_k)$. Una volta trovati li mettiamo nella legge di aggiornamento. $\nexists\alpha$ (Non stiamo utilizzando alcuno STEPSIZE). Se invece dobbiamo farlo funzionare più lontano, dobbiamo prendere speciali accorgimenti (metodi tipo \underline{penalty function}). Scrittura esplicita del metodo di Newton. Si esamini la struttura dei vari pezzi.
+
+Let's go back. Another way to interpret these system of equations. Rewrite (with the notation as before):
+
+\[
+	\left\{
+	\begin{aligned}
+	&H_k\Delta x_k + N_k\Delta\lambda_k + \underline{\nabla{f(x_k)} + (N_k\lambda_k = \sum_{i=1}^m{\lambda_{ki}\nabla{h_i(x_k)}})} = (\dots)\\
+	&(\dots) = \nabla{f(x_k)} + H_k\Delta x_k + N_k(\lambda_{k+1} = \lambda_k+\Delta\lambda_k) = 0\\
+	&h(x_k) + N_k^\top\Delta x_k = 0
+	\end{aligned}
+	\right.
+\]
+
+where the underlined term has been derived from explicitly having rewritten $\nabla_x{L(x_k,\lambda_k)}$. So now, let's reorder. Sono le stesse due equazioni matriciali adeguatamente rimanipolate. Why I want to write these equations this way? Let's consider this problem:
+
+\[
+	\min_{\Delta x}{(\nabla{f(x_k)}^\top\Delta x + \frac{1}{2}(\Delta x^\top H_k\Delta x))}
+\]
+subj. to: $h(x_k) + N_k^\top\Delta x = 0$.
+Let's look at this problem. What kind of problem it is? It is an optimization problem. Something subject to an equality constraint. Cost function: linear term. $\nabla{f(x_k)}^\top + \frac{1}{2}(\underline{\Delta x^\top H_k\Delta x_k})$ where the underlined term is a quadratic cost function. $h(x_k)$ is a vector of numbers. $N_k^\top\Delta x$ is a linear term wrt $\Delta x$ domain variable. This is a \underline{quadratic optimization PROBLEM}. What can we say about quadratic function? IF $(H_k>0)$ (positive definite) (in realtà potrebbe anche essere semidefinita positiva), then the cost function is a (quadratic) convex function. Linear equality constrained (on a convex set). If I've $\{x\ |\ A^\top x+b = 0\}$, where $A\in\R^{n\times m},\ b\in\R^m$, $a^\top x +b=0$, with $\{a\in\R^n\ \land\ b\in\R\}$ sono più semplici.
+
+Optimization problem with convex cost and a convex constraint. $\implies$ (CONVEX OPTIMIZATION PROBLEM). Local minimum = global minimum $\implies$ enforce FNC and it will be also a sufficient condition. Very special convex problem (Quadratic problem). They have more structure. Easier to solve (quadprob).
+Somehow the general structure of this problem is: $min_z{q^\top z + \frac{1}{2}z^\top Qz}$ subj. to: $Ax-b=0 \implies$ \underline{QUADRATIC problem}. 
+
+Stiamo cercando di risolvere questo problema, il quale abbiamo visto essere un problema quadratico, più facile da risolvere. Perché l'abbiamo tirato fuori? Let's write the FC of optimality for this problem (that is convex). Sufficient also. Enforce this condition and we'll find a global minimum. Just to give another name:
+
+\[
+	L_{cp}(\Delta x,l) = \nabla{f(x)}^\top\Delta x + \frac{1}{2}(\Delta x^\top H_k\Delta x) + l^\top(h(x_k) + N_k^\top\Delta x)
+\]
+
+Let's write the FNC of optimality. Let's write it $(\nabla{(\mathord{\cdot})},\ \nabla{(\mathord{\cdot})} == 0)$. Just differentiate wrt $\Delta x$ (writing as a vector):
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla{f(x_k)} + H_k\Delta x + N_kl = 0\\
+	&h(x_k) + N_k^\top\Delta x = 0
+	\end{aligned}
+	\right.
+\]	
+
+FIRST ORDER NECESSARY \& SUFFICIENT CONDITIONS OF OPTIMALITY FOR THE QUADRATIC PROBLEM (QP). 
+Now let's just compare these two sets of equations. Se risolvo il QP, automaticamente risolvo quel set di equazioni, semplicemente ponendo $\{l=\lambda_{k+1}\ \land\ \Delta x=\Delta x_k\}$. \`E un algoritmo implementabile ricorsivamente il QP (ricorsione). Maggiore velocità. Maggiore velocità di convergenza. Convergenza migliore spazio-temporale. Quantomeno un'altra possibilità fruibile.
+
+Schema: [SEQUENTIAL QUADRATIC PROGRAMMING]. Il VINCOLO LINEARE è semplicemente l'approssimazione quadratica del mio lagrangiano! Schema:
+\begin{itemize}
+\item{INITIALIZATION}: choose $(x_0,\lambda_0)$;
+\item{REPEAT}:
+\begin{itemize}
+\item{EVALUATE}:
+\[
+	\left\{
+	\begin{aligned}
+	&f(x_k),\ \nabla{f(x_k)},\ \nabla^2_{xx}{L(x_k,\lambda_j)} = H_k,\\
+	&h(x_k),\ \nabla{h(x_k)};
+	\end{aligned}
+	\right.
+\]
+\item{SOLVE}:
+\[
+	\min_{\Delta x}{\nabla{f(x_k)}^\top\Delta x + \frac{1}{2}(\Delta x^\top H\Delta x)}
+\]
+subj. to: $h(x_k) + N_k^\top\Delta x = 0$.
+\item{Obtain}: $(x_k,l_k)$;
+\end{itemize}
+\item{UPDATE}:
+\[	
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_k + \Delta x_k\\
+	&\lambda_{k+1}=l_k
+	\end{aligned}
+	\right.
+\]
+\end{itemize}
+
+Perché Sequential Quadratic Programming? Partiamo da una coppia $(x_0,\lambda_0)$, calcoliamo $\nabla{f(x_k)}$, calcoliamo lo Jacobiano della funzione vincolo e dopodiché calcoliamo il problema quadratico; lo risolviamo ($l :=$ moltiplicatore di Lagrange per quel problema quadratico!) ed $l$ viene fuori come moltiplicatore di lagrange per la FNC del problema quadratico. Ci sono metodi numerici per ricavare simultaneamente $\Delta x$ ed $l$! Mettendo a confronto, possiamo semplicemente porre $(l_k=\lambda_{k+1})$. (SQP) (Risoluzione di una serie di Sequential Quadratic Programs).
+Metodo di Newton. Convergenza locale e quadratica (abbastanza veloce). \`E un problema quadratico VINCOLATO. Ma se abbiamo solo vincoli di uguaglianza, è come se divenisse NON VINCOLATO i.e. minimizzazione di una funzione quadratica soggetta ad una dinamica lineare! Minimizzazione su un IPERPIANO. Volendo possiamo riscrivere questo metodo aggiungendo i vincoli di disuguaglianza. Aggiungere i $\mu_k$ e ci sarà anche la linearizzazione del vincolo di disuguaglianza. Il problema diventa però un po' più complesso. Alternativa: per i vincoli di disuguaglianza introdurre una funzione BARRIER e considerare i vincoli di uguaglianza per la barriera. Il vincolo di disuguaglianza deve avere un moltiplicatore di Lagrange associato non negativo!
+Metodo con convergenza locale! Possiamo abbinarlo a metodi di tipo penalty. Varie alternative. Varianti: volendo si può sostituire ad $\nabla_{xx}^2{L(x_k,\lambda_k)}$ una matrice definita positiva $H_k>0$ ed utilizzo uno Stepsize con regola opportuna di Selection. ($H_k$ definita positiva! $\iff H_k>0$).
+
+RECAP: problema di partenza: $\min_{x\in X}{f(x)}$ subj. to: $h(x)=0$. $H_k$ serve per allargare il bacino di attrazione dell'algoritmo. Algoritmo dove ad ogni passo ho un qualcosa di più semplice da risolvere (sempre di ottimizzazione). Osservazione: stare attenti che se applichiamo questi metodi, un aspetto negativo (o comunque da tener conto), è che l'aggiornamento della $x_k$, lo facciamo in generale su punti che non stanno sul vincolo! Se sono sul vincolo siamo sullo spazio tangente, diversamente avremo qualcosa di affine. Generalmente $h(x_k)\neq 0 \implies x_k$ NON FEASIBLE! Quindi se vogliamo soddisfare il vincolo, o non siamo sufficientemente vicini al minimo, NON sto soddisfando il vincolo. Criterio di STOP:
+\begin{itemize}
+\item{-)} Avvicinamento al costo ottimo;
+\item{+-)} Quindi se ci dovessimo fermare prima, in qualche modo potremmo non stare soddisfando il VINCOLO! Il set di vincoli sarà proprio la DINAMICA del sistema!
+\end{itemize}
+Troviamo quindi eventualmente delle curve che non sono traiettorie e che quindi NON soddisfano l'eq. differenziale (Non ammissibili quindi)!
+
+Ripercorriamo il percorso: partiamo da problemi di ottimizzazione non vincolati. Condizioni necessarie e sufficienti del I e del II ordine. Condizioni necessarie nel caso CONSTRAINED. Dopodiché abbiamo specializzato il caso CONSTRAINED. (Condizioni necesarie e sufficienti del I e del II ordine). Funzione Lagrangiana. Per trovare le NC's ma anche per sviluppare algoritmi (PF e PD). Aumento il Lagrangiano con delle funzioni di Penalty opportune.
+
+\section{Problemi di Controllo Ottimo}
+
+Sistemi dinamici tempo discreto. Problemi di Ottimizzazione vincolata. Problemi con più struttura, facili da particolareggiare. Gestione della dinamica più generale.
+
+\subsection{DISCRETE-TIME OPTIMAL CONTROL}
+
+Optimal Control. We're dealing with dynamical systems in discrete time. We have a dynamical system, that can evolve with time. Driven by an external input. Some objective. Some input that allows you to meet these objectives! Follow a path with some speed profile. Inputs eventually driven by a controller. Accomplish some task. Feedback law in order to do that. Techniques to design feedback laws for more complex systems. We have not considered any cost in what we do. Let's try to do that. How do I choose those parameters? i.e. $K$ matrix for linear systems. Eigenvalues Allocation Problem. Can I use this degree of freedom in order to optimize some cost? Go from one point to another in a minimum time. Do the fastest lap with a car. Minimize lap time. Send a satellite. Minimize the cost to execute an input amount. Some limited energy of the system. How do we do that? Setup an optimization problem:
+
+\[
+	\min_{\{x(1),\ \dots,\ x(N)\}\ \land\ \{u(0),\ \dots,\ u(N-1)\}}{\sum_{t=0}^{N-1}{l(x(t),u(t),t)} + m(x(N))}
+\]
+subj. to: $x(t+1)=f(x(t),u(t),t),\ x(0)=x_0$. (It satisfies a certain dynamic, with fixed CINIT). We may also want to satisfy some constraint in some space:
+
+\[
+	\left\{ 
+	\begin{aligned}
+	&x(t)\in X_t\subset\R^n,\ \forall t=1,\ \dots,\ N\\
+	&u(t)\in U_t\subset\R^m,\ \forall t=0,\ \dots,\ N-1
+	\end{aligned}
+	\right.
+\]	
+
+We start the input at $t=0$. We look at the $x$ at time $1,\dots$ We have our dynamical system. Trajectories are $(x(t),u(t))$; in particular $x$ is the state trajectory, and $u$ is the input part of the trajectory. We have to minimize our cost function (a number, non negative typically). Since we want to penalize the entire trajectory, how can we get a number that takes into account these elements? $m$ is some penalty. It doesn't depend on the INPUT. $t\in[0,N]$. Time window. $N$ can also go to $+\infty$; let's see what are possible costs that we may want to minimize. In general, we want to consider $N$ fixed. What are some possibilities of cost function? We may want to consider:
+
+\[
+	(\dots) =: J(x,u) = \frac{1}{2}\sum_{t=0}^{N-1}{(\norma{x(t)-x_d(t)}^2_Q + \norma{u(t)-u_d(t)}^2_R)} + \frac{1}{2}\norma{x(N)-x_d(N)}^2_{P_f}
+\]
+
+where $\frac{1}{2}$ is only a scaling value. The desired trajectory is: $\{\{x_d(1),\ \dots,\ x_d(N)\}\ \land\ \{u_d(0),\ \dots,\ u_d(N-1)\}\}$ (DESIRED) \underline{GIVEN}. Choose some desired trajectories. These do not satisfy some dynamics. Getting close to that trajectory however. Maybe I want to choose for example for $U_t$, some interval:
+
+\[
+	U_t := \{u\in\R^m\ |\ \norma{u}\leq u_{MAX}\}
+\]
+
+Choose an input constraint set that is simply saying that: $\norma{u}\leq u_{MAX}$. $\norma{\mathord{\cdot}}$ can be any valid given norm. Some desired trajectory. Want to find a trajectory, close to the desired objectives, while given some constrains on the actuators (sforzo di controllo).
+
+\[
+	\left\{
+	\begin{aligned}
+	&\norma{x(t)-x_d(t)}^2_Q = (x(t)-x_d(t))^\top Q(x(t)-x_d(t))\\
+	&\norma{u(t)-u_d(t)}^2_R = \dots
+	\end{aligned}
+	\right.
+\]
+
+the same as first for the second equation. (The state can have different dynamics!) $Q$ is typically $[Q=Q^\top]\geq 0$ symmetric pos. semidef. Weight these in different ways. Very close in the position, but don't care about the angle. Choose so, different weights. $R>0$ a matrix (symm. pos. def.). Pesi che pesano in maniera positiva e differente questi costi. Norme quadratiche. Forma quadratica. Caso fattibile per un vettore $v^\top Wv$. Sorta di norma pesata del vettore $v$. $(\dots) = v^\top Wv = \norma{v}^2_W$. Norma classica se $W=I$. Basta che sia quantomeno \underline{semidefinita positiva}. $u_d$ potrebbe anche essere 0! Chiaramente non è una situazione feasible! Violerebbero il secondo principio della termodinamica. Fare una traiettoria senza eccessivo sforzo di controllo. $x$ e $u$ non le posso scegliere a caso! Devono soddisfare la dinamica! Cercare i $(x,u)$ che siano però realizzabili! Eventualmente scontrarsi anche con le esigenze pratiche limitate degli attuatori. Limiti eventuali sugli stati (es. posizioni), eventuale presenza di ostacoli. $u_d(t)$ valore che viene fuori da una qualche intuizione su un modello fisico molto complesso. $u_d$ parametro progettuale. Soddisfi una qualche DINAMICA SEMPLIFICATA. Prendiamo un modello semplificato. Chiaramente NON sarà l'ingresso del sistema fisico! Tipicamente trovare un equilibrio è più semplice che trovare una traiettoria! Diverse possibilità. Stima di un eventuale sforzo di controllo $u_d(t)$. Differenti pesi. Oppure arrivare ad una posizione spendendo il minimo sforzo di controllo possibile.
+
+Approach this problem: rewrite it Just using some different notation. $U_t$ è un vincolo abbastanza generico! Tipicamente potrebbe essere un vincolo di disuguaglianza, ma non per forza. Si ponga: $\{x(t) := x_t\ \land\ u(t) := u_t\};\ f(t) := f_t$.
+
+\[
+	\min_{\{x_1,\ \dots,\ x_N\}\ \land\ \{u_0,\ \dots,\ u_{N-1}\}}{\sum_{t=0}^{N-1}{l_t(x_t,u_t)} + m(x_N)}
+\]
+subj. to:
+\[
+	\left\{
+	\begin{aligned}
+	&x_{t+1} = f_t(x_t,u_t),\ t=0,\ \dots,\ N-1\\
+	&x_t\in X_t\subset\R^n,\ t=1,\ \dots,\ N\\
+	&u_t\in U_t\subset\R^m,\ t=0,\ \dots,\ N-1
+	\end{aligned}
+	\right.
+\]
+where $x_0$ \underline{FIXED} CINIT (GIVEN). The domain variable is: \newline $z := \begin{bmatrix}x\\u\end{bmatrix}$ of our \underline{optimization problem}.
+
+These constraints are typically inequality constraints, for the input and the state. Let's consider a general class of optimization problem by specifying these sets. INPUT-CONSTRAINED OPTIMAL CONTROL ($\iff X_t=\R^n)$; what happens to the dynamic? Equality constraint for the $x$ (the \underline{dynamics}). Written however in some fixed way! The two variables aren't coupled! FIX $u$, gets $x$. If I haven't constraints on the state, then I can write: $x_t=\phi_t(u) = \phi_t(u_0,\ \dots,\ u_{N-1})$. Some sort of discrete transition function. Notice that I need $\{u_0,\ \dots,\ u_{N-1}\}$. Then my optimal control model can be written in this way:
+
+\[
+	\min{\sum_{t=0}^{N-1}{l_t(\phi_t(u),u_t)} + m(\phi_N(u))}
+\]
+subj. to: (nothing except our INPUT constraint $u_t\in U_t$). Reduced my equality constrained problem in $(x,u)$ in an OPTPROB with only $u$!
+
+If I assume I don't have input constraints, UNCONSTRAINED OPTIMAL CONTROL ($\iff U_t=\R^m$).
+
+\[
+	\min_{u\in\R^{Nm}}{J(u) := \sum_{t=0}^{N-1}{l_t(\phi_t(u),u)} + m(\phi_N(u))}
+\]
+where $\begin{bmatrix}u_0\\ \vdots\\u_{N-1}\end{bmatrix} = \begin{bmatrix}\begin{bmatrix}u_{01}\\ \vdots\\u_{0m}\end{bmatrix}\\ \vdots\\u_{N-1}\end{bmatrix}$. We have $Nm = \#$ components of our $u$, which becomes an $Nm$ dimensional vector!
+
+Spesso problemi di Controllo Ottimo vengono chiamati NON VINCOLATI proprio per questo motivo. $\phi_t(u) = x_t$. Da un punto di vista numerico si può approcciare questa tecnica, ma ci sono dei problemi (\underline{SEQUENTIAL QUADRATIC PROBLEM}). Progettare delle leggi di controllo che soddisfano dei vincoli sugli ingressi! Mantenere il vincolo di saturazione degli Ingressi? Possiamo mettere in conto anche dei vincoli! Oneroso da un punto di vista computazionale. Quindi il problema, se togliamo il vincolo sulla dinamica, diventa UNCONSTRAINED. Preparare dei metodi numerici per risolvere questo problema e scrivere le condizioni necessarie per il controllo ottimo. Questo problema NON vincolato è equivalente a quello con il vincolo di uguaglianza. Let's see how to proceed:
+Necessary condition of optimality, since it is an unconstrained problem is: set the gradient of $J(u)$ equal to 0 $\iff \nabla{J(u)} = 0$. Let's go back to the constraints:
+
+\[
+	[\min_{u\in\R^{Nm}}{J(u):=F(\phi(u),u)}]\ \lor\ [\min_{x,\ u}{F(x,u)}]\ subj.\ to: h(x,u)=0
+\]
+
+where $h(x,u)=0$ is our constraint!
+\[
+	\left\{
+	\begin{aligned}
+	&x_1 - f(x_0,u_0) = 0\\
+	&x_2 - f(x_1,u_1) = 0\\
+	&\vdots\\
+	&x_N - f(x_{N-1},u_{N-1})
+	\end{aligned}
+	\right.\ h(x,u)=0
+\]
+
+(\underline{DINAMICA}!) (Teniamo conto del vincolo di uguaglianza (dinamica!)) (traiettoria del sistema!),
+
+Notice that given $u\in\R^{Nm},\ h(\phi(u),u)= = 0$! If $\phi(u)=x\in\R^n$. Exactly what we're saying! How do we compute $\nabla{J(u)}$? Let's proceed in considering both the unconstrained and the constrained version of the problem. Apply chain rule $\implies$ Then we should compute $\nabla_x{F}$, and then $\nabla{\phi(u)}$, and then $\nabla{F}$ wrt $u$. To do that in an easier way, let's write starting from the equality constrained version of this problem. Treat is as a constrained-equality problem:
+
+\[
+	L(x,u,p) = L(z,p) = F(x,u) + h(x,u)^\top p
+\]
+(Written in a compact way); where:
+\[
+	h(x,u)^\top p = \sum_{t=0}^{N-1}{h_t(x,u)p_{t+1}}
+\]
+
+$(x,u)$ is the decision variable. Just a matter of notation. Lagrangian of our system. How do we compute FNC of optimality for the problem? $(\nabla{L(x^\star,u^\star,p^\star)} = 0)$. Let's write FNC of optimality. We need to set: $\nabla{L(x^\star,u^\star,p^\star)} = 0$. Let's write it explicitly:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_x{L(x^\star,u^\star,p^\star)} = 0\\
+	&\nabla_u{L(x^\star,u^\star,p^\star)} = 0\\
+	&\nabla_p{L(x^\star,u^\star,p^\star)} = 0 \iff h(x^\star,u^\star) = 0
+	\end{aligned}
+	\right.
+\]
+
+where the RHS of the last implication is the FEASIBLE POINT CONDITION or actually the DYNAMICS (The equality constraint). Let's compute this gradient:
+
+\[
+	\nabla_x{L(x^\star,u^\star,p^\star)} = \nabla_x{F(x^\star,u^\star)} + \underline{\nabla_x{h(x^\star,u^\star)}}p^\star
+\]
+$(p\in\R^n)$. Definiamo: $\nabla_x{h(x,u)} = \begin{bmatrix}\nabla_x{h_0}&\dots&\nabla_x{h_{N-1}}\end{bmatrix}^\top$ (vector of gradients). 
+
+We get:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_x{F(x^\star,u^\star)} + \nabla_x{h(x^\star,u^\star)}p^\star = 0\\
+	&\nabla_u{F(x^\star,u^\star)} + \nabla_u{h(x^\star,u^\star)}p^\star = 0
+	\end{aligned}
+	\right.
+\]
+ovvero feasible point $\iff h(x^\star,u^\star) = 0$. So now, let's look at the unconstrained version of the problem, let's compare: $\min_{u\in\R^{Nm}}{F(\phi(u),u)}$. This expression: $h(\phi(u),u)\ \forall u$ is NOT a constraint! $\forall u$, let's suppose: $\{\phi(u)\ |\ h(\phi(u),u) = 0\ \forall u\}$.
+
+\[
+	J(u) = F(\phi(u),u) + \underline{h(\phi(u),u)^\top} p
+\]
+
+where the underlined part is $0\ \forall p$! (It's like I'm evaluating the lagrangian). If I compute:
+
+\[ 
+	\nabla{J(u)} = \nabla{\phi(u)}[\nabla_x{F(\phi(u),u)} + \nabla_x{h(\phi(u),u)}p] + \nabla_u{F(\phi(u),u)} + \nabla_u{h(\phi(u),u)}p
+\]
+
+Per adesso teniamo libero $p$. TRICK: Notice that if I don't put the $[h(\phi(u),u)^\top p=0]$, then since $p$ is a degree of freedom, we can choose $p=p(u)\ |$
+\[
+	\nabla_x{F(\phi(u),u)} + \nabla_x{h(\phi(u),u)}p(u) = 0 \iff [\nabla_x{L(\phi(u),u,p(u))} = 0]
+\]
+
+Let's force to be $0\ \forall u$, then we get that $\nabla{J(u)}$ become:
+
+\[
+	\nabla{J(u)} = \nabla_u{F(\phi(u),u)} + \nabla_u{h(\phi(u),u)}p(u)
+\]
+
+but for some special $p(u)$. Is it constant for FNC of optimality for our unconstrained problem?
+
+\subsubsection{FNC (FIRST ORDER NECESSARY CONDITIONS OF OPTIMALITY)}
+
+Simply, $\nabla{J(u^\star)} = 0$?
+
+\[
+	\nabla_u{F(\phi(u),u)} + \nabla_u{h(\phi(u),u)}p(u) = 0
+\]
+If holds $\forall u$, the it holds also for $u^\star$.
+Remember: $\{x^\star = \phi(u^\star)\ \land\ p^\star = p(u^\star)\};\ h(\phi(u^\star),u^\star) = 0\ \forall u^\star$. Then If I go back to the previous equation, we have:
+\[
+	\nabla_x{F(\phi(u^\star),u^\star)} + \nabla_x{h(\phi(u^\star),u)}p(u^\star) = 0
+\]
+
+Problema di Ottimizzazione. Vedere come fare per un problema di controllo ottimo. Il vincolo è molto particolare! Data la $u$, $\phi(u)$ ci ritorna automaticamente la $x$! Non solo all'ottimo, ma sempre! (Eventuali problemi numerici per $\phi(u)$). $\phi(u)$ al posto della $x$ nel problema NON vincolato!
+
+Let's write explicitly this:
+
+\[
+	[\nabla_x{F(\phi(u),u)} + \nabla_x{h(\phi(u),u)}p(u) = 0] \iff (\dots)
+\]
+This is simply: $(\dots) = \nabla_x{L(\phi(u),u,p(u))} = 0$. Let's call: $\{p(u)=p\ \land\ \phi(u)=x\}$.
+
+Just a notation simplifier.
+
+\[
+	L(x,u,p) = \sum_{t=0}^{N-1}{l_t(x_t,u_t)} + m(x_N) + \sum_{t=0}^{N-1}{(f_t(x_t,u_t) - x_{t+1})^\top p_{t+1}}
+\]
+
+Let's compute $\nabla_x{L(\phi(u),u,p)}$ ($\nabla{(\mathord{\cdot})}$ wrt $x$):
+First of all this Lagrangian has a very special structure! $\iff (l_t \neq \mathord{\cdot}\{x_{t+1},\ x_{t+2},\ \dots\}) = \mathord{\cdot}(x_t) \implies$
+
+\[
+	\begin{bmatrix}\nabla{m(x_N)}\\ \nabla_{x_{N-1}}{l_{N-1}(x_{N-1},u_{N-1})}\\ \vdots\\ \nabla_{x_1}{l_1(x_1,u_1)}\end{bmatrix} +
+\]
+\[
+	+ \begin{bmatrix}-I&0&\dots&0\\ \nabla_{x_{N-1}}{f_{N-1}(x_{N-1},u_{N-1})}&-I&\dots&0\\0&\nabla_{x_{N-2}}{f_{N-2}(x_{N-2},u_{N-2})}&\dots&0\\ \vdots&\vdots&\vdots&\vdots\\ 0&\dots&\nabla_{x_1}{f_1(x_1,u_1)}&-I\end{bmatrix}\begin{bmatrix}p_N\\ \vdots\\p_1\end{bmatrix} = \mathbf{0}
+\]
+
+Let's now write these equations $\forall$ blocks:
+
+\[
+	\left\{
+	\begin{aligned}
+	&p_N = \nabla{m(x_N)}\\
+	&p_{N-1} = \nabla_{x_{N-1}}{f_{N-1}(x_{N-1},u_{N-1})}p_N + \nabla_{x_{N-1}}{l_{N-1}(x_{N-1},u_{N-1})}
+	\end{aligned}
+	\right.
+\]
+
+This is a discrete time dynamical system! Instead of going forward in time, I go backward: $p_N \rightarrow p_{N-1} \rightarrow\ \dots\ \rightarrow p_1$. Obtain the others.
+
+\[
+	p_t = \nabla_{x_t}{f_t(x_t,u_t)}p_{t+1} + \nabla_{x_t}{l_t(x_t,u_t)}
+\]
+with $p_N = \nabla{m(x_N)}$ as FINIT.
+
+If we know the trajectory, we can compute the gradient. This is basically: $p_t = A(t)^\top p_{t+1} + a(t),\ p_N=\nabla{m(x_N)}$. (Linear dynamics) $\land$ (Affine dynamic) driven by $a(t)$. Calcoliamo la linearizzazione (Equazione in realtà alle differenze finite). Since we have this recursion, we can write things more explicitly. Rewrite it in different way:
+
+\[
+	L(x,u,p) = \sum_{t=0}^{N-1}{((H(x_t,u_t,p_{t+1}) := l_t(x_t,u_t) + f_t(x_t,u_t)p_{t+1}) - p_{t+1}^\top x_{t+1})} + m(x_N)
+\]
+
+where:
+\[
+	H(x_t,u_t,p_{t+1}) := l_t(x_t,u_t) + f_t(x_t,u_t)p_{t+1}
+\]
+
+[HAMILTON FUNCTION]. Why it is useful? 
+
+\[
+	\nabla_u{F(\phi(u),u)} + \nabla_u{h(\phi(u),u)p(u)} = \nabla{J(u)}
+\]
+
+component-wise rewritten:
+\[
+	\nabla_{u_t}{J(u)} = [\nabla_{u_t}{l_t(x_t,u_t)} + \nabla_{u_t}{f(x_t,u_t)}p_{t+1}] = \nabla_{u_t}{H_t(x_t,u_t,p_{t+1})}
+\]
+
+Rewrite $p_t$'s components:
+
+\[	
+	p_t = \nabla_{x_t}{H_t(x_t,u_t,p_{t+1})},\ p_N = \nabla{m(x_N)}
+\]
+
+\subsubsection{FIRST ORDER NECESSARY CONDITION OF OPTIMALITY (FNC)}
+
+Let $u^\star = \begin{bmatrix}u_0^\star&\dots&u_{N-1}^\star\end{bmatrix}^\top$ be a local minimum control trajectory (or sometimes called OPTIMAL CONTROL) and $x^\star = \begin{bmatrix}x_1^\star&\dots&x_N^\star\end{bmatrix}^\top$ the corresponding state trajectory. Then $\implies$ we need to satisfy $(\nabla{J(u)} = 0)$.
+\[
+	\nabla_{u_t}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)} = 0
+\]
+where $(p_1^\star,\ \dots,\ p_N^\star)$ is the COSTATE VECTOR obtained as:
+\[
+	p_t^\star = \nabla_{x_t}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)},\ p_N^\star = \nabla{m(x_N^\star)}
+\]
+
+TRY THIS:
+\[
+	u_{k+1} = u_k -\alpha_k\nabla{J(u_k)}
+\]
+
+Algoritmi di tipo gradiente. Generare traiettorie o controlli che minimizzano una certa funzione di costo. We can compute the: UNCONSTRAINED OPTIMAL CONTROL PROBLEM:
+
+\[ 
+	\min_{\{x_1,\ \dots,\ x_N\}\ \land\ \{u_0,\ \dots,\ u_{N-1}\}}{\sum_{t=0}^{N-1}{l_t(x_t,u_t)} + \underline{m(x_N)}}
+\]
+subj. to: $x(t+1) := x_{t+1} = f_t(x_t,u_t)$. Where the underlined term is the final cost.
+
+\underline{FNC}:
+
+\[
+	\left\{
+	\begin{aligned}
+	&p_t^\star = \nabla_{x_t}{f(x_t^\star,u_t^\star)}p_{t+1}^\star + \nabla_{x_t}{l_t(x_t^\star,u_t^\star)	}\\
+	&\nabla_{u_t}{f_t(x_t^\star,u_t^\star)}p_{t+1}^\star + \nabla_{u_t}{l_t(x_t^\star,u_t^\star)} = 0
+	\end{aligned}
+	\right. , p_N = \nabla{m(x_N^\star)}
+\]
+$t=0,\ \dots,\ N-1$; $x_0$ GIVEN (FIXED);
+
+Basically write the Lagrangian with $x$ as a function of $u$:
+
+\[
+	L(\phi(u), u) = F(\phi(u),u) + h(\phi(u),u)^\top p
+\]
+It turns out that:
+\[
+	\nabla{J(u)} = \nabla_u{F(\phi(u) := x,u)} + \nabla_u{h(\phi(u) := x,u)}p(u)
+\]
+
+where basically component-wise rewritten it becomes:
+
+\[
+	[\nabla_{u_t}{f_t(\phi_t(u),u)}p_{t+1} + \nabla_{u_t}{l_t(\phi_t(u),u)}]
+\]
+
+where $p_t$ satisfies:
+\[
+	p_t = \nabla_{x_t}{H_t(x_t,u_t,p_{t+1})},\ p_N = \nabla{m(x_N)}
+\]
+
+$\underline{\nabla_x{L(\phi(u),u,p(u))} = 0} \iff$ If we set $\nabla_x{L(\mathord{\cdot})} = 0$, then we get $p$ and $u$ that satisfies this expression:
+\[	
+	[\nabla{J(u)} = \nabla_u{L(\phi(u),u,p(u))}]
+\]
+we're somehow always satisfying the constraint by finding the $\phi(u)$. In order to write these two equations (FNC i and ii), we can just write them wrt a different function. Let's introduce the Hamiltonian:
+
+\[
+	H_t(x_t,u_t,p_{t+1}) = l_t(x_t,u_t) + p_{t+1}^\top f_t(x_t,u_t)
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&p_t^\star = \nabla_{x_t}{H(x_t^\star,u_t^\star,p_{t+1}^\star)}\\
+	&\nabla_{u_t}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)} = 0
+	\end{aligned}
+	\right. , p_N = \nabla{m(x_N)}
+\]
+
+Just a way to write these equations. If we look at the hamiltonian, we can write also that:
+\[
+	x_{t+1} = f_t(x_t,u_t) = \nabla_{p_{t+1}}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)} \implies x_{t+1}^\star = f_t(x_t^\star,u_t^\star)
+\]
+with $x_0$ GIVEN; Now let's remember what we've done for standard optimization problem. Develop a class of gradient method in which we try to enforce (FNC). Try to converge in a structure in which the $\nabla{(\mathord{\cdot})} = 0$; for our optimal control problem. Then we can simply apply a gradient method (the most classical gradient method) (UNCONSTRAINED PROBLEM):
+
+\[
+	\min_{u\in\R^{Nm}}{J(u)},\ [u_{k+1} = u_k -\alpha_k\nabla{J(u_k)}]
+\]
+where $u = \begin{bmatrix}u_0&\dots&u_{N-1}\end{bmatrix}^\top\ \land\ \nabla{J(u)} = \begin{bmatrix}\nabla_{u_0}{J(u)}\\ \vdots\\ \nabla_{u_{N-1}}{J(u)}\end{bmatrix}$.
+
+We would like to update each component of $u$. L'indice prefisso scandisce le iterazioni dell'algoritmo di ottimizzazione, mentre il postfisso scandisce l'istante temporale discreto. Calcolo di nuove traiettorie. Ad ogni iterazione avrò un $u_k=\begin{bmatrix}u_{k1}\\ \vdots\\u_{k\ N-1}\end{bmatrix}$. ($N$ controlli agli $N$ istanti di tempo (alla $k$-esima iterazione)); ($u_{kt}$ control at time $t$ of iteration $k$ of the optimization algorithm).
+
+Now let's see how we can explicitly calculate $H$:
+
+\[
+	[u_{k+1\ t} = u_{kt} - \alpha_k(\nabla_{u_t}{f_t(x_{kt}, u_{kt})}p_{k\ t+1} + \nabla_{u_t}{l_t(x_{kt}, u_{kt})})]
+\]	
+
+Notice that: $x_t=(\phi_t(u_t))$ satisfies the dynamic and $p_{kt} = p(u_{kt})$. (one that satisfies that equation). Now let's rewrite the algorithm step by step. If I know $(x_{kt},u_{kt})$, then I know $\nabla_{u_t}{f_t(x_{kt},u_{kt})}$ and we know also $\nabla_{u_t}{l_t(x_{kt},u_{kt})}$. So, it's just a gradient of a function that we know:
+
+\[
+	F(x,u) = \begin{bmatrix}f_0(x_0,u_0)\\ \vdots\\f_t(x_t,u_t)\\ \vdots\\f_{N-1}(x_{N-1},u_{N-1})\end{bmatrix} : \R^{Nn\times Nm}\mapsto\R^{Nn}
+\]
+
+where:
+\[
+	\left\{
+	\begin{aligned}
+	&x = \begin{bmatrix}x_1\\ \vdots\\x_N\end{bmatrix}\\
+	&u = \begin{bmatrix}u_0\\ \vdots\\u_{N-1}\end{bmatrix}
+	\end{aligned}
+	\right.
+\]
+
+$\underline{f_t:\R^{n\times m}\mapsto\R^n}$: è di questa che facciamo il gradiente. La variabile di ottimizzazione è un grande vettore. Stiamo cercando di esplicitarne la struttura.
+
+\subsubsection{STEEPEST DESCENT FOR OPTIMAL CONTROL}
+
+\begin{itemize}
+\item{INITIALIZE}: $u_0 = \begin{bmatrix}u_0&\dots&u_{N-1}\end{bmatrix}^\top$;
+\item{REPEAT}: AT $k$, FOR $k=0,1,\ \dots$. 
+Given $u_k$, get $x_k=\phi(u_k)$. (Integrate the dynamic) get the state. The following holds:
+
+\[
+	x_{k\ t+1} = f_t(x_{kt},u_{kt})
+\]
+where $x_{k0}$ GIVEN (FIXED); $(x_k,u_k)$ will be a trajectory of the system, by construction.
+Then given $(u_k,x_k)$, get $p_k$. How do we get $p_k$? From:
+
+\[
+	[p_{kt} = \nabla_{x_t}{f_t(x_t,u_t)}p_{k\ t+1} + \nabla_{x_t}{l_t(x_t,u_t)}]
+\]
+with $p_{kN} = \nabla{m(x_{kN})}$. (integrazione all'indietro). (FROM BACKWARD RECURSION).
+
+Questa equazione è una del tipo: $p_{kt} = A_t^\top p_{k\ t+1} + q_t$. L'equazione del COSTATO è sempre lineare, nonostante la dinamica del sistema sia non lineare. (SISTEMA LINEARE GUIDATO DA UN CERTO INGRESSO);
+
+\item{UPDATE}:
+\[
+	u_{k\ t+1} = u_{kt} -\alpha_k(\underline{\nabla_{u_t}{l_t(x_{kt},u_{kt})} + \nabla_{u_t}{f_t(x_{kt},u_{kt})}p_{k\ t+1}})
+\]
+where the underlined term is $\nabla_{u_t}{H_t(x_{kt},u_{kt},p_{k\ t+1})} = \nabla{J(u)}$.
+\end{itemize}
+
+Posso codificare questo algoritmo in MATLAB:
+\[
+	u_{kt} - \alpha_k(\underline{r_t + B_t^\top p_{k\ t+1}})
+\]
+
+$x_{t+1}=f_t(x_t,u_t)$. ($B_t^\top$ è la matrice degli ingressi del linearizzato). Se sono la linearizzazione la posso scrivere come:
+
+\[
+	\Delta x_{t+1} = A_t\Delta x_t + B_t\Delta u_t
+\]
+where: $\{B_t\in\R^{n\times m}\implies B_t^\top\in\R^{m\times n}\}$.
+
+We can also derive a Newton's method by computing $\nabla^2{J(u)}$ if we are in a neighborhood of the minimum, then the convergence is very fast (quadratic convergence).
+
+$\min_u{F(\phi(u),u)} \rightarrow$ (CONDENSING METHODS) $\lor$ (SHOOTING METHODS) (Why shooting?  Because we're deciding the control and then we get a trajectory associated to that control).
+
+\begin{itemize}
+\item{ADVANTAGE}: At each $k$, $(x_k,u_k)$ is a trajectory of the system. It is interesting! If the algorithm stops at some $k$ iteration, then we still have a trajectory! (RECURSIVE FEASIBILITY);
+\item{DROWBACK}: Se la DINAMICA è INSTABILE, la dinamica DIVERGE! Non possiamo comunque parlare di stabilità perché siamo su un orizzonte temporale finito! In this case the instable dynamics integration of $x_{k\ t+1}=f_t(x_{kt},u_{kt})$ can be numerically ill conditioned! Siamo costretti a prendere intervalli di tempo brevi!
+\end{itemize}
+
+\subsubsection{LINEAR QUADRATIC OPTIMAL CONTROL}
+
+If we have a linear system, then we can solve the optimal control problem:
+
+\[
+	\min_{\{x=x_1,\ \dots,\ x_N\}\ \land\ \{u=u_0,\ \dots,\ u_{N-1}\}}{\frac{1}{2}\sum_{t=0}^{N-1}{(x_t^\top Q_tx_t + u_t^\top R_tu_t)} + \frac{1}{2}\underline{x_N^\top Q_Nx_N}}
+\]
+subj. to: $[x_{t+1} = A_tx_t + B_tu_t]$. Where the underlined term is a general version for a final linear cost.
+
+We have some dynamics, that is linear. Two extreme cases. Scegliere la $Q$ e la $R$ significa puntare l'attenzione (penalizzare) od il controllo o l'ingresso. Quanto velocemente voglio andare a 0 oppure quanto sforzo di controllo voglio adoperare.
+\begin{itemize}
+\item
+\[ 
+	\left\{
+	\begin{aligned}
+	&\norma{Q} \gg 1\\
+	&\norma{R} \ll 1
+	\end{aligned}
+	\right.
+\]
+I wait to go to zero;
+\item
+\[ 
+	\left\{
+	\begin{aligned}
+	&\norma{Q} \ll 1\\
+	&\norma{R} \gg 1
+	\end{aligned}
+	\right.
+\]
+I don't want so much control;
+\end{itemize}
+
+ASSUMPTIONS: $\{[Q=Q^\top]\geq 0\ \land\ Q_N\geq 0\}\ \land\ \{[R=R^\top]>0\ \land\ R_N>0\}$. So we have $Q,Q_N$ symmetric positive semidefinite matrices and $R,R_N$ symmetric positive definite matrices. ($Q,R$ weighted matrices). Here we're not considering constraint about state or input. Let's look at this problem. If $Q_t,Q_n\geq 0\ \land\ R_t>0$, then I've a quadratic form (sum of quadratic terms). The cost function is quadratic, with non-negative quadratic term. The cost function $J(u)$ is quadratic, positive definite and thus convex! $J := J(u)$, Convex wrt $u$ (the input). Also $[x_{t+1}=A_tx_t + B_tu_t]$ is a linear equality constraint; $x=\phi(u)$. $\phi$ is a linear function $\iff x$ is a linear function of $u$.  If it's linear function, $J(u)$ is pos. def. convex. It means that this is a \underline{convex} problem, and since is a convex problem, FNC $\iff$ FSC. (FNC is also SUFFICIENT). The cost $J(u)$ is strictly convex $\implies$ (unique global minimum) and we get it by setting FNC ($\nabla{(\mathord{\cdot})} = 0$);
+
+Visto che il problema è convesso, FNC = SNC; cerchiamo di ottenere il controllo ottimo. Conditions are:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_{u_t}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)} = 0\\
+	&p_t^\star = \nabla_{x_t}{H_t(x_t^\star,u_t^\star,p_{t+1}^\star)}
+	\end{aligned}
+	\right. , p_N=\nabla{m(x_N^\star)}
+\]
+
+In this case we have a special version of dynamics and cost function.
+
+\[
+	H_t(x_t,u_t,p_{t+1}) = \underline{\frac{1}{2}x_t^\top Q_tx_t + \frac{1}{2}u_t^\top R_tu_t} + \underline{p_{t+1}^\top(A_tx_t + B_tu_t)}
+\]
+where the underlined term is simply: $p_{t+1}^\top f$.
+
+Why it's convenient $R_t>0$? It is invertible!
+\[
+	(R_tu_t^\star + B_t^\top p_{t+1}^\star = 0 \impliedby \nabla{u_t}{H_t(\mathord{\cdot})} = 0) \implies
+\]
+\[
+	\implies u_t^\star = -\inv{R_t}B_t^\top p_{t+1}^\star \implies p_t^\star = A_t^\top p_{t+1}^\star + Q_tx_t^\star,\ \underline{p_N = Q_Nx_N^\star}
+\]
+
+(Costate equation). We could pair this system with the dynamics:
+
+\[
+	\left\{
+	\begin{aligned}
+	&p_t^\star = A_t^\top p_{t+1}^\star + Q_tx_t^\star,\ p_N = Q_Nx_N^\star\\
+	&x_{t+1} = A_tx_t + (-B_t\inv{R_t}B_t^\top p_{t+1}^\star = B_tu_t^\star)
+	\end{aligned}
+	\right.
+\]
+with $x_0^\star$ GIVEN (FIXED); this is the HAMILTONIAN SYSTEM.
+(double point BOUNDARY conditioned problem (system) both at the beginning and at the end).
+For this special case this is another explicit way to solve, Start from $\underline{p_N=Q_Nx_N^\star}$. It means that $p = \mathord{\cdot}(x)$. and viceversa is linear. $\forall t$, this dependence is linear, Prove that $\exists P_t\geq 0\ |\ p_t = P_tx_t$. We know that this is true for $t=N$. Let's prove it by induction. Suppose: $\underline{p_{t+1}^\star = P_{t+1}x_{t+1}^\star}$. Let's remove the $\mathord{\cdot}^\star$. Let's prove it is true for $P_t,x_t$.
+\[
+	u_t^\star = -\inv{R_t}B_t^\top P_{t+1}x_{t+1}^\star
+\]
+but then let's substitute the dynamics:
+\[
+	[u_t^\star = -\inv{R_t}B_t^\top P_{t+1}(A_tx_t^\star + B_tu_t^\star)]
+\]
+Solve this equation for $u_t^\star \implies$
+\[
+	(R_t+B_t^\top P_{t+1}B_t)u_t^\star = -B_t^\top P_{t+1}A_tx_t^\star \implies
+\]
+\[
+	\implies u_t^\star = \underline{-\inv{(R_t + B_t^\top P_{t+1}B_t)}B_t^\top P_{t+1}A_t = K_0}x_t^\star
+\]
+If we're assuming $P_{t+1}>0$, then I can consider the inverse of that term $(\dots) \iff \exists \inv{(R_t + B_t^\top P_{t+1}B_t)}$.
+
+$u_t^\star = (some\ matrix)x_t^\star$. SOME FEEDBACK LAW $\implies u_t^\star = \underline{K_0}x_t^\star$, where
+\[
+	[K_0 = -\inv{(R_t + B_t^\top P_{t+1}B_t)}B_t^\top P_{t+1}A_t]
+\]
+We want to prove that this is true for $(x_t,u_t)$. Let's write the dynamics of $x_t$:
+
+\[
+	x_{t+1} = A_tx_t^\star + B_tK_0x_t^\star = (A_t+B_tK_0)x_t^\star
+\]
+And now let's multiply each side of equations by $A_t^\top P_{t+1}$:
+\[
+	A_t^\top \underline{P_{t+1}x_{t+1}^\star} = A_t^\top P_{t+1}A_tx_t^\star + A_t^\top P_{t+1}B_tK_0x_t^\star
+\]
+where the underlined term is $p_{t+1}^\star$. And now let's use the fact that: $[p_{t+1}=P_{t+1}x_{t+1}]$:
+
+\[
+	A_t^\top p_{t+1}^\star = (A_t^\top P_{t+1}A_t + A_t\top P_{t+1}B_tK_0)x_t^\star
+\]
+
+So now, let's simply do:
+
+\[
+	A_tp_{t+1}^\star + Q_tx_t^\star = (A_t^\top P_{t+1}A_t + A_t^\top P_{t+1}B_tK_0 + Q_t)x_t^\star
+\]
+But now if we look at the COSTATE EQUATION, it tells us that: $\underline{A_t^\top p_{t+1} + Q_tx_t^\star} = p_t^\star \implies$
+\[
+	p_t^\star = (\underline{A_t^\top P_{t+1}A_t + A_t^\top P_{t+1}B_tK_0 + Q_t})x_t^\star
+\]
+where the underlined term is the $P_t$ matrix. (Esiste una controparte anche a livello continuo)
+
+\[
+	\implies P_t = A_t^\top P_{t+1}A_t + A_t^\top P_{t+1}B_t(\underline{-\inv{(R_t + B_t^\top P_{t+1}B_t)}B_t^\top P_{t+1}A_t}) + Q_t,\ P_N = Q_N
+\]
+(FINITE-DIFFERENCE) RICCATI EQUATION.
+
+\[
+	u_t^\star = -\inv{(R_t + B_t^\top P_{t+1}B_t)}B_t^\top P_{t+1}A_tx_t^\star
+\]
+
+this is a linear feedback. If $N\tendsto{}\infty$, it is a stabilizing input. (Sistema in anello chiuso). Modo per stabilizzare il sistema discreto tempo variante.
+
+OBSERVATION: Suppose we have a LTI system $\implies [\underline{x_{t+1}=Ax_t + Bu_t}]$\newline
+(time-INVARIANT)\dots If for some reason we find $P\neq P(t)$, we have a time-constant feedback!
+
+\[	
+	[P=A^\top PA -A^\top [PB\inv{(R+B^\top PB)}B^\top P]A + Q]
+\]
+
+Suppose we choose $Q\neq Q(t)$. We have a STATIC FEEDBACK (that doesn't depend on time). If $N\tendsto{}\infty$, we don't have a final cost and $u^\star$ will be:
+\[
+	u^\star = -\inv{(R+B^\top PB)}B^\top PAx_t^\star
+\]
+
+It gives us some optimal way to choose the feedback.
+Se riusciamo a trovare $P$ che è un punto fisso dell'equazione, qui stiamo fornendo un criterio per l'allocazione arbitraria degli autovalori. $P = \mathord{\cdot}(Q,R),\ \norma{R}\gg 1 \implies$ (controllo non esagerato).
+
+A tempo continuo abbiamo a che fare con \underline{spazi di funzioni} (spazi infinito-dimensionali. Complesso.
+
+\subsubsection{SEQUENTIAL QUADRATIC PROGRAMMING FOR O.C. (SQP)}
+
+Let's rewrite our optimal control problem (Nell'approccio SQP la dinamica sarà trattata come un vincolo esplicito):
+
+\[
+	\min_{\{x_1,\ \dots,\ x_N\}\ \land\ \{u_0,\ \dots,\ u_{N-1}\}}{\sum_{t=0}^{N-1}{l_t(x_t,u_t)} + m(x_N)}
+\]
+subj. to: $[f_t(x_t,u_t) - x_{t+1} = 0]$.
+
+With this techniques we may include other constraints, like INEQUALITY CONSTRAINTS. Simple bounds on control input $\lor$ state constraints $\implies \{g_t(x_t,u_t)\leq 0\ \land\ g_N(x_N,u_N)\leq 0\}$. Saturation on the input $\forall$ time $t$ or bounds on the state. Tipicamente quando troviamo CONSTRAINED CONTROL PROBLEM troviamo anche gli altri vincoli sopra citati es. (FINAL STATE CONTROL PROBLEM) (In tal caso $m(x_N)$ si potrebbe anche omettere).
+
+The quadratic programming could also be extended for those other constraints.
+\[
+	\min_{x,u}{F(x,u)},\ subj.\ to:\ h(x,u)=0 \implies \min_w{F(w)},\ subj.\ to:\ h(w)=0
+\]
+
+Now the domain variable is $\begin{bmatrix}x\\u\end{bmatrix}$ (entire optimization variable). $w := \begin{bmatrix}x\\u\end{bmatrix}$.
+
+That's exactly the same structure we have seen. Take SQP algorithm. We setup at each iteration a quadratic program. QP at iteration $k$:
+
+\[
+	[\min_{\Delta w}{\nabla{F(w_k)}^\top\Delta w + \frac{1}{2}\underline{\nabla^2_w{L(w_k,p_k)}}\Delta w}]
+\]
+subj. to: $[h(w_k) + \underline{\nabla{h(w_k)}^\top\Delta w = 0}]$. Where the underlined term is a $N(n+m)\times N(n+m)$ dimensioned matrix. (Here we call $p_k$ the Lagrange multiplier).
+
+Simply constraint $\nabla{F}$, where $F$ is the cost function. Approssimazione quadratica del costo. Il constraint sul vincolo è un vincolo affine. $h(w_k) = f_t(x_t,u_t) - x_{t+1}$. La $f_t(x_t,u_t)$ non è una traiettoria, quindi $h(w_k)$ non è precisamente 0, mentre vogliamo che lo sia!
+
+Let's try to compute this optimization problem. Write the Lagrangian:
+
+\[
+	L(x,u,p) = \sum_{t=0}^{N-1}{[l_t(x_t,u_t) + p_{t+1}^\top(\underline{f_t(x_t,u_t) - x_{t+1}})]} + m(x_N)
+\]
+Cost function $+ (p_{t+1}^\top * constraint)$. We can rewrite:
+
+\[
+	L(x,u,p) = \sum_{t=0}^{N-1}{[H_t(x_t,u_t,p_{t+1}) - p_{t+1}^\top x_{t+1}]} + m(x_N)
+\]
+where:
+\[
+	H(x_t,u_t,p_{t+1}) = l_t(x_t,u_t) + p_{t+1}^\top f_t(x_t,u_t)
+\]
+
+(HAMILTONIAN OF OUR SYSTEM). Now let's look at the quantities we have to compute:
+
+\[
+	\nabla_w{F(w = x,u)} =
+	\left\{
+	\begin{aligned}
+	&[\nabla_{x_t}{F(x_k,u_k)} = \nabla_{x_t}{l_t(x_{kt},u_{kt})}]\\
+	&[\nabla_{u_t}{F(x_k,u_k)} = \nabla_{u_t}{l_t(x_{kt},u_{kt})}]
+	\end{aligned}
+	\right.
+\]
+(quite easy to compute). EXAMPLE: Suppose
+
+\[
+	l_0(x_0,u_0) + l_1(x_1,u_1) + \underline{l_2(x_2,u_2)} + m(x_3)
+\]
+If I want to compute: $[\nabla_{x_2}{F(\mathord{\cdot})} = \nabla_{x_2}{l_2(x_2,u_2)}]$;
+So now, let's look at the action. Little bit more complicated. But not so much: the Action. Let's compute every single term. $\nabla^2_w{L(w_k,p_k)}$ For the Action, I can forget $p_{t+1}^\top x_{t+1} = 0$. I have to look only at the $H(x_t,u_t,p_{t+1})$.
+$\nabla^2_{\underline{x_tx_\tau}}{L(x,u,p)}$. Different instants ($t\neq\tau$). It depends only on $x_t$! ($\iff \nabla^2_{x_tx\tau}{L(w_k,p_k)} = 0$). What about the other quantities?
+
+\[
+	\left\{
+	\begin{aligned}
+	&[\underline{\nabla^2_{x_tx_t}{H_t(x_{kt},u_{kt},p_{k\ t+1})}} = \underline{\nabla^2_{x_tx_t}{L(x,u,p)}}\in\R^{n\times n}] := Q_t\\
+	&(\nabla^2_{x_tu_t}{L(x,u,p)}\in\R^{m\times n}) := S_t^\top = \nabla^2_{x_tu_t}{H_t(x_{kt},u_{kt},p_{k\ t+1})}\\
+	&(\nabla^2_{u_tx_t}{L(x,u,p)}\in\R^{n\times m}) = S_t = \nabla^2_{u_tx_t}{H_t(x_{kt},u_{kt},p_{k\ t+1})}\\
+	&(\nabla^2_{u_tu_t}{L(x,u,p)}\in\R^{m\times m}) := R_t = \nabla^2_{u_tu_t}{H_t(x_{kt},u_{kt},p_{k\ t+1})}
+	\end{aligned}
+	\right.
+\]
+Where the first underlined equation's LHS is not diagonal, and for the RHS: gli unici termini che rimangono sono quelli che hanno solo i termini derivativi rispetto a $\{x_tu_t,\ u_tx_t,\ u_tu_t,\ x_tx_t\}$ dell'Hamiltoniano al tempo $t$.
+
+\[
+	w = \begin{bmatrix}x\\u\end{bmatrix} = \begin{bmatrix}\begin{bmatrix}x_1\\ \vdots\\x_N\end{bmatrix}\\ \vdots\\ \begin{bmatrix}u_0\\ \vdots\\u_{N-1}\end{bmatrix}\end{bmatrix} = \begin{bmatrix}\begin{bmatrix}\begin{bmatrix}(x_1)_1\\ \vdots\\ (x_1)_n\end{bmatrix}\\ \vdots\\ x_N\end{bmatrix}\\ \vdots\\ \begin{bmatrix}\begin{bmatrix}(u_0)_1\\ \vdots\\ (u_0)_m\end{bmatrix}\\ \vdots\\ u_{N-1}\end{bmatrix}\end{bmatrix}
+\]
+
+where $N(n+m) = \dim{w}$. What about the constraint equation (the dynamics):
+
+\[
+	\begin{bmatrix}f_0(x_{k0},u_{k0}) - x_{k1}\\ \vdots\\ f_{N-1}(x_{k\ N-1}, u_{k\ N-1}) - x_{k\ N-1})\end{bmatrix} = h(w_k)
+\]
+(known vector). $\#(\mathord{\cdot}) = Nn$.
+
+\[
+	\nabla{h(w_k)}^\top\Delta w = \nabla_x{h(x_k,u_k)}^\top\Delta x + \nabla_u{h(x_k,u_k)}^\top\Delta u
+\]
+
+Just approximate to first order that one:
+
+\[	
+	\Delta x_{t+1} = (A_t := \nabla_{x_t}{f_t(x_{kt},u_{kt})}^\top)\Delta x_t + (B_t := \nabla_{u_t}{f_t(x_t,u_t)}^\top)\Delta u_t \implies
+\]
+\[
+	\implies f_t(x_{kt},u_{kt}) - x_{k\ t+1} + \nabla_{x_t}{f_t(x_{kt},u_{kt})}^\top\Delta x_t + \nabla_{u_t}{f_t(x_t,u_t)}^\top)\Delta u_t -\Delta x_{t+1} = 0
+\]
+
+Linearizzazione del sistema nell'istante $(x_{kt},u_{kt})$;
+
+\[
+	\min_{\{\Delta x_1,\ \dots,\ \Delta x_N\}\ \land\ \{\Delta u_0,\ \dots,\ \Delta u_{N-1}\}}\sum_{t=0}^{N-1}[(a_t^\top := \nabla_{x_t}{l_t(x_t,u_t)}^\top)\Delta x_t + (b_t^\top := \nabla_{u_t}{l_t(x_t,u_t)}^\top)\Delta u_t +
+\]
+\[
+	+ \frac{1}{2}\begin{bmatrix}\Delta x_t\\ \Delta u_t\end{bmatrix}^\top\begin{bmatrix}Q_t&S_t^\top\\S_t&R_t\end{bmatrix}\begin{bmatrix}\Delta x_t\\ \Delta u_t\end{bmatrix} + \frac{1}{2}\Delta x_N^\top \underline{\nabla^2{m(x_{kN})}}\Delta x_N
+\]
+subj. to: $r_t + A_t\Delta x_t + B_t\Delta u_t -\Delta x_{t+1} = 0,\ t=0,\ \dots,\ N-1$, where the underlined term is $Q_N$.
+
+$[x_{k\ t+1} + \Delta x_{t+1} = x_{t+1}]$ (APPROSSIMAZIONE ESATTA!) (Stiamo approssimando un termine lineare, quindi lo sviluppo in serie è esatto!)
+
+Analizziamo ora l'intero problema da risolvere. Se non ci fosse il termine $r_t$, ad ogni iterazione avremo un problema che sapremmo risolvere facilmente. Basta generalizzare quello che abbiamo visto l'ultima volta.
+
+\[
+	\Delta\tilde{x}_t = \begin{bmatrix}1\\ \Delta x_t\end{bmatrix};\ \Delta\tilde{x}_{t+1} = (\tilde{A_t} := \begin{bmatrix}1&0\\r_t&A_t\end{bmatrix})\Delta x_t + (\tilde{B_t} := \begin{bmatrix}0\\B_t\end{bmatrix})\Delta u_t
+\]
+\[
+	\Delta\tilde{x}_0 = \begin{bmatrix}1\\ \Delta x_0\end{bmatrix},\ \Delta\tilde{x}_t = \begin{bmatrix}c_t\\ \Delta x_t\end{bmatrix}
+\]
+($c$ costante e la posso inizializzare pari ad 1). (Stato aumentato) $\land$ (Augmented State). (introduciamo uno stato costantemente uguale ad 1).
+
+Abbiamo riscritto il vincolo con una dinamica esterna. Si risolve così un'equazione di Riccati, controllo in feedback (STIMA FEEDBACK)! Riscrivendo anche il costo in questi termini, abbiamo esattamente un \underline{LINEAR QUADRATIC PROGRAM (LQP)}. (Sappiamo esattamente come codificare questo problema):
+
+\begin{itemize}
+\item{INITIALIZE}:
+\[
+	x_0 = \begin{bmatrix}x_{01}\\ \vdots\\x_{0N}\end{bmatrix},\ u_0 = \begin{bmatrix}u_{00}\\ \vdots\\u_{0\ N-1}\end{bmatrix}
+\]
+\item{REPEAT}: $k=0,1,\ \dots$
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k+1} = x_k + \Delta x_k\\
+	&u_{k+1} = u_k + \Delta u_k
+	\end{aligned}
+	\right.
+\]
+$p_{k+1}=l_k$. $(\Delta x_k,\Delta u_k)$ by solving the QP, $l_k$ Lagrange multiplier of QP.
+\end{itemize}
+
+Vantaggi e svantaggi: sicuramente, il vantaggio e lo svantaggio principale sono esattamente invertiti rispetto al precedente. VANTAGGIO: risoluzione del problema ad ogni iterazione, ottenendo una soluzione stabilizzante in retroazione (metodo con l'equazione di Riccati, la quale è ben posta). Metodi che si prestano bene anche a sistemi instabili! Qui lo svantaggio del metodo Shooting è diventato un vantaggio!
+SVANTAGGIO: $[x_{k+1} = x_k + \Delta x_k]$. Potrebbe non essere una traiettoria! Quindi la differenza $f_t(x_t,u_t) - x_{t+1} \neq 0$ in realtà non sarà 0! Andando avanti con le iterazioni, si può invece notare che alla fine il vincolo sarà soddisfatto. Condzioni di matching esatto sui vincoli. Soddisfacimento dei vincoli.
+Altri eventuali svantaggi del metodo. La $Q$ e la $R$ le calcoliamo come lo Hessiano dell'Hamiltoniano! In generale, succede che $R_t$ non sia definita negativa nello spazio di $u$. Problema risolto scegliendo anziché l'Hessiano, un'altra matrice semidefinita positiva. Altra soluzione: START with: $\begin{bmatrix}Q^c_t&0\\0&R^c_t\end{bmatrix}$. Stiamo sostanzialmente prendendo l'Hessiano del costo e non la parte dell'Hessiano relativa alla dinamica. Quando sono sufficientemente vicini, possiamo cominciare a mettere l'Hessiano.
+
+\[
+	\left\{
+	\begin{aligned}
+	&0\leq Q^c_t = \nabla^2_{x_tx_t}{l(x_{kt},u_{kt})}\\
+	&0\leq R^c_t = \nabla^2_{u_tu_t}{l(x_{kt},u_{kt})}
+	\end{aligned}
+	\right.
+\]
+(in pos. semidef. sense). Convergenza quadratica in scala logaritmica, differenza di velocità tangibile se mettiamo uno SWITCH, dopo il quale utilizziamo l'Hessiano $\geq 0$
+
+Secondo svantaggio quindi facilmente recuperabile. Metodo che funziona anche globalmente (SWITCH). Come si risolve invece la traiettoria?
+
+\subsubsection{PROJECTION OPERATION NEWTON'S METHOD}
+
+PROJECTED SQP. IDEA: HANSER (TC) tempo continuo. Invece di utilizzare la dinamica ad anello aperto $\implies x_{t+1}=f_t(x_t,u_t)$, utilizzo: $[u_t = \mu_t + k_t(x_t-\alpha_t)]$. Struttura FEEDFORWARD+FEEDBACK. $(\mu_t,\alpha_t)$ è una sorta di riferimento che vogliamo inseguire. Se scegliamo $(\mu_t,\alpha_t) = (x_k+\Delta x_k,\ u_k+\Delta u_k)$, succede che possiamo muoverci su traiettorie! E la cosa interessante è che $r_t = 0$!
+
+Idea of what are other tools: How to control a system with a feedback law. Stabilize an equilibrium or track a trajectory. What is the problem? We've not taking into account any cost/constraint on the state/input.
+
+\subsubsection{MODEL PREDICTING CONTROL}
+
+(\underline{MPC}) $u = \mathord{\cdot}(x)$. This technique is very powerful. It gives us a sort of optimality criteria. The drawback is that it is really very computational consuming. Based on optimal control.
+
+ALGORITHMIC IDEA:
+\begin{itemize}
+\item{MEASURE/OBSERVE THE CURRENT SYSTEM STATE} $x_t$ (We are at some time $t$. Look at $x_t$);
+\item \dots then predict and optimize the FUTURE BEHAVIOR of the system OVER A FINITE HORIZON ($N$ steps ahead), design a control input $u$ that optimizes the predicted behavior of the system over this time horizon;
+\item{IMPLEMENT ONLY THE FIRST INPUT} $u_t$. Some kind of optimal trajectory (wrt some criteria) starting in $t$. We find a $u(t)$ that optimizes a predicted trajectory (predicted on the model). Feedback. We don't want to run the system into open-loop. We do not like open-loop controls! Find a way to implement feedback. What is the optimal control problem we need to apply?
+
+\[
+	\min_{\bar{x}_\tau,\ \dots,\ \bar{x}_{t+N}}{\sum_{\tau=t}^{t+N-1}{l_\tau(\bar{x}_\tau,\bar{u}_\tau)} + m(\bar{x}_{t+N})}
+\]
+
+subj. to: $\bar{x}(\tau+1) = \bar{f}_\tau(\bar{x}_\tau,\bar{u}_\tau),\ \tau=t,t+1,\ \dots,\ t+N$ and eventually also subj. to: $\{g(\bar{x}_\tau,\bar{u}_\tau)\leq 0\ \land\ g_{t+N}(x_{t+N})\leq 0\}$. Computed $\forall$ each $t$ (the same previous structure). We put a bar $\bar{(\mathord{\cdot})}$ because this is the model, not the control system! Note that $\bar{x}_t = x_t$ (the one we've measured);
+\end{itemize}
+
+What is the schema? Is the following. Suppose we have the entire state of this plant system. (suppose we can measure $x_t$). The idea is: solve for the entire time horizon, and set $[u_t = \bar{u_t}^\star]$. (Take the first input). Really time computational consuming. We need to run the algorithm at each interval of time! Problemi tipo stabilità (nel lungo periodo). Questa filosofia del controllo è anche chiamata \underline{RECEDING HORIZON CONTROL} (orizzonte temporale che si muove in avanti). Per tanti anni lo schema è stato applicato soprattutto nell'industria di processo (dinamica lenta) ma si applicava senza avere delle condizioni di stabilità da soddisfare;
+Si rispettano i vincoli $\forall t$? Problemi anche di ottimalità. L'ottimalità che ho sull'orizzonte limitato non mi garantisce nulla sull'orizzonte infinito $\implies$ si scelga un $N$ sufficientemente grande $\iff N \gg 1$. (Comunque abbuiamo tutta una serie di vantaggi) (Soddisfacimento dei vincoli $\forall t$ dimostrabile). Aspetti numerici per la soluzione efficiente. Ottimalità della legge di controllo. Setup delle condizioni iniziali dei vari problemi con le precedenti traiettorie ottime $\leftarrow$ \underline{Aspetti sulla velocizzazione} $\implies$ REAL TIME OPTIMIZATION (RTO); (controllo + ottimizzazione);
+
+\subsection{CONTINUOS-TIME OPTIMAL CONTROL}
+
+Teoria del controllo ottimo applicata finora a tempo continuo. \newline Minimizziamo su $(x_1,\ \dots,\ x_N)$ e su $(u_0,\ \dots,\ u_{N-1})$. Grandi vettori. A sistemi dinamici tempo continuo, non dobbiamo più ottimizzare un vettorone, ma su delle funzioni! Spazi di funzioni, non più $\R^n$. Idea dell'impostazione. Questa volta dobbiamo ottimizzare wrt delle funzioni!
+
+\[
+	\min_{\underline{x(\mathord{\cdot}),u(\mathord{\cdot})}}{\int_{t_0}^{t_f}{l(x(\tau),u(\tau),\tau)d\tau} + m(x_{t_f})}
+\]
+subj. to: $\dot{x}(t) = f(x(t),u(t),t),\ x(t_0)=x_0$ CINIT.
+Problemi di controllo ottimo (unconstrained). A questo punto, si può sviluppare una teoria (ricerca di condizioni di stazionarietà del I, II ordine. Condizioni sufficienti del II ordine, etc.). Spazi di funzioni (infinito dimensionali). In uno spazio infinito-dimensionale, molte delle proprietà non sono ovvie.
+Operativamente, come si sviluppano le condizioni? In analogia:
+
+\[
+	J(x,u) = \int_{t_0}^{t_f}{l(x(\tau),u(\tau),\tau) + p(\tau)^\top (\dot{x}(\tau)- f(x(\tau),u(\tau),\tau))d\tau} + m(x_{t_f}) =
+\]
+\[
+	= \int_{t_0}^{t_f}{-H(x(\tau),u(\tau),\tau,p(\tau)) + p(\tau)^\top \dot{x}(\tau)d\tau} + m(x_{t_f})
+\]
+
+HAMILTONIANO:
+\[
+	[H(x(t),u(t),p(t)) = p(t)^\top f(x(t),u(t),t) - l(x(t),u(t),t)]
+\]
+(in realtà, si potrebbe definire l'hamiltoniano come la somma di questi due termini se volessimo utilizzare la precedente convenzione).
+
+Dopodiché si procede andando a calcolare una sorta di derivata prima di questa quantità (VARIAZIONE PRIMA) e la si ponga uguale a 0. Sviluppare una variazione prima (equivalente della derivata prima), e porla $= 0$. Si trovano delle condizioni equivalenti a quelle che abbiamo trovato a tempo discreto.
+
+\subsubsection{FNC OF OPTIMALITY (Stazionarietà)}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{p}(t)^\star = -\nabla_x{H(x^\star,u^\star,p^\star(t),t)},\ p^\star(t_f) = -\nabla{m(x^\star(t_f)}\\
+	&\nabla_u{H(x^\star(t),u^\star(t),p^\star(t),t)}= 0
+	\end{aligned}
+	\right.
+\]
+
+Va in realtà anche aggiunta l'equazione della dinamica. (Non è la classica integrazione alla quale siamo abituati).
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_t = \nabla_p{H(x^\star(t),u^\star(t),p^\star(t),t)}\\
+	&\dot{x}_t = f(x_t,u_t,t),\ x(t_0) = x_0
+	\end{aligned}
+	\right.
+\]
+
+(bvp). Il controllo ottimo è un qualcosa per il quale il gradiente dell'Hamiltoniano wrt $u$ ad un certo istante viene posto uguale a 0. $\{u^\star\ |\ \max{H}\}$. Si può sviluppare una teoria per il lineare quadratico.
+
+Gli algoritmi sono tutti basati sulla discretizzazione di questi problemi, e dopodiché si applichino i precedenti metodi a tempo discreto.
+
+\[
+	[\dot{p}(t) = -A^\top (t)p(t) + \nabla_x{l(x(t),u(t),t)}]
+\]
+
+(COSTATE EQUATION). Equazione differenziale matriciale di Riccati. Dualità. Scrivere un problema equivalente a quello di partenza. Struttura equivalente parallelizabile e/o distribuita.
+
+\subsubsection{CONTINUOS-TIME OPTIMAL CONTROL}
+
+Let's just recall what we've seen:
+OPTIMAL CONTROL FNC. We can write the Hamiltonian $H$:
+
+\[
+	[H(x,u,p) = p^\top f(x,u,t) - l(x,u,t)]
+\]
+(We can define also as $-H$. Just a convention matter).
+FNC:
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{x} = \nabla_p{H(x^\star,u^\star,p^\star)},\ [\underline{\dot{x}=f(x^\star,u^\star)}],\ x^\star(t_0) = x_0\\
+	&p_x = -\nabla_x{H(x^\star,u^\star,p^\star)},\ p^\star(t_f) = -\nabla{m(x(t_f))}\\
+	&\nabla_u{H(x^\star,u^\star,p^\star)} = 0
+	\end{aligned}
+	\right.
+\]
+where the underlined term is just the dynamic. The second equation is the COSTATE EQUATION. As in discrete time, let's see what a quadratic problem is:
+
+\[
+	\min_{x(\mathord{\cdot}),u(\mathord{\cdot})}{\int_{t_0}^{t_f}{x^\top(t)Q(t)x(t) + u^\top(t)R(t)u(t)dt} + \frac{1}{2}x^\top(t_f)Q_fx(t_f)}
+\]
+subj. to: $\dot{x}(t) = A(t)x(t) + B(t)u(t),\ x(t_0) = x_0$;
+
+This is the exact counterpart of the discrete-time version. Much more difficult theory. Function spaces. Let's try to write FNC of optimality for the LQP problem! It can be proven that the solution of this problem $\exists$ exists! $\implies$ If we assume $Q(t)\geq 0,\ Q_f(t)\geq 0,\ R(t)>0$, we have an unique solution of this problem. We can develop a theory, with much complex math.
+
+\[
+	[\dot{x}(t) = A(t)x^\star(t) + B(t)u^\star(t)]
+\]
+
+What is the Hamiltonian in this case?
+
+\[
+	H(x,u,p,t) = p^\top(A(t)x(t) + B(t)u(t)) - \frac{1}{2}x^\top Q(t)x -\frac{1}{2}u^\top R(t)u(t)
+\]
+The derivative of $H$ wrt $x$ is:
+\[
+	-\dot{p}^\star(t) = A^\top(t)p^\star(t) - Q(t)x^\star(t)
+\]	
+\[
+	\left\{
+	\begin{aligned}
+	&x(t_0) = x_0\\
+	&p(t_f) = -Q_fx^\star(t_f)
+	\end{aligned}
+	\right.
+\]
+
+This is a two point boundary value problem (TPBV). It's really the same development. We have to deal with differential equation. Let's write $\nabla_u{H(\mathord{\cdot})}$ and let it be 0. $B(t)^\top p^\star(t) - R^\star(t)u^\star(t) = 0$, and as in discrete time, if $R$ is invertible $(\iff R>0)\ \implies$
+\[
+	u^\star(t) = \inv{R}^\star(t)B(t)p^\star(t)
+\]
+
+A parte il $(-)$ davanti, è la stessa struttura che abbiamo visto a tempo discreto. Equazioni di Eulero-Lagrange sono ottenute imponendo questa "variazione prima" uguale a 0. Calcolo variazionale. In generale anche l'Hamiltoniano è dipendente dal tempo (le matrici $A$ e $B$ possono esse stesse dipendere dal tempo) $\implies H := H(x^\star,u^\star,p^\star,t)$ (funzione di vettori). Now how do we proceed? Exactly at the discrete-time version. At final time, $[p^\star(t_f) = -Q_fx^\star(t)]$. It can be proven that: $p^\star(t) = -P(t)x^\star(t)$. Sort of $P(t)\neq -Q_f$. It is much more difficult to prove this. Then, we can write it as:
+
+\[
+	(\dots) = u^\star(t) = -\inv{R}(t)B^\top(t)(\underline{P(t)x^\star(t)} = -p^\star)
+\]
+
+So we can write our optimal control law as:
+
+\[
+	[u^\star(t) = -R(t)B^\top(t)P(t)x^\star(t) = K_0(t)x^\star(t)]
+\]
+, where $K_0(t) = -R(t)B^\top(t)P(t)$. If we have $P(t)$, then we can compute optimal control as a feedback of the state. Let's differentiate $p^\star(t)$. Some time-dependence:
+
+\[
+	[\dot{p}^\star = -\dot{P}(t)x^\star - P\dot{x}^\star] \implies -A^\top p^\star + Qx^\star = -\dot{P}x^\star - P(Ax^\star + BK_0x^\star)
+\]
+Now let's use the fact that:
+
+\[
+	A^\top Px^\star + Qx^\star = -\dot{P}x^\star - PAx^\star - PBK_0x^\star
+\]
+We get:
+
+\[
+	[(\dot{P} + PA + PBK_0 + A^\top P + Q)x^\star = 0]
+\]
+
+(Just moving everything on the left side and collect $x^\star$). Since this condition must hold $\forall$ possible $x^\star$ , we have to set this matrix equation $= 0$:
+
+\[
+	\dot{P} + PA + PBK_0 + A^\top P + Q = 0\ \implies \dot{P} + A^\top P -PB\underline{\inv{R}B^\top P} + Q = 0
+\]
+where the underlined term is just $K_0$ exploded. This is a matrix differential equation $\implies$ (DIFFERENTIAL RICCATI EQUATION (DRE)). Initialize by $P(t_f) = Q_f$. It is a differential equation. What we have to find? $P$. All other terms are known. Risolvibile numericamente. $P\geq 0$. Vettorizzazione della $P$, operativamente. Soluzione di equazioni differenziali che calcolano $P$ a partire da $Q_f$. Dopodiché si genera il feedback ottimo in questa maniera.
+La cosa interessante è, it can be proven that under controllability conditions as $t_f\tendsto{}\infty$, the feedback $u(t) = -\inv{R}(t)B^\top (t)P(t)x(t)$ stabilizes the \underline{linear time-varying system} $f$. (LTV system). More results. How can we stabilize a trajectory, a LTV system? Linearize a nonlinear system at a some trajectory and then apply this optimal INPUT using this expression. Ma, dovendo scegliere $R$ e $Q$, otteniamo $P$ e poniamo $u(t) = K_0x^\star(t)$. Reverse engineering. Rendo le prestazioni che voglio avere ad anello chiuso e scelgo opportunamente la $R$ e la $Q$, e quindi ottengo una $P$ apposita. Teorema di Lyapunov. Questo ingresso in feedback stabilizza esponenzialmente il nostro LTV.
+
+As in discrete-time, if we have a TIME INVARIANT system $\iff P(t) = \bar{P}\ \forall t$, then I can write:
+
+\[
+	\bar{P}A + A^\top\bar{P} -\bar{P}B\inv{R}B^\top\bar{P} + Q = 0
+\]
+and now we find a constant $P\neq P(t)$, found by the resolution of an algebraic matrix equation called ALGEBRAIC RICCATI EQUATION (ARE). Perfetta analogia con il tempo discreto. $P$ costante $\implies K$ costante. Feedback di TDS. Autovalori imposti a seconda di come scegliamo $R$ e $Q$ (Reverse engineering).
+Matching TD-TC. Strumenti di lavoro molto potenti.
+
+\section{DUALITY (FOR PARALLEL AND DISTRIBUTED OPTIMIZATION)}
+
+Tool of optimization theory as a tool to solve parallel and distributed optimization problems. So, let's go back to our problem. What we have seen? FNC, SNC, algorithms, etc. $\min_{x\in X}{f(x)}$ subj. to: $g_j(x)\leq 0\ \forall j\in\{1,\ \dots,\ r\}$. Started by saying: let's write the Lagrangian:
+
+\[
+	L(x,\mu) = f(x) + \sum_{j=1}^r{\mu_jg_j(x)}
+\]
+
+Remember when we have written KKT's conditions. What we have to satisfy is:
+
+\[
+	\nabla_x{L(x^\star,\mu^\star)} = 0 \implies g_j(x^\star)\leq 0\ \forall j
+\]
+and then we have set: $\mu_j^\star \geq 0 \implies \mu_j^\star g_j(x^\star) = 0$ (Complementary). So now, let's keep that in mind:
+
+Let's look at this Lagrangian for a feasible point. Let $\bar{x}$ be a feasible point:
+
+\[
+	L(\bar{x},\mu) = f(\bar{x}) + \sum_{j=1}^r{\mu_jg_j(\bar{x})}
+\]
+Suppose to impose $\mu_j^\star \geq 0\ \forall j\in\{1,\ \dots,\ r\}$. and let's look at $L = \mathord{\cdot}(\mu)$. We have $f(\bar{x})$, cost at $\bar{x}$, plus the quantity $\underline{\sum_{j=1}^r{\mu_jg_j(\bar{x})}}$, which is always $\leq 0$! Let's look at what does it mean:
+
+\[
+	\{L(\bar{x}),f(\bar{x})\} \implies [L(\bar{x},\mu) < f(\bar{x})]
+\]
+$\forall j\ \forall\mu_j \geq 0,\ j\in\{1,\ \dots,\ r\}$.
+
+So, $L(\bar{x},\mu)$ becomes a lower bound for the minimum of this function. La $L$, per ciascun punto feasible. Abbiamo trovato un lower bound per il costo ottimo. Non solo per i $\mu$ ottimi, ma per tutti i $\mu$!
+Let's assume that $\exists f^\star = \inf_{x\in X}{f(x)}$ and $\exists$ at least a feasible solution. We're just assuming that the problem is not unbounded. And then let's define a Lagrange multiplier $\mu_j^\star\geq 0\ (\forall j)\ |\ f^\star = \inf_{x\in X}{L(x,\mu^\star)}$. In other words, If I plug $\mu^\star$ in the Lagrangian, I have exactly the optimal cost. Let's go back to our inequality. Since it holds $\forall\mu$, it is sure to optimize over $\mu$. Let's do it in this way:
+
+\[
+	q(\mu) = \inf_{x\in X}{L(x,\mu)}
+\]
+(DUAL FUNCTION). That relation holds $\forall x$. Let's try to maximize $q(\mu)$, which is called DUAL FUNCTION.
+$\max_{\mu\geq 0}{q(\mu)}$ (DUAL PROBLEM). Trovare il $\mu$ migliore che mi alzi il più possibile questa quantità. L'obiettivo principale è ottenere proprio il costo ottimo! Let's look at the function $q(\mu) = \inf_{x\in X}{L(x,\mu)}$. Notice that that $\inf$ can also be $-\infty$! Let's suppose for example, a linear problem (SCALAR):
+$\min{cx}$ subj. to: $ax\leq b \implies L(x,\mu) = cx + \mu(ax-b)$. Let's collect: $L(x,\mu) = (c+\mu a)x -\mu b$. Let's suppose I fix some $\mu$, it can happen that I get $-\infty$. Our $q(\mu)$, i.e. will have a particular domain:
+
+\[
+	D(q) := D = \{\mu\geq 0\ |\ q(\mu) > -\infty\}
+\]
+Let's not just consider all the $\mu$: Let's consider only $\mu\ |\ q(\mu)>-\infty$ (finite value). Otherwise we'll not have a well defined function. This will be. Only some $\mu$ will be possible. In the example,
+\[
+	D = \{\mu\geq 0\ |\ c+\mu a = 0\}
+\]
+(The only way to get $q(\mu)\neq -\infty$). But this set is something we'll need to take into account. Quelle $\mu$ possibili non sono tutti! Se calcolo $\inf{L}$ su $x$ per una data $\mu$ fissata, potrebbe benissimo essere $-\infty$. i.e. (Il valore più basso che una retta può avere è $-\infty$!) Se voglio avere una $q(\mu)$ ben definita, devo dunque scegliere un dominio $D(q) = D(q(\mu)) = \mathord{\cdot}\mu$ ben definito!
+Restringiamo quindi il campo delle $\mu$ possibili! So, an interesting property is the following:
+
+\begin{prop}{\textbf{(Very strong property)}}
+
+($-q$ is convex on $D$). The domain $D$ of $q$ is convex, and $q$ is CONCAVE on $D$
+\end{prop}
+
+$\implies$ (\underline{convex problem}). 
+
+The trick is that If I take a general problem, the dual problem will not give informations about the original problem. Some structure related.
+
+\begin{prop}{\textbf{(WEAK DUALITY)}}
+\[
+	q^\star = \sup_{\mu\geq 0}{q(\mu)} \implies q^\star\leq f^\star
+\]
+\end{prop}
+
+In other conditions, (under certain assumptions). $q^\star$ fornisce sempre e comunque (su $D$) un lower bound per $f^\star$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&q^\star < f^\star \implies\ DUALITY\ GAP\\
+	&q^\star = f^\star \implies\ NO\ DUALITY\ GAP
+	\end{aligned}
+	\right.
+\]
+
+Of course, we have always informations about the original problem \newline (\underline{i.e. a lower bound of $f^\star\geq q^\star$}).
+Let's see under what conditions we have NO DUALITY GAP.
+
+\begin{prop}{\textbf{SADDLE-POINT THEOREM}}
+
+$(x^\star,\mu^\star)$ is an \underline{optimal solution}-Lagrange multiplier pair such that: $(x^\star\in X),\ \mu^\star\geq 0$, and $(x^\star,\mu^\star)$ is a \underline{saddle point} of the Lagrangian, i.e.:
+\[
+	L(x,\mu) \leq L(x^\star,\mu^\star) \leq L(x,\mu^\star)
+\]
+$\{\forall x\in X\ \land\ \mu\geq 0\}$.
+\end{prop}
+
+Really important. Teorema del punto di sella. $(x^\star,\mu^\star)$ è un punto di sella del nostro Lagrangiano. So now, the point is when is possible to get \underline{strong duality} property (STRONG DUALITY). Of course one can have several conditions. The most common one is the following:
+$\min_{x\in X}{f(x)}$ subj. to: $g_j(x)\leq 0,\ j\in\{1,\ \dots,\ r\}$. PRIMAL PROBLEM (P). Conditions for the \underline{STRONG DUALITY}:
+\begin{itemize}
+\item{ASSUMPTION 1}: The primal problem (original problem) P is feasible and $f^\star$ is finite $\iff f^\star<+\infty \implies (X\subset\R^n)$ is convex $\implies f,g$ are convex over $X$. We have basically that our original problem has to be convex and to have a finite optimal value;
+\item{ASSUMPTION 2 (sometimes called SLATER'S CONDITION)}:
+\[
+	\exists\bar{x}\ |\ g_j(\bar{x}) < 0\ \forall j\in\{1,\ \dots,\ r\}
+\]
+(Exists at least a point strictly inside the convex set $X\subset\R^n$);
+\end{itemize}
+
+\begin{prop}
+
+Under some conditions (ass. 1 e 2) $\implies$ there is NO duality gap and exists at least $\exists\mu^\star$.
+\end{prop}
+
+(Exists at least $\mu^\star$ that in pair with $(x^\star,\mu^\star)$ will be a saddle point of the Lagrangian).
+L'inghippo è in questa proposizione (Si possono provare certe altre condizioni, ma questa è la più comprensibile). Problema duale rappresentativo del primale quando è convesso il primale. Se questo non è vero, allora il problema duale sarà ancora convesso, risolvibile, \underline{ma ci sarà DUALITY GAP} con il problema primale (original problem).
+
+\subsubsection{EXAMPLE}
+
+$\min{c^\top x}$ subj. to: $Ax\leq b$. Linear problem (\emph{quadprog}-solvible). (P). $a_j^\top x\leq b_j,\ j\in\{1,\ \dots,\ r\}$. Let's write the Lagrangian:
+\[
+	L(x,\mu) = (c^\top x = f(x)) + \mu^\top (Ax-b)
+\]
+
+Let's derive the dual problem of this primal problem (P):
+\[
+	q(\mu) = \inf_{x\in X\subset\R^d}{(c^\top + \mu^\top A)x - \mu^\top b}
+\]
+So let's look at what is the domain of the dual. If $(c^\top + \mu^\top A \neq 0)$, then $\implies \inf{q(\mu)} = -\infty \implies$
+\[
+	D = \{\mu\geq 0\ |\ c^\top + \mu^\top A = 0\implies c^\top = -\mu^\top A\}
+\]
+
+How can we define $q(\mu)$?
+
+\[
+	q(\mu) =
+	\left\{
+	\begin{aligned}
+	&-\mu^\top b,\ \forall\mu\in D\\
+	&-\infty,\ otherwise
+	\end{aligned}
+	\right.
+\]
+$\underline{q = q(\mu) = \mathord{\cdot}\mu}$ because we're already minimized it wrt $x$.
+
+Let's write the dual problem:
+
+\[
+	\max_{\mu\geq 0}{q(\mu)} \implies \max_\mu{-\mu^\top b}
+\]
+subj. to: $\{c^\top + \mu^\top A = 0\ \land\ \mu\geq 0\}$.
+
+$\leftarrow$ How can we write it? Let's look at the properties of the dual problem. Linear cost function. Convex function. Linear inequality constraint (convex constraint) e supponiamo che $\exists$ almeno un $x$ che faccia valere strettamente il vincolo di disuguaglianza.
+
+The point is: what happens if we have also equality constraints:
+
+\[
+	\min{f(x)},\ subj.\ to:\
+	\left\{
+	\begin{aligned}
+	&h_i(x) = 0,\ i\in\{1,\ \dots,\ m\}\\
+	&g_j(x)\leq 0,\ j\in\{1,\ \dots,\ r\}
+	\end{aligned}
+	\right.
+\]
+\[
+	[L(x,\mu,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \sum_{j=1}^r{\mu_jg_j(x)}]
+\]
+\[
+	q(\lambda,\mu) = \inf_{x\in X}{L(x,\lambda,\mu)} \implies
+\]
+then the dual problem is: $\max_{\lambda,\mu\geq 0}{q(\lambda,\mu)}$. DUAL PROBLEM. In terms of strong duality, we can simply have that $\exists\bar{\bar{x}}$ such that il vincolo di disuguaglianza sia soddisfatto. Per i vincoli di uguaglianza, quando abbiamo un punto feasible, automaticamente $\lambda_ih_i(x)=0\ \forall i\in\{1,\ \dots,\ m\}$. (Non abbiamo bisogno di imporre nulla). Stessa cosa per il dominio:
+
+\[
+	D = \{\lambda,\mu\geq 0\ |\ q(\lambda,\mu)>-\infty\}
+\]
+
+\subsection{DUAL ALGORITHMS: DUAL ASCENT}
+
+$\max_{\mu\geq 0}{q(\mu)}$. So now, let' suppose we have strong duality. Concentrate on how to solve the dual problem. In some cases, it will be more convenient to setup a dual problem. Assume $q(\mu)$ has some regularity (it will be not always this case), but assume it is at least differentiable. Maximization $\implies$ (GRADIENT ASCENT). We have a constraint $(\mu\geq 0)$, so we can apply a PROJECTED GRADIENT METHOD (\underline{PGM}) $\implies$
+\[
+	\mu_{k+1} = [\mu_k +\alpha_k\nabla{q(\mu_k)}]^+ = (\dots)
+\]
+project this quantity on positive $\mu$'s:
+
+\[
+	(\dots) = \max{\{0,\ \mu_k+\alpha_k\nabla{q(\mu_k)}\}}
+\]
+(proiettato sull'ottante positivo); Se disponiamo del gradiente di $q(\mu) \implies \nabla{q(\mu)}$, allora è una cosa che sappiamo fare. $q(\mu)$ is somehow implicitly defined. The problem is $\underline{\nabla{q(\mu)}} =\ ?$ It is now always the case to explicitly write $q(\mu)$ in closed form. However,
+
+\[
+	q(\mu) = \inf_{x\in X}{L(x,\mu)} = \inf_{x\in X}{(f(x) + \mu^\top g(x))}
+\]
+where $[\mu^\top g(x) = \sum_{j=1}^r{\mu_jg_j(x)}] \leq 0$. The temptation is to say: find $(x,\mu)$ that for some special $(\bar{x},\bar{\mu})$ gives us the $\inf$:
+
+\[
+	x_\mu = [\argmin_{x\in X}{(f(x) + \mu^\top g(x))}]
+\]
+Intuitivamente, potremmo trovare $x_\mu$ che raggiunge il minimo della minimizzazione. Mettendolo dentro $L$ e derivando rispetto a $\mu$, potremmo trovare un $g(x_\mu)$.
+
+\begin{prop}
+
+Let $X$ be a compact set and $f,g$ continuos over $X$. Also assume that for every $\forall\mu\in\R^r,\ L(x,\mu)$ is minimized over $X$ at a unique point $x_\mu$. (Assuming that $\forall\mu\ \exists!\ x_\mu$ that minimizes that). Then $\implies q(\mu)\in C^1$ everywhere, and $\underline{\nabla{q(\mu)} = g(x_\mu)}$, where: $x_\mu=\argmin_{x\in X}{L(x,\mu)}$.
+\end{prop}
+
+So, how does the algorithm become here?
+
+\subsubsection{DUAL ASCENT}
+
+COMPUTE: $x_{k\mu} = \argmin_{x\in X}{L(x,\mu_k)}$ (Start with some $\mu_0$) (Possibile inizializzazione a 0 di $\mu_k$).
+\[
+	\mu_{k+1} = [\mu_k + \alpha_kg(x_{k\mu})]^+
+\]
+(projected on the positive octant);
+
+\underline{DUALITY}:
+
+$\min_{x\in X}{f(x)}$ subj. to: $\{g_j(x)\leq 0\ j\in\{1,\ \dots,\ r\}\ \land\ h_i(x)=0\ i\in\{1,\ \dots,\ m\}\}$ (PRIMAL PROBLEM).
+
+\[
+	q(\lambda,\mu) = \inf_{x\in X}{[f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \sum_{j=1}^r{\mu_jg_j(x)}]}
+\]
+Write $q(\lambda,\mu)$; CONCAVE $q$ OVER CONVEX $D$.
+$\max{q(\lambda,\mu)}$ subj. to: $\mu\geq 0$ (DUAL PROBLEM).
+
+\[
+	q^\star = \sup_{\lambda,\mu\geq 0}{q(\lambda,\mu)} \leq f^\star = \inf_{x\in X}{f(x)}
+\]
+where the last one is subj. to: $g_j(x)\leq 0,\ h_i(x)=0$.
+
+How do we compute $\nabla{q(\lambda,\mu)}$?
+
+\[
+	\exists!\ \underline{x_{\lambda\mu}} = \argmin_x{L(x,\mu,\lambda) = f(x) + \sum_{i=1}^m{\lambda_ih_i(x)} + \sum_{j=1}^r{\mu_jg_j(x)}}
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\nabla_\lambda{q(\lambda,\mu)} = h(x_{\lambda\mu}) = \begin{bmatrix}h_1(x_{\lambda\mu})&\dots&h_m(x_{\lambda\mu})\end{bmatrix}^\top\\
+	&\nabla_\mu{q(\lambda,\mu)} = g(x_{\lambda\mu}) = \begin{bmatrix}g_1(x_{\lambda\mu})&\dots&g_r(x_{\lambda\mu})\end{bmatrix}^\top
+	\end{aligned}
+	\right.
+\]	 
+
+DUAL ASCENT (MAX-MIN EQUIVALENCE):
+
+\[
+	\max_{\lambda,\mu\geq 0}{q(\lambda,\mu)} \iff \min_{\lambda,\mu\geq 0}{-q(\lambda,\mu)}
+\]
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\lambda_{k+1} = \lambda_k + \alpha_k(\nabla_\lambda{q(\lambda_k,\mu_k)} = h(\lambda_k,\mu_k))\\
+	&\mu_{k+1} = [\underline{\mu_k + \alpha_k(\nabla_\mu{q(\lambda_k,\mu_k)} = g(\lambda_k,\mu_k))}]^+
+	\end{aligned}
+	\right.\ \lor\ 
+\]
+\[
+	\lor\ 
+	\left\{
+	\begin{aligned}
+	&\lambda_{k+1} = \lambda_k - \alpha_k(-\nabla_\lambda{q(\lambda_k,\mu_k))}\\
+	&\mu_{k+1} = [\mu_k - \alpha_k(-\nabla_\mu{q(\lambda_k,\mu_k)} = g(\lambda_k,\mu_k))]^+
+	\end{aligned}
+	\right.
+\]
+
+where the underlined terms are projected on the positive octant. So we have complete equivalence (EXACTLY THE SAME)! We can compute the algorithm this way. Remember that:
+\[
+	x_{k\ \lambda\mu} = \argmin_x{L(x,\lambda_k,\mu_k)}
+\]
+	
+\subsubsection{DUAL DECOMPOSITION FOR PARALLEL OPTIMIZATION}
+
+Why this duality theory is useful for this purpose?
+
+LARGE-SCALE OPTIMIZATION (AS OPTIMIZATION). Somehow the number of data involved in optimization is large (general cost function, many variables $\implies$ DATA OPTIMIZATION) $\iff (n\gg 1)$ (something large).
+For example,
+\[
+	\min_{x_1,\ \dots,\ x_N}{\sum_{i=1}^n{f_i(x_i)}}
+\]
+subj. to: $\sum_{i=1}^n{g_i(x_i)}\leq 0$ (COUPLING CONSTRAINT). Just one constraint that is coupling the $x_i$ in a sum of $g_i$. Where $x_i\in\R$ just a real variable, for example.
+(Common cost function + some local cost function).
+
+Let's look to an example. Concrete example. Resource Allocation Problem (RAP) (just two variables):
+
+\[
+	\min_{(x_1\in\R),\ (x_2\in\R)}{f_1(x_1) + f_2(x_2)}
+\]
+subj. to: $x_1+x_2-x_{TOT}\leq 0$. Two users, two entities. We can also do something like (limited) bandwidth allocation for example. Generalizable example for $n$ users. How do I solve this problem? Apply one of the algorithm of constrained minimization. es. barrier, primal method (problems with $\min{(\mathord{\cdot})}$ subj. to: $(\mathord{\cdot}) \leq 0$).
+
+We have to consider an entire global function\dots Let's see if we can use \underline{duality} in order to gain some insights. Suppose strictly convex function. We write the Lagrangian:
+
+\[
+	L(x_1,x_2,\mu) = f_1(x_1) + f_2(x_2) + \mu(x_1+x_2-x_{TOT})
+\]
+
+Now let's try to write the dual problem of this primal problem:
+
+\[
+	q(\mu) = \inf_{x\in X}{L(x_1,x_2,\mu)} = \inf_{x\in X}{[f_1(x_1)+f_2(x_2) + \mu(x_1+x_2-x_{TOT})]}
+\]
+Let's rewrite the Lagrangian by rearranging the terms inside $(\dots)$:
+\[
+	(\dots) = \inf_{x_1,x_2}{[\underline{f_1(x_1) + \mu x_1}] + [\underline{f(x_2) + \mu x_2}] - \mu x_{TOT}}
+\]
+
+Since there is no coupling, we can separate the infimization process:
+\[
+	q(\mu) = (\inf_{x_1}{[f_1(x_1) + \mu x_1]} = q_1(\mu)) + (\inf_{x_2}{[f_2(x_2) + \mu x_2]} = q_2(\mu)) -\underline{\mu x_{TOT}}
+\]
+where the underlined term is \underline{constant}.
+
+$\implies$ Now we can write: $[q(\mu) = q_1(\mu) + q_2(\mu) -\mu x_{TOT}]$. Now let's try to apply our dual ascent on the dual problem:
+
+\[
+	\max_{\mu\geq 0}{[q_1(\mu) + q_2(\mu) -\mu x_{TOT}]}
+\]
+(dual problem). Where:
+
+\[
+	\mu_{k+1} = \mu_k +\alpha_k(x_{k\ 1\ \mu} + x_{k\ 2\ \mu} - x_{TOT})
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k\ 1\ \mu} = \argmin_{x_1}{f_1(x_1) + \mu_kx_1}\\
+	&x_{k\ 2\ \mu} = \argmin_{x_2}{f_2(x_2) + \mu_kx_2}
+	\end{aligned}
+	\right.
+\]
+
+Let's see why this is interesting. We need to compute these quantities and update them this way:
+We can parallelize the computation this way:
+A MASTER executes:
+
+\[
+	\mu_{k+1} = \mu_k +\alpha_k(x_{k\ 1\ \mu} + x_{k\ 2\ \mu} \approx x_{TOT})
+\]
+where the two processes (P1,P2) simultaneously execute their respective optimization problems: 
+\[
+	\left\{
+	\begin{aligned}
+	&[\min_{x_1}{f_1(x_1)+\mu_kx_1}]\\
+	&[\min_{x_2}{f_2(x_2)+\mu_kx_2}]
+	\end{aligned}
+	\right.
+\]
+
+and (P1,P2) give us back: $x_{k\ \mu} = \begin{bmatrix}x_{k\ 1\ \mu}\\x_{k\ 2\ \mu}\end{bmatrix}$.
+
+Schema MASTER-SUBPROBLEMS. I processi si possono fare simultaneamente se i meccanismi sono SINCRONI. Attività interessante. Schema distribuito, schema parallelo.
+
+In a GENERAL PROBLEM,
+
+\[
+	L(x_1,\ \dots,\ x_n,\ \mu) = \sum_{i=1}^n{f_i(x_i)} + \mu\sum_{i=1}^n{g_i(x_i)} = \sum_{i=1}^n{[f_i(x_i)+\mu g_i(x_i)]}
+\]
+
+and
+\[
+	q(\mu) = \sum_{i=1}^n{\inf_{x_i}{[f_i(x_i)+\mu g_i(x_i)]}}
+\]
+\[
+	\mu_{k+1} = [\mu_j + \alpha_k\sum_{i=1}^n{g_i(x_{k\ i\ \mu})}]^+
+\]
+and each process does this calculation:
+
+\[
+	x_{k\ i\ \mu} = \argmin_{x_i}{[f_i(x_i)+\mu_kg_i(x_i)]}
+\]
+
+As before, the master gives the $\mu_k$ to all the processors and each processor (sends back) gives it $x_{k\ i\ \mu}$. I can run $n$ computation of this in parallel. Repeatable schema. La $x_{TOT}$ dovrebbe essere costante nei processi singoli. Problema risolvibile da $n$ processori che lavorano in parallelo. Il problema è la sincronia richiesta e che soprattutto abbiamo un antipattern SPoF! (Single Point of Failure). Mentre se i singoli nodi sono down possiamo riallocarne altri.
+
+Another problem that typically appears in LSO is the following:
+
+\[
+	\min_z{f_0(z) + \sum_{i=1}^n{f_i(z)}}
+\]
+subj. to: $z\in X_i,\ i\in\{1,\ \dots,\ n\}\ \land\ z\in X_0$. ($x$ now can be a real variable or a vector variable. In this case $z\in\R$). $f_0(z)$ is the common cost function. We have just our common variable. If we want to solve in a classical way, we can apply a PROJECTED GRADIENT OVER $(z\in X_i)$, But $f$ is again a separable function (sum of local $i$-function). This means that I need a lot of computation! We can try to solve the dual problem in order to parallelize the solution of this optimization problem! We have a general complex set. Try to write an equivalent problem. Instead of having just $z$ variable, suppose to have n variable $x_i$:
+
+\[
+	\min_{z,x_1,\ \dots,\ x_N}{f_0(z) + \sum_{i=1}^n{f_i(x_i)}}
+\]
+subj. to: $(x_i\in X_i)\ \land\ z\in X_0$. We have to enforce consistency: $x_i=z,\ i=1,\ \dots,\ n$. This is completely equivalent with this to the original problem! Siamo partiti da un problema 1-dimensionale e siamo arrivati ad un problema $(n+1)$-dimensionale.
+Assume all the function to be strictly convex (and $f_0$ strictly convex).
+
+\[
+	L(z,x_1,\ \dots,\ x_n) = f_0(z) + \sum_{i=1}^n{f_i(x_i)} + \sum_{i=1}^n{\lambda_i(x_i-z)}
+\]
+(Now we have $n$ contributes with $n$ associated Lagrange multiplier). OK. Now let's compute this $q$, or better let's rearrange this Lagrangian:
+
+\[
+	L(z,x,\lambda) = f_0(z) - z\sum_{i=1}^n{\lambda_i} + \sum_{i=1}^n{[\underline{f_i(x_i) + \lambda_ix_i}]}
+\]
+where the underlined term at $\lambda_i$ given $= \mathord(\cdot)(x_i)$. Now notice that if $\lambda_i$ are given and $f_0 = \mathord(\cdot)(z)$, then:
+
+\[
+	q(\lambda_1,\ \dots,\ \lambda_n) = \inf_{z\in X_0}{[f_0(z)-z\sum_{i=1}^n{\lambda_i}]} + \sum_{i=1}^n{\inf_{x_i\in X_i}{[f_i(x_i)+\lambda_ix_i]}}
+\]
+
+Again, we can think:
+
+\[
+	q = q_0 +\ \dots\ + q_n = q(\lambda_1,\ \dots,\ \lambda_n) = q_0(\lambda_1,\ \dots,\ \lambda_n) + \sum_{i=1}^n{q_i(\lambda_i)}
+\]
+
+So, where:
+
+\[
+	\left\{
+	\begin{aligned}
+	&q_0(\lambda_1,\ \dots,\ \lambda_n) = \inf_{z\in X_0}{[f_0(z)-z\sum_{i=1}^n{\lambda_i}]}\\ 					&q_i(\lambda_i) = \inf_{x_i\in X_i}{[f_i(x_i)+\lambda_ix_i]}
+	\end{aligned}
+	\right.
+\]
+
+, \underline{after rearranging all the terms}.
+
+Now how can we update each $\lambda_i$? So, I want to compute $\nabla_\lambda{q(\mathord{\cdot})}$, and it will be:
+
+\[
+	\nabla{q(\lambda_1,\ \dots,\ \lambda_n)} = \begin{bmatrix}\frac{\partial{q}}{\partial{\lambda_1}}\\ \vdots\\ \frac{\partial{q}}{\partial{\lambda_n}}\end{bmatrix}
+\]
+\[	
+	\lambda_{k+1\ i} = \lambda_{ki} + \alpha_k(x_{k\ i\ \lambda} - z_{k\ i\ \lambda})
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k\ i\ \lambda} = \argmin_{x_i\in X_i}{[\underline{f_i(x_i)+\lambda_{ki}x_i}]}\\
+	&\underline{z_{k\ i\ \lambda} = \argmin_{z\in X_0}{[f_0(z) - z\sum_{i=1}^n{\lambda_{ki}}]}}
+	\end{aligned}
+	\right.
+\]
+Minimizzo solo la seconda equazione rispetto a $z$! Invece avrei dovuto minimizzare tutto rispetto a $z$! Tante piccole minimizzazioni sulle $x_i$ ed una "grande" minimizzazione (computazionalmente parlando) rispetto alla $z$ (che la può (deve) fare il master).
+
+(SCHEMA SINCRONO!)
+\begin{itemize}
+\item{i)} ($f_0$ dev'essere convessa);
+\item{ii)} (Schema applicabile anche quando il minimo NON è UNICO! $\iff$ \emph{subgradient} (più rette tangenti));
+\item{iii)} (Per le CINIT, setto tutti i $\lambda_{ki}$ iniziali e parto con le iterazioni sincrone!); \item{iv)} Evitare la convessità di $f_0 \implies$ Penalty aggiuntivi e sorta di Lagrangiano aumentato;
+\end{itemize}
+
+\subsection{DISTRIBUTED OPTIMIZATION}
+
+Let's suppose that we want to work in our distributed network context. Remember what is a network system? COMMUNICATION GRAPH. $G(t) := G = (\{1,\ \dots,\ N\}, E(t)),\ E := E(t)$ changes (set of edges). COMMUNICATION FRAMEWORK. $G$ decribes the communication. $i$ can send messages to the node $j$. Try to solve an optimization problem by using this communication framework. Cooperating themselves. Set of applications (nowadays). Solve an optimization problem. \{LEARNING, LOCALIZATION, SOCIAL, CONTROL\}. (problems). (This is the goal). We'll focus on this problem:
+
+\[
+	\min_{x\in\R}{\sum_{i=1}^N{f_i(x)}}
+\]
+subj. to: $x\in X_i,\ i\in\{1,\ \dots,\ N\}$. This problem may seem particular or special, but this captures a lot of applications. So, what is the idea? If we're in this network context, let's assume we've a (FIXED UNDIRECTED COMMUNICATION GRAPH). $G=(\{1,\ \dots,\ N\}, E),\ E\neq E(t)$. Agent $i$ only knows $f_i(x)$ and the set $X_i$, which $x$ belongs to (subj. to). The goal is to solve the entire optimization problem in distributed way. What does it mean solving the problem? Find $x=\argmin{(\mathord{\cdot})}$. What does it mean find $x$? All node reach consensus on $N$ minimums of that problem. REACH A CONSENSUS ON A MINIMUM OF THE PROBLEM. How can we do that? First of all, there is a common variable $x$. Let's suppose this situation for the moment:
+
+\[
+	\min_x{f_1(x) + f_2(x)}
+\]
+subj. to: $\{x\in X_1\ \land\ x\in X_2\} \implies x\in X_1 \cap X_2$. We've seen this problem in the previous examples. Writing an equivalent problem: $\min_x{f_1(x_1)+f_2(x_2)}$, subj. to: let's use something slightly different: subj. to:
+\[
+	\left\{
+	\begin{aligned}
+	&x_1\in X_1\\
+	&x_2\in X_2
+	\end{aligned}
+	\right.
+\]
+with CONSISTENCY: $(x_1=x_2)$. Solve the dual problem:
+
+\[
+	L(x_1,x_2,\lambda) = f_1(x_1) + f_2(x_2) + \lambda(x_1-x_2) = f_1(x_1) + \lambda x_1 + f_2(x_2) - \lambda x_2
+\]
+, and now we can write:
+
+\[
+	q(\lambda) = \inf_{x_1\in X_1}{[f_1(x_1) + \lambda x_1]} + \inf_{x_2\in X_2}{[f_2(x_2) - \lambda x_2]}
+\]
+
+Just proceed as an exercise $(\dots)$.
+
+\[	
+	\lambda_{k+1} = \lambda_k +\alpha_k(x_{k\ 1\ \lambda} - x_{k\ 2\ \lambda})
+\]
+
+So, this is like the parallel scheme, but there is an update to be performed. Global update (the nodes), but only involves $x_1,x_2$. But let's try to get two different copies of this $\lambda$. Changing the situation of the optimization problem. Rewrite an equivalent but different opt. problem:
+
+\[
+	\min_x{f_1(x_1) + f_2(x_2)}
+\]
+subj. to: $x_1\in X_1,\ x_1\in X_2,\ x_1=x_2,\ x_2=x_1$. $\leftarrow$ redundant! But let's write $\implies$
+
+\[
+	L(x_1,x_2,\lambda_1,\lambda_2) = f_1(x_1) + f_2(x_2) + \lambda_1(x_1-x_2) + \lambda_2(x_2-x_1) = (\dots)
+\]
+
+Let's collect the variables terms:
+
+\[
+	(\dots) = f_1(x_1) + (\lambda_1-\lambda_2)x_1 + f_2(x_2) + (\lambda_2-\lambda_1)x_2
+\]
+
+So now, our $q(\lambda_1,\lambda_2)$ is
+\[ 
+	q(\lambda_1,\lambda_2) = \inf_{x_1\in X_1}{[f_1(x_1) + (\lambda_1-\lambda_2)x_1]} + \inf_{x_2\in X_2}{[f_2(x_2) + (\lambda_2-\lambda_1)x_2]}
+\]
+
+If I want to write my \underline{dual ascent} algorithm, I have to write:
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k\ 1\ \lambda} = \argmin_{x_1\in X_1}{[f_1(x_1) + (\lambda_{k1}-\lambda_{k2})x_1]}\\
+	&x_{k\ 2\ \lambda} = \argmin_{x_2\in X_2}{[f_2(x_2) + (\lambda_{k2}-\lambda_{k1})x_2]}
+	\end{aligned}
+	\right.
+\]
+
+and then have to write the update of the two $\lambda$'s!
+
+\[
+	\left\{
+	\begin{aligned}
+	&\lambda_{k+1\ 1} = \lambda_{k1} +\alpha_k(x_{k\ 1\ \lambda} - x_{k\ 2\ \lambda})\\
+	&\lambda_{k+1\ 2} = \lambda_{k2} +\alpha_k(x_{k\ 2\ \lambda} - x_{k\ 1\ \lambda})
+	\end{aligned}
+	\right.
+\]
+
+UNDIRECTED GRAPH. But notice that $\lambda$ are assigned to the edge, whilst $x$ to the nodes. The goal is? Can we try to generalize this idea? Let's try to change notation (Rinominazione per associarli logicamente agli edge e non ai nodi):
+
+\[
+	\left\{
+	\begin{aligned}
+	&\lambda_{k+1\ 12} = \lambda_{k12} + \alpha_k(x_{k\ 1\ \lambda} - x_{k\ 2\ \lambda})\\
+	&\lambda_{k+1\ 21} = \lambda_{k21} + \alpha_k(x_{k\ 2\ \lambda} - x_{k\ 1\ \lambda})
+	\end{aligned}
+	\right. \impliedby\ 
+	\left\{
+	\begin{aligned}
+	&(x_1-x_2) = 0\\
+	&(x_2-x_1) = 0
+	\end{aligned}
+	\right.
+\]
+
+(Servono entrambe le cose!)
+
+Let's take the general version of the problem. We have our graph with some structure to the communication. Let's try to rewrite our optimization problem in order to gain some sparseness to the solution. Again $n$ nodes. Then how do we enforce the consistency?
+
+\[
+	\min_{x_i}{\sum_{i=1}^n{f_i(x_i)}}
+\]
+subj. to: $\{x_i\in X_i,\ i\in\{1,\ \dots,\ n\}\ \land\ x_i=x_j\ \forall(i,j)\ \in E\}$. CONSISTENCY: Keeping in mind (in the edges set). Under which conditions this is equivalent to the original problem. We're dealing with an undirected graph. Only if the graph is \underline{strongly connected} one can reach consensus and the problem is perfectly equivalent to the previous one!
+So, if the graph is connected, this is equivalent to the original optimization problem. Let's see how we can write the Lagrangian of the problem:
+
+\[
+	x_i=x_j;\ \forall(i,j)\ \in E \implies EX:\ x_2=x_3,\ x_3=x_2
+\]
+\[
+	L(x_1,\ \dots,\ x_n,\lambda) = \sum_{i=1}^n{f_i(x_i)} + \sum_{i=1}^n{\sum_{j\in N_i}{\lambda_{ij}(x_i-x_j)}} = \sum_{i=1}^n{[f_i(x_i) + \sum_{j\in N_i}{\lambda_{ij}(x_i-x_j)}]}.
+\]
+
+Now we need to make an observation. \underline{How these constraints appear?}
+
+\[
+	\dots\ \lambda_{ij}(x_i-x_j) + \lambda_{ji}(x_j-x_i)\ \dots
+\]
+$\leftarrow$ we'll have this because the graph is undirected.
+
+\[
+	[(\lambda_{ij}-\lambda_{ji})x_i + (\lambda_{ji}-\lambda_{ij})x_j]
+\]
+
+What does it mean? We can rewrite the Lagrangian:
+
+\[
+	L(x_1,\ \dots,\ x_N) = \sum_{i=1}^n{[f_i(x_i) + x_i\sum_{j\in N_i}{(\lambda_{ij}-\lambda_{ji})}]}
+\]
+
+Notice the difference between this and the previous one. Now the decisional variable, assuming given \underline{fixed $\lambda_{ij},\lambda_{ji}$}, is only $x_i$! We can so define:
+
+\[
+	q(\lambda) = \sum_{i=1}^n{\inf_{x_i\in X_i}{[f_i(x_i) + x_i\sum_{j\in N_i}{(\lambda_{ij}-\lambda_{ji})}]}}
+\]
+So, if the minimum is UNIQUE, then $\implies$ we can write the algorithm:
+
+\subsubsection{DISTRIBUTED DUAL ASCENT (DDA)}
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_{k\ i\ \lambda} = \argmin_{x_i\in X_i}{[f_i(x_i) + x_i\sum_{j\in N_i}{(\lambda_{kij}-\lambda_{kji})}]}\\
+	&\lambda_{k+1\ ij} = \lambda_{kij} +\alpha_k(x_{k\ i\ \lambda}-x_{k\ j\ \lambda})
+	\end{aligned}
+	\right.
+\]
+
+(and for the $\lambda$'s, let's use this kind of agreement). And I have many of them, $\forall j\in N(i)$.
+
+Let's see if this algorithm is distributed: In order to perform this minimization, I need:
+\begin{itemize}
+\item $\lambda_{kij}$ in the MEMORY, $\lambda_{kji}$ will be received from in-neighbors;
+\item $x_{k\ i\ \lambda}$ in the MEMORY, $x_{k\ j\ \lambda}$ will be received from in-neighbors;
+\end{itemize}
+
+The agent will reach consensus on a common minimum. Questo algoritmo mi restituisce sia la soluzione ottima del duale $(\lambda_{ij}^\star)$, che quella ottenuta del primale $(x_{i\ \lambda}^\star)$.
+VALGA LA STRONG DUALITY (certa convessità)! (Anche con clock differenti). (Si possono pensare a versioni anche per grafi tempo-varianti (modello asincrono)).
+
+\[
+	\min_x{\sum_{i=1}^n{f_i(x)}}
+\]
+subj. to: $x\in X_i,\ i\in\{1,\ \dots,\ n\}$. Se risolvessi il primale direttamente, potrei comunque risolverlo in modo distribuito. Anche in questo caso si faranno delle copie delle $x$!
+
+\[
+	x_{k+1\ i} = \sum_{j\in N_{k\ i}(t)}{w_{k\ ij}(t)(x_{kj} - \alpha_k\nabla{f_i(x_i)})}
+\]
+
+, dove la parte $\underline{\sum_{j\in N_i(t)}{w_{k\ ij}(t)}}$ è un algoritmo di AVERAGE CONSENSUS precedentemente visto. (consenso alla media!) La dimostrazione NON è immediata!

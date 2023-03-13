@@ -1,0 +1,1069 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Training Facility}
+\label{cap:training}
+%************************************************\\
+
+\section{EXERCISE)}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 3x_2\\
+	&\dot{x}_2 = -3x_1 - x_2^3(1-x_1^2) + u
+	\end{aligned}
+	\right.
+\]
+
+(NLTI system). Sistema non-lineare tempo-invariante.
+$(u=0)$ Dimostrare che l'origine è (internamente) A.S.
+
+\begin{itemize}
+\item{i)} Show that the origin is (internally) asymptotically stable;
+
+Regola 0: Non inventare nulla!
+
+\begin{itemize}
+\item{TIME VARYING}
+\begin{itemize}
+\item THM UNIFORM ASYMPTOTICAL STABILITY;
+\item THM EXPONENTIAL STABILITY (DIRECT);
+\item THM EXPONENTIAL STABILITY (UNDIRECT) (meaning that of the linearization\dots);
+\end{itemize}
+\item{(ONLY) TIME INVARIANT}
+\begin{itemize}
+\item LYAPUNOV'S THM (LOCAL \& GLOBAL VERSION);
+\item LASALLE INVARIANCE PRINCIPLE;
+\item KRASOWKSII'S COROLLARY (LOCAL \& GLOBAL VRS);
+\item CHETAEV'S THM (INSTABILITY THEOREM) +;
+\item + CONVERSE THM (while it is not useful to study the stability);
+\end{itemize}
+\end{itemize}
+
+Un sistema tempo invariante è un caso particolare della classe più generica dei sistemi tempo-varianti.
+
+-) Try to understand what is the theorem to apply for a particular question. Since there is no global keyword, it is required the global demonstration. We require the Lyapunov's local theorem now.
+- (LYAP. INDIRECT) (for time invariant) $\subseteq$ THM EXPON. STAB. (INDIRECT) (for time-varying);
+
+Proviamo ad applicare il \underline{teorema DIRETTO di Lyapunov}. Quindi proviamo con una funzione di Lyapunov (utilizziamo una funzione quadratica):
+
+\[
+	V(x) = \frac{1}{2}(x_1^2 + x_2^2)
+\]
+(\underline{definita positiva}). $V(x)>0$. Ma l'origine è un punto di equilibrio? (Per $u=0$). $(0,0)\rightarrow (0,0)=(\dot{x}_1,\dot{x}_2) \implies$ Sì. In altri casi potrebbe non essere un punto di equilibrio l'origine! $\dot{V}(x) = x_1(3x_2) + x_2(-3x_1 -x_2^3(1-x_1^2)) = (\dots) = \underline{3x_1x_2 - 3x_1x_2} - \underline{x_2^4(1-x_1^2)}$. I primi termini sottolineati sono termini non definiti in segno, che fortunatamente questa volta si annullano. Il secondo termine sottolineato è in generale invece non definito in segno per via del fattore $(1-x_1^2)$. $x_2^4$ è sempre positivo. $(1-x_1^2)$ può invece essere $<> 0$. Per $x_2\neq 0$ è tutto negativo il secondo termine. Possiamo quindi trovare un intorno con la speranza di avere qualcosa di negativo! Trovare un INTORNO dell'origine! Partiamo arbitrariamente vicino dall'origine, ma dobbiamo partire da un INTORNO COMPLETO IPERSFERICO dell'origine!
+
+$(1-x_1^2) > 0\ \forall x_1\in(-1;+1), -x_2^4<0 \iff$ \newline Per $x_1\in(-1;+1)$, la $\dot{V}(x)$ + \underline{semidefinita negativa}! (\`E 0 anche in un altro punto differente dall'origine). 
+
+$\dot{V}(x)$ \underline{NEGATIVE SEMIDEFINITE} $\iff \dot{V}(x) \leq 0$. (Se ci fosse stata chiesta la "stabilità", è da intendersi in senso ampio, \underline{generale}!)
+Possiamo quindi applicare il criterio di Krasowskii:
+
+\[
+	S = \{\dot{V}(x) = 0\} = \{x\in\oball(0,1)\ |\ \dot{V}(x) = 0\} = \{x\in\oball(0,1)\ |\ -x_2^4(1-x_1^2) = 0\} \implies
+\]
+\[
+	S = \{x\ |\ x_1\in\R,\ x_2 = 0\} = \{x\ |\ x = \begin{bmatrix}k\\0\end{bmatrix}\} \implies x_2 = 0
+\]
+
+Andiamo a vedere cosa succede quando parto da qualsiasi altro punto.
+\{Se parto da $S$ resto in $S$?\}, \{$x_2(0) = 0\implies x_2(t) = 0\ \forall t$\}. $\implies \dot{x}_2(t) = 0$. Per essere delle traiettorie devono soddisfare identicamente l'equazione differenziale:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 0\\
+	&0 = -3x_1
+	\end{aligned}
+	\right. \implies\ 
+	\left\{
+	\begin{aligned}
+	&x_1(t) =\ constant\ = x_1(0)\\
+	&x_1(t) = x_1(0) = 0
+	\end{aligned}
+	\right.
+\]
+
+$\implies$ L'unico modo per partire in $S$ è quindi partire da $(0,0)$. Abbiamo applicato Krasowskii $\implies$ l'equilibrio origine è \underline{asintoticamente stabile};
+
+\item{ii)} Is the origin exponentially stable? If not, design a linear state feedback (LSF) control to exp. stabilize it.
+
+La $\dot{V}$ è definita negativa. Non possiamo applicare il THM EXPONENTIAL STABILITY (DIRECT):
+
+\[
+	\left\{
+	\begin{aligned}
+	&[c_1\norma{x}^a \leq V(x,t) \leq c_2\norma{x}^a]\\
+	&\dot{V}(x,t) \leq -c_3\norma{x}^a
+	\end{aligned}
+	\right.
+\]
+
+Andiamo quindi a calcolare:
+
+\[
+	a = \frac{\partial{f(0,0)}}{\partial{x}} = \begin{bmatrix}0&3\\-3+2x_1x_2^3&-3x_2^2(1-x_1^2)\end{bmatrix}|_{x_1=0,\ x_2=0} = \begin{bmatrix}0&3\\-3&0\end{bmatrix}
+\]
+
+Cosa posso dire sulla stabilità del linearizzato? Il POLINOMIO CARATTERISTICO è: $p(s) = s^2 + 9$. Le radici del polinomio sono: $s_{12} = \pm 3j$. Quindi posso dire che l'origine del sistema NL NON è sicuramente esponenzialmente stabile. $[\dot{z} = Az]$ è (MARGINALMENTE STABILE). Sulla stabilità semplice del NL non possiamo dire nulla. $\iff ([\dot{z}=Az] z=0\ NOT\ EXP.\ STABLE))$. $(x=0\ NOT\ EXP.\ STABLE)$ sia per il linearizzato che per il NL. $x=0$ stabile? (Non possiamo dire nulla).
+
+\`E possibile progettare un feedback che linearizzi il sistema? CHECK IF NOT. Il sistema è controllabile o almeno stabilizzabile? La $B$ del linearizzato è nientemeno che
+\[
+	B=\begin{bmatrix}0\\1\end{bmatrix} = \begin{bmatrix}\frac{\partial{f_1}}{\partial{u}}=0\\\frac{\partial{f_2}}{\partial{u}}=1\end{bmatrix}
+\]
+
+Se voglio mi calcolo la matrice di raggiungibilità $R$ \underline{del linearizzato} $\implies R=\begin{bmatrix}B&AB\end{bmatrix}$ ha \underline{RANGO PIENO} (sistema LINEARE completamente raggiungibile). (Si stabilizzi il linearizzato):
+
+\[
+	A+BK = \begin{bmatrix}0&3\\-3&0\end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix}\begin{bmatrix}K_1&K_2\end{bmatrix} = \begin{bmatrix}0&3\\-3+K_1&K_2\end{bmatrix}
+\]
+
+Si calcoli il \underline{polinomio caratteristico} e si impongano radici a parte reale strettamente negativa. (Autovalori a parte reale (strettamente) negativa). Feedback lineare sul linearizzato:
+
+$CHOOSE \begin{bmatrix}K_1&K_2\end{bmatrix}\ |$
+
+\[
+	v = K_1z_1 + K_2z_2,\ [z = Az + Bv] \implies
+\]
+\[
+	\implies u = (u_{eq}=0) + K_1(x_1-(x_{1e}=0)) + K_2(x_2-(x_{2e}=0))
+\]
+
+Ma nel nostro caso $x_{1e}=0=x_{2e}$, e quindi: $[u=K_1x_1+K_2x_2]$. Un criterio di test per la GEAS sarebbe mettere $u$ nel nostro ingresso ed utilizzare il metodo diretto di Lyapunov.
+
+\item{iii)} Is it possible to design a (nonlinear) state feedback to global exponentially stabilize $(x=0)$? (In generale un feedback dello stato è molto probabilmente non lineare).
+
+INNANZITUTTO, la nonlinearità appare solo nel sistema NL omogeneo. $[u=x_2^3(1-x_1^2)+w]$. Così cancelliamo la NL, ed il sistema diverrebbe:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 3x_2\\
+	&\dot{x}_2 = -3x_1 + w
+	\end{aligned}
+	\right.
+\]
+
+(sistema LTI). $\implies [w = K_1x_1 + K_2x_2]$; L'ingresso entra LINEARMENTE ed in concomitanza con la NON LINEARITA'. (Praticamente la stessa struttura, a meno del segno di $\dot{x}_2$ di $\dot{z}=Az$. Se non ci si fosse accorti di ciò, allora sarei partito con una più generale $V(x)$ LYAPUNOV CONTROL FUNCTION:
+
+\[
+	V(x) = \frac{1}{2}(x_1^2 + x_2^2) = \frac{1}{2}\norma{x}^2 \implies \dot{V}(x) = -x_2^4(1-x_1^2) +x_2u
+\]
+
+Questa $\dot{V}(x)$ ci porta termini misti dopo aver esploso $u$!
+Da qui forse lo si vede anche in maniera più immediata (after vary cancellations). In generale dobbiamo fare in modo che $\dot{V}(x,u) \leq -\norma{x}^2$.
+(Ancora più in generale) Avremo dovuto più generalmente scegliere:
+
+\[
+	V(x) = \underline{\frac{1}{2}\begin{bmatrix}x_1\\x_2\end{bmatrix}^\top\begin{bmatrix}P_{11}&P_{12}\\P_{21}&P_{22}\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}}
+\]
+
+\underline{SUSP}.
+
+\[
+	\dot{V}(x,u) = x_2(K_1x_1+K_2x_2) = x_1x_2K_1 + x_2^2K_2 = ?
+\]
+
+Abbiamo bisogno di qualcosa più in generale (\underline{RESUME}). Ma una volta cancellata la NON linearità il sistema diviene un qualcosa di lineare;
+
+\item{iv)} Il sistema è feedback linearizzabile? Is the system feedback linearizable? If so find an appropriate output to show it and find a change of coord. to put the system in normal form. In realtà esiste un metodo diretto per vedere se un sistema è I/O LINEARIZZABILE con \underline{grado relativo} $n$ e quindi \underline{feedback linearizzabile}.
+
+Se scelgo $y=x_1$ come output mi rendo conto che $\dot{y}=3x_2$, e non avendo ancora trovato l'ingresso possiamo procedere:
+
+\[
+	\left\{
+	\begin{aligned}
+	&y=x_1\\
+	&\dot{y}=3x_2
+	\end{aligned}
+	\right.\ \land\ \ddot{y}=3\dot{x}_2= 3(-3x_1 - x_2^3(1-x_1^2) + u);
+\]
+
+$\rho=n=2$ (GRADO RELATIVO pari all'ordine del sistema).
+
+\[
+	u = \frac{1}{3}(3x_1+x_2^3(1-x_1^2) +w)
+\]
+$\implies$ il sistema è quindi \underline{FEEDBACK LINEARIZZABILE}.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\xi_1 := x_1\\
+	&\xi_2 := 3x_2
+	\end{aligned}
+	\right. \implies\ 
+	\left\{
+	\begin{aligned}
+	&\dot{\xi}_1 = \xi_2\\
+	&\dot{\xi}_2 = w
+	\end{aligned}
+	\right.
+\]
+
+\item{v) (last part)}
+
+Consider the state $x_e = \begin{bmatrix}1\\0\end{bmatrix}$. Is it possible to \underline{find a control input} such that $x_e$ becomes an a.s. equilibrium point? Find all other states $x_a$ for which the same property holds.
+RES) Innanzitutto bisogna controllare se esista un ingresso che renda $x_e$ un equilibro del sistema. Possiamo procedere imponendo che $\begin{bmatrix}1&0\end{bmatrix}^\top$ sia un punto di equilibrio. Trovare un ingresso che me lo renda un equilibrio:
+
+\[
+	\dot{x}_1=\dot{x}_2=0 \implies
+	\left\{
+	\begin{aligned}
+	&0 = 0\\
+	&0 = -3+u
+	\end{aligned}
+	\right.
+\]
+$\implies (\underline{u := u_e=3})$. L'ingresso $u$ trovato, mi rende in questo caso il punto un punto di equilibrio. Ora vediamo se $(u_e=3)$, accoppiato con $x_e=\begin{bmatrix}1\\0\end{bmatrix}$ sia un eq. asintoticamente stabile. $u = u_e + (\underline{\dots})$, where the underlined part is something state feedback. $(x_e,u_e) = (\begin{bmatrix}1\\0\end{bmatrix}, 3)$; Scriverei innanzitutto il sistema equivalente avente come punto di equilibrio l'origine (oppure potrei benissimo stabilizzare il linearizzato):
+
+\[
+	A = \begin{bmatrix}0&3\\-3&0\end{bmatrix},\ B_e=\begin{bmatrix}0\\1\end{bmatrix}
+\]
+
+Mi viene esattamente la stessa $A$ di prima. La $B$ entra in maniera affine,. Se prendo il sistema $\dot{z}=Az + Bv_e$, prendendo lo stesso $v = K_1z_1+K_2z_2$, stabilizzo il linearizzato, e quindi il NL. 
+
+\[
+	u = u_e+K_1(x_1-x_{1e})+K_2(x_2-x_{2e})
+\]
+
+(adesso è più generale l'equilibrio); specializzando:
+
+\[
+	[u = 3 + K_1(x_1-1) + K_2x_2]
+\]
+
+Perchè vengono fuori la stessa $A$ e $B$? Perché l'unica non linearità presente non contribuisce al linearizzato. Ma non contribuisce nemmeno se $(x_1\neq 0)$, perché $(x_2=0)\ \forall x_1$.
+
+Se avessimo voluto utilizzare il teorema diretto di Lyapunov, avrei dovuto traslare il sistema affinché avesse l'origine come punto di equilibrio:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{x}_1 := x_1-x_{1e} = x_1-1\\
+	&\tilde{x}_2 := x_2-x_{2e} = x_2
+	\end{aligned}
+	\right. \implies\
+\]
+\[
+	\implies
+	\left\{
+	\begin{aligned}
+	&\dot{\tilde{x}}_1 = 3\tilde{x}_2\\
+	&\dot{\tilde{x}}_2 = -3(\tilde{x}_1+1) -\tilde{x}_2^3(1 - (\tilde{x}_1+1)^2) + 3 + \tilde{u},\ (\dots) \implies\\
+	&\dot{\tilde{x}}_2 = -3\tilde{x}-1 -3+3 -\tilde{x}_2^3(1 - (\tilde{x}_1+1)^2) + \tilde{u}
+	\end{aligned}
+	\right.
+\]
+where $u = u_e + \tilde{u} = 3+\tilde{u}$. A questo punto controllo e verifico che:
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{u} = 0\\
+	&\tilde{x} = 0
+	\end{aligned}
+	\right.
+\]
+sia un equilibrio per il sistema $\implies$
+
+\[
+	\left\{
+	\begin{aligned}
+	&\tilde{\dot{x}}_1 = 0\\
+	&\tilde{\dot{x}}_2 = 0
+	\end{aligned}
+	\right.
+\]
+
+coppia di equilibrio $\begin{bmatrix}\tilde{x}_1\\ \tilde{x}_2\end{bmatrix} = \begin{bmatrix}0\\0\end{bmatrix},\ \tilde{u} = 0$.
+Se prendiamo la $V(x)$ come l'abbiamo presa prima (forma quadratica pura), a meno della differenza. Se mettiamo $(\tilde{u}=0)$, non abbiamo direttamente un sistema A.S., perché il termine $-(\tilde{x}_1+1)^2$ rende la parte più esterna maggiore di 1 (instabilità per Chetaev).
+
+CLF (Control Lyapunov function):
+\[
+	\left\{
+	\begin{aligned}
+	&V(x) = \frac{1}{2}(\tilde{x}_1^2 + \tilde{x}_2^2)\\
+	&\dot{V}(x) = \dot{V}(\tilde{x},\tilde{u}) = (\dots)
+	\end{aligned}
+	\right.
+\]
+
+eventualmente con un controllo di $\tilde{u}$ in feedback linearizzazione possiamo eliminare la \underline{NON LINEARITA'} e stabilizzare il sistema.
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 3x_2\\
+	&\dot{x}_2 = -3x_1 -x_2^3(1-x_1^2)+u
+	\end{aligned}
+	\right.
+\]
+
+Trovare tutti gli altri stati che potevano essere equilibri A.S.
+Prima condizione: verificare che effettivamente questi stati siano di equilibrio. Porre l'equilibrio:
+
+\[
+	\left\{
+	\begin{aligned}
+	&0 = 3x_2 \implies x_{2e} = 0\\
+	&0 = -3x_1 + x_{2e}^2(1- x_{1e}^2) + u_e
+	\end{aligned}
+	\right.
+\]
+
+(Se la seconda componente è $\neq 0$, non è un equilibrio e non può neanche essere reso tale.
+$\begin{bmatrix}0\\1\end{bmatrix}$ ad esempio NON può mai esser reso un equilibrio.
+
+\end{itemize}
+
+\subsection{SISTEMA TEMPO-VARIANTE}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 3x_2 - (2-a\cos{t} - (1-a)(x_1^2+x_2^2))x_1^3\\
+	&\dot{x}_2 = -3x_1 - (2-a\cos{t} - (1-a)(x_1^2+x_2^2))x_2^3 + u
+	\end{aligned}
+	\right.
+\]
+(l'ingresso entra in $\dot{x}_2$). 
+
+Questo sistema ci è dato in forma parametrica $(a\in\R)$. Studiamo una proprietà al variare di $(a\in A)$. Teniamo conto di tutti i casi $(a\in A\subset\R)$. In alcuni esercizi vengono dati valori precisi di $a$. Studiare la stabilità nel dominio che ci viene chiesto. L'importante è coprire tutti i casi.
+
+\begin{itemize}
+\item{i)} Studiare l'esponenziale stabilità dell'origine per $(a=1)$. Poniamo quindi $a=1$ e riscriviamo adeguatamente il sistema:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = 3x_2 - (2-\cos{t})x_1^3\\
+	&\dot{x}_2 = -3x_1 - (2-\cos{t})x_2^3 + u
+	\end{aligned}
+	\right.
+\]
+
+Studiamo la linearizzazione e vediamo se il linearizzato (TV potenzialmente) è esponenzialmente stabile. Let's try it: $\dot{z}=Az = A(t)z$. (l'ingresso lo pongo $u=0$ (STABILITA' INTERNA)).
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{z}=Az\\
+	&A := A(t) = \frac{\partial{f(x,t)}}{\partial{x}}|_{x=0} = \begin{bmatrix}-3x_1^2(2-\cos{t})&3\\-3&-3(2-\cos{t})x_2^2\end{bmatrix}|_{x_1=0,\ x_2=0} = \begin{bmatrix}0&3\\-3&0\end{bmatrix}
+	\end{aligned}
+	\right.
+\]
+
+Siamo fortunati\dots abbiamo la linearizzazione che in generale dovrebbe esser TV, è invece T.I.! (SOLO IN QUESTO CASO $(A\neq A(t)$). Possiamo quindi utilizzare il criterio degli autovalori sul linearizzato $(\pm 3j)$. Quindi l'equilibrio del NL NON è esponenzialmente stabile (Anche per il LINEARIZZATO NON è esponenzialmente stabile ma MARGINALMENTE STABILE) (esattamente come prima, con le dovute attenzioni). Vediamo se è \{stabile, A.S., GS, UAS\}.
+
+\item{ii)} Con $a=0$ viene invece fuori un T.I.. Analyze it as an homework:
+
+\item{iii)} Study the uniform asymptotic stability of $(x=0)$. NON possiamo assolutamente applicare il teorema di Lyapunov, il quale è posto per i T.I. Possiamo invece utilizzare il \emph{THM UNIFORM ASYMPT. STAB.}
+
+\[
+	\left\{
+	\begin{aligned}
+	&W_1(x)\leq V(x,t) \leq W_2(x)\\
+	&\dot{V}(x,t)\leq -W_3(x)
+	\end{aligned}
+	\right.
+\]
+
+where $\{W_1>0\ \land\ W_2>0\ \land\ \{W_3>0\ \implies -W_3<0\}\} \neq \mathord{\cdot}(t)$. (Il fatto che la $V$ dipenda dal tempo è un grado di libertà!)
+
+\[
+	V(x) = \underline{\frac{1}{2}(x_1^2+x_2^2)} = W_1(x) = W_2(x) \implies (V(x,t)\neq\mathord{\cdot}(t)) = V(x)
+\]
+automaticamente soddisfatta la disuguaglianza $[W_1\leq V\leq W_2]$.
+
+\[
+	\dot{V}(x,t) = x_1(3x_2-(2-\cos{t})x_1^3) + x_2(-3x_1 - (2-\cos{(t)}x_2^3) = (\dots)
+\]
+\[
+	(\dots) = \underline{3x_1x_2-3x_1x_2} -(2-\cos{(t)}x_1^4 -(2-\cos{t})x_2^4 = -(2-\cos{t})(x_1^4+x_2^4)
+\]
+
+$\exists W_3(x) = \mathord{\cdot}(x)$. che mi rappresenta il valore meno negativo possibile per la $\dot{V}(x,t)$. $(2-\cos{t})$ deve essere il più grande possibile! Il valore meno negativo che può assumere $\dot{V}(x,t)$ è:
+
+\[
+	(\dots) = -(2-\cos{t})(x_1^4+x_2^4) \leq -(x_1^4-x_2^4) \iff [W_3(x)=(x_1^4-x_2^4)]
+\]
+	
+\end{itemize}
+
+\section{EXERCISE}
+
+\[
+	\min_{x\in\R}{x_2+1}
+\]
+subj. to: $(x-2)(x-4)\leq 0$ (vincolo di disuguaglianza quadratica).
+objfunc funzione quadratica.
+
+\begin{itemize}
+\item{1)} Find the feasible set, plot cost function; and find $\argmin$ and $\min$. In problemi più complessi varrebbe la pena considerare il duale. (calcoliamo il feasible set (SET AMMISSIBILE)). Spazio monodimensionale $\iff x\in\R$ variabile reale.
+Ci viene chiesto dopodiché di graficare le funzioni di costo ($f(x)$ semplicemente una PARABOLA). 
+
+\[
+	\left\{
+	\begin{aligned}
+	&x \leq 2\\
+	&x \geq 4
+	\end{aligned}
+	\right.
+\]
+$\leftarrow$ OUR DOMAIN. Il minimo globale ce l'abbiamo in 0, localmente $x^\star=2,\ f(x^\star =2)=5$; cominciamo invece a vedere le KKT's:
+
+\item Derive the KKT's CONDITION FOR THE PROBLEM (Come sono fatti i punti stazionari del problema).
+
+$x^2+1$  una funzione quadratica e convessa (derivata seconda positiva). \underline{Problema convesso} $\iff f''(x)>0$ (Strettamente CONVESSA). SLATER CONDITION soddisfatta $\implies$ Strong duality soddisfatta. Ma per adesso deriviamo le KKT.
+Scriviamo il Lagrangiano:
+
+\[
+	L(x,\mu) = x^2+1 + \mu(x-2)(x-4) = x^2+1+\mu x^2-6x\mu +8\mu = (1+\mu)x^2 - 6\mu x +8\mu +1
+\]
+
+Per imporre le KKT\dots 
+
+\[
+	\left\{
+	\begin{aligned}
+	&2(1+\mu^\star)x^\star -6\mu^\star = 0\\
+	&\mu^\star\geq 0
+	\end{aligned}
+	\right. \implies [x^\star = \frac{6\mu^\star}{2(1+\mu^\star)} = \frac{3\mu^\star}{(1+\mu^\star)}]
+\]
+
+KKT := $\mu^\star(x^\star-2)(x^\star-4) = 0$.
+Dopodiché dobbiamo anche soddisfare il vincolo ovviamente: $\implies (x^\star-2)(x^\star-4)\leq 0 \implies x^\star = \frac{3\mu^\star}{(1+\mu^\star)}$. (Cominciamo a trovare $x^\star$).
+
+\[
+	\mu^\star(\frac{3\mu^\star}{(1+\mu^\star)}-2)(\frac{3\mu^\star}{(1+\mu^\star)}-4) =
+\]
+\[
+	= (\frac{3\mu^\star -2 -2\mu^\star)}{(1+\mu^\star)})(\frac{3\mu^\star-4-4\mu^\star)}{(1+\mu^\star)}) = 0 =
+\]
+\[
+	= -\mu^\star(\frac{\mu^\star-2}{1+\mu^\star})(\frac{\mu^\star+4}{1+\mu^\star}) = 0
+\]
+
+Le possibilità perché valgano le KKT's sono che: 
+\begin{itemize}
+\item $\mu^\star=0 \implies x^\star = 0 \implies \emptyset$ \underline{NOT FEASIBLE!}
+\item $[\mu^\star\geq 0] = 2\ \land\ x^\star = \frac{6}{3} = 2$ è possibile!
+\item $\mu^\star=-4 \implies x=\frac{12}{3} = 4 \implies \emptyset \implies$ OVEREFFORT \underline{FAULT}! $\impliedby \underline{\mu^\star\geq 0}$;
+($\mu^\star\geq 0$, quindi $\mu^\star=-4$ andava già scartato).
+\end{itemize}
+
+$f(x^\star) = 5$! (Tornano i conti!) (Il vincolo è attivo) Abbiamo un solo \underline{punto stazionario} (vincolo convesso e funzione obiettivo strettamente convessa).
+
+\item Compute the dual function and its domain $D$. How do we compute the dual function?
+
+\[
+	q(\mu) = \inf_x{L(x,\mu)}
+\]
+
+So, let's go back to the Lagrangian:
+
+\[
+	q(\mu) = \inf_x{[(1+\mu)x^2-6\mu x +8\mu+1]}
+\]
+
+OK. Let' see what happens to $q(\mu)$. This is a quadratic function in $(x\in\R) \iff (ax^2+bx+c=y)$. Let's analyse the infimum of this qf. It depends on what we have that pre-multiplies $x^2$. 
+
+\begin{itemize}
+\item{CASE 1}: $\mu>-1 \implies (a>0)$ (convex quadratic function, strictly convex).
+\[
+	2(1+\mu)x^\star -6\mu = 0 \implies x(\mu) = \frac{3\mu}{(1+\mu)}
+\]
+
+This is exactly the $x^\star$ of the KKT's condition. What happens if:
+
+\item{CASE 2}: $\mu\leq -1 \implies 6x-7 = 0 \implies [x=\frac{7}{6}]$. $q(\mu)=-\infty$; (non dipende ovviamente da $x$);
+\end{itemize}
+
+The infimum is $-\infty$. Let's now take our domain: $D = \{\mu\in\R\ |\ \mu>-1\} \implies$
+
+\[
+	q(\mu) =
+	\left\{
+	\begin{aligned}
+	&-\infty,\quad \mu\leq -1\\
+	&\frac{(1+\mu)9\mu^2}{(1+\mu)^2} -6\mu\frac{3\mu}{1+\mu} + 1+8\mu,\quad \mu>0,\ \underline{\mu\in D},\ OTHERWISE
+	\end{aligned}
+	\right.
+\]
+
+Let's rewrite it: This is basically equal to:
+
+\[
+	q(\mu) =
+	\left\{
+	\begin{aligned}
+	&-\infty,\quad \mu\leq -1\\
+	&\frac{-9\mu^2}{1+\mu} + 1+8\mu
+	\end{aligned}
+	\right.
+\]
+
+Show that $q(\mu)$ is CONCAVE on its domain $D$. Is $D$ convex? Yes. $\mu>-1$ clearly convex. Semiretta $\mu>-1$ comunque preso. Calcoliamo la derivata prima e seconda per verificare che $q(\mu)$ è CONCAVA.
+Alla fine risulta che $q''(\mu) = -\frac{18}{(1+\mu)^3}$ Ora il dominio è $\mu>-1$ convesso, e la funzione nel suo dominio è \underline{CONCAVA}! $\iff q''(\mu)<0\ \forall\mu\in D$.
+
+\item WRITE the dual problem and solve it (compute the dual optimum and its optimum value):
+
+\[	
+	\max_{\mu\geq 0}{q(\mu)\geq 0} \implies \max_{\mu\geq 0}{[-\frac{9\mu^2}{1+\mu} +1+8\mu]}
+\]
+
+$D = \{\mu\in\R\ |\ \mu>-1\} \supset \{\mu\in\R\ |\ \mu\geq 0\} \implies$
+\[
+	\min{[\frac{9\mu^2}{1+\mu} -1-8\mu]}
+\]
+
+(Semplicemente scriviamo $\mu\geq 0$).
+A questo punto risolviamo il duale\dots
+Si imponga $q'(\mathord{\cdot})=0$. IMPORRE: $q'(\mu) = 0 \implies -9\mu^2 - 18\mu +8+16\mu+8\mu^2 = 0 \implies -\mu^2-2\mu+8 = 0 \implies \mu^2+2\mu-8 = 0\implies \mu_{1,2} = \{2,\ (-4\implies \emptyset)\}$. 
+Quindi si prenda ovviamente $[\mu^\star = 2]$, dato che $-4$ non soddisfa il vincolo.
+$\implies f(x^\star) = 5,\ \underline{x^\star = 2}$.
+
+$q(\mu^\star) = 5 \implies$ Il valore ottimo duale è esattamente il valore ottimo del primale (Vale la Strong duality); da qui possiamo anche ricavarci $\implies x(\mu^\star) = \frac{3\mu}{(1+\mu)} = \frac{6}{3} = 2$. \underline{VERIFIED}!, $f(x(\mu^\star) = x^\star) = 5 = q(\mu^\star)$.
+
+\end{itemize}
+
+Risolvendo il duale avremmo trovato che $\mu^\star$ è proprio il moltiplicatore di Lagrange. Quindi avremmo potuto procedere alla risoluzione del duale direttamente senza risolvere il primale. (Calcoliamo tutte le $x(\mu^\star)$ in generale $\mathord{\cdot}(\mu^\star) = x^\star$, lo ottengo dalle KKT's, in condizioni di stazionarietà (Potrebbe però accadere che di $x^\star$ non ne abbia di più). In generale
+
+\[
+	x(\mu^\star) = \argmin_x{L(x,\mu^\star)}
+\]
+
+(A questo punto, potrebbe essere però NON unico! (SUBGRADIENTE)). 
+Ma se la funzione è strettamente convessa, allora vi è Strong duality. Quindi se ne calcoliamo diverse $x^\star$, dobbiamo sempre scegliere quelle feasible per il nostro problema.
+
+\subsection{EXERCISE}
+
+\[
+	\min_{x_1,\ \dots,\ x_N}{\sum_{i=1}^n{x_i^2}}
+\]
+subj. to: $\underline{\sum_{i=1}^n{a_ix_i = b}}$ (vincolo di uguaglianza).
+
+Calcoliamo le CONDIZIONI DI STAZIONARIETA' del I ORDINE
+
+\begin{itemize}
+\item{Derive the FNC of optimality)}: FNC.
+
+\[	
+	L(x_1,\ \dots,\ x_N,\lambda) = \sum_{i=1}^n{x_i^2} + \lambda\sum_{i=1}^n{(a_ix_i-b)} = \sum_{i=1}^n{x_i(x_i+a_i\lambda)} - b\lambda
+\]
+
+Imporre che il gradiente di $L$ rispetto ad $x$ sia 0, $\nabla_x{L(x_1,\ \dots,\ x_n,\ \lambda)}= 0$; where $x := \begin{bmatrix}x_1\\ \vdots\\x_n\end{bmatrix}\in\R^n$.
+
+\[
+	\nabla_x{L(x_1,\ \dots,\ x_n,\ \lambda)} = (\begin{bmatrix}2x_1+a_1\lambda\\ \vdots\\2x_n+a_n\lambda\end{bmatrix}\in\R^n) = 0 \implies [x_i^\star = -\frac{a_i\lambda^\star}{2}]
+\]
+
+\dots sostituendo nel vincolo otteniamo:
+
+\[
+	\sum_{i=1}^n{a_i*-\frac{a_i\lambda^\star}{2}} = -\sum_{i=1}^n{\frac{a_i^2\lambda^\star}{2}} = b \implies -\frac{\lambda^\star}{2}\sum_{i=1}^n{a_i^2} = b \implies \lambda^\star = -\frac{2b}{\sum_{i=1}^n{a_i^2}}
+\]
+
+A questo punto possiamo ricavare:
+
+\[
+	[x_i^\star = -\frac{2b}{\sum_{i=1}^n{a_i^2}}*(-\frac{a_i}{2}) = \frac{a_i}{2}\frac{2b}{\sum_{i=1}^n{a_i^2}}]
+\]
+
+La funzione obiettivo è strettamente CONVESSA. Il vincolo è lineare. Non ci sorprende quindi che abbiamo trovato un \underline{SOLO MINIMO UNICO!} $(\iff \exists! \mathord{\cdot})$.
+
+\item Compute the dual function and its domain. Calcolando l'Hessiano ci viene fuori una $diag{:2:}$.
+
+\[
+	q(\lambda) = \inf_{x_1,\ \dots,\ x_n}{L(x_1,\ \dots,\ x_n,\ \lambda)} = \inf_x{[\sum_{i=1}^n{(x_1^2 + \lambda a_ix_i)} -\lambda b]}
+\]
+
+Siccome $L$ rispetto ad $x$ è una funzione convessa, possiamo semplicemente imporre il gradiente $= 0$. In questo caso, la funzione argomento dell'$\inf$ è quadratica $\forall\lambda$. Se calcoliamo:
+
+\[
+	\nabla^2_x{L(x_1,\ \dots,\ x_N,\ \lambda)} = \begin{bmatrix}2&0&\dots&0\\0&2&\dots&0\\ \vdots&\vdots&\vdots&\vdots\\0&\dots&2&0\\0&0&\dots&2\end{bmatrix}
+\]
+
+, e quindi questa è una funzione convessa (Non dobbiamo preoccuparci di avere $-\infty$ come $q(\lambda),\ \forall\lambda$).
+
+$D=\{\lambda\ |\ \lambda\in\R\}$, e come calcoliamo il minimo di $L$ rispetto ad $x$? Imponiamo semplicemente le condizioni di stazionarietà: 
+
+\[
+	x_i^\star(\lambda) = -\lambda\frac{a_i}{2}
+\]
+quello è la $x$ che minimizza il mio Lagrangiano per un lambda $\lambda$ fissato (fixed).
+A questo punto scriviamo la nostra $q(\lambda)$:
+
+\[
+	q(\lambda) = \sum_{i=1}^n{(\frac{\lambda^2a_i^2}{4} - \frac{\lambda^2a_i^2}{2})} -\lambda b =
+\]
+\[
+	= -\sum_{i=1}^n{\frac{\lambda^2a_i^2}{4}}- \lambda b = -\lambda(b + \lambda\sum_{i=1}^n{\frac{a_i^2}{4}})
+\]
+\[
+	q''(\lambda) = -\sum_{i=1}^n{\frac{a_i^2}{2}} < 0\ \forall\lambda
+\]
+(CONCAVE $q(\lambda)$).
+
+A questo punto, se vogliamo scrivere il problema duale:
+
+\[
+	\max_\lambda{[-\lambda^2\sum_{i=1}^n{\frac{a_i^2}{4}} -\lambda b]} \implies
+\]
+
+\[
+	\implies -2\lambda^{\star}\sum_{i=1}^n{\frac{a_i^2}{4}} -b = 0 \implies \lambda^\star = -\frac{2b}{\sum_{i=1}^n{a_i^2}}
+\]
+
+COMPUTE $q(\lambda^\star) = (\dots) = $ (FUNZIONE PRIMALE valutata in $\lambda^\star$) $\leftarrow$ VERIFY.
+
+\[
+	x_i(\lambda^\star) = -\lambda^\star\frac{a_i}{2} = \frac{a_ib}{\sum_{i=1}^n{a_i^2}} = x_i^\star
+\]
+(dalle condizioni di stazionarietà del I ordine (FNC)).
+
+\[
+	[x_i^\star = \frac{a_ib}{\sum_{i=1}^n{a_i^2}},\ \lambda^\star =  -\frac{2b}{\sum_{i=1}^n{a_i^2}}]
+\]
+
+\item Suppose we have a network of $n$ agents and at each agent is assigned $a_i$ and knows $b$ and $n$. Is it possible to compute $\lambda^\star$ and $x_i^\star$ in a distributed way? Let's suppose that the network of agents is an UNDIRECTED COMMUNICATION GRAPH. Supponiamo di sapere la struttura della soluzione $(\lambda^\star,\ x_i^\star)$. Il denominatore è un problema! Possiamo fare girare un algoritmo di CONSENSO:
+
+\[
+	z^{[i]}(t+1) = \sum_{j\in N_i\cup \{i\}}{f_{ij}z^{[i]}(t)}
+\]
+\[
+	z^{[i]}(t) \tendsto{} \frac{1}{n}\sum_{i=1}^n{z^{[i]}(0)}\ \forall t \iff
+\]
+
+$\iff$ Initialize $z^{[i]}(0) = a_i^2$, la mia $z^{[i]}(t)$ convergerà ad $[\frac{1}{n}\sum{a_i^2}]$.
+
+Quindi:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\lambda_i^\star(t) = -\frac{2b}{nz^{[i]}(t)}(t) \tendsto{} -\frac{2b}{\sum_{i=1}^n{a_i^2}}\\
+	&x_i^\star(t) = \frac{a_ib}{nz^{[i]}(t)} \tendsto{} \frac{ai_b}{\sum_{i=1}^n{a_i^2}}
+	\end{aligned}
+	\right.
+\]
+
+\`E importante avere un grafo INDIRETTO o BILANCIATO, altrimenti avremo sì CONSENSO, ma NON alla MEDIA!
+
+\end{itemize}
+
+\subsection{EXERCISE}
+
+\[
+	\min_{x_1,\ \dots,\ x_n}{-\sum_{i=1}^n{\log{(\alpha_i+x_i)}}}
+\]
+subj. to: $x_i\geq 0\implies -x_i\leq 0\ \forall i\in\{1,\ \dots,\ n\},\ \sum_{i=1}^n{x_i} = 1$. RISORSE: La sommatoria delle risorse $(x_i\geq 0)$ da allocare è finita. Where $(\alpha_i>0)$ assegnato (problema interessante). 
+
+\`E un problema che ci sta chiedendo quanto abbiamo bisogno di allocare della banda a dei CANALI, e vogliamo massimizzare la \underline{capacità totale} dei canali di trasmissione che abbiamo a disposizione (\underline{trade off}). Problema di ottimizzazione VINCOLATA. Vincoli di disuguaglianza e uguaglianza:
+
+\[
+	L(x_1,\ \dots,\ x_n,\ \lambda,\ \mu_1,\ \dots,\ \mu_n) = \sum_{i=1}^n{[-\log(\alpha_i+x_i) - \mu_ix_i]} + \lambda\sum_{i=1}^n{x_i}-1
+\]
+
+Scriviamoci la KKT:
+
+$\nabla_x{L} = 0\in\R^n$ ($n$ componenti). La capacità i-esima è:
+
+\[
+	[-\frac{1}{\alpha_i+x_i^\star} -\lambda_i^\star + \lambda^\star] = 0,\ \mu_i^\star\geq 0
+\]
+
+KKT: $\mu_i^\star x_i^\star = 0$ (COMPLEMENTARY SLACKS). Ovviamente a questo dobbiamo aggiungere i vincoli:
+
+\[
+	[x_i^\star\geq 0,\ \sum_{i=1}^n{x_i^\star} = 1] \implies \mu_i^\star = [\lambda^\star -\frac{1}{\alpha_i+x_i^\star}]
+\]
+
+A questo punto, utilizziamo i \underline{complementary slacks}:
+
+\[
+	(\lambda^\star - \frac{1}{\alpha_i+x_i^\star})x_i^\star = 0
+\]
+
+\begin{itemize}
+\item{CASE 1}: Vediamo il caso in cui $x_i^\star > 0 \implies \underline{x_i^\star > 0}$
+
+\[
+	\mu^\star = \lambda^\star - \frac{1}{\alpha_i+x_i} \implies \lambda^\star \geq \frac{1}{\alpha_i+x_i} \implies \alpha_i+x_i^\star \geq \frac{1}{\lambda}
+\]
+$[x_i^\star\geq \frac{1}{\lambda^\star} - \alpha_i]$. Cosa succede quando $x_i^\star=0$?
+
+\item{CASE 2}: For $x_i^\star=0$, 
+\[
+	\frac{1}{\lambda^\star}\leq\alpha_i\implies\frac{1}{\lambda}-\alpha_i\leq 0
+\]
+$[\lambda^\star\geq \frac{1}{\alpha_i}]$. For $\lambda_i^\star\leq \frac{1}{\alpha_i} \implies \frac{1}{\lambda^\star}-\alpha_i>0 \implies x_i^\star > 0$ (REVERSE ENGINEERING) $\implies$ Una possibilità è che
+
+\[
+	\left\{
+	\begin{aligned}
+	&0,\quad \lambda^\star\geq\frac{1}{\alpha_i}\\
+	&(\frac{1}{\lambda^\star})-\alpha_i,\quad\ otherwise
+	\end{aligned}
+	\right.
+\]
+
+WATER FILLING PROBLEM (WFP). Il RESIDUO è $x_i^\star$.
+\end{itemize}
+
+\section{EXERCISE}
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = -\alpha x_1 - (1-\alpha)x_1^3 + (x_1^2+x_2^2-1)u\\
+	&\dot{x}_2 = -x_2 + (x_1^2 + x_2^2-1)u\\
+	&y = x_1
+	\end{aligned}
+	\right.
+\]
+
+$(a\in\R)$ constant parameter.
+
+\begin{itemize}
+\item{1)} Study the internal stability of the origin for $(\alpha\geq 0)$.
+
+Let's use our usual Lyapunov function: $V(x) = \frac{1}{2}(x_1^2+x_2^2)$:
+
+\[
+	\dot{V}(x) = x_1(\alpha x_1 -(1-\alpha)x_1^3) +x_2(-x_2) = -\alpha x_1^2 - (1-\alpha)x_1^4 - x_2^2
+\]
+
+If $\alpha = 0$, we have $\dot{V}(x) = -(x_1^4+x_2^2) < 0$ (negativa definita). And since $V(x)$ is RADIALLY UNBOUNDED $\implies (x=0)$ is GLOBALLY ASYMPTOTICALLY STABLE (GAS).
+
+$\alpha>0$, the problem is the term $-(1-\alpha)x_1^4$.
+
+\[
+	\left\{
+	\begin{aligned}
+	&\alpha<1\quad term\ strictly\ negative;\\
+	&\alpha=1\quad \emptyset\\
+	&\alpha>1\quad this\ becomes\ positive;
+	\end{aligned}
+	\right.
+\]
+
+We have to consider three different cases. Let's consider $\alpha$ to be $0<\alpha\leq 1$. If $\alpha\in(0,1]$, the $\dot{V}(x)<0$ (negative definite). $\dot{V}(x) <0$ means (NEG. DEF.) notation. $\dot{V}(x)<0$ ND as negative definite $\forall x\in\R^2$. We know $\dot{V}(x=0) = 0$ + $V$ is radially unbounded $\implies (x=0)$ GAS.
+
+$\alpha>1 \implies -\alpha x_1^2$ is always negative, $-(1-\alpha)x_1^4$ is always positive When we get close to the origin we have a different behavior:
+
+\[
+	\dot{V}(x) = -x_1^2(\underline{\alpha +(\underline{1-\alpha})x_1^2)} - x_2^2
+\]
+($(1-\alpha)$ is a negative term). Try to find a neighborhood of $x_1$ (ball) where the underlined term in the parenthesis is always positive (because the $-$ in front of it).
+We have to find some ball in which $(1-\alpha)x_1^2$ is less than $\alpha$:
+
+\[
+	\alpha + (1-\alpha)x_1^2>0 \implies \alpha>-(1-\alpha)x_1^2 \implies x_1^2 < -\frac{\alpha}{1-\alpha} = \frac{\alpha}{\alpha-1}
+\]
+
+$[x_1^2 < \frac{\alpha}{\alpha-1}] \implies r := \sqrt{\frac{\alpha}{\alpha-1}}$.
+
+For $\alpha>1$, $\dot{V}(x)$ ND for $x\in\oball(0,\sqrt{\frac{\alpha}{\alpha-1}}) \implies x=0$ A.S.
+
+Clearly we could take a larger set that includes that ball. This ball doesn't include $\sqrt{\frac{\alpha}{\alpha-1}}$, of course. (Stabilità alla Lyapunov):
+
+\[
+	\forall\epsilon>0\ \exists\delta>0\ |\ \underline{\forall x_0\in\oball(0,\delta)}
+\]
+
+dobbiamo poter prendere liberamente $x_\epsilon$ in un intorno dell'origine! Su $x_2$ potrei anche allargare. (Notice that\dots) $x_2$ è un termine positivo. Al limite potrei anche prendere l'intero asse per $x_2$. Dato che stiamo parlando di Stabilità Locale, allora comunque ci possiamo fermare. Il Set deve essere un INTORNO COMPLETO DELL'ORIGINE. A Ball containing $(x=0)$!
+
+E se nel compito ci avesse chiesto di studiare la stabilità per $\alpha<0 \implies$ il termine $-\alpha x_1^2$ è \underline{sempre positivo}, mentre per $-(1-\alpha)x_1^4$ bisogna controllare. $-(1-\alpha)x_1^4$ è sempre negativo! $\underline{\forall \alpha<0}$. (Analisi di questo caso).
+
+\item{2)} Study the exp. stability for $\alpha\geq 0$. Possiamo utilizzare il metodo indiretto di Lyapunov. Consider the linearization of the system:
+
+\[
+	\begin{bmatrix}\dot{z}_1\\ \dot{z}_2\end{bmatrix} = A\begin{bmatrix}x_1\\x_2\end{bmatrix}
+\]
+
+$A := \frac{\partial{f(x)}}{\partial{x}}|_{x=0}$.
+
+\[
+	A = \begin{bmatrix}-\alpha-3x_1^2(1-\alpha)&0\\0&-1\end{bmatrix}|_{x_1=0=x_2} = \begin{bmatrix}-\alpha&0\\0&-1\end{bmatrix}
+\]
+
+$-\alpha(-1) = \det{A}$.
+$-\alpha < 0 \implies \alpha>0 \implies$ then we have: $\{\lambda_1=-\alpha<0\ \land\ \lambda_2=-1<0\} \implies$ the linearization is GES (globally) $\implies (x=0)$ LES (locally) for the nonlinear system.
+
+$\alpha=0 \implies \{\lambda_1=0\ \land\ \lambda_2=-1\} \implies$ In this case the Linearization is NOT exponentially stable $\implies (\lambda=0)$ is NOT EXPONENTIALLY STABLE. We've said a theorem that stated\dots the equilibrium of a NL system is exp. stable iff the linearization is exponentially stable.
+
+$x=0$ could be asymptotically stable or could also be unstable.
+
+For $\alpha>0$ the system is asymptotically stable (locally). Se vogliamo analizzare cosa succede alla stabilità del non lineare, come minimo dovrei considerare un metodo diretto di Lyapunov per $\alpha=0$. Comunque i risultati basati sulla linearizzazione forniscono solo informazioni LOCALI e non GLOBALI! Se $\exists\lambda_i>0$, posso concludere l'INSTABILITA' e del linearizzato e del NL.
+
+Torniamo al caso di prima. Supponiamo di studiare la stabilità dell'origine per $\alpha<0$. Il LINEARIZZATO è INSTABILE (esponenzialmente quindi anche il NL lo è (INSTABILE)). Analizziamo l'INSTABILITA' (criterio di Chetaev) (Condizione sufficiente) $\alpha<0$. Presa una zona ove la $V(x)$ è definita positiva $(\iff V(x)>0)$.
+Si consideri il set:
+
+\[
+	U = \{points\ \in\oball(0,r)\ |\ \dot{V}(x) > 0\}
+\]
+
+set di punti (arbitrariamente vicini all'origine). ($r>0$ può essere arbitrario). Se $\dot{V}(x)>0$ in questo set risultante (intersezione), l'equilibrio è INSTABILE.
+
+Torniamo all'espressione della:
+
+\[
+	[\dot{V}(x) = x_1^2(-\alpha -(1-\alpha)x_1^2) - x_2^2]
+\]
+
+Il termine
+\[
+	-\alpha-(1-\alpha)x_1^2 > 0 \implies -\alpha>(1-\alpha)x_1^2 \implies [x_1^2 < \frac{\alpha}{\alpha-1}]
+\]
+
+Il termine $-x_2^2$ è sempre negativo, il termine che pre-moltiplica $x_1^2$ è sempre positivo. Se $r=\sqrt{\frac{\alpha}{\alpha-1}}$. Se mettiamo $(x_2=0) \implies \{x\in\R^2\ |\ x_2=0\ \land\ x_1\in(-\bar{r},+\bar{r})\}$ (insieme di punti arbitrariamente vicini all'origine). L'insieme $U$ che stiamo cercando, è l'intersezione tra la palla $\cball(0,\bar{r})$ ed il segmento. Ivi abbiamo $V$ e $\dot{V}$ \underline{positiva}, ne concludiamo l'INSTABILITA' in questo set. Per Cheataev possiamo quindi dedurre che l'equilibrio $(x=0)$ è instabile. PER CHETAEV avrei anche potuto prendere il semisegmento nell'ottante positivo.
+
+Il sistema, se $u=0$, è fatto da due sistemi completamente DISACCOPPIATI tra di loro! L'evoluzione (dinamiche) è indipendente:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}_1 = \underline{-\alpha x_1 - (1-\alpha)x_1^3}\\
+	&\underline{\dot{x}_2 = -x_2}
+	\end{aligned}
+	\right.
+\]
+
+$u=0 \implies$ SEPCOORDS. La seconda equazione sottolineata è (LIN. ESP. STABILE), mentre la parte sottolineata della prima equazione porta a differenti comportamenti di stabilità del primo sistema al variare di $\alpha$. (Non esponenzialmente però).
+
+Per l'instabilità, tutto torna. L'unico modo per far vedere che vado via nell'origine è porre $(x_2=0)$ e far divergere l'origine. Il comportamento debba valere in un intorno dell'origine! Mi allontano dall'origine, stando sulla retta! Come se avessimo due agenti indipendenti tra di loro.
+
+\item{iii)} Let $\alpha$ be known. Is the system I/O LINEARIZABLE? If so, transform it into normal form and specific the region where the transf. is valid (Supponiamo di conoscere $\alpha$; (Richiesta trasformazione in forma normale)
+
+\[
+	\left\{
+	\begin{aligned}
+	&y = x_1\\
+	&\dot{y} = \dot{x}_1 = -\alpha x_1 -(1-\alpha)x_1^3 + (x_1^2+x_2^2-1)u
+	\end{aligned}
+	\right.
+\]
+
+A questo punto, nella $\dot{x}_1$ compare già l'ingresso $\iff (\rho=1<2=n)$. Il sistema è quindi I/O LINEARIZZABILE. Questo però NON è l'USCITA che serve per renderlo FEEDBACK LINEARIZZABILE. Potrebbe infatti essere feedback linearizzabile:
+
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = f_0(\eta,\xi)\\
+	&\dot{\xi} = A_c\xi + B_cw
+	\end{aligned}
+	\right.
+\]
+
+(where $A_c$ è $A$ in forma CANONICA, e $B_c$ è $B$ in forma CANONICA).
+Poniamo $\{\xi := x_1 \implies \dot{\xi} = w\}$. Trovare a questo punto: $\eta = \phi(x)$, e deve soddisfare: $[\frac{d\phi(x)}{dx}g(x) = 0]$:
+
+\[
+	\begin{bmatrix}\frac{\partial{\phi(x)}}{\partial{x_1}}&\frac{\partial{\phi(x)}}{\partial{x_2}}\end{bmatrix}(x_1^2+x_2^2-1)\begin{bmatrix}1\\1\end{bmatrix} = 0,\ \phi(0)=0
+\]
+\[
+	\impliedby g(x) = [x_1^2+x_2^2-1]\begin{bmatrix}1\\1\end{bmatrix}
+\]
+
+Il set da considerare \underline{deve essere INVERTIBILE}! Diffeomorfismo $x=\phi(\eta,\delta)$
+(MAPPA dev'essere invertibile). $\eta := x_1-x_2$.
+
+\[
+	u = \frac{1}{(x_1^2+x_2^2-1)}(\alpha x_1 + (1-\alpha)x_1^3 + w)
+\]
+$\implies \dot{y}=w \implies \dot{\xi} = w$. (INGRESSO USCITA LINEARE) che mi interessa. Per calcolare la forma normale,
+
+\[
+	\dot{\eta} = \dot{x}_1-\dot{x}_2 = -\alpha x_1 - (1-\alpha)x_1^3 + x_2 =
+\]
+\[
+	= -\alpha\xi -(1-\alpha)\xi^3 +(\xi-\eta) \impliedby
+\]
+\[
+	\impliedby\ 
+	\left\{
+	\begin{aligned}
+	&x_1 = \xi\\
+	&x_2 = \xi-\eta
+	\end{aligned}
+	\right.
+\]
+
+Analizzando la zero-dinamica, otteniamo che il sistema è a FASE MINIMA:
+
+\[	
+	\left\{
+	\begin{aligned}
+	&\dot{\eta} = -\alpha\xi -(1-\alpha)\xi^3 +(\xi-\eta)\\
+	&\dot{\xi} = w
+	\end{aligned}
+	\right.
+\]
+
+$\dot{\eta} = f_0(\eta,0) = -\eta$ ZERO DYN.
+
+\end{itemize}
+
+\section{EXERCISE}
+
+Supponiamo di avere una rete a grado di comunicazione fisso:
+
+\begin{itemize}
+\item{1)} Write the adjacency matrix and the \underline{in-degree} Laplacian (quello che utilizziamo per il nostro \underline{protocollo di consenso}) (convenzioni storiche della teoria dei grafi).
+
+\[
+	A = \underline{\begin{bmatrix}0&1&0\\0&0&1\\1&1&0\end{bmatrix}} \in\R^{3\times 3}
+\]
+questa è la nostra matrice di adiacenza. (\underline{Grafo non pesato}), (Senza self-edge $\implies 0$ \underline{sulla diagonale}).
+
+\[
+	\left\{
+	\begin{aligned}
+	&L = L_{OUT} = D_{OUT} - A\\
+	&L_{OUT} = D_{OUT} - A^\top
+	\end{aligned}
+	\right.
+\]
+
+(Se invertiamo gli edge, $D_{IN} = D_{OUT}',\ A=A'^\top$). Equivalente a costruire un grafo ove invertiamo gli edge e scriviamo $L=L_{OUT}$.
+
+\[
+	D_{IN} = \begin{bmatrix}1&0&0\\0&2&0\\0&0&1\end{bmatrix}
+\]
+(ovviamente la matrice è \underline{diagonale}).
+
+\[
+	L_{IN} = D_{IN} - A^\top = \begin{bmatrix}1&0&0\\0&2&0\\0&0&1\end{bmatrix} - 
+	\begin{bmatrix}0&0&1\\1&0&1\\0&1&0\end{bmatrix} = \begin{bmatrix}1&0&-1\\-1&2&-1\\0&-1&1\end{bmatrix}
+\]
+
+Metodo diretto per calcolare $L_{IN}$: si costruisca il grafo invertito con le grandezze $\mathord{\cdot}'$ e si scriva $L_{IN} = L_{OUT}'$.
+
+\item{2)} Design a cont. time consensus law (legge di controllo aggregata) $\rightarrow \dot{x} = -L_{in}x$, where: $x := \begin{bmatrix}x^{[1]}\\x^{[2]}\\x^{[3]}\end{bmatrix}$.
+
+\[	
+	\underline{\dot{x}^{[i]} = \sum_{j\in N_i^{IN}}{(x^{[j]}-x^{[i]})}},
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\dot{x}^{[1]} = (x^{[3]} - x^{[1]})\\
+	&\dot{x}^{[2]} = (x^{[1]} - x^{[2]}) + (x^{[3]} - x^{[2]})\\
+	&\dot{x}^{[3]} = (x^{[2]} - x^{[3]})
+	\end{aligned}
+	\right.
+\]
+
+\item{3)} Prove that consensus is reached and compute the consensus value for:
+
+\[
+	[x^{[i]}(0) = 1,\ x^{[2]}(0) = 2,\ x^{[3]}(0) = 3]
+\]
+
+(Quindi dimostriamo che questo protocollo raggiunge consenso).
+Questo protocollo raggiunge consenso perchè il grado è (\underline{Strongly Connected}). Abbiamo visto un teorema che ci fornsice l'equivalente tra una matrice del grafo e la forte connettività del grafo.
+
+\begin{defn}
+Ogni nodo è raggiungibile da tutti gli altri nodi.
+\end{defn}
+
+\begin{proof}
+\[
+	\left\{
+	\begin{aligned}
+	&1\ IS\ REACHABLE\ FROM:\ [2\ UNDIR,\ 3\ DIR]\\
+	&2\ IS\ REACHABLE\ FROM:\ [1\ DIR,\ ,3\ DIR]\\
+	&3\ IS\ REACHABLE\ FROM:\ [2\ DIR,\ 1\ UNDIR]
+	\end{aligned}
+	\right.
+\]
+
+Verificata la proprietà direttamente.
+\end{proof}
+
+$\implies G$ is strongly connected thus consensus is reched. $\alpha = \frac{\gamma^\top x(0)}{\gamma^\top\mathbf{1}}$. ($\gamma$ autovettore sinistro relativo all'autovalore 0 del LAPLACIANO). Imponiamo quindi che valga: $\underline{\gamma^\top L = 0} \iff \gamma^\top L = 0\gamma$. Andiamo nel nostro:
+
+\[
+	L_{IN} = \begin{bmatrix}1&0&-1\\-1&2&-1\\0&-1&1\end{bmatrix}
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&\gamma_1-\gamma_2 = 0\\
+	&2\gamma_2 - \gamma_3 = 0\\
+	&-\gamma_1 - \gamma_2 + \gamma_3 = 0
+	\end{aligned}
+	\right.
+\]
+$\implies \gamma_2=\gamma_1,\ \gamma_3=2\gamma_1 \implies \gamma = \rho\begin{bmatrix}1\\1\\2\end{bmatrix}$;
+
+Il valore di consenso è quindi:
+
+\[
+	[\alpha = \frac{x^{[1]}(0) + x^{[2]}(0) + 2x^{[3]}(0)}{4}] = (\frac{9}{4})
+\]
+
+$\mathbf{1}$ è l'autovettore destro di $L_{IN}$. $(\iff \begin{bmatrix}1\\1\\1\end{bmatrix} \in\R^{3\times 1})$.
+
+\end{itemize}
+
+\section{EXERCISE}
+
+\[
+	\min_{x_1,\ x_2,\ x_3}{(x_1-\alpha_1)^2 + (x_2-\alpha_2)^2 + (x_3-\alpha_3)^2}
+\]
+subj. to: $\{x_1=x_2\ \land\ x_2=x_1\ \land\ x_2=x_3\ \land\ x_3=x_2\}$.
+
+Ci possiamo chiedere di calcolare la FNC del I ordine. Supponiamo $\alpha_1,\ \alpha_2,\ \alpha_3$ dei valori dati $\iff \alpha_1,\alpha_2,\alpha_3\in\R$. Considerazione: la funzione di costo è QUADRATICA (Hessiano matrice diagonale) \underline{CONVESSA}. Vincolo di uguaglianza lineare $\implies$ (PROBLEMA CONVESSO).
+
+\[
+	\left\{
+	\begin{aligned}
+	&x_1-x_2=0\\
+	&x_2-x_1=0\\
+	&x_2-x_3=0\\
+	&x_3-x_2=0
+	\end{aligned}
+	\right.
+\]
+
+FNC = SNC. funzione quadratica convessa + vincolo lineare $\implies$ ci aspettiamo di trovare un solo minimo globale.
+
+\[
+	L(x_1,x_2,x_3,\lambda=\lambda_1,\lambda_2,\lambda_3,\lambda_4) = [(x_1-\alpha1)^2 + (x_2-\alpha_2)^2 + (x_3-\alpha_3)^2 +
+\]
+\[
+	+ \lambda_1(x_1-x_2) + \lambda_2(x_2-x_1) + \lambda_3(x_2-x_3) + \lambda_4(x_3-x_2)]
+\]
+
+Ci calcoliamo il gradiente, \underline{lo imponiamo uguale a 0} e ci vengono:
+
+\[
+	x^\star = \begin{bmatrix}x_1^\star\\x_2^\star\\x_3^\star\end{bmatrix},\ \lambda^\star = \begin{bmatrix}\vdots\\ \vdots\\ \vdots\end{bmatrix}
+\]
+
+$\iff \nabla_x{L(x_1,x_2,x_3,\lambda)} = 0$.
+
+Supponiamo che ci chieda se è possibile risolvere questo problema di ottimizzazione in maniera distribuita. L'idea dell'approccio distribuito è che: avendo un grafo con determinate caratteristiche, devo poi risolvere un problema di ottimizzazione.
+Ma ci accorgiamo che i VINCOLI sono ridondanti!
+
+\[
+	L(x_1,x_2,x_3,\lambda_{12},\lambda_{21},\lambda_{23},\lambda_{32}) = (x_1-\alpha_1)^2 + (x_2-\alpha_2)^2 + (x_3-\alpha_3)^2 +
+\]
+\[
+	+ \lambda_{12}(x_1-x_2) + \lambda_{21}(x_2-x_1) + \lambda_{23}(x_2-x_3) + \lambda_{32}(x_3-x_2)]
+\]
+
+era lo schema che avevamo trovato fuori per risolvere un problema di ottimizzazione in maniera distribuita. Il DUAL DECOMPOSITION richiede $\rightarrow$ un (\underline{grafo indiretto}). Possiamo utilizzare il \underline{DISTRIBUTED DUAL ASCENT} o un \underline{DUAL DECOMPOSITION} e risolviamo in maniera distribuita il problema utilizzando quel grafo. Ma non necessariamente dobbiamo utilizzare questo grafo! \`E un grafo tutto pronto.
+
+\[
+	\min_{x\in\R}{(x-\alpha_1)^2 + (x-\alpha_2)^2 + (x-\alpha_3)^2}
+\]
+
+(problema completamente equivalente) ($\iff x$ è la variabile di ottimizzazione). Qualsiasi grafo indiretto CONNESSO andrebbe bene, purché compatibile con la struttura del nuovo grafo.
+
+Struttura per l'algoritmo di \underline{dual decomposition} distribuita.

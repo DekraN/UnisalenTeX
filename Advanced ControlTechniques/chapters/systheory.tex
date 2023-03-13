@@ -1,0 +1,807 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Systems' Theory}
+\label{cap:systheory}
+%************************************************\\
+
+\section{Systems' Classes}
+
+We will identify a class of systems. The SETUP we will play with is the so-called State-Space FRAMEWORK. 
+
+\begin{equation}
+\left\{
+\begin{aligned}
+& CONTINUOS-TIME\ SYSTEMS \\
+& DISCRETE-TIME\ SYSTEMS \\
+\end{aligned} \\
+\right.
+\end{equation}
+
+, where for the CONTINUOS-TIME SYSTEMS we have this settings:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+ODE:\ &\dot{x}(t) &=\ f(x(t),u(t),t) \\
+OUTPUT:\ &y(t) &=\ h(x(t),u(t),t) \\
+\end{aligned}
+\right.
+\end{equation}
+
+, with $\underline{t \in \R}$, typically with $(t \geq t_0)$ (in some situation we could have $t < 0$), $\ x(t) \in \R^n$ as the STATE OF THE SYSTEM, $u(t) \in \R^m$ as the INPUT OF THE SYSTEM, $y(t) \in \R^p$ as the OUTPUT OF THE SYSTEM, and let $x(t_0) = x_0$ be the initial condition at the initial time instant $t_0$.
+Typically we have UNDER-ACTUATED systems, in the sense that $m \leq n$, as there are also OVER-ACTUATED systems: $m > n$. The input is something that can modify the behavior of the system. $u := DECISION\ VARIABLE$. $x(t)$ is instead something that will be used to describe the behavior of the system. Concerning output, e could have two types:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+& MEASURED\ OUTPUTS \\
+& PERFORMANCE\ OUTPUTS \\
+\end{aligned} 
+\right.
+\end{equation}
+
+\begin{itemize}
+
+\item MEASURED OUTPUTS: When describing a system of state, it is possible that we may not observe some variables. For example, suppose a quadrotor system:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+P_x,\ P_y,\ P_z,&\ \dot{P_x},\ \dot{P_y},\ \dot{P_z}\\
+(\Phi,\ \theta,\ \psi),&\ (\omega_1\ \omega_2\ \omega_3)
+\end{aligned} 
+\right.
+\end{equation}
+
+Suppose the quadrotor is equipped with a giroscope. $(\underline{\omega_1,\ \omega_2,\ \omega_3})$ are available. It may have sense to measure $P_z$ (altitude), but some output cannot be measured without a sensor. Something obtained by a sensor is a  MEASURED OUTPUT;
+
+\item PERFORMANCE OUTPUTS: Assign a desired behavior. We want, for example, the quadrotor to do a complete flip. There is a part of the state to which we want to ASSIGN A DESIRED BEHAVIOR. In this example, it may be the angular part of the state.
+
+\end{itemize}
+
+Concerning inputs, we can also classify them into two types:
+
+\begin{itemize}
+
+\item CONTROL INPUT, that will be able to change behavior of the system (ex. the state) if we have an actuator;
+\item DISTURBANCE: we can't affect it and typically we cannot measure it. We have to take it into account when designing a control law.
+
+\end{itemize}
+
+
+Concerning the design of a control law... what is $\{f(\mathord{\cdot}),\ h(\mathord{\cdot})\}\ =\ ??$. Let's introduce some notions:
+
+\subsubsection{Continuous Time Sytems}
+
+\underline{ODE} stands for (Ordinary Differential Equation). Typically it is of the FIRST ORDER because we have only one derivative of the state vector. This is a general case, because we can always reconduct ourself in this case; Let: $\dot{x}(t) := \frac{d(x)}{dt}$. In the general case we have:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+\dot{x}(t) &= f(x(t), u(t), t) : \R^n\times\R^m\times\R \mapsto \R^n\\
+y(t) &= h(x(t), u(t), t) : \R^n\times\R^m\times\R \mapsto \R^p
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0
+\end{equation}
+
+Now the question is.. what kind of properties these functions we'll need? 
+The more assumption we put to $f$, the easier will be the design of the control law of the actual system; in fact it should not be TOO MUCH SIMPLE, otherwise the design process will be difficult.
+
+\subsubsection{Discrete Time Systems}
+
+In this case, the time is an integer variable: $(t \in \Z) \geq t_0$ (typically we will play with $\N = \Z^+$) is some sort of time, but clearly there are some differences! 
+
+\begin{equation}
+\left\{
+\begin{aligned}
+x(t+1) &= f(x(t), u(t), t) : \R^n\times\R^m\times\R \mapsto \R^n; \\
+y(t) &= h(x(t), u(t), t) : \R^n\times\R^m\times\R \mapsto \R^p;
+\end{aligned} 
+\right.
+\\
+\quad with\ x(t_0) = x_0
+\end{equation}
+
+
+\underline{FDE} stands for (Finite Difference Equation). Why it is important to point out this in discrete time system? 
+
+\begin{itemize}
+\item There could be dynamical systems like the CLOCK (ex. the CLOCK of our machine), which are intrinsically DISCRETE;
+\item It is more convenient to discretize an ODE with a FDE, actually converting a continuos-time system into a discrete time one;
+\item Algorithms are discrete-time systems (ex. Optimization Problems Solving). So we will actually work treating them a algorithm to study for example its CONVERGENCE.
+\end{itemize}
+
+This is the framework. Obviously it doesn't cover all type of actual systems. (Complex multi-agent systems, Hybrid systems). This is only a class of possible models.
+An important property that our systems have is the so-called MARKOV PROPERTY: generally more clear for discrete time systems. The evolution of our systems from time $t_0$ is entirely defined by the initial state $\{x(t_0) = x_0,\ u : [t_0, \infty) \mapsto \R^m\}$, where $u$ is the EVOLUTION OF THE INPUT.
+The history of the state doesn't play any role! Once assigned $x_0$ and $u : [t_0, \infty) \mapsto \R^m$, IT DOESN'T MATTER! The solution is clearly defined. Suppose we want to compute, for example:
+
+\[
+x(2) = f(x(1),u(1),1),\ x(1) = f(x(0),u(0),0),\ t_0 = 0,\ x(0) = x_0
+\]
+
+but $x(1)$ is KNOWN. By keeping going further we could map the entire state evolution. It is clear this for discrete time systems, but under some assumptions (the Cauchy theorem) this property holds also for continuos time systems.
+
+Cauchy Theorem: (\underline{ODE} under some assumptions have unique solution).
+
+\ctsys
+
+Note that classifications given for continuos time systems hold also for DT systems.
+This general system can be identified as:
+
+TIME-VARYING, NON LINEAR, PROPER FORCED SYSTEM. This is the most general system we can play with. Suppose $f$ is a regular function. For example any NL function. we will identify a set of subclasses of system, for which we assume consequently something more.
+Note that: $FORCED \iff (u(t) \neq 0)$ (that can affect the behavior of system).
+If we restrict the possible functions, then clearly we'll have less systems that can be modeled with these.
+
+\subsection{TIME-VARYING vs TIME-INVARIANT SYSTEMS}
+
+What it actually means in terms of evolution of system? Suppose we have:
+
+\[
+	x(t_0) = x_0\ as\ CINIT,\ \bar{u} : [t_0, +\infty) \mapsto \R^m\ as\ INPUT
+\]
+
+Let's suppose $f$ is sufficiently regular. $\bar{x}: [t_0, \infty) \mapsto \R^n\ as\ STATE\ EVOLUTION,\ \dot{\bar{x}} = f(\bar{x}(t), \bar{u}(t), t),\ \bar{x}(t_0) = x_0$ is TRUE! IT IS SATISFIED as $\bar{x}$ is the solution of the ODE. Moreover we have the (UNIQUENESS OF THE SOLUTION of the ODE).
+Vediamo ora cosa succede partendo da CINIT uguali e da INPUT uguali ma applicati in istanti diversi.
+Let's suppose:
+
+\[
+	\bar{u}_1 : [t_0 + t_1, +\infty) \mapsto R^m
+\]
+
+such that $\forall t \geq t_0 + t_1$, the $\bar{u}_1(t) = \bar{u}(t-t_1)$. The system is time-invariant then the state evolution is:
+
+\[
+	\bar{x}(t-t_1), \forall t \geq t_0 + t_1
+\]
+
+So applying $\bar{u}(\mathord{\cdot})$, we get $\bar{x}(\mathord{\cdot})$. (TIME-INVARIANT): if we start from the same CINIT then my state evolution will be a translated version of the previous $\bar{x}(\mathord{\cdot})$. For TI systems, the state evolution ODE could be written just as:
+
+\begin{equation}
+\dot{x}(t) = f(x(t),u(t))
+\end{equation}
+
+So, $f$ must not depend explicitly on time, then we have TIME-INVARIANT property. Note that, without loss of generality, we can set $[x(0) = x_0]$, as $t_0 = 0$ for those systems. Another consequence of this is the following, for discrete time systems (clearly the same holds):
+
+\begin{equation}
+\left\{
+\begin{aligned}
+x(t+1) &= f(x(t),u(t))\\
+y(t) &= h(x(t),u(t))
+\end{aligned} 
+\right.
+\end{equation}
+
+\[
+	\left\{
+	\begin{aligned}
+	f &\neq f(\mathord{\cdot}t) \\
+	h &\neq h(\mathord{\cdot}t)
+	\end{aligned}
+	\right.
+\]
+
+But not every system satisfies this condition. In that case we'll have a TIME-VARYING system.
+
+
+\subsection{NONLINEAR (NL) vs LINEAR (L)}
+
+Let's examine another subclass of systems. Let's suppose that:
+\[
+	\dot{\bar{x}}_1 = f(\bar{x}_1(t), \bar{u}_1(t), t)
+\]
+\[
+	\left\{
+	\begin{aligned}
+	&x_1(t_0) &= x_{01} \\
+	&\bar{u}_1 &: [t_0, +\infty) \mapsto \R^m
+	\end{aligned} 
+	\right.
+\]
+
+with state evolution:
+
+\[
+	\bar{x}_1 : [t_0, +\infty) \mapsto \R^n
+\]
+
+Suppose we do the same with another $\bar{u}_2(t) \neq \bar{u}_1(t)$ and let's start with different CINIT's. Assume that: $\{x_2(t_0) = x_{02},\ \bar{u}_2 : [t_0, +\infty) \mapsto \R^m,$ and we get so $\bar{x}_2 : [t_0, +\infty) \mapsto \R^n,\ with:\ (\dot{\bar{x}}_2 = f(\bar{x}_2(t),\bar{u}_2(t),t), \bar{x}_2(t_0) = x_{02})\}$. A system is LINEAR if taken $(\alpha_1, \alpha_2 \in \R)$ SATISFIES: 
+
+\[
+	\{\bar{x}_3(t_0) = \alpha_1x_{01} + \alpha_2x_{02},\ with\ INPUT:\ \bar{u}_3 = \alpha_1\bar{u}_1(t) + \alpha_2\bar{u}_2(t)\}
+\]
+
+Implies $\implies$ that the state evolution $\bar{x}_3(t)$ is:
+
+\[
+	\bar{x}_3(t) = \alpha_1\bar{x}_1(t) + \alpha_2\bar{x}_2(t)
+\]
+
+This is called the SUPERPOSITION PRINCIPLE (SPP), and it holds only for LINEAR SYSTEMS!
+What structure a system may have in order to be linear?
+LINEAR SYSTEMS:
+
+\[
+	\{ \dot{x}(t) = A(t)x(t) + B(t)u(t),\ with\ CINIT:\ x(t_0) = x_0\}
+\]
+
+where:
+
+\[
+	\left\{
+	\begin{aligned}
+	&A(t) \in \R^{n\times n}, C(t) \in \R^{p\times n} \\
+	&B(t) \in \R^{n\times m}, D(t) \in \R^{p\times m}
+	\end{aligned} 
+	\right.
+\]
+\[
+	y(t) = C(t)x(t) + D(t)u(t)
+\]
+
+Remember that the linearity of the dynamics doesn't imply the linearity of the output! Respectively: $LIN \dot{x} \centernot\implies LIN y(t)$.
+Let's suppose we work with LTI systems, in which this implication is obviously true. Clearly, the following holds for discrete time systems
+
+\ldtsys
+
+while for continuos time systems we have:
+
+\lctsys
+
+In this last case, we have that $x = \e^{At}x_0$, and:
+ 
+\[
+ 	\left\{
+	\begin{aligned}
+	A &\neq A(t) = A \\
+	B &\neq B(t) = B \\
+	C &\neq C(t) = C \\
+	D &\neq D(t) = D
+	\end{aligned} 
+	\right.
+\]
+
+Applichiamo quindi la definizione di linearità:
+
+\[
+	\dot{\bar{x}}_3(t) = A(t)\bar{x}_3(t) + B(t)\bar{u}_3(t);
+\]
+\[
+	\dot{\bar{x}}_3(t) = \alpha_1\dot{\bar{x}}_1(t) + \alpha_2\dot{\bar{x}}_2(t) =
+\]
+\[
+	\alpha_1(A(t)\bar{x}_1(t) + B(t)\bar{u}_1(t)) + \alpha_2(A(t)\bar{x}_2(t) + B(t)\bar{u}_2(t))
+\]
+\[
+	= \alpha_1A(t)\bar{x}_1(t) + \alpha_1B(t)\bar{u}_1(t) + \alpha_2A(t)\bar{x}_2(t) + \alpha_2B(t)\bar{u}_2(t)
+\]
+\[
+	= A(t)(\alpha_1\bar{x}_1(t) + \alpha_2\bar{x}_2(t)) + B(t)(\alpha_1\bar{u}_1(t) + \alpha_2\bar{u}_2(t)) = [A(t)\bar{x}_3 + B(t)\bar{u}_3] = \dot{\bar{x}}_3 \quad \QEDA
+\]
+
+se esiste, questa è una possibile traiettoria con: $\bar{x}_3(t_0) = \alpha_1 x_{01} + \alpha_2 x_{02}$ può essere scomposta in: What if we take into account SPECIAL PAIR OF INPUTS AND CINIT?
+
+\[
+ 	\left\{
+	\begin{aligned}
+	&EVLIB:\quad \bar{x}_1(t_0) = x_{10} \neq 0,\ \bar{u}_1(t) = 0,\ \forall t \geq t_0 \\
+	&EVFOR:\quad \bar{x}_2(t_0) = 0,\ \bar{u}_2(t) \neq 0
+	\end{aligned} 
+	\right.
+\]
+
+where \emph{EVLIB} stands for: FREE EVOLUTION and \emph{EVFOR} stands for: FORCED EVOLUTION. 
+Per i sistemi lineari quindi, ogni traiettoria è la somma dell'evoluzione libera e dell'evoluzione forzata.
+So, only for linear systems we have:
+
+\[
+	\bar{x}_3(t) = (x_l(t) = \bar{x}_1(t)) + (x_f(t) = \bar{x}_2(t))
+\]
+
+\subsection{PROPER vs STRICTLY PROPER}
+
+For strictly proper system, we have: $[y(t) = h(x(t)) \neq (\mathord{\cdot}u(t))$. The influence of the INPUT on the OUTPUT happens only through the state. INSTANTANEOUS CHANGE IN INPUT $\centernot\implies$ INSTANTANEOUS CHANGE IN OUTPUT.
+
+\subsection{FORCED vs UNFORCED}
+
+\[	
+	\dot{x}(t) = f(x(t)) = f(x(t),t),\ with\ x(t_0) = x_0
+\]
+
+more in general (TV system). We have no input to change the behavior of the system. 
+
+\begin{equation}
+\label{autnlsys}
+	u(t) = K(x(t)) = K(x(t),t),\ \dot{x}(t) = f(x(t),K(x(t),t),t) = \tilde{f}(x(t),t)
+\end{equation}
+
+(with state feedback). So we get that a Closed Loop System (CLS) is an UNFORCED system. If you want to stabilize the origin of:
+
+\[
+	\dot{x}(t) = Ax(t) + Bu(t)
+\]
+
+you have to design an $u(t) = Kx(t)$ and allocate some eigenvalues by using $K$ matrix. So we get:
+
+\[
+	\dot{x}(t) = (A+BK)x(t)
+\]
+
+that is an UNFORCED system as we've mentioned early. So we have:
+
+\[
+	(NLTI\ FORCED):\quad \dot{x} = f(x(t),u(t))
+\]
+
+but if we assign the input and fix it, for example at: $[u(t) = sin(\omega_0t)]$, system become:
+
+\[
+	\dot{x}(t) = f(x(t), sin(\omega_0t))
+\]
+
+and it is again an UNFORCED system. (Non posso cambiare nulla se non la condizione iniziale). Tale sistema è quindi assimilabile ad un autonomo del tipo: \ref{autnlsys}.
+
+
+Analizzeremo sistemi UNFORCED. State evolution of the system. The solution of the ODE with respect to the state $x(t)$.
+
+\section{TRAJECTORIES and EQUILIBRIA}
+
+Let's introduce the notion of \underline{trajectory}. Note that the following holds both for CT and DT systems.
+
+\subsection{TRAJECTORIES}
+
+\begin{defn}{\textbf{(TRAJECTORY).}}
+We say that the function: $(\bar{x}(\mathord{\cdot}),\bar{u}(\mathord{\cdot})) : [t_0, t_1] \mapsto \R^n \times \R^m$ (PAIR OF VECTORS) is a trajectory of the system, (where it could be: $t_1 = +\infty$), with $x(t_0) = x_0$, if it satisfies the $\dot{\bar{x}}(t) = \bar{x} = f(x,u)$. Respectively, if it satisfies the ODE: $(\dot{\bar{x}}(t) = f(\bar{x}(t), \bar{u}(t)),\ \bar{x}(t_0) = x_0$; (se è soluzione dell'eq. differenziale rappresentativa del sistema). The same definitions holds also for DTS (FDE).
+\end{defn}
+
+$\bar{x}(t)$ TAKEN from $(\bar{x}(\mathord{\cdot}), \bar{u}(\mathord{\cdot}))$ is the STATE TRAJECTORY. For UNFORCED SYSTEMS, trajectory is simply a State Trajectory: 
+
+\[
+	[\bar{x}(t) = f(x(t),t)],\ [\bar{x}(\mathord{\cdot}) : [t_0, t_1] \mapsto \R^n]
+\]
+
+The most natural way is by assigning some $\bar{u}: [t_0,t_1] \mapsto \R^m,\ \bar{x}(t) = f(x(t), \bar{u}(t), t),\ x(t_0) = x_0$. We have to \underline{integrate the ODE}. We'll see that it is not obvious that this could be done without some difficulties. There could be problems. Solution couldn't exist in the interval. Let's see an example: LINEAR TIME-INVARIANT. Let's start from discrete-time systems:
+
+\subsubsection{Discrete-Time LTI systems TRAJECTORIES}
+
+\[
+	x(t+1) = Ax(t) + Bu(t),\ x(0) = x_0
+\]
+
+Remember that for LTI systems, it can be chosen $t_0 = 0$ without loss of generality. Suppose $\bar{u}$ is assigned:
+
+\[
+	\{ \bar{u}(t) \}_{t \geq 0}
+\]
+
+be a sequence of INPUT values.
+
+\[
+	\bar{x}(1) = A\bar{x}(0) + B\bar{u}(0),
+\]
+\[
+	\bar{x}(2) = A\bar{x}(1) + B\bar{u}(1) = A^2\bar{x}(0) + AB\bar{u}(0) + B\bar{u}(1) = A(A\bar{x}(0) + B\bar{u}(0)) + B\bar{u}(1) = \dots
+\]
+
+FIXING the STATE TRAJECTORY. I can continue and derive a general equation:
+
+\begin{equation}
+\label{dtsysevo}
+[\bar{x}(t) = A^tx_0 + \sum_{\tau = 0}^{t-1}{A^{t-1-\tau}B\bar{u}(\tau)}]
+\end{equation}
+
+where the first term represents the FREE EVOLUTION, whilst the second is the FORCED EVOLUTION. If I set CINIT's identically to zero while applying a non-zero input I get only the forced part one. 
+
+\[
+	(\bar{x}(\mathord{\cdot}), \bar{u}(\mathord{\cdot}))
+\]
+
+So, for DT, LTI system we can explicitly write the expression of the trajectory once decided $\bar{u}(\mathord{\cdot})$. LTI systems are very special systems. The some holds for continuos time systems. It is more complex to derive explicitly the expression of the CT's.
+
+\subsubsection{Continuos-Time LTI systems TRAJECTORIES}
+
+Given:
+
+\[
+	\dot{\bar{x}}(t) = Ax(t) + Bu(t),\ x(0) = x_0
+\]
+
+If I assign (given) some $\bar{u}(\mathord{\cdot}) : [0, +\infty) \mapsto \R^m$, I get:
+
+\begin{equation}
+\label{ctsysevo}
+[\bar{x}(t) = \e^{At}x_0 + \int_0^t{\e^{A(t-\tau)}B\bar{u}(\tau)d\tau}]
+\end{equation}
+
+, where: $[\e^{At} =\ EXPONENTIAL\ MATRIX]$. Let $\{\e^M\}$ be the exponential matrix of the matrix $M$. Basically there follows an analogy for what we've done with SISO systems). Let's suppose $a \in \R$. Let
+
+\[
+	\e^{at} = 1 + at + \frac{(a^2t^2)}{2} + \frac{(a^3t^3)}{3!}
+\]
+
+It is quite straightforward that: $x(t) = e^{at}x_0$ is the solution of the scalar ODE: $\dot{x}(t) = ax(t)$.
+By analogy if we have a vectorial ODE, we can define the exponential of a matrix:
+
+\begin{equation}
+\label{ref:expdef}
+	e^A := \sum_{k=0}^{\infty} \frac{A^k}{k!} = I + A + \frac{A^2}{2!} + \frac{A^3}{3!} + \dots
+\end{equation}
+
+WARNING: ONLY FOR LTI SYSTEMS We can write the explicit expression and also the distinction between forced and free evolution holds for LINEAR's one. What happens: it is interesting to know that for LTI once assigned the INPUT $\bar{u}(\mathord{\cdot})$ (with some assumptions), the state portion of the STATE TRAJECTORY is precisely defined for the entire time interval. This is not obvious for general systems. For NL systems this property may not hold.
+
+\subsubsection{EXISTENCE AND UNIQUENESS OF TRAJECTORIES FOR CT SYSTEMS}
+
+Let's recall the \underline{definition} of (LOCALLY LIPSCHITZ FUNCTION AT A POINT).
+
+\begin{defn}{\textbf{LOCALLY LIPSCHITZ FUNCTION AT A POINT $x_0$ ($x_0$-LLness)}}
+Given some $x_0 \in \R^k$, a function $g: \R^k \mapsto \R^l$ is locally Lipschitz at $x_0$ if there $\exists L > 0,\ r > 0\ |\ \forall x_1,x_2 \in \cball(x_0,r) = \{ x \in \R^k |\ \norma{x-x_0} \leq r \}$, it holds that:
+
+\[
+	\norma{g(x_1) - g(x_2)} \leq L \norma{x_1 - x_2}
+\]
+
+\end{defn}
+
+intuitively, it gives a sort of boundary definition of a function.
+
+\begin{defn}{\textbf{LOCALLY LIPSCHITZ FUNCTION}}
+	A function $g: \R^k \mapsto \R^l$ is locally Lipschitz in some set $D \subset \R^k$ if it is locally Lipschitz at any point $x \in D$. This is the definition of LLF in some set D.
+\end{defn}
+
+A stronger property is the following:
+
+\begin{defn}{\textbf{(GLOBALLY) LIPSCHITZ FUNCTION}}
+$L_1 \neq L_2$. A function $g: \R^k \mapsto \R^l$ is globally Lipschitz in $D \subset \R^k$ if $\exists L > 0\ |\ \forall x_1,x_2 \in D,\ \norma{g(x_1) - g(x_2)} \leq L\norma{x_1 - x_2}$.
+\end{defn}
+
+An example of local Lipschitz but not global Lipschitz function is $f(x) = x^2$.
+Moreover we can state the following theory:
+
+\begin{defn}{\textbf{LOCAL EXISTENCE AND UNIQUENESS}}
+Let $f(x,t)$ be continuos wrt $t$ and locally Lipschitz at some $x_0$. This $\implies:$
+\[
+	\exists \delta > 0\ |\ \dot{x} = f(x,t),\ with\ x(t_0) = x_0
+\]
+has unique solution over $[t_0, t_0 + \delta]$.
+\end{defn}
+
+This theorem is giving us a condition for the existence of the solution of the ODE. But checks only for $f$. But only in a given interval and we don't know what this interval is!
+
+\begin{itemize}
+\item We cannot decide $\delta$ arbitrarily, and:
+\item The interval $[t_0, t_0 + \delta]$ is a closed interval, and within this interval the solution is defined.
+\end{itemize}
+
+(Se verifico le ipotesi $\implies$ sicuramente è valida). Condizione sufficiente di esistenza. La soluzione potrebbe esistere se le condizioni NON sono verificate (It could happen that a trajectory still exists). A stronger theorem, a stronger assumption is the following:
+
+\begin{defn}{\textbf{GLOBAL EXISTENCE AND UNIQUENESS}}
+Let $f(x,t)$ be p.w. continuos wrt $t \in [t_0, t_1\ (wcb\ +\infty)]$ and globally Lipschitz wrt $x$. This $\implies$:
+\[
+	\dot{x} = f(x,t),\ x(t_0) = x_0 
+\]
+has unique solution in $[t_0,t_1]$.
+\end{defn}
+
+This theorem tells us a stronger condition. Clearly in order to get this stronger result, we need a stronger assumption on the function $f(\mathord{\cdot})$; within this interval I may have function that is locally Lipschitz and the trajectory exists. Or It could happen that the function isn't Lipschitz and still the trajectory could exist on the entire time interval. This is not strange since these are only sufficient conditions.
+
+Qualora la soluzione esista e sia unica secondo i teoremi appena visti, ciò vale soltanto nell'intervallo $[t_0, t_0 + \delta]$ (od equivalentemente l'altro intervallo per la global version). Possiamo quindi iterare il ragionamento? (It seems we don't need the global theorem). Se iterassimo il teorema locale per una funzione divergente in tempo finito, i $\delta$ diverrebbero sempre più piccoli. Respectively It can happen that $\exists \bar{t},\ |\ l = \lim_{t \to \bar{t}}\norma{x(t)} = +\infty$. In this case we have a FINITE ESCAPE TIME ($\bar{t}$). But for some functions It can happen that even if: $\exists \bar{t} = +\infty,\ \nexists l$. (In tal caso la funzione non arriverebbe mai a $\bar{t}$).
+
+\subsubsection{EXAMPLE: LINEAR (TIME-VARYING) SYSTEMS (LTV sys)}
+
+\[
+	\bar{x} = A(t)x(t) + B(t)u(t) := f(x,t)
+\]
+
+Assume $A(t),\ B(t),\ u(t)$ are piece-wise continuous wrt $t$. $A: [t_0, +\infty] \mapsto \R^{n\times n}$. Assume that on any time interval $[t_0,t_1]$ the elements of $A(t)$ are bounded, and this is equivalent to sy that any $\norma{A(\mathord{\cdot})} \leq a \in \R$. (For LTI solution exists and is unique). We need to verify what happens when writing:
+
+\[
+	\norma{f(x_1,t) - f(x_2,t)} = \norma{A(t)x_1(t) + B(t)u(t) - A(t)x_2(t) - B(t)u(t)} = \norma{A(t)x_1(t) -A(t)x_2(t)}
+\]
+
+-) $f(x,t)$ is p.w. continuos wrt $t$. Then $\forall t \in \R$:
+
+\[
+	\norma{A(t)(x_1-x_2)} \leq \norma{A(\mathord{\cdot})}\norma{x_1-x_2} \leq a\norma{x_1-x_2}
+\]
+
+This holds $\forall x_1,x_2 \in D$. So, $a = L$, the Lipschitz's theorem constant. $\iff$ the function is globally Lipschitz and this means that $\exists$ a unique solution in $[t_0, +\infty)$. (Assuming $f$ piece-wise continuous in this interval); for LT-(even VARYING) systems, we do not have to find any FINITE ESCAPE TIME ($\nexists \bar{t}$);
+
+Under some conditions, we have also continuity with respect to the CINIT's and the parameters:
+
+\begin{defn}{\textbf{continuity of a TRAJECTORY wrt CINIT's}}
+Let $x_1:[t_0,t_1] \mapsto \R^n$ be a trajectory of $\dot{x}=f(x,t),\ x(t_0) = x_{01}$. The trajectory depends continuously on the initial conditions if:
+\[
+	\forall \epsilon > 0\ \exists \delta > 0\ |\ \forall x_0 \in \cball(x_{01},\delta)
+\]
+the system $\bar{x}=f(x,t),\ x(t_0) = x_0$ has a unique trajectory $x$ such that:
+
+\[
+	x:[t_0,t_1] \mapsto \R^n\ |\ \norma{x(t)-x_1(t)} \leq \epsilon\ \forall t \in [t_0,t_1]
+\]
+\end{defn}
+
+Roughly speaking, what do we say is that a trajectory depends continuously on the CINIT's.
+
+\begin{defn}{\textbf{continuity of a TRAJECTORY wrt parameters}}
+Let $x_{\lambda_0}:[t_0,t_1] \mapsto \R^n$ be a trajectory of $\dot{x} = f(x,t;\lambda_0),\ x(t_0) = x_0$, with $\lambda_0 \in R^p$ some constant parameter, the trajectory $x_{\lambda_0}$ depends continuously on some parameter $\lambda \in \R^p$ if:
+\[
+	\forall \epsilon > 0\ \exists \delta > 0\ |\ \forall \lambda \in \cball(\lambda_0,\delta),
+\]
+\[
+	\dot{x}=f(x,t;\lambda),\ with\ [x(t_0) = x_0]
+\]
+has a unique trajectory $x_\lambda(\mathord{\cdot})$ such that:
+\[
+	\norma{x_\lambda(t) - x_{\lambda_0}(t)} < \epsilon \quad \forall t \in [t_0,t_1]
+\]
+\end{defn}
+
+Risultato:
+
+\begin{thrm}{\textbf{continuity of a TRAJECTORY wrt both CINIT's and parameters}}
+Let $f(x,t;\lambda)$ be \underline{continuous} wrt $(x,t;\lambda)$, (uniformly continuous in $(t;\lambda)$) on $D \times [t_0,t_1] \times \cball(\lambda_0,c)$ and \underline{locally Lipschitz} wrt $x$, where $D \subset \R^n$ is an open-connected set, and $c > 0,\ \lambda_0 \in \R^p$.
+Let $x_1(t;\lambda_0)$ be a trajectory of $\dot{x}=f(x,t;\lambda_0),\ x(t_0) = x_{01}$. Suppose $x_1(\mathord{\cdot},\lambda_0)$ is well defined and belongs to $D \ \forall t \in [t_0,t_1]$. This $\implies$:
+\[
+	\forall \epsilon > 0,\ \exists \lambda > 0\ |\ \norma{x_0-x_{01}} < \delta \land \norma{\lambda-\lambda_0} < \delta \implies
+\]
+there $\exists$ a unique solution $x(t,\lambda)$ of $\dot{x}=f(x,t;\lambda),\ x(t_0) = x_0$ defined on $[t_0,t_1]$ with $x(t_0,\lambda) = x_0$ and $x(t,\lambda)$ satisfies:
+
+\[
+	\norma{x(t;\lambda) - x_1(t;\lambda_0)} < \epsilon \quad \forall t \in [t_0,t_1]
+\]
+\end{thrm}
+
+Result: under some conditions, the trajectory are continuos wrt CINIT's and what are the assumption that we must require? On the function $f, f(x,t;\lambda)$ continuos in $(x,t;\lambda)$. Quel $\lambda$ in alcuni casi dev'essere sufficientemente piccolo.
+
+
+A little recall: \textbf{EQUILIBRIA}
+
+Gli equilibri sono delle traiettorie più semplici delle traiettorie generiche. We've introduced the state space framework in continuos time. Generalmente $x$ è un vettore.
+1st order ODE in C.T.:
+\[
+	\dot{x} = f(x(t),u(t),t(t)),\ x(t_0) = x_0
+\]
+D.T.:
+\[
+	x(t+1) = f(x(t),u(t),t(t)),\ x(t_0) = x_0
+\]
+
+\subsection{State-Space FRAMEWORK examples} 
+
+Couple of examples of state space systems (State Space Framework):
+Suppose a mass that can move on a one-dimensional (1D) space. Newton's Law tells us: $m\ddot{z} = F$. This is a VERY BASIC SYSTEM. I'm implicitly considering $F := F(t)$, probably. Be $(z \in \R)$ the real variable. The system, by these assignments:
+
+\[
+ 	\left\{
+	\begin{aligned}
+	x_1 &:= z \\
+	x_2 &:= \dot{z}
+	\end{aligned} 
+	\right.
+\]	
+
+results in:
+
+\[
+ 	\left\{
+	\begin{aligned}
+	\dot{x_1} &= x_2 \\
+	\dot{x_2} &= F/m
+	\end{aligned} 
+	\right.
+\]
+
+So,
+
+\[
+	\begin{bmatrix}
+	x_1 \\
+	x_2
+	\end{bmatrix}
+	\in \R^2
+\]	
+
+The state is a vector, but we have only the first derivative. Some state variable must be put into the state vector. In terms of our sub-classification, if the mass is constant $\iff m \neq m(t)$, then the system is TIME-INVARIANT, respectively it doesn't depend explicitly on the time. If $m$ can change with time $\implies$ then the system will be time-varying. We can call $u := F$ and this results in:
+
+\[
+	\dot{x} = 
+	\begin{bmatrix}
+	0 & 1 \\
+	0 & 0 
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_1 \\
+	x_2
+	\end{bmatrix} + 
+	\begin{bmatrix}
+	0 \\
+	1/m
+	\end{bmatrix} u
+\]
+
+This is a (LINEAR SYSTEM), FORCED Time-Invariant System. FORCED System since we have a non-fixed input, with which we can modify the behavior of the system. Suppose now the mass can move in a tridimensional (3D) space:
+
+\[
+	m\ddot{z} = F =
+	\begin{bmatrix}
+	0 \\
+	0 \\
+	mg
+	\end{bmatrix},\ (z \in \R^3)\ =
+	\begin{bmatrix}
+	z_1 \\
+	z_2 \\
+	z_3
+	\end{bmatrix}
+\]
+
+\[
+	\left\{
+	\begin{aligned}
+	x_1 &:= z_1 \\
+	x_2 &:= z_2 \\
+	x_3 &:= z_3
+	\end{aligned} 
+	\right.
+	;\ \ \left\{
+	\begin{aligned}
+	x_4 &= \dot{z_1} \\
+	x_5 &= \dot{z_2} \\
+	x_6 &= \dot{z_3}
+	\end{aligned} 
+	\right.
+\]
+
+So now the entire system will appear as:
+
+\[
+	\left\{
+	\begin{aligned}
+	\dot{x_1} &= x_4 \\
+	\dot{x_2} &= x_5 \\
+	\dot{x_3} &= x_6 \\
+	\dot{x_4} &= F_1/m \\
+	\dot{x_5} &= F_2/m \\
+	\dot{x_6} &= F_3/m - g
+	\end{aligned} 
+	\right.
+\]
+
+where $F = [F_1\ F_2\ F_3]^{\top} \in \R^3$. The same considerations about the mass hold.
+La g renderebbe non lineare il sistema formalmente. Diverrebbe un sistema AFFINE; ma si può considerare in ingresso un qualcosa che "tenga conto" anche della g (Sistema LINEARE).
+RECALL: $[h(x) = ax + b]$ è una funzione non lineare, AFFINE. Difatti, se facessimo la combinazione lineare applicando la definizione, ci ritroveremmo il termine noto che ci impedirebbe di far valere la linearità. Supponiamo ora di avere un sistema lineare forzato: $\dot{x} = Ax + Bu,\ \dot{x} = Ax + Bsin(t),\ (u \in \R)$.
+Fissato l'ingresso come abbiamo fatto: $u := sin(w_0t)$, il sistema verrebbe classificato come AFFINE a causa della natura non lineare dell'ingresso $u$ fissato (quindi NL), unforced and even time-varying. Anche supponendo A, B matrici costanti il sistema comunque rimarrebbe tempo variante, data la presenza esplicita del tempo, variabile indipendente dell'ingresso $u$ ormai fissato.
+
+Let's consider another example: We can write the dynamic of the pendulum.
+
+Let $[TORQUE\ =\ u]$. Suppose a friction acting on a pendulum here:
+
+\[
+	ml\ddot{\omega} = -mg\sin{\omega} - Kl\dot{\omega} + u
+\]
+
+We can play the same trick as before:
+
+\[
+	\left\{
+	\begin{aligned}
+	x_1 &:= \omega \\
+	x_2 &:= \dot{\omega} \\
+	\end{aligned} 
+	\right.
+	;\ \ \left\{
+	\begin{aligned}
+	\dot{x_1} &= x_2 \\
+	\dot{x_2} &= -\frac{g}{l}\sin{x_1} - \frac{K}{m}x_2 + \frac{u}{ml}
+	\end{aligned} 
+	\right.
+\]
+
+Again, suppose $l =\ constant \neq l(t),\ m \neq m(t)$, so the system is NON LINEAR TIME-INVARIANT. So, we have:
+
+\[
+	f(x,u) :=
+	\begin{bmatrix}
+	x_2 \\
+	-\frac{g}{l}\sin{x_1} - \frac{K}{m}x_2 + \frac{u}{ml}
+	\end{bmatrix}
+\]
+
+$f(x,u)$ is a non linear function wrt $x$. This is a \underline{forced} system (There's an INPUT that can affect the behavior of system). Suppose that we have this representation from physics. Is this state space representation unique for this system? Is there only one way to write this state-space form? Respectively, is it UNIQUE? The choice is ARBITRARY. Probably the most convenient. Let's do just a permutation of the states. There's not a unique representation. (\underline{MINIMAL REPRESENTATION}). If you have an I/O representation, you can put this system in state-space form (\underline{Realization} mapping). Considerations about Reachability/Observability/Minimal Form.
+
+\subsection{EQUILIBRIA}
+
+We have said that, once we have a system in state space form, a trajectory is such thing like $(u,x)$ that satisfies the ODE/FDE. Let's start with UNFORCED, TIME-VARYING system and Let's introduce the notion of:
+
+\begin{defn}{\textbf{EQUILIBRIUM}}
+Let $\dot{x}=f(x,t)$. A state $x_i \in \R^n$ is an \underline{equilibrium} if $[x_i(t) = x_i]\ \forall t \geq t_0$ is a trajectory of $\dot{x}=f(x,t),\ with\ x(t_0) = x_i$.
+\end{defn}
+
+Roughly speaking, what do we say when a vector $(x_i \in \R^n)$ is an equilibrium is that starting from that state (setting that state as CINIT), the evolution results in an identical trajectory equal to that state.
+
+Suppose we start from $x_i = (x_1,x_2)$, the system remains in that space. There is a CONSTANT TRAJECTORY. This definition holds both in CT/DT systems.
+
+How to characterize this definition for continuos time systems? Just using the definition, $\begin{bmatrix}\omega = 0 \\ \dot{\omega} = 0\end{bmatrix}$ is an equilibrium. Actually, there are two possible equilibria for the pendulum: $\{\begin{bmatrix}0 \\ 0\end{bmatrix}, \begin{bmatrix}\pi \\ 0\end{bmatrix}\}$ (EQUILIBRIA for the PENDULUM). Because if I start from this CINIT's, looking at the physics of the system, those two states are equilibria. (Facendo riferimento solo alla fisica del sistema). We don't want to work with particular system, but we want to give conditions for general system and then apply this tools to special systems. We have to be able to characterize equilibria without looking at physics of the system.
+
+\subsubsection{Continuous-Time Systems Equilibria}
+
+\begin{prop}{\textbf{Characterization of Continuous-Time Equilibria} (quite trivial)}
+A state $x_i$ is an equilibrium of $\dot{x}=f(x,t) \iff f(x_i,t) = 0\ \forall t \geq t_0$.
+\end{prop}
+
+Let's prove this proposition:
+
+
+\begin{proof}{\textbf{($\implies$)}}
+Suppose $x_e$ is an equilibrium, then we have that $(x_e(t) = x_e\ \forall t \geq t_0)$ is a trajectory of the system. But what is the derivative of $x_e(t)$?
+$\dot{x}_e(t) = 0 = f(x_e,t)$. (Se è una traiettoria deve soddisfare l'equazione differenziale, e la soddisfa! Not only $(\forall t \geq 0)$, but on the entire time interval!
+\end{proof}
+
+In $t_0$ potrebbero esserci dei problemi per le derivate (potrebbe $\nexists \frac{dx}{dt}$), ma supponiamo che non vi siano.
+
+\begin{proof}{\textbf{($\impliedby$)}}
+$\dot{x}_e(t) = 0 = f(x_e,t) \implies x_e(t) = x_e$ (must be constant).
+\end{proof}
+
+Let's forget for a moment that the previous system is a pendulum! Let's find the equilibrium for that system by using the current characterization. In order to find equilibria, we need to set $f$ equal to 0. Let $u = 0$. (let's play with the UNFORCED pendulum). According to the previous proposition, $f := 0$.
+
+\[
+	\left\{
+	\begin{aligned}
+	\dot{x_1} &= x_2 \\
+	\dot{x_2} &= -\frac{g}{l}\sin{x_1} - \frac{K}{m}x_2 + \frac{u}{ml}
+	\end{aligned} 
+	\right.
+	\implies \left\{
+	\begin{aligned}
+	0 &= x_{e2} \\
+	0 &= -\frac{g}{l}\sin{x_{e1}} - \frac{K}{m}(x_{e2})
+	\end{aligned} 
+	\right. \implies \left\{
+	\begin{aligned}
+	0 &= x_{e2} \\
+	0 &= -\frac{g}{l}\sin{x_{e1}}
+	\end{aligned} 
+	\right.
+\]
+
+VERY IMPORTANT: Without using the physics of the system, we found out that: 
+
+\[
+	{\begin{bmatrix}k\pi \\ 0\end{bmatrix},\ k=0,1,\dots\ SOME\ INTEGER}
+\]
+
+are equilibria! 
+
+The tools that we'll see in this course do not depend on the specific system!
+
+\subsubsection{Discrete-Time Systems Equilibria}
+
+\begin{prop}{\textbf{Definition and Characterization of Discrete-Time Equilibria} (quite trivial)}
+Let $x(t+1) = f(x(t),t),\ (x_e \in \R^n)$ is an equilibrium if: $x_e(t+1) = x_i,\ \forall t \geq t_0$.
+\[
+	x_e = f(x_e, t),\ \forall t \geq t_0
+\]
+If the system is TIME-INVARIANT, we have that holds the FIXED-POINT property: $x_e = f(x_e)$. Otherwise, simply add the $t$ functional dependence: $x(t+1) = f(x_e,t) = x_e$.
+\end{prop}
+
+Note that for DT systems, the definition of equilibria is equal to their characterization.
+OBS: So far we have introduced the notion of equilibrium, we have not talked about stability at all. These two notions do not hold together despite they are not incorrelated at all. The definition cares about starting only at $x_e$. DON'T KNOW WHAT HAPPENS WHEN STARTING FROM OTHER STATES. 
+
+An equilibrium coud be stable, unstable, etc. (also asymptotically stable). Let's see what we can say when we have a \underline{forced} system. 
+
+Let $\dot{x}=f(x,u,t),\ (x(t+1) = f(x(t),u(t),t)$. The equilibrium pair is $(x_e,u_e)$ which is a vector $\in \R^n \times \R^m$. The idea without being too formal is that taking a constant INPUT: $u(t) := u_e\ \forall t \geq t_0$ (a constant TORQUE, for example), we have: 
+
+\[
+	[x_e(t_0) = x_e] \implies \underline{x_e(t) = x_e}
+\]
+
+(which coupled with the constant INPUT results in a CONSTANT TRAJECTORY). This definition is structurally equivalent to the Characterization/Definition of equilibria.
+
+Once I've fixed a constant INPUT... Clearly as before, the same consideration holds for T.VAR/T.INV systems. Fix constant input $u$, then I have an UNFORCED system and then back from it.
+Let's do as an exercise: try to find the equilibria for the forced pendulum.

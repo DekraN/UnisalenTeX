@@ -1,0 +1,379 @@
+% --- NETWORK TECHNOLOGIES ---
+% ------------------------------------------------------
+% Corso di Laurea Magistrale in: Ingegneria Informatica - Università Del Salento
+% Titolo: Network Technologies
+% Autore: Dott. Marco Chiarelli
+% Relatore: Prof. Giovanni Ciccarese
+% Data: 07/02/2017
+% Anno Accademico 2016/2017
+% Consultazione Consentita
+
+%INIZIO PREAMBOLO
+
+\documentclass[11 pt,a4paper,twoside,openany]{book}
+
+% Preambolo codifica
+\usepackage[utf8]{inputenc}
+
+%Preambolo lingue
+\usepackage[english,italian]{babel}
+
+
+% Preambolo formattazione
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{indentfirst} %indentazione}
+
+% Preambolo stile pagina
+\usepackage{fancyhdr}
+
+%Preambolo matematica
+\usepackage{xfrac}
+\usepackage{amsmath}
+\usepackage{amsthm} % dopo amsmath!
+
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows,positioning,calc}
+\usetikzlibrary{chains,shapes.multipart}
+
+% Preambolo grafico
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage[pages=some]{background}
+\usepackage{transparent}
+
+% Preambolo contenuti LoremIpsum
+\usepackage{lipsum}
+
+%hyperlinks
+\usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
+
+%Preambolo bibliografia
+
+\usepackage[numbers,sort&compress]{natbib}
+
+%Preambolo licensa
+%\usepackage{creativecommons}
+\usepackage{ccicons}
+
+
+%Preambolo testo
+\usepackage{setspace}
+\usepackage{epigraph}
+\usepackage{ragged2e}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Preambolo schema a blocchi
+\usepackage{verbatim}
+
+% Preambolo matematica
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{centernot}
+\usepackage{accents}
+\usepackage{mathdots}
+
+\usepackage{listings}
+\usepackage{inconsolata}
+\usepackage{blindtext,expdlist}
+
+\lstdefinelanguage{CISCO}
+{
+sensitive=true,
+morekeywords=[1]{},
+}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norma}{\lVert}{\rVert}
+
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{defn}{Definition}
+\newtheorem{thrm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corl}{Corollary}
+
+
+\newcommand\inv[1]{#1\raisebox{1.15ex}{$\scriptscriptstyle-\!1$}}
+\newcommand{\tendsto}[1]{\xrightarrow{\smash{\raisebox{0.10ex}{$\scriptstyle#1$}}}}
+  
+
+\newcommand{\numberset}{\mathbb}
+\newcommand{\N}{\numberset{N}}
+\newcommand{\Z}{\numberset{Z}}
+\newcommand{\R}{\numberset{R}}
+\newcommand{\C}{\numberset{C}}
+
+\newcommand{\cball}{\bar{\mathbb{B}}}
+\newcommand{\oball}{\mathring{\mathbb{B}}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}} %dichiarazione differenziale
+\newcommand*{\im}{\mathop{}\!\mathrm{i}} %dichiarazione unit immaginaria
+\newcommand*{\e}{\mathop{}\!\mathrm{e}} %dichiarazione unit nepero
+\newcommand*{\imm}{\mathop{}\!\mathrm{Imm}} %immagine
+\newcommand*{\id}{\mathop{}\!\mathrm{id}}
+\newcommand*{\Span}{\mathop{}\!\mathrm{span}} %span
+\newcommand{\sign}{\text{sign}}
+
+\newcommand{\lapl}{\mathcal{L}}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}
+\newcommand*{\QEDB}{\hfill\ensuremath{\square}}
+
+\newcommand{\cardinality}[1]{\left\vert{#1}\right\vert}
+
+% Preambolo Inclusione Capitoli
+\includeonly{chapters/prefaction,%
+			 chapters/intro,%
+			 chapters/nt,%
+			 chapters/qtheory,%
+			 chapters/relavl,%
+			 chapters/qnet,%
+			 chapters/nt2,%
+			 chapters/training,%
+			 chapters/appendix}
+
+% Preambolo caption, subfig, etc...
+\usepackage{caption}
+\usepackage{subfig}
+
+%FINE PREAMBOLO
+
+
+%FINE PREAMBOLO
+
+\selectlanguage{english}
+\selectlanguage{italian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\newpage	
+\begin{titlepage}
+\begin{center}
+	
+\begin{figure}
+	\centering
+	\includegraphics[height=6cm]{unigold.jpg}
+\end{figure}		
+
+\begin{center}
+\begin{LARGE}
+	\textsc{UNIVERSIT\`A DEL SALENTO}\\
+	[0.2cm]
+	\textsc{Department of Innovation Engineering}
+\end{LARGE}
+\end{center}	
+	
+	\
+	\line(1,0){270} \\
+	[0.25cm]
+	
+	\textsc{Master's degree in Computer Engineering}\
+	
+	\textsl{}\\
+	[1cm]
+	\textsc{Network Technologies}\
+	
+	\bigskip 
+	\huge{\bfseries Network Technologies}\
+
+	
+	\bigskip
+	\textsl{}\\
+	[2cm]
+	
+
+
+\begin{LARGE}
+	
+	Dott. Marco Chiarelli
+	
+\end{LARGE}
+
+\vspace{5cm}
+	
+\line(1,0){150} \\
+\begin{small}
+	Academic Year 2016/2017 \\
+\end{small}
+\end{center}
+\end{titlepage}
+
+
+\pagenumbering{arabic}
+
+\newpage
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\newpage
+Quest'opera è stata rilasciata con licenza Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 3.0 Unported. Per leggere una copia della licenza visita il sito web http://creativecommons.org/licenses/by-nc-sa/3.0/ o spedisci una lettera a Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.\par \ccbyncsaeu
+	\vfill
+	Questi appunti sono stati scritti utilizzando \LaTeX\ tramite la distribuzione MiKTeX\ \url{http://miktex.org/}  
+	
+	Come editor è stato usato TeXMaker 4.5\ \url{http://www.xm1math.net/texmaker/}
+	\vfill
+Potrebbero essere state ritagliate delle immagini provenienti dalle dispense/esercizi del corso Network Technologies at UNISALENTO. Ad ogni modo i diritti di talune foto sono del prof. Giovanni Ciccarese, e non me ne assumo alcuna responsabilità dal cattivo utilizzo. Si tratta di materiale pubblicamente accessibile: \url{http://www.ingegneria.unisalento.it/scheda_docente/-/people/giovanni.ciccarese/materiale}
+	\vfill
+Dei contenuti rielaborati in questa opera, salvo esplicitamente scritto il contrario, il prof. Giovanni Ciccarese non se ne assume alcuna responsabilità. 
+
+\null\vspace{\stretch{1}}\vspace{\stretch{2}}\null
+
+\thispagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\vspace{2cm}
+
+\selectlanguage{english}
+
+\noindent
+
+\chapter*{\centering\begin{normalsize}Sommario\end{normalsize}}
+\begin{quotation}
+\noindent Le seguenti dispense vogliono essere un resoconto didattico del corso di Network Technologies, il quale docente è il prof. Giovanni Ciccarese, presso il CdL in Ingegneria Informatica at Unisalento. L'obiettivo dell'intero corso è la Progettazione di Reti ad Alta Disponibilità. Prima di arrivare a coprire il fulcro del corso il programma ha previsto lo studio dei Sistemi a Coda atti a descrivere degli scenari tipici di utilizzo delle Reti, in concomitanza ad una rivisitazione delle moderne tecnologie di rete allo Stato dell'Arte. In particolare nel corso vengono trattati i concetti di Affidabilità e Disponibilità e vengono approfondite le loro differenze e le loro relazioni, permettendo quindi di conoscere dei concetti che possono essere utilizzati a più ampio spettro in qualsiasi ambito ingegneristico che si possa reputare tale. Il seguente lavoro non ha la pretesa di sistematizzare in maniera esatta ciò che è stato fatto a lezione, sebbene l'impostazione di base cerca di seguire fedelmente ogni singola lezione che è stata erogata. Piuttosto cerca di raccogliere in maniera sintetica ma al contempo esaustiva gli aspetti chiave della Progettazione di Reti, fornendo un apposito background ingegneristico incrementale che permetta una maggiore comprensione e chiarezza degli argomenti principali del corso. Al contempo vengono anche forniti numerosi esercizi e vengono coperte esaustive esercitazioni su quanto fatto di teorico a lezione, lasciando un importante messaggio al lettore, una realtà vera in generale, ma ancora di più nelle Reti; ovvero che non si può prescindere dal saper destreggiarsi negli aspetti veramente pratici della progettazione per padroneggiarla veramente.
+\end{quotation}
+\clearpage
+
+\selectlanguage{english}
+
+\chapter*{\centering\begin{normalsize}Abstract\end{normalsize}}
+\begin{quotation}
+\noindent The following work wants to be a report about the Network Technologies course, whose teacher is the prof. Giovanni Ciccarese, at Computer Engineering, Unisalento. The program covers three macro-topics: the Queueing Theory, Design of High-Availability Network and an important review about the State of Art about modern Network Technologies. In this work are described both theoretical and practical aspects. In fact there are many exercises covering these topics. It won't systematize the entire work done at lessons in an exact manner, despite the base setting try to follow each lessons that has been delivered to us. It tries to gather the key aspects of the High-Availability Network Design, and to reorder some difficult notions. Moreover it tries to give an help for the preparation of an eventual didactic exam that requires the knowledge about these notions and the related practical applications/homework/exercises.
+\end{quotation}
+\clearpage
+
+\selectlanguage{italian}
+
+\tableofcontents
+
+\frontmatter
+
+\cleardoublepage\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\bfseries Ringraziamenti
+\end{center}
+\bigskip
+
+Un grazie particolare va ai miei compagni\\
+d'università, Dino Sbarro, Gabriele Accarino, Giampiero D'Autilia, Matteo Settembrini, Paolo Panarese ed Emanuele Costa Cesari.
+
+\vspace*{\fill}
+\pagebreak
+
+%************************************************
+% PREFACTION 
+%************************************************
+\include{chapters/prefaction}
+
+%************************************************
+% Chapter 0: INTRODUCTION
+%************************************************
+\include{chapters/intro}
+
+\mainmatter
+
+%************************************************
+% Chapter 1: NETWORK TECHNOLOGIES
+%************************************************
+\include{chapters/nt}
+
+%************************************************
+% Chapter 2: TEORIA DELLE CODE
+%************************************************
+\include{chapters/qtheory}
+
+%************************************************
+% Chapter 3: AFFIDABILITA' E DISPONIBILITA'
+%************************************************
+\include{chapters/relavl}
+
+%************************************************
+% Chapter 4: RETI DI CODE
+%************************************************
+\include{chapters/qnet}
+
+%************************************************
+% Chapter 5: NETWORK TECHNOLOGIES 2
+%************************************************
+\include{chapters/nt2}
+
+%************************************************
+% Chapter 6: TRAINING FACILITY
+%************************************************
+\include{chapters/training}
+
+\backmatter
+%************************************************
+% Capitolo: APPENDICI
+%************************************************
+\include{chapters/appendix}
+
+\newpage
+
+\section*{Thanksgiving}
+
+Si ringrazia:
+
+\begin{itemize}
+
+\item il prof. \emph{Giovanni Ciccarese} per il corso di Network Technologies tenutosi in AA 2016/2017 del corso di laurea in Ingegneria Informatica at UNISALENTO, ed anche per disponibilità e chiarimenti. Contatto: \emph{gianni.ciccarese@unisalento.it};
+
+\item me stesso, \emph{Marco Chiarelli}, studente del II anno di Ingegneria Informatica at UNISALENTO. Contatti: \{\emph{marco\_chiarelli@yahoo.it}, \emph{marcochiarelli.nextgenlab@gmail.com}, \emph{marco.chiarelli @studenti.unisalento.it}\};
+
+\item \emph{Andrea Camisa}, collega universitario che ha fornito le sigle NT in appendice. Contatto: \emph{andrea.camisa@studenti.unisalento.it};
+
+\item La mia squadra di studio: \{\emph{Gabriele Accarino}, \emph{Matteo Settembrini}, \emph{Paolo Panarese}, \emph{Emanuele Costa Cesari}, \emph{Dino Sbarro}\};
+
+\item Google, ovviamente.
+
+\end{itemize}
+
+\newpage
+
+\section*{Credits}
+
+\begin{figure}[h]
+\includegraphics[width=3cm]{figures/marco.jpg}
+\vspace{0.3cm}
+
+\raisebox{-0.35ex}{\includegraphics[width=4ex]{figures/link.png}}%
+\hspace{0.05cm} /marcochiarelli
+
+\end{figure}
+
+
+
+%BIBLIOGRAFIA - redatta con il relativo ambiente
+\begin{thebibliography}{100}
+\bibitem{rif1} J. Kurose, K.W. Ross, \emph{Computer Networking. A Top-Down Approach,  sixth edition}
+\bibitem{rif2} B.A. Forouzan \emph{Data Communication and Networking, fifth edition}
+\bibitem{rif3} P. Oppenheimer \emph{Top Down Networking Design, third edition}
+\end{thebibliography}
+\end{document}
+

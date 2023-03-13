@@ -1,0 +1,62 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../act.tex
+% !TEX spellcheck = it-IT
+
+%************************************************
+\chapter{Introduzione}
+\label{cap:intro}
+%************************************************\\
+
+I Sistemi di Controllo Cyber ormai sono presenti massivamente. Progetti, Applicazioni concrete degli algoritmi, sviluppare nuovi metodi. Si chiede che quando si sviluppi qualcosa, questa funzioni in ogni scenario.
+Il corso sarà sostanzialmente strutturato in 3 tematiche principali:
+
+\begin{itemize}
+
+\item \textbf{Proprietà Strutturali dei Sistemi Dinamici Non Lineari}: (Stabilità, Tracking (traiettorie)) e Controlli di questi Strumenti; Lyapunov, invarianza di La Salle. Strumenti che ci permetteranno di disegnare un'azione di retroazione (feedback); applicazione a sistemi concreti (robot mobili, robot aerei, etc...). Data una particolare Dinamica, si applichino delle apposite Leggi di Controllo;
+\item \textbf{Controllo di questi sistemi} (ci concentreremo su alcune tematiche): ad esempio come l'Ottimizzazione può venirci in aiuto per designare e sviluppare queste leggi (Ottimizzazione Vincolata); proporre delle tecniche di controllo per sistemi dinamici (Controllo OTTIMO), ovvero leggi di controllo che minimizzano una certa funzione di costo; si propongono di risolvere particolari task di controllo in meno tempo possibile, ad esempio;
+\item \textbf{Nuova area dei controlli}: tematica enunciata nel lontano 2003. Sistemi Complessi Multi-Agente, cooperanti. Tanti sistemi di controllo che, per raggiungere un task complesso, devono cooperare assieme; in maniera cooperativa questi sistemi decidono cosa fare ed attuano un certo sforzo di controllo di conseguenza;
+
+\end{itemize}
+
+Si supponga di avere un impianto (drone, veicolo mobile, etc.). Poi abbiamo le leggi di controllo che risiede nella COMPUTING UNIT (relativa implementazione del codice finale). La Teoria del Controllo cerca di sviluppare delle metodologie per alcune classi di problemi matematici. Il contesto di applicazione è abbastanza eterogeneo. Metodologie/tecniche che sono applicabili in variegati contesti. Il nostro Sistema può essere ad esempio un drone (autonomo), braccio robotico, ma allo stesso tempo può anche essere un processo chimico, un sistema biologico, insieme di individui (popolazione), etc. \`E necessario comunque un interfacciamento con figure professionali. (Biological System) BIOLOGY SYSTEM. Molecole viste nell'insieme come un sistema biologico. Percezione dei fenomeni con cui interagire per analizzare comportamenti che non hanno una matematica immediatamente chiara. Si isolino queste due parti, $\{ACTUATORS, PLANT/SYSTEM\}$: ci andiamo a concentrare su una parte che contiene l'architettura HW + SW + tutta la parte di Sensoristica. Parte estremamente importante è la SENSORISTICA! La parte isolata è ormai diventata preponderante nella vita di tutti i giorni. Tablet, smartphone, cellulari. Potenza spaventosa. La potenza di Sensing di cui adesso disponiamo è impensabile se confrontata con la tecnologia di circa 10 anni fa. RIVOLUZIONE TECNOLOGICA $\implies$ RIVOLUZIONE METODOLOGICA. Prima si necessitava di workstation dedicate. Adesso "c'è in giro" della potenza di calcolo, pronta per essere utilizzata. SENSING: avere dati a disposizione, poterli processare efficacemente. Prendere la struttura di un drone (quadri-rotore), [Heli + Structure + Scheda]; questa architettura costa poco. Si potrebbe persino controllare un tale drone con un banale smartphone. Necessitiamo di: $\{Accelerometro, Giroscopio, GPS\} \subset (Smartphones)$. Disponiamo di potenza di calcolo e capacità di Sensing in quantità maggiore di quanto possa essere fisicamente presente nel singolo agente di controllo. $\{Sensing, computing, dynamics\ and\ communications\}$. Gli elementi principali sono: Potenza di Calcolo e Sensing. Robot mobili, autonomi $\implies$ Teoria del Controllo. Mentre prima il Sistema di Controllo era concentrato in un posto, adesso la sua localizzazione fisica NON è più chiara! Ora i Sistemi non sono più essi stessi concentrati in un singolo posto. (es. più robot). Es. AMAZON LOGISTICS (KIVA System). Non abbiamo più sistemi localizzati, ma vi è un sistema complesso costituito da tanti sottosistemi capaci di interagire perfettamente tra di loro. Gli stessi smartphone sono dei Sistemi di Controllo. Sensing. Quantità misurate con una certa dinamica ed eventualmente controllabili. Sistemi comunicanti, con certe regole. Ma posti in una stanza, ci saranno delle interazioni parziali tra un robot ed i suoi vicini. Componente fondamentale: COMUNICAZIONE. Oramai quantomeno necessario. Nuova classe di sistemi. Robot mobili, reti elettriche distribuite e non più concentrate. Microgeneratori sui quali potremo avere dell'intelligenza. Paradigma che stravolge praticamente l'intera Teoria del Controllo. Vi sono delle unità di produzione che tra di loro devono per forza interagire.
+Aziende informatiche che ormai sono diventate qualcosa di diverso dalla loro principale essenza originaria. [BOSTON DYNAMICS]; proprio perché c'è questa necessità delle capacità tecnologiche, c'è la possibilità di fare tanto. Robotica, teoria del Controllo ed Automazione. Rendere autonomi sistemi che prima erano esclusivamente controllati dall'uomo. Questi sistemi di controllo rompono le tradizionali regole del passato. Interazione mutua è la chiave.
+
+Attività importanti, con molte delle quali andremo probabilmente ad interfacciarci. Controllo di veicoli/velivoli autonomi. Se si vogliono progettare delle leggi di controllo ci deve essere una previa fase di modellizzazione dinamica di questi sistemi. Classi di sistemi con nuove architetture che stanno venendo fuori. Obiettivo: far lavorare robot in scenari concreti. Modelli tipo UAV (tilt rotor e quad rotor); ala fissa / sistemi a rotore; -) Controllo Ottimo. Area del controllo non lineare che ci permetterà di gestire non linearità molto concentrate. In situazioni non molto complesse potrebbero andare bene delle Linearizzazioni. In passato quest'ultima utilizzata esclusivamente nell'Industria di Processo. Dinamiche di Processo molto lento (es. reattore chimico). Attualmente si può provare ad implementare tecniche di controllo del genere su altri settori. Strumenti tecnologici a disposizione degli Ingegneri Meccanici. Si porta avanti tutto in Virtuale, finché poi si è abbastanza sicuri della correttezza della scelta.  Riduzione del TTM (time-to-market). Controllori di queste dinamiche virtuali. Tecniche di Controllo Ottimo (Virtual Prototyping Technique); Tecniche di Ottimizzazione applicate ai sistemi dinamici $\iff$ tecniche di Controllo Ottimo applicate ad esempio in un veicolo.
+
+Squadre di Sistemi di Controllo. L'idea è che abbiamo una serie di sistemi dinamici che possono comunicare tra di loro e svolgere compiti anche complessi. SENZA affidarsi ad un coordinatore generale, onde evitare un antipattern SPoF (single point of failure). Calcoli non più banali in questo contesto. Caratteristiche tipiche di questi sistemi:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+& -)\ Calcolo\ locale; \\
+& -)\ Memoria\ locale; \\
+& -)\ Comunicazione\ locale; \\
+& -)\ Network;
+\end{aligned} 
+\right.
+\end{equation}
+
+Questo è qualcosa di diverso dal calcolo parallelo. Poter eseguire dei compiti non più in maniera centralizzata. Le leggi/algoritmi dovranno funzionare sotto questo tipo di controllo. Nel calcolo parallelo siamo noi stessi responsabili del progetto dell'architettura invece.
+
+Sistema di Motion Capture all'infrarosso. Recuperare informazioni sulla posizione / grado di angolazione. STATE-FEEDBACK. Ci concentreremo sulle leggi di controllo senza preoccuparci degli Stimatori, mettendo temporaneamente da parte i problemi di Stima. Parte più o meno nuova. Es. Progetto OPT4SMART. L'idea è: per risolvere tanti dei problemi di controllo è necessario utilizzare delle tecniche di Ottimizzazione che devono essere ripensate in funzione di un contesto del tipo di quello descritto. Non è più la logica del calcolo parallelo, ma è un contesto ove Sensing e Computing Unit sono distribuite (locali).
+
+Progettare un sistema di controllo / Design a control system. The main step that we need in order to design such a control system. Control Engineers have the possibility to work in different area. The model is as general as possible. Apply this model to the specific example. Aerospace Engingeering, Electrical Engineering, etc. Biology, Psychology, Economy. Those are different context in which is possible to work with Control. Evolution of Dynamical System. INPUT. What are the steps in order to develop control system?
+
+\begin{itemize}
+
+\item \textbf{EXTRACT A MODEL of the ACTUAL SYSTEM}: the first very important step. Depending on the area on which we work, this is a very CRYTICAL STEP, because this model needs to meet two objectives that are somehow in contrast between them. \underline{SIMPLE}. The more simple, the more chance to develop the controller. (even if too simple may be useless); vs \underline{CAPTURE MAIN FEATURES OF ACTUAL SYSTEM}: it needs to be sufficiently complex such to capture the main features. Something we'll gain with experience. Interact with expert of other area.
+
+Once extracted the model, once you have the mathematical model (math feedback law), you have to:
+
+\item \textbf{DESIGN CONTROL LAW AND PROVE ITS CORRECTNESS}: you'll need that at least the model is correct. Not just simulations. We will try to identify a class of mathematical models. \{LINEAR SYSTEMS T.I. (LTI)\}. We'll study classes of law to control those class of systems. If already exists;
+
+\item \textbf{RUN SIMULATIONS}: we have two substeps:
+\begin{itemize}
+\item Run Simulation with the model used for design;
+\item COMPLEX MODEL;
+\end{itemize}
+The first is now the simulation on a model used for design + Complex Model that contains the previous model laws. Virtual Prototypes.
+
+\item \textbf{EXPERIMENTS};
+\end{itemize}

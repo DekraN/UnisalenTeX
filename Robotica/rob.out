@@ -1,0 +1,81 @@
+\BOOKMARK [0][-]{chapter*.5}{Introduzione}{}% 1
+\BOOKMARK [1][-]{section.0.1}{Overview}{chapter*.5}% 2
+\BOOKMARK [0][-]{chapter.1}{Robotics}{}% 3
+\BOOKMARK [1][-]{section.1.1}{NGC - Navigation, Guidance, Control}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.2}{Robotica}{chapter.1}% 5
+\BOOKMARK [2][-]{subsection.1.2.1}{PWM: Pulse Width Modulation}{section.1.2}% 6
+\BOOKMARK [2][-]{subsection.1.2.2}{Robot}{section.1.2}% 7
+\BOOKMARK [1][-]{section.1.3}{Cinematica}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.3.1}{VETTORE}{section.1.3}% 9
+\BOOKMARK [0][-]{chapter.2}{Rotazioni}{}% 10
+\BOOKMARK [1][-]{section.2.1}{Matrici di ROTAZIONE}{chapter.2}% 11
+\BOOKMARK [2][-]{subsection.2.1.1}{Matrici simmetriche / antisimmetriche}{section.2.1}% 12
+\BOOKMARK [2][-]{subsection.2.1.2}{Skew-symmetry}{section.2.1}% 13
+\BOOKMARK [2][-]{subsection.2.1.3}{Matrici ESPONENZIALI}{section.2.1}% 14
+\BOOKMARK [2][-]{subsection.2.1.4}{Angoli di Eulero, YPR}{section.2.1}% 15
+\BOOKMARK [2][-]{subsection.2.1.5}{QUATERNIONI}{section.2.1}% 16
+\BOOKMARK [2][-]{subsection.2.1.6}{CINEMATICA}{section.2.1}% 17
+\BOOKMARK [2][-]{subsection.2.1.7}{VETTORE VELOCIT\300 ANGOLARE}{section.2.1}% 18
+\BOOKMARK [2][-]{subsection.2.1.8}{RECAP}{section.2.1}% 19
+\BOOKMARK [2][-]{subsection.2.1.9}{Legame tra Velocit\340 Angolare e Parametri delle Rappresentazioni}{section.2.1}% 20
+\BOOKMARK [2][-]{subsection.2.1.10}{Legame generale}{section.2.1}% 21
+\BOOKMARK [1][-]{section.2.2}{Cinematica elementare}{chapter.2}% 22
+\BOOKMARK [2][-]{subsection.2.2.1}{Manipolatori - Nomenclatura e convenzioni}{section.2.2}% 23
+\BOOKMARK [2][-]{subsection.2.2.2}{RECAP}{section.2.2}% 24
+\BOOKMARK [2][-]{subsection.2.2.3}{Denavit - Hartenberg \(DH\)}{section.2.2}% 25
+\BOOKMARK [2][-]{subsection.2.2.4}{Digressione sull'Osservabilit\340}{section.2.2}% 26
+\BOOKMARK [0][-]{chapter.3}{Dinamica di Corpo Rigido}{}% 27
+\BOOKMARK [1][-]{section.3.1}{Dinamica di Corpo Rigido}{chapter.3}% 28
+\BOOKMARK [2][-]{subsection.3.1.1}{Energia Cinetica e Momento d'Inerzia}{section.3.1}% 29
+\BOOKMARK [2][-]{subsection.3.1.2}{Review sull'Accelerazione}{section.3.1}% 30
+\BOOKMARK [2][-]{subsection.3.1.3}{Bilancio di Forze e Coppie Generalizzate}{section.3.1}% 31
+\BOOKMARK [1][-]{section.3.2}{Veicoli e Fenomeni Marini}{chapter.3}% 32
+\BOOKMARK [2][-]{subsection.3.2.1}{SCENARIO}{section.3.2}% 33
+\BOOKMARK [2][-]{subsection.3.2.2}{Froude Number e Reynolds Number}{section.3.2}% 34
+\BOOKMARK [2][-]{subsection.3.2.3}{Masse Aggiunte}{section.3.2}% 35
+\BOOKMARK [2][-]{subsection.3.2.4}{Altri fenomeni di Forze Esterne}{section.3.2}% 36
+\BOOKMARK [2][-]{subsection.3.2.5}{RECAP}{section.3.2}% 37
+\BOOKMARK [2][-]{subsection.3.2.6}{DISTURBANCES}{section.3.2}% 38
+\BOOKMARK [2][-]{subsection.3.2.7}{Derivate Idrodinamiche}{section.3.2}% 39
+\BOOKMARK [0][-]{chapter.4}{Identificazione parametrica}{}% 40
+\BOOKMARK [1][-]{section.4.1}{Identificazione parametrica e pseudoinverse}{chapter.4}% 41
+\BOOKMARK [2][-]{subsection.4.1.1}{Identificazione parametrica}{section.4.1}% 42
+\BOOKMARK [2][-]{subsection.4.1.2}{Schema di base}{section.4.1}% 43
+\BOOKMARK [2][-]{subsection.4.1.3}{Pseudoinverse \(RANK - MAX - ALGORITHMS\)}{section.4.1}% 44
+\BOOKMARK [2][-]{subsection.4.1.4}{Pseudoinverse \(NON-RANK-MAX ALGORITHMS\)}{section.4.1}% 45
+\BOOKMARK [1][-]{section.4.2}{Identificazione parametrica utilizzando metodi probabilistici}{chapter.4}% 46
+\BOOKMARK [2][-]{subsection.4.2.1}{Approccio non Bayesiano - Maximum Likelihood}{section.4.2}% 47
+\BOOKMARK [2][-]{subsection.4.2.2}{Approccio Bayesiano - Maximum A Posteriori}{section.4.2}% 48
+\BOOKMARK [2][-]{subsection.4.2.3}{Minimi quadrati Ricorsivi - \(R\)WLS}{section.4.2}% 49
+\BOOKMARK [2][-]{subsection.4.2.4}{Filtro di Kalman}{section.4.2}% 50
+\BOOKMARK [1][-]{section.4.3}{Pseudoinverse in generale / SVD}{chapter.4}% 51
+\BOOKMARK [2][-]{subsection.4.3.1}{SVD con Matrice dei Pesi}{section.4.3}% 52
+\BOOKMARK [2][-]{subsection.4.3.2}{Legame tra SVD e \(D\)WLS}{section.4.3}% 53
+\BOOKMARK [0][-]{chapter.5}{Teoria del Controllo}{}% 54
+\BOOKMARK [1][-]{section.5.1}{Controllo di manipolatori}{chapter.5}% 55
+\BOOKMARK [2][-]{subsection.5.1.1}{Controllo cinematico di manipolatori}{section.5.1}% 56
+\BOOKMARK [2][-]{subsection.5.1.2}{TASK ROBOTICI}{section.5.1}% 57
+\BOOKMARK [2][-]{subsection.5.1.3}{Modello cinematico dei manipolatori}{section.5.1}% 58
+\BOOKMARK [2][-]{subsection.5.1.4}{Caso di assetto / posizione desiderata costante}{section.5.1}% 59
+\BOOKMARK [2][-]{subsection.5.1.5}{Considerazioni pratiche sulla soluzione generale}{section.5.1}% 60
+\BOOKMARK [2][-]{subsection.5.1.6}{Modello dinamico dei manipolatori}{section.5.1}% 61
+\BOOKMARK [2][-]{subsection.5.1.7}{Ellissoidi di manipolabilit\340}{section.5.1}% 62
+\BOOKMARK [2][-]{subsection.5.1.8}{RECAP}{section.5.1}% 63
+\BOOKMARK [2][-]{subsection.5.1.9}{LAGRANGIAN EQUATION}{section.5.1}% 64
+\BOOKMARK [2][-]{subsection.5.1.10}{Spazio dei Giunti e Spazio Operativo}{section.5.1}% 65
+\BOOKMARK [2][-]{subsection.5.1.11}{Digressioni sul motore in corrente continua ed ENCODER}{section.5.1}% 66
+\BOOKMARK [1][-]{section.5.2}{Controllo di Interazione}{chapter.5}% 67
+\BOOKMARK [2][-]{subsection.5.2.1}{ROS - Robot Operating System}{section.5.2}% 68
+\BOOKMARK [2][-]{subsection.5.2.2}{CONTROLLO DI CEDEVOLEZZA}{section.5.2}% 69
+\BOOKMARK [2][-]{subsection.5.2.3}{CONTROLLO DI IMPEDENZA}{section.5.2}% 70
+\BOOKMARK [1][-]{section.5.3}{Dinamica di corpo rigido applicata ad un sistema marino}{chapter.5}% 71
+\BOOKMARK [2][-]{subsection.5.3.1}{Allocatore}{section.5.3}% 72
+\BOOKMARK [0][-]{chapter*.52}{Appendici}{}% 73
+\BOOKMARK [1][-]{section.5.4}{Varie dimostrazioni}{chapter*.52}% 74
+\BOOKMARK [2][-]{subsection.5.4.1}{Dimostrazioni e Propriet\340 delle Rotazioni e dell'Antisimmetria}{section.5.4}% 75
+\BOOKMARK [2][-]{subsection.5.4.2}{Dimostrazioni e Derivazioni sulla Teoria del Controllo}{section.5.4}% 76
+\BOOKMARK [1][-]{section.5.5}{Identificazione Parametrica: Pseudoinverse ed SVD}{chapter*.52}% 77
+\BOOKMARK [2][-]{subsection.5.5.1}{Considerazioni sulle pseudoinverse}{section.5.5}% 78
+\BOOKMARK [2][-]{subsection.5.5.2}{Considerazioni sull'Identificabilit\340}{section.5.5}% 79
+\BOOKMARK [2][-]{subsection.5.5.3}{Calcoli di Media e Varianza della Stima MAP \(DA VERIFICARE\)}{section.5.5}% 80
+\BOOKMARK [2][-]{subsection.5.5.4}{Prodotto Matrice Vettore e Matrice Matrice}{section.5.5}% 81
